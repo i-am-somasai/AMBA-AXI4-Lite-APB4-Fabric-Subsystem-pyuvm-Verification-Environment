@@ -4,35 +4,35 @@ from cocotb.triggers import RisingEdge, Timer
 
 class AxilMasterDriver:
     """Simple single-master AXI4-Lite driver for L0/L1 tests."""
-    def __init__(self, dut, clk, prefix="s_axil_"):
+    def __init__(self, dut=None, clk=None, prefix="s_axil_", **kwargs):
         self.dut = dut
         self.clk = clk
         self.prefix = prefix
         self.timeout_cycles = 2000
 
-        self.awaddr  = getattr(dut, f"{prefix}awaddr")
-        self.awprot  = getattr(dut, f"{prefix}awprot", None)
-        self.awvalid = getattr(dut, f"{prefix}awvalid")
-        self.awready = getattr(dut, f"{prefix}awready")
+        self.awaddr  = kwargs.get("awaddr") if "awaddr" in kwargs else getattr(dut, f"{prefix}awaddr")
+        self.awprot  = kwargs.get("awprot") if "awprot" in kwargs else getattr(dut, f"{prefix}awprot", None)
+        self.awvalid = kwargs.get("awvalid") if "awvalid" in kwargs else getattr(dut, f"{prefix}awvalid")
+        self.awready = kwargs.get("awready") if "awready" in kwargs else getattr(dut, f"{prefix}awready")
 
-        self.wdata   = getattr(dut, f"{prefix}wdata")
-        self.wstrb   = getattr(dut, f"{prefix}wstrb")
-        self.wvalid  = getattr(dut, f"{prefix}wvalid")
-        self.wready  = getattr(dut, f"{prefix}wready")
+        self.wdata   = kwargs.get("wdata") if "wdata" in kwargs else getattr(dut, f"{prefix}wdata")
+        self.wstrb   = kwargs.get("wstrb") if "wstrb" in kwargs else getattr(dut, f"{prefix}wstrb")
+        self.wvalid  = kwargs.get("wvalid") if "wvalid" in kwargs else getattr(dut, f"{prefix}wvalid")
+        self.wready  = kwargs.get("wready") if "wready" in kwargs else getattr(dut, f"{prefix}wready")
 
-        self.bresp   = getattr(dut, f"{prefix}bresp")
-        self.bvalid  = getattr(dut, f"{prefix}bvalid")
-        self.bready  = getattr(dut, f"{prefix}bready")
+        self.bresp   = kwargs.get("bresp") if "bresp" in kwargs else getattr(dut, f"{prefix}bresp")
+        self.bvalid  = kwargs.get("bvalid") if "bvalid" in kwargs else getattr(dut, f"{prefix}bvalid")
+        self.bready  = kwargs.get("bready") if "bready" in kwargs else getattr(dut, f"{prefix}bready")
 
-        self.araddr  = getattr(dut, f"{prefix}araddr")
-        self.arprot  = getattr(dut, f"{prefix}arprot", None)
-        self.arvalid = getattr(dut, f"{prefix}arvalid")
-        self.arready = getattr(dut, f"{prefix}arready")
+        self.araddr  = kwargs.get("araddr") if "araddr" in kwargs else getattr(dut, f"{prefix}araddr")
+        self.arprot  = kwargs.get("arprot") if "arprot" in kwargs else getattr(dut, f"{prefix}arprot", None)
+        self.arvalid = kwargs.get("arvalid") if "arvalid" in kwargs else getattr(dut, f"{prefix}arvalid")
+        self.arready = kwargs.get("arready") if "arready" in kwargs else getattr(dut, f"{prefix}arready")
 
-        self.rdata   = getattr(dut, f"{prefix}rdata")
-        self.rresp   = getattr(dut, f"{prefix}rresp")
-        self.rvalid  = getattr(dut, f"{prefix}rvalid")
-        self.rready  = getattr(dut, f"{prefix}rready")
+        self.rdata   = kwargs.get("rdata") if "rdata" in kwargs else getattr(dut, f"{prefix}rdata")
+        self.rresp   = kwargs.get("rresp") if "rresp" in kwargs else getattr(dut, f"{prefix}rresp")
+        self.rvalid  = kwargs.get("rvalid") if "rvalid" in kwargs else getattr(dut, f"{prefix}rvalid")
+        self.rready  = kwargs.get("rready") if "rready" in kwargs else getattr(dut, f"{prefix}rready")
 
         self.init_signals()
 
@@ -67,6 +67,8 @@ class AxilMasterDriver:
             self.wvalid.value = 1
 
         cycles = 0
+        w_first_stagger = 2 if order == "w_first" else 0
+
         while not (aw_done and w_done):
             await RisingEdge(self.clk)
             cycles += 1
@@ -84,8 +86,10 @@ class AxilMasterDriver:
             # Advance second channel if staggered
             if order == "aw_first" and aw_done and not w_done and not self.wvalid.value:
                 self.wvalid.value = 1
-            elif order == "w_first" and w_done and not aw_done and not self.awvalid.value:
-                self.awvalid.value = 1
+            elif order == "w_first" and not aw_done and not self.awvalid.value:
+                w_first_stagger -= 1
+                if w_first_stagger <= 0:
+                    self.awvalid.value = 1
 
         # Wait for B response
         self.bready.value = 1
@@ -134,3 +138,8 @@ class AxilMasterDriver:
 
         self.rready.value = 0
         return rdata, rresp
+
+
+# Alias for backwards compatibility
+AxilDriver = AxilMasterDriver
+

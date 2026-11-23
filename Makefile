@@ -56,6 +56,12 @@ unit:
 	$(MAKE) -C tb/unit SIM=$(SIM) clean && \
 	$(MAKE) -C tb/unit SIM=$(SIM)
 
+# L1 Block tests (XB-01..XB-08, BR-01..BR-03)
+block:
+	@$(ENV_CMD) && echo "=== Running L1 Block Tests (SIM=$(SIM)) ===" && \
+	$(MAKE) -C tb/block SIM=$(SIM) clean && \
+	$(MAKE) -C tb/block SIM=$(SIM)
+
 # pyuvm Regression (Icarus default)
 regress:
 	@$(ENV_CMD) && echo "=== Running pyuvm Regression (SIM=$(SIM), SEEDS=$(SEEDS)) ===" && \

@@ -1,0 +1,9 @@
+# Single DUT runner for cocotb
+SIM ?= icarus
+TOPLEVEL_LANG ?= verilog
+SIM_BUILD ?= sim_build_$(TOPLEVEL)
+COMPILE_ARGS += -g2012
+
+# Include standard cocotb Makefile
+include $(shell cocotb-config --makefiles)/Makefile.sim
+
