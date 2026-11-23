@@ -1,0 +1,27 @@
+[tasks]
+bmc
+cover
+
+[options]
+bmc: mode bmc
+bmc: depth 20
+cover: mode cover
+cover: depth 20
+
+[engines]
+smtbmc boolector
+
+[script]
+read -formal -sv -DFORMAL rr_arbiter.v
+read -formal -sv -DFORMAL axil_decoder.v
+read -formal -sv -DFORMAL axil_default_slave.v
+read -formal -sv -DFORMAL axil_xbar.v
+read -formal -sv -DFORMAL axil_xbar_props.v
+prep -top axil_xbar_props
+
+[files]
+../rtl/common/rr_arbiter.v
+../rtl/axil/axil_decoder.v
+../rtl/axil/axil_default_slave.v
+../rtl/axil/axil_xbar.v
+axil_xbar_props.v
