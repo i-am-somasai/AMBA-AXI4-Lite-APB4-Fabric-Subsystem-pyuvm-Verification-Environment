@@ -130,18 +130,18 @@ module apb_uart #(
     // -------------------------------------------------------------
     // UART Transmitter FSM
     // -------------------------------------------------------------
-    localparam [1:0] TX_ST_IDLE  = 2'b00,
-                     TX_ST_START = 2'b01,
-                     TX_ST_DATA  = 2'b10,
-                     TX_ST_STOP  = 2'b11;
+    localparam [2:0] TX_ST_IDLE  = 3'b000,
+                     TX_ST_LOAD  = 3'b001,
+                     TX_ST_START = 3'b010,
+                     TX_ST_DATA  = 3'b011,
+                     TX_ST_STOP  = 3'b100;
 
-    reg [1:0] tx_state;
+    reg [2:0] tx_state;
     reg [3:0] tx_tick_cnt;
     reg [2:0] tx_bit_idx;
     reg [7:0] tx_shifter;
-    reg       tx_pop_req;
 
-    assign tx_fifo_pop = tx_pop_req;
+    assign tx_fifo_pop = (tx_state == TX_ST_IDLE) && reg_ctrl[0] && !tx_fifo_empty;
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
@@ -151,10 +151,7 @@ module apb_uart #(
             tx_shifter  <= 8'd0;
             tx_busy     <= 1'b0;
             uart_tx     <= 1'b1;
-            tx_pop_req  <= 1'b0;
         end else begin
-            tx_pop_req <= 1'b0;
-
             case (tx_state)
                 TX_ST_IDLE: begin
                     uart_tx     <= 1'b1;
@@ -162,13 +159,19 @@ module apb_uart #(
                     tx_bit_idx  <= 3'd0;
 
                     if (reg_ctrl[0] && !tx_fifo_empty) begin // TX_EN
-                        tx_pop_req <= 1'b1;
-                        tx_shifter <= tx_fifo_rdata;
-                        tx_busy    <= 1'b1;
-                        tx_state   <= TX_ST_START;
+                        tx_busy  <= 1'b1;
+                        tx_state <= TX_ST_LOAD;
                     end else begin
-                        tx_busy    <= 1'b0;
+                        tx_busy  <= 1'b0;
                     end
+                end
+
+                TX_ST_LOAD: begin
+                    // Latch data popped from FIFO during IDLE
+                    tx_shifter  <= tx_fifo_rdata;
+                    uart_tx     <= 1'b0; // Assert start bit
+                    tx_tick_cnt <= 4'd0;
+                    tx_state    <= TX_ST_START;
                 end
 
                 TX_ST_START: begin
@@ -210,6 +213,8 @@ module apb_uart #(
                         end
                     end
                 end
+
+                default: tx_state <= TX_ST_IDLE;
             endcase
         end
     end
@@ -276,12 +281,15 @@ module apb_uart #(
                     if (baud_tick_16x) begin
                         if (rx_tick_cnt == 4'd7) begin
                             // Mid-start bit sample: verify line is still 0
-                            if (!rx_sync_q2) begin
-                                rx_tick_cnt <= 4'd0;
-                                rx_state    <= RX_ST_DATA;
+                            if (rx_sync_q2 != 1'b0) begin
+                                rx_state <= RX_ST_IDLE; // False glitch
                             end else begin
-                                rx_state    <= RX_ST_IDLE; // False glitch
+                                rx_tick_cnt <= rx_tick_cnt + 1'b1;
                             end
+                        end else if (rx_tick_cnt == 4'd15) begin
+                            rx_tick_cnt <= 4'd0;
+                            rx_bit_idx  <= 3'd0;
+                            rx_state    <= RX_ST_DATA;
                         end else begin
                             rx_tick_cnt <= rx_tick_cnt + 1'b1;
                         end
@@ -348,6 +356,17 @@ module apb_uart #(
     // Pop RX FIFO on APB read of RXDATA (0x04)
     assign rx_fifo_pop = psel && !penable && !pwrite && (paddr[4:2] == 3'b001) && !rx_fifo_empty;
 
+    reg rx_had_data;
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            rx_had_data <= 1'b0;
+        end else if (psel && !penable && !pwrite && (paddr[4:2] == 3'b001)) begin
+            rx_had_data <= !rx_fifo_empty;
+        end else if (penable) begin
+            rx_had_data <= 1'b0;
+        end
+    end
+
     // Push TX FIFO on APB write to TXDATA (0x00)
     always @(*) begin
         tx_fifo_push  = 1'b0;
@@ -402,7 +421,7 @@ module apb_uart #(
 
     // APB Read Data Mux
     assign prdata = (paddr[4:2] == 3'b000) ? 32'd0 :
-                    (paddr[4:2] == 3'b001) ? {24'd0, (rx_fifo_empty ? 8'd0 : rx_fifo_rdata)} :
+                    (paddr[4:2] == 3'b001) ? {24'd0, (rx_had_data ? rx_fifo_rdata : 8'd0)} :
                     (paddr[4:2] == 3'b010) ? {24'd0, status_word} :
                     (paddr[4:2] == 3'b011) ? {28'd0, reg_ctrl} :
                     (paddr[4:2] == 3'b100) ? {16'd0, reg_bauddiv} :
