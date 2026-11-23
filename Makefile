@@ -44,7 +44,7 @@ env-check:
 lint:
 	@$(ENV_CMD) && echo "=== Running RTL Lint (Verilator) ===" && \
 	if [ -n "$$(echo $(RTL_SRCS))" ]; then \
-		verilator --lint-only -Wall -Wno-DECLFILENAME -I$(PROJ_DIR)/rtl/common -I$(PROJ_DIR)/rtl/axil -I$(PROJ_DIR)/rtl/apb -I$(PROJ_DIR)/rtl/cdc $(RTL_SRCS); \
+		verilator --lint-only -Wall -Wno-DECLFILENAME -Wno-MULTITOP -I$(PROJ_DIR)/rtl/common -I$(PROJ_DIR)/rtl/axil -I$(PROJ_DIR)/rtl/apb -I$(PROJ_DIR)/rtl/cdc $(RTL_SRCS); \
 	else \
 		verilator --lint-only -Wall $(PROJ_DIR)/tb/unit/hello_world.v; \
 	fi
