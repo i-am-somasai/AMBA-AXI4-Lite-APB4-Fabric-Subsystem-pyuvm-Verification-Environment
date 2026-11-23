@@ -9,8 +9,8 @@ This document records **real, measured results** from actual tool execution.
 
 | Metric | Measured Value | Spec Reference | Log Reference / Command |
 |---|---|---|---|
-| RTL Modules / Total Lines | 11 modules / 1717 lines | Section 17 | `find rtl/ -name "*.v" \| xargs wc -l` |
-| Total Tests (Directed / Random) | 19 tests (8 L0 unit + 11 L1 block: 19/19 PASS on Icarus, 19/19 PASS on Verilator) | Section 9 | `docs/logs/phase2_gate.log` |
+| RTL Modules / Total Lines | 17 modules / 3238 lines | Section 17 | `find rtl/ -name "*.v" \| xargs wc -l` |
+| Total Tests (Directed / Random) | 34 tests (8 L0 unit + 26 L1 block/top: 34/34 PASS on Icarus, 34/34 PASS on Verilator) | Section 9 | `docs/logs/phase3_gate.log` |
 | Random Transactions Executed | Not measured (Phase 4) | Section 9.1 (XB-13) | `docs/logs/xb13_stress.log` |
 | Multi-seed Regression Seeds Passed | Not measured (Phase 5) | Section 9.2 (≥20 seeds) | `docs/logs/regression.log` |
 | Functional Coverage (Bins Hit / Total) | Not measured (Phase 5) | Section 10 (100% goal) | `docs/logs/func_cov.log` |
@@ -55,3 +55,24 @@ This document records **real, measured results** from actual tool execution.
   - Waveform Artifacts: Contention waveform generated and verified (`docs/img/contention.png`, `docs/img/contention.vcd`).
 - **Log Reference:** `docs/logs/phase2_gate.log`
 - **Tag:** `phase-2-done`
+
+### Phase 3: Peripherals, CDC, and Top Level
+- **Date Completed:** 2026-11-23
+- **Gate Command:** `make lint && make unit SIM=icarus && make block SIM=icarus && make block SIM=verilator && make formal`
+- **Status:** **PASS**
+  - Verilator Lint: 17 RTL modules clean, 0 errors, 0 warnings across entire SoC.
+  - L0 Unit Tests: 8/8 PASS on Icarus Verilog (100%).
+  - L1 Block & Subsystem Tests: 26/26 PASS on Icarus Verilog (100%):
+    - `test_axil2apb_bridge`: 3/3 PASS (BR-01, BR-02, BR-03)
+    - `test_axil_xbar`: 8/8 PASS (XB-01 through XB-08)
+    - `test_apb_timer`: 3/3 PASS (TM-01, TM-02, TM-03)
+    - `test_apb_gpio`: 3/3 PASS (GP-01, GP-02, GP-03)
+    - `test_apb_uart`: 4/4 PASS (UA-01, UA-02, UA-03, UA-05)
+    - `test_axil_cdc_bridge`: 3/3 PASS (CD-01, CD-04, CD-05)
+    - `test_amba_fabric_top`: 2/2 PASS (TOP-01, TOP-02)
+  - L1 Block & Subsystem Tests: 26/26 PASS on Verilator 5.055 (100%).
+  - Formal Verification: 4/4 modules PASS (`async_fifo` BMC depth 25, `axil2apb_bridge` BMC depth 25, `axil_xbar` BMC depth 20, `rr_arbiter` k-induction depth 20).
+  - Register Map Exercised: 100% of register-map entries across UART, Timer, GPIO, RAM, CSR, CDC Slow Regs, and Default Slave exercised and verified from both masters.
+  - Interrupt Aggregation: UART, Timer, and GPIO interrupts verified propagating to top-level `irq_o` pin.
+- **Log Reference:** `docs/logs/phase3_gate.log`
+- **Tag:** `phase-3-done`

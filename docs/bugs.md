@@ -92,3 +92,30 @@ Per project rules, every bug must be reproduced deterministically, diagnosed to 
 - **Fix Applied:** In `tb/models/axil_driver.py`, for `order="w_first"`, master asserts `WVALID=1`, waits 2 clock cycles stagger, and then asserts `AWVALID=1` without waiting for `WREADY`.
 - **Regression Test:** `tb/block/test_axil_xbar.py` (`test_xb08_write_orderings`)
 
+### [BUG-009] UART Transmitter FSM Multi-Cycle Pop Race with Synchronous FIFO
+- **Date Discovered:** 2026-11-23
+- **Target Component:** `rtl/apb/apb_uart.v`
+- **Detection Method:** Block Test execution (`test_ua03_bauddiv_sweep`, `test_ua01_loopback_bytes`)
+- **Symptom:** Start bit length measured 145 cycles instead of 16; transmitted data bits were all zeros.
+- **Root Cause:** In `TX_ST_IDLE`, `tx_pop_req <= 1'b1` was registered with non-blocking assignment (`<=`), delaying the FIFO pop pulse to `TX_ST_LOAD`. In `TX_ST_LOAD`, `tx_shifter <= tx_fifo_rdata` executed at the exact same clock edge where the FIFO registered its new output, causing `tx_shifter` to sample the stale (zero) pre-pop value.
+- **Fix Applied:** Changed `tx_fifo_pop` to a combinational assignment `assign tx_fifo_pop = (tx_state == TX_ST_IDLE) && reg_ctrl[0] && !tx_fifo_empty;`. This pops `sync_fifo` synchronously during `TX_ST_IDLE` so that by the time `TX_ST_LOAD` executes, `tx_fifo_rdata` is stable and valid.
+- **Regression Test:** `tb/block/test_apb_uart.py` (`test_ua01_loopback_bytes`, `test_ua03_bauddiv_sweep`)
+
+### [BUG-010] UART Receiver Premature State Transition on Mid-Start Bit Sample
+- **Date Discovered:** 2026-11-23
+- **Target Component:** `rtl/apb/apb_uart.v`
+- **Detection Method:** Block Test execution (`test_ua01_loopback_bytes`)
+- **Symptom:** Loopback data timeout; all received bytes dropped with framing error (`reg_frame_err`).
+- **Root Cause:** In `RX_ST_START`, when `rx_tick_cnt == 7` (mid-point of start bit), the FSM immediately reset `rx_tick_cnt <= 0` and transitioned to `RX_ST_DATA` after only 8 oversampling ticks instead of waiting for the full 16 ticks of the start bit. This shifted all subsequent data bit sampling by 8 ticks, causing data bit 7 to be sampled during stop bit, triggering false framing errors and dropping frames.
+- **Fix Applied:** In `RX_ST_START`, tick 7 only verifies that the line is still 0 (aborting on glitch); the transition to `RX_ST_DATA` is gated by `rx_tick_cnt == 15` so that the full 16-tick start bit duration elapses before data bits are sampled.
+- **Regression Test:** `tb/block/test_apb_uart.py` (`test_ua01_loopback_bytes`, `test_ua02_fifo_full_and_overflow_flags`)
+
+### [BUG-011] UART Receiver Read Data Mux Zero Mask on FIFO Empty
+- **Date Discovered:** 2026-11-23
+- **Target Component:** `rtl/apb/apb_uart.v`
+- **Detection Method:** Block Test execution (`test_ua01_loopback_bytes`)
+- **Symptom:** Reading `RXDATA` register (0x04) returned `0x00` even though FIFO contained a valid received byte.
+- **Root Cause:** `assign prdata` used `rx_fifo_empty ? 8'd0 : rx_fifo_rdata`. Because `rx_fifo_pop` occurs during the APB SETUP phase, by the time the ACCESS phase was entered and `prdata` was sampled, a single-byte FIFO was already empty, forcing the mux to return 0.
+- **Fix Applied:** Added registered indicator `rx_had_data` set in the SETUP phase if `!rx_fifo_empty`, and used `rx_had_data ? rx_fifo_rdata : 8'd0` in the read data mux.
+- **Regression Test:** `tb/block/test_apb_uart.py` (`test_ua01_loopback_bytes`)
+
