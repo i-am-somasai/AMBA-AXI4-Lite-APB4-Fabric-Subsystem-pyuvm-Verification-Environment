@@ -1,0 +1,593 @@
+=== PHASE 1 ACCEPTANCE GATE LOG ===
+Mon Nov 23 12:39:42 PM IST 2026
+
+--- Target: make lint ---
+=== Running RTL Lint (Verilator) ===
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.235 MB sources in 9 modules, into 0.152 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.025 s (elab=0.003, cvt=0.012, bld=0.000); cpu 0.025 s on 1 threads; allocated 22.336 MB
+Lint CLEAN.
+
+--- Target: make unit SIM=icarus ---
+=== Running L0 Unit Tests (SIM=icarus) ===
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+rm -rf sim_build* results*.xml results.xml dump.vcd *.vcd __pycache__
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+--- Running test_hello_world ---
+make -f /home/somasai/amba-fabric/tb/unit/Makefile.single \
+	TOPLEVEL=hello_world \
+	MODULE=test_hello_world \
+	VERILOG_SOURCES=/home/somasai/amba-fabric/tb/unit/hello_world.v \
+	SIM=icarus
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+rm -f results.xml
+"make" -f /home/somasai/amba-fabric/tb/unit/Makefile.single results.xml
+make[3]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+mkdir -p sim_build_hello_world
+/home/somasai/oss-cad-suite/bin/iverilog -o sim_build_hello_world/sim.vvp -s hello_world -g2012 -f sim_build_hello_world/cmds.f  /home/somasai/amba-fabric/tb/unit/hello_world.v
+/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_hello_world COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=hello_world TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_hello_world/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795417785
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_hello_world.test_hello_world (1/1)
+                                                            Phase 0 cocotb + pyuvm integration smoke test
+     0.00ns INFO     cocotb.hello_world                 Starting Phase 0 cocotb + pyuvm smoke test
+     0.00ns INFO     ../tb/unit/test_hello_world.py(17) [uvm_test_top]: HelloTest: build_phase executed
+     0.00ns INFO     ../tb/unit/test_hello_world.py(11) [uvm_test_top.env]: HelloEnv: build_phase executed
+     0.00ns INFO     ../tb/unit/test_hello_world.py(22) [uvm_test_top]: HelloTest: driving clock and reset
+    81.00ns INFO     ../tb/unit/test_hello_world.py(39) [uvm_test_top]: HelloTest: count verified successfully (5)
+    81.00ns INFO     cocotb.hello_world                 Phase 0 cocotb + pyuvm smoke test PASSED
+    81.00ns INFO     cocotb.regression                  test_hello_world.test_hello_world passed
+    81.00ns INFO     cocotb.regression                  *******************************************************************************************
+                                                        ** TEST                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************
+                                                        ** test_hello_world.test_hello_world   PASS          81.00           0.03       2819.29  **
+                                                        *******************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                      81.00           0.03       2506.89  **
+                                                        *******************************************************************************************
+make[3]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+--- Running test_rst_sync ---
+make -f /home/somasai/amba-fabric/tb/unit/Makefile.single \
+	TOPLEVEL=rst_sync \
+	MODULE=test_rst_sync \
+	VERILOG_SOURCES=/home/somasai/amba-fabric/rtl/common/rst_sync.v \
+	SIM=icarus
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+rm -f results.xml
+"make" -f /home/somasai/amba-fabric/tb/unit/Makefile.single results.xml
+make[3]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+mkdir -p sim_build_rst_sync
+/home/somasai/oss-cad-suite/bin/iverilog -o sim_build_rst_sync/sim.vvp -s rst_sync -g2012 -f sim_build_rst_sync/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v
+/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_rst_sync COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=rst_sync TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_rst_sync/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795417788
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_rst_sync.test_rst_sync_basic (1/1)
+                                                            Verify asynchronous assertion and 2-cycle synchronous deassertion.
+     0.00ns INFO     cocotb.rst_sync                    Starting test_rst_sync_basic
+    56.00ns INFO     cocotb.rst_sync                    test_rst_sync_basic PASSED
+    56.00ns INFO     cocotb.regression                  test_rst_sync.test_rst_sync_basic passed
+    56.00ns INFO     cocotb.regression                  *******************************************************************************************
+                                                        ** TEST                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************
+                                                        ** test_rst_sync.test_rst_sync_basic   PASS          56.00           0.00      43105.34  **
+                                                        *******************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                      56.00           0.01       8969.03  **
+                                                        *******************************************************************************************
+make[3]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+--- Running test_sync_fifo ---
+make -f /home/somasai/amba-fabric/tb/unit/Makefile.single \
+	TOPLEVEL=sync_fifo \
+	MODULE=test_sync_fifo \
+	VERILOG_SOURCES=/home/somasai/amba-fabric/rtl/common/sync_fifo.v \
+	SIM=icarus
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+rm -f results.xml
+"make" -f /home/somasai/amba-fabric/tb/unit/Makefile.single results.xml
+make[3]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+mkdir -p sim_build_sync_fifo
+/home/somasai/oss-cad-suite/bin/iverilog -o sim_build_sync_fifo/sim.vvp -s sync_fifo -g2012 -f sim_build_sync_fifo/cmds.f  /home/somasai/amba-fabric/rtl/common/sync_fifo.v
+/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_sync_fifo COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=sync_fifo TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_sync_fifo/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795417790
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_sync_fifo.test_sync_fifo_all (1/1)
+                                                            Test full, empty, count, overflow, underflow, and simultaneous push/pop.
+     0.00ns INFO     cocotb.sync_fifo                   Starting test_sync_fifo_all
+   260.00ns INFO     cocotb.sync_fifo                   test_sync_fifo_all PASSED
+   260.00ns INFO     cocotb.regression                  test_sync_fifo.test_sync_fifo_all passed
+   260.00ns INFO     cocotb.regression                  *******************************************************************************************
+                                                        ** TEST                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************
+                                                        ** test_sync_fifo.test_sync_fifo_all   PASS         260.00           0.00      69860.28  **
+                                                        *******************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                     260.00           0.01      28900.94  **
+                                                        *******************************************************************************************
+make[3]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+--- Running test_async_fifo ---
+make -f /home/somasai/amba-fabric/tb/unit/Makefile.single \
+	TOPLEVEL=async_fifo \
+	MODULE=test_async_fifo \
+	VERILOG_SOURCES=/home/somasai/amba-fabric/rtl/common/async_fifo.v \
+	SIM=icarus
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+rm -f results.xml
+"make" -f /home/somasai/amba-fabric/tb/unit/Makefile.single results.xml
+make[3]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+mkdir -p sim_build_async_fifo
+/home/somasai/oss-cad-suite/bin/iverilog -o sim_build_async_fifo/sim.vvp -s async_fifo -g2012 -f sim_build_async_fifo/cmds.f  /home/somasai/amba-fabric/rtl/common/async_fifo.v
+/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_async_fifo COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=async_fifo TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_async_fifo/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795417793
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_async_fifo.test_async_fifo_dual_clock (1/1)
+                                                            Verify dual-clock async FIFO across different clock ratios and data integrity.
+     0.00ns INFO     cocotb.async_fifo                  Starting test_async_fifo_dual_clock
+   443.00ns INFO     cocotb.async_fifo                  test_async_fifo_dual_clock PASSED
+   443.00ns INFO     cocotb.regression                  test_async_fifo.test_async_fifo_dual_clock passed
+   443.00ns INFO     cocotb.regression                  ****************************************************************************************************
+                                                        ** TEST                                        STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ****************************************************************************************************
+                                                        ** test_async_fifo.test_async_fifo_dual_clock   PASS         443.00           0.00     101706.53  **
+                                                        ****************************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                              443.00           0.01      50645.35  **
+                                                        ****************************************************************************************************
+make[3]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+--- Running test_rr_arbiter ---
+make -f /home/somasai/amba-fabric/tb/unit/Makefile.single \
+	TOPLEVEL=rr_arbiter \
+	MODULE=test_rr_arbiter \
+	VERILOG_SOURCES=/home/somasai/amba-fabric/rtl/common/rr_arbiter.v \
+	SIM=icarus
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+rm -f results.xml
+"make" -f /home/somasai/amba-fabric/tb/unit/Makefile.single results.xml
+make[3]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+mkdir -p sim_build_rr_arbiter
+/home/somasai/oss-cad-suite/bin/iverilog -o sim_build_rr_arbiter/sim.vvp -s rr_arbiter -g2012 -f sim_build_rr_arbiter/cmds.f  /home/somasai/amba-fabric/rtl/common/rr_arbiter.v
+/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_rr_arbiter COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=rr_arbiter TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_rr_arbiter/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795417795
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_rr_arbiter.test_rr_arbiter_fairness_and_lock (1/1)
+                                                            Test single request, round-robin fairness, and transaction lock behavior.
+     0.00ns INFO     cocotb.rr_arbiter                  Starting test_rr_arbiter_fairness_and_lock
+   171.00ns INFO     cocotb.rr_arbiter                  test_rr_arbiter_fairness_and_lock PASSED
+   171.00ns INFO     cocotb.regression                  test_rr_arbiter.test_rr_arbiter_fairness_and_lock passed
+   171.00ns INFO     cocotb.regression                  ***********************************************************************************************************
+                                                        ** TEST                                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ***********************************************************************************************************
+                                                        ** test_rr_arbiter.test_rr_arbiter_fairness_and_lock   PASS         171.00           0.00      75039.34  **
+                                                        ***********************************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                                     171.00           0.01      24927.92  **
+                                                        ***********************************************************************************************************
+make[3]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+--- Running test_axil_default_slave ---
+make -f /home/somasai/amba-fabric/tb/unit/Makefile.single \
+	TOPLEVEL=axil_default_slave \
+	MODULE=test_axil_default_slave \
+	VERILOG_SOURCES=/home/somasai/amba-fabric/rtl/axil/axil_default_slave.v \
+	SIM=icarus
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+rm -f results.xml
+"make" -f /home/somasai/amba-fabric/tb/unit/Makefile.single results.xml
+make[3]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+mkdir -p sim_build_axil_default_slave
+/home/somasai/oss-cad-suite/bin/iverilog -o sim_build_axil_default_slave/sim.vvp -s axil_default_slave -g2012 -f sim_build_axil_default_slave/cmds.f  /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v
+/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_axil_default_slave COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=axil_default_slave TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_axil_default_slave/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795417798
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_axil_default_slave.test_axil_default_slave_all (1/1)
+                                                            Verify that default slave returns DECERR on writes and reads in all channel arrival orders.
+     0.00ns INFO     cocotb.axil_default_slave          Starting test_axil_default_slave_all
+   150.00ns INFO     cocotb.axil_default_slave          test_axil_default_slave_all PASSED
+   150.00ns INFO     cocotb.regression                  test_axil_default_slave.test_axil_default_slave_all passed
+   150.00ns INFO     cocotb.regression                  *************************************************************************************************************
+                                                        ** TEST                                                 STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *************************************************************************************************************
+                                                        ** test_axil_default_slave.test_axil_default_slave_all   PASS         150.00           0.00      71089.90  **
+                                                        *************************************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                                       150.00           0.01      25913.16  **
+                                                        *************************************************************************************************************
+make[3]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+--- Running test_axil_ram ---
+make -f /home/somasai/amba-fabric/tb/unit/Makefile.single \
+	TOPLEVEL=axil_ram \
+	MODULE=test_axil_ram \
+	VERILOG_SOURCES=/home/somasai/amba-fabric/rtl/axil/axil_ram.v \
+	SIM=icarus
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+rm -f results.xml
+"make" -f /home/somasai/amba-fabric/tb/unit/Makefile.single results.xml
+make[3]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+mkdir -p sim_build_axil_ram
+/home/somasai/oss-cad-suite/bin/iverilog -o sim_build_axil_ram/sim.vvp -s axil_ram -g2012 -f sim_build_axil_ram/cmds.f  /home/somasai/amba-fabric/rtl/axil/axil_ram.v
+/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_axil_ram COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=axil_ram TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_axil_ram/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795417800
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_axil_ram.test_axil_ram_operations (1/1)
+                                                            Verify RAM reads, writes, byte enables, and out-of-range SLVERR.
+     0.00ns INFO     cocotb.axil_ram                    Starting test_axil_ram_operations
+   230.00ns INFO     cocotb.axil_ram                    test_axil_ram_operations PASSED
+   230.00ns INFO     cocotb.regression                  test_axil_ram.test_axil_ram_operations passed
+   230.00ns INFO     cocotb.regression                  ************************************************************************************************
+                                                        ** TEST                                    STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ************************************************************************************************
+                                                        ** test_axil_ram.test_axil_ram_operations   PASS         230.00           0.00      63349.75  **
+                                                        ************************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                          230.00           0.01      29166.74  **
+                                                        ************************************************************************************************
+make[3]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+--- Running test_axil_csr ---
+make -f /home/somasai/amba-fabric/tb/unit/Makefile.single \
+	TOPLEVEL=axil_csr \
+	MODULE=test_axil_csr \
+	VERILOG_SOURCES=/home/somasai/amba-fabric/rtl/axil/axil_csr.v \
+	SIM=icarus
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+rm -f results.xml
+"make" -f /home/somasai/amba-fabric/tb/unit/Makefile.single results.xml
+make[3]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+mkdir -p sim_build_axil_csr
+/home/somasai/oss-cad-suite/bin/iverilog -o sim_build_axil_csr/sim.vvp -s axil_csr -g2012 -f sim_build_axil_csr/cmds.f  /home/somasai/amba-fabric/rtl/axil/axil_csr.v
+/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_axil_csr COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=axil_csr TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_axil_csr/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795417803
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_axil_csr.test_axil_csr_all (1/1)
+                                                            Verify CSR register map, read-only behavior, W1C semantics, and IRQ aggregation.
+     0.00ns INFO     cocotb.axil_csr                    Starting test_axil_csr_all
+   570.00ns INFO     cocotb.axil_csr                    test_axil_csr_all PASSED
+   570.00ns INFO     cocotb.regression                  test_axil_csr.test_axil_csr_all passed
+   570.00ns INFO     cocotb.regression                  *****************************************************************************************
+                                                        ** TEST                             STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *****************************************************************************************
+                                                        ** test_axil_csr.test_axil_csr_all   PASS         570.00           0.01      65602.54  **
+                                                        *****************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                   570.00           0.01      38665.31  **
+                                                        *****************************************************************************************
+make[3]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+=====================================================
+All L0 unit tests executed successfully (SIM=icarus).
+=====================================================
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+
+--- Target: make formal ---
+=== Running Formal Proofs (SymbiYosys) ===
+========================================================
+ Running SymbiYosys Formal Verification Suite
+ Directory: /home/somasai/amba-fabric/formal
+========================================================
+--- Running SBY for async_fifo ---
+SBY 12:40:04 [async_fifo_bmc] Removing directory '/home/somasai/amba-fabric/formal/async_fifo_bmc'.
+SBY 12:40:04 [async_fifo_bmc] Copy '/home/somasai/amba-fabric/formal/../rtl/common/async_fifo.v' to '/home/somasai/amba-fabric/formal/async_fifo_bmc/src/async_fifo.v'.
+SBY 12:40:04 [async_fifo_bmc] engine_0: smtbmc boolector
+SBY 12:40:04 [async_fifo_cover] Removing directory '/home/somasai/amba-fabric/formal/async_fifo_cover'.
+SBY 12:40:04 [async_fifo_cover] Copy '/home/somasai/amba-fabric/formal/../rtl/common/async_fifo.v' to '/home/somasai/amba-fabric/formal/async_fifo_cover/src/async_fifo.v'.
+SBY 12:40:04 [async_fifo_cover] engine_0: smtbmc boolector
+SBY 12:40:04 [async_fifo_bmc] base: starting process "cd async_fifo_bmc/src; yosys -ql ../model/design.log ../model/design.ys"
+SBY 12:40:04 [async_fifo_cover] base: starting process "cd async_fifo_cover/src; yosys -ql ../model/design.log ../model/design.ys"
+SBY 12:40:04 [async_fifo_bmc] base: Warning: Replacing memory \mem with list of registers. See async_fifo.v:64
+SBY 12:40:04 [async_fifo_cover] base: Warning: Replacing memory \mem with list of registers. See async_fifo.v:64
+SBY 12:40:04 [async_fifo_bmc] base: finished (returncode=0)
+SBY 12:40:04 [async_fifo_bmc] prep: starting process "cd async_fifo_bmc/model; yosys -ql design_prep.log design_prep.ys"
+SBY 12:40:04 [async_fifo_cover] base: finished (returncode=0)
+SBY 12:40:04 [async_fifo_cover] prep: starting process "cd async_fifo_cover/model; yosys -ql design_prep.log design_prep.ys"
+SBY 12:40:04 [async_fifo_bmc] prep: finished (returncode=0)
+SBY 12:40:04 [async_fifo_bmc] smt2: starting process "cd async_fifo_bmc/model; yosys -ql design_smt2.log design_smt2.ys"
+SBY 12:40:04 [async_fifo_cover] prep: finished (returncode=0)
+SBY 12:40:04 [async_fifo_cover] smt2: starting process "cd async_fifo_cover/model; yosys -ql design_smt2.log design_smt2.ys"
+SBY 12:40:04 [async_fifo_bmc] smt2: finished (returncode=0)
+SBY 12:40:04 [async_fifo_bmc] engine_0: starting process "cd async_fifo_bmc; yosys-smtbmc -s boolector --presat --unroll --noprogress -t 25  --append 0 --dump-vcd engine_0/trace.vcd --dump-yw engine_0/trace.yw --dump-vlogtb engine_0/trace_tb.v --dump-smtc engine_0/trace.smtc model/design_smt2.smt2"
+SBY 12:40:04 [async_fifo_cover] smt2: finished (returncode=0)
+SBY 12:40:04 [async_fifo_cover] engine_0: starting process "cd async_fifo_cover; yosys-smtbmc -s boolector --presat --unroll -c --noprogress -t 25  --append 0 --dump-vcd engine_0/trace%.vcd --dump-yw engine_0/trace%.yw --dump-vlogtb engine_0/trace%_tb.v --dump-smtc engine_0/trace%.smtc model/design_smt2.smt2"
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Solver: boolector
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Solver: boolector
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assumptions in step 0..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assertions in step 0..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assumptions in step 1..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assertions in step 1..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Checking cover reachability in step 0..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Checking cover reachability in step 1..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assumptions in step 2..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assertions in step 2..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Checking cover reachability in step 2..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assumptions in step 3..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assertions in step 3..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Checking cover reachability in step 3..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Checking cover reachability in step 4..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assumptions in step 4..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assertions in step 4..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Checking cover reachability in step 5..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assumptions in step 5..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Checking cover reachability in step 6..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assertions in step 5..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Checking cover reachability in step 7..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assumptions in step 6..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assertions in step 6..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Checking cover reachability in step 8..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assumptions in step 7..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Checking cover reachability in step 9..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assertions in step 7..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Checking cover reachability in step 10..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assumptions in step 8..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Reached cover statement in step 10 at async_fifo: async_fifo.v:190.13-190.28 (_witness_.cover_async_fifo_v_190_cover_120)
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Writing trace to VCD file: engine_0/trace0.vcd
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assertions in step 8..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Writing trace to Verilog testbench: engine_0/trace0_tb.v
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Writing trace to constraints file: engine_0/trace0.smtc
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assumptions in step 9..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Writing trace to Yosys witness file: engine_0/trace0.yw
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Checking cover reachability in step 10..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assertions in step 9..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Reached cover statement in step 10 at async_fifo: async_fifo.v:191.13-191.36 (_witness_.cover_async_fifo_v_191_cover_122)
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Writing trace to VCD file: engine_0/trace1.vcd
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assumptions in step 10..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Writing trace to Verilog testbench: engine_0/trace1_tb.v
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Writing trace to constraints file: engine_0/trace1.smtc
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assertions in step 10..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Writing trace to Yosys witness file: engine_0/trace1.yw
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Checking cover reachability in step 10..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Checking cover reachability in step 11..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Reached cover statement in step 11 at async_fifo: async_fifo.v:184.13-184.26 (_witness_.cover_async_fifo_v_184_cover_117)
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Writing trace to VCD file: engine_0/trace2.vcd
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assumptions in step 11..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Writing trace to Verilog testbench: engine_0/trace2_tb.v
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assertions in step 11..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Writing trace to constraints file: engine_0/trace2.smtc
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Writing trace to Yosys witness file: engine_0/trace2.yw
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Checking cover reachability in step 11..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Checking cover reachability in step 12..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Reached cover statement in step 12 at async_fifo: async_fifo.v:192.13-192.33 (_witness_.cover_async_fifo_v_192_cover_125)
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Writing trace to VCD file: engine_0/trace3.vcd
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assumptions in step 12..
+SBY 12:40:04 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assertions in step 12..
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Writing trace to Verilog testbench: engine_0/trace3_tb.v
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Writing trace to constraints file: engine_0/trace3.smtc
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Writing trace to Yosys witness file: engine_0/trace3.yw
+SBY 12:40:04 [async_fifo_cover] engine_0: ##   0:00:00  Status: passed
+SBY 12:40:04 [async_fifo_cover] engine_0: finished (returncode=0)
+SBY 12:40:04 [async_fifo_cover] engine_0: Status returned by engine: pass
+SBY 12:40:04 [async_fifo_cover] summary: Elapsed clock time [H:MM:SS (secs)]: 0:00:00 (0)
+SBY 12:40:04 [async_fifo_cover] summary: Elapsed process time [H:MM:SS (secs)]: 0:00:01 (1)
+SBY 12:40:04 [async_fifo_cover] summary: engine_0 (smtbmc boolector) returned pass
+SBY 12:40:04 [async_fifo_cover] summary: cover trace: async_fifo_cover/engine_0/trace0.vcd
+SBY 12:40:04 [async_fifo_cover] summary:   reached cover statement async_fifo._witness_.cover_async_fifo_v_190_cover_120 at async_fifo.v:190.13-190.28 step 10
+SBY 12:40:04 [async_fifo_cover] summary: cover trace: async_fifo_cover/engine_0/trace1.vcd
+SBY 12:40:04 [async_fifo_cover] summary:   reached cover statement async_fifo._witness_.cover_async_fifo_v_191_cover_122 at async_fifo.v:191.13-191.36 step 10
+SBY 12:40:04 [async_fifo_cover] summary: cover trace: async_fifo_cover/engine_0/trace2.vcd
+SBY 12:40:04 [async_fifo_cover] summary:   reached cover statement async_fifo._witness_.cover_async_fifo_v_184_cover_117 at async_fifo.v:184.13-184.26 step 11
+SBY 12:40:04 [async_fifo_cover] summary: cover trace: async_fifo_cover/engine_0/trace3.vcd
+SBY 12:40:04 [async_fifo_cover] summary:   reached cover statement async_fifo._witness_.cover_async_fifo_v_192_cover_125 at async_fifo.v:192.13-192.33 step 12
+SBY 12:40:04 [async_fifo_cover] DONE (PASS, rc=0)
+SBY 12:40:05 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assumptions in step 13..
+SBY 12:40:05 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assertions in step 13..
+SBY 12:40:05 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assumptions in step 14..
+SBY 12:40:05 [async_fifo_bmc] engine_0: ##   0:00:00  Checking assertions in step 14..
+SBY 12:40:05 [async_fifo_bmc] engine_0: ##   0:00:01  Checking assumptions in step 15..
+SBY 12:40:05 [async_fifo_bmc] engine_0: ##   0:00:01  Checking assertions in step 15..
+SBY 12:40:05 [async_fifo_bmc] engine_0: ##   0:00:01  Checking assumptions in step 16..
+SBY 12:40:05 [async_fifo_bmc] engine_0: ##   0:00:01  Checking assertions in step 16..
+SBY 12:40:06 [async_fifo_bmc] engine_0: ##   0:00:01  Checking assumptions in step 17..
+SBY 12:40:06 [async_fifo_bmc] engine_0: ##   0:00:01  Checking assertions in step 17..
+SBY 12:40:06 [async_fifo_bmc] engine_0: ##   0:00:02  Checking assumptions in step 18..
+SBY 12:40:06 [async_fifo_bmc] engine_0: ##   0:00:02  Checking assertions in step 18..
+SBY 12:40:06 [async_fifo_bmc] engine_0: ##   0:00:02  Checking assumptions in step 19..
+SBY 12:40:06 [async_fifo_bmc] engine_0: ##   0:00:02  Checking assertions in step 19..
+SBY 12:40:07 [async_fifo_bmc] engine_0: ##   0:00:02  Checking assumptions in step 20..
+SBY 12:40:07 [async_fifo_bmc] engine_0: ##   0:00:03  Checking assertions in step 20..
+SBY 12:40:07 [async_fifo_bmc] engine_0: ##   0:00:03  Checking assumptions in step 21..
+SBY 12:40:07 [async_fifo_bmc] engine_0: ##   0:00:03  Checking assertions in step 21..
+SBY 12:40:08 [async_fifo_bmc] engine_0: ##   0:00:04  Checking assumptions in step 22..
+SBY 12:40:08 [async_fifo_bmc] engine_0: ##   0:00:04  Checking assertions in step 22..
+SBY 12:40:09 [async_fifo_bmc] engine_0: ##   0:00:05  Checking assumptions in step 23..
+SBY 12:40:09 [async_fifo_bmc] engine_0: ##   0:00:05  Checking assertions in step 23..
+SBY 12:40:10 [async_fifo_bmc] engine_0: ##   0:00:06  Checking assumptions in step 24..
+SBY 12:40:10 [async_fifo_bmc] engine_0: ##   0:00:06  Checking assertions in step 24..
+SBY 12:40:11 [async_fifo_bmc] engine_0: ##   0:00:07  Status: passed
+SBY 12:40:11 [async_fifo_bmc] engine_0: finished (returncode=0)
+SBY 12:40:11 [async_fifo_bmc] engine_0: Status returned by engine: pass
+SBY 12:40:11 [async_fifo_bmc] summary: Elapsed clock time [H:MM:SS (secs)]: 0:00:07 (7)
+SBY 12:40:11 [async_fifo_bmc] summary: Elapsed process time [H:MM:SS (secs)]: 0:00:08 (8)
+SBY 12:40:11 [async_fifo_bmc] summary: engine_0 (smtbmc boolector) returned pass
+SBY 12:40:11 [async_fifo_bmc] summary: engine_0 did not produce any traces
+SBY 12:40:11 [async_fifo_bmc] DONE (PASS, rc=0)
+
+--- Running SBY for rr_arbiter ---
+SBY 12:40:12 [rr_arbiter_prove] Removing directory '/home/somasai/amba-fabric/formal/rr_arbiter_prove'.
+SBY 12:40:12 [rr_arbiter_prove] Copy '/home/somasai/amba-fabric/formal/../rtl/common/rr_arbiter.v' to '/home/somasai/amba-fabric/formal/rr_arbiter_prove/src/rr_arbiter.v'.
+SBY 12:40:12 [rr_arbiter_prove] engine_0: smtbmc boolector
+SBY 12:40:12 [rr_arbiter_cover] Removing directory '/home/somasai/amba-fabric/formal/rr_arbiter_cover'.
+SBY 12:40:12 [rr_arbiter_cover] Copy '/home/somasai/amba-fabric/formal/../rtl/common/rr_arbiter.v' to '/home/somasai/amba-fabric/formal/rr_arbiter_cover/src/rr_arbiter.v'.
+SBY 12:40:12 [rr_arbiter_cover] engine_0: smtbmc boolector
+SBY 12:40:12 [rr_arbiter_prove] base: starting process "cd rr_arbiter_prove/src; yosys -ql ../model/design.log ../model/design.ys"
+SBY 12:40:12 [rr_arbiter_cover] base: starting process "cd rr_arbiter_cover/src; yosys -ql ../model/design.log ../model/design.ys"
+SBY 12:40:12 [rr_arbiter_prove] base: finished (returncode=0)
+SBY 12:40:12 [rr_arbiter_cover] base: finished (returncode=0)
+SBY 12:40:12 [rr_arbiter_prove] prep: starting process "cd rr_arbiter_prove/model; yosys -ql design_prep.log design_prep.ys"
+SBY 12:40:12 [rr_arbiter_cover] prep: starting process "cd rr_arbiter_cover/model; yosys -ql design_prep.log design_prep.ys"
+SBY 12:40:12 [rr_arbiter_prove] prep: finished (returncode=0)
+SBY 12:40:12 [rr_arbiter_prove] smt2: starting process "cd rr_arbiter_prove/model; yosys -ql design_smt2.log design_smt2.ys"
+SBY 12:40:12 [rr_arbiter_cover] prep: finished (returncode=0)
+SBY 12:40:12 [rr_arbiter_cover] smt2: starting process "cd rr_arbiter_cover/model; yosys -ql design_smt2.log design_smt2.ys"
+SBY 12:40:12 [rr_arbiter_prove] smt2: finished (returncode=0)
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: starting process "cd rr_arbiter_prove; yosys-smtbmc -s boolector --presat --unroll --noprogress -t 20  --append 0 --dump-vcd engine_0/trace.vcd --dump-yw engine_0/trace.yw --dump-vlogtb engine_0/trace_tb.v --dump-smtc engine_0/trace.smtc model/design_smt2.smt2"
+SBY 12:40:12 [rr_arbiter_cover] smt2: finished (returncode=0)
+SBY 12:40:12 [rr_arbiter_prove] engine_0.induction: starting process "cd rr_arbiter_prove; yosys-smtbmc -s boolector --presat --unroll -i --noprogress -t 20  --append 0 --dump-vcd engine_0/trace_induct.vcd --dump-yw engine_0/trace_induct.yw --dump-vlogtb engine_0/trace_induct_tb.v --dump-smtc engine_0/trace_induct.smtc model/design_smt2.smt2"
+SBY 12:40:12 [rr_arbiter_cover] engine_0: starting process "cd rr_arbiter_cover; yosys-smtbmc -s boolector --presat --unroll -c --noprogress -t 20  --append 0 --dump-vcd engine_0/trace%.vcd --dump-yw engine_0/trace%.yw --dump-vlogtb engine_0/trace%_tb.v --dump-smtc engine_0/trace%.smtc model/design_smt2.smt2"
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Solver: boolector
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 0..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.induction: ##   0:00:00  Solver: boolector
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 0..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Solver: boolector
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 1..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 1..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.induction: ##   0:00:00  Trying induction in step 20..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Checking cover reachability in step 0..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 2..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 2..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Checking cover reachability in step 1..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.induction: ##   0:00:00  Trying induction in step 19..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 3..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 3..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Checking cover reachability in step 2..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.induction: ##   0:00:00  Trying induction in step 18..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Checking cover reachability in step 3..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 4..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 4..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Checking cover reachability in step 4..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Reached cover statement in step 4 at rr_arbiter: rr_arbiter.v:121.13-121.35 (_witness_.check_rr_arbiter_v_121_cover_102)
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Reached cover statement in step 4 at rr_arbiter: rr_arbiter.v:124.13-124.60 (_witness_.check_rr_arbiter_v_124_cover_110)
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Writing trace to VCD file: engine_0/trace0.vcd
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 5..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.induction: ##   0:00:00  Trying induction in step 17..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 5..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.induction: ##   0:00:00  Temporal induction successful.
+SBY 12:40:12 [rr_arbiter_prove] engine_0.induction: ##   0:00:00  Status: passed
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Writing trace to Verilog testbench: engine_0/trace0_tb.v
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 6..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Writing trace to constraints file: engine_0/trace0.smtc
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Writing trace to Yosys witness file: engine_0/trace0.yw
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 6..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Checking cover reachability in step 4..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Reached cover statement in step 4 at rr_arbiter: rr_arbiter.v:125.13-125.40 (_witness_.check_rr_arbiter_v_125_cover_114)
+SBY 12:40:12 [rr_arbiter_prove] engine_0.induction: finished (returncode=0)
+SBY 12:40:12 [rr_arbiter_prove] engine_0.induction: Status returned by engine for induction: pass
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Writing trace to VCD file: engine_0/trace1.vcd
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 7..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 7..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Writing trace to Verilog testbench: engine_0/trace1_tb.v
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Writing trace to constraints file: engine_0/trace1.smtc
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Writing trace to Yosys witness file: engine_0/trace1.yw
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 8..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Checking cover reachability in step 4..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Reached cover statement in step 4 at rr_arbiter: rr_arbiter.v:122.13-122.35 (_witness_.check_rr_arbiter_v_122_cover_104)
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Writing trace to VCD file: engine_0/trace2.vcd
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 8..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Writing trace to Verilog testbench: engine_0/trace2_tb.v
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Writing trace to constraints file: engine_0/trace2.smtc
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Writing trace to Yosys witness file: engine_0/trace2.yw
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 9..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Checking cover reachability in step 4..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Reached cover statement in step 4 at rr_arbiter: rr_arbiter.v:123.13-123.60 (_witness_.check_rr_arbiter_v_123_cover_106)
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Writing trace to VCD file: engine_0/trace3.vcd
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 9..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Writing trace to Verilog testbench: engine_0/trace3_tb.v
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Writing trace to constraints file: engine_0/trace3.smtc
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Writing trace to Yosys witness file: engine_0/trace3.yw
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 10..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: ##   0:00:00  Status: passed
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 10..
+SBY 12:40:12 [rr_arbiter_cover] engine_0: finished (returncode=0)
+SBY 12:40:12 [rr_arbiter_cover] engine_0: Status returned by engine: pass
+SBY 12:40:12 [rr_arbiter_cover] summary: Elapsed clock time [H:MM:SS (secs)]: 0:00:00 (0)
+SBY 12:40:12 [rr_arbiter_cover] summary: Elapsed process time [H:MM:SS (secs)]: 0:00:00 (0)
+SBY 12:40:12 [rr_arbiter_cover] summary: engine_0 (smtbmc boolector) returned pass
+SBY 12:40:12 [rr_arbiter_cover] summary: cover trace: rr_arbiter_cover/engine_0/trace0.vcd
+SBY 12:40:12 [rr_arbiter_cover] summary:   reached cover statement rr_arbiter._witness_.check_rr_arbiter_v_121_cover_102 at rr_arbiter.v:121.13-121.35 step 4
+SBY 12:40:12 [rr_arbiter_cover] summary:   reached cover statement rr_arbiter._witness_.check_rr_arbiter_v_124_cover_110 at rr_arbiter.v:124.13-124.60 step 4
+SBY 12:40:12 [rr_arbiter_cover] summary: cover trace: rr_arbiter_cover/engine_0/trace1.vcd
+SBY 12:40:12 [rr_arbiter_cover] summary:   reached cover statement rr_arbiter._witness_.check_rr_arbiter_v_125_cover_114 at rr_arbiter.v:125.13-125.40 step 4
+SBY 12:40:12 [rr_arbiter_cover] summary: cover trace: rr_arbiter_cover/engine_0/trace2.vcd
+SBY 12:40:12 [rr_arbiter_cover] summary:   reached cover statement rr_arbiter._witness_.check_rr_arbiter_v_122_cover_104 at rr_arbiter.v:122.13-122.35 step 4
+SBY 12:40:12 [rr_arbiter_cover] summary: cover trace: rr_arbiter_cover/engine_0/trace3.vcd
+SBY 12:40:12 [rr_arbiter_cover] summary:   reached cover statement rr_arbiter._witness_.check_rr_arbiter_v_123_cover_106 at rr_arbiter.v:123.13-123.60 step 4
+SBY 12:40:12 [rr_arbiter_cover] DONE (PASS, rc=0)
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 11..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 11..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 12..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 12..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 13..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 13..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 14..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 14..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 15..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 15..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 16..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 16..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 17..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 17..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 18..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 18..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assumptions in step 19..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Checking assertions in step 19..
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: ##   0:00:00  Status: passed
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: finished (returncode=0)
+SBY 12:40:12 [rr_arbiter_prove] engine_0.basecase: Status returned by engine for basecase: pass
+SBY 12:40:12 [rr_arbiter_prove] summary: Elapsed clock time [H:MM:SS (secs)]: 0:00:00 (0)
+SBY 12:40:12 [rr_arbiter_prove] summary: Elapsed process time [H:MM:SS (secs)]: 0:00:01 (1)
+SBY 12:40:12 [rr_arbiter_prove] summary: engine_0 (smtbmc boolector) returned pass for basecase
+SBY 12:40:12 [rr_arbiter_prove] summary: engine_0 (smtbmc boolector) returned pass for induction
+SBY 12:40:12 [rr_arbiter_prove] summary: engine_0 did not produce any traces
+SBY 12:40:12 [rr_arbiter_prove] summary: successful proof by k-induction.
+SBY 12:40:12 [rr_arbiter_prove] DONE (PASS, rc=0)
+
+========================================================
+ Formal Verification Summary
+========================================================
+  async_fifo: PASS
+  rr_arbiter: PASS
+--------------------------------------------------------
+ Total: 2 | Passed: 2 | Failed: 0
+========================================================
+
+=== GATE COMPLETE ===

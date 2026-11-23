@@ -9,13 +9,13 @@ This document records **real, measured results** from actual tool execution.
 
 | Metric | Measured Value | Spec Reference | Log Reference / Command |
 |---|---|---|---|
-| RTL Modules / Total Lines | Not measured (Phase 1-3) | Section 17 | `wc -l rtl/**/*.v` |
-| Total Tests (Directed / Random) | 1 (Phase 0 smoke test) | Section 9 | `tb/unit/test_hello_world.py` |
+| RTL Modules / Total Lines | 7 modules / 913 lines | Section 17 | `find rtl/ -name "*.v" \| xargs wc -l` |
+| Total Tests (Directed / Random) | 8 unit tests (8/8 PASS on Icarus, 8/8 PASS on Verilator) | Section 9 | `docs/logs/phase1_gate.log` |
 | Random Transactions Executed | Not measured (Phase 4) | Section 9.1 (XB-13) | `docs/logs/xb13_stress.log` |
 | Multi-seed Regression Seeds Passed | Not measured (Phase 5) | Section 9.2 (≥20 seeds) | `docs/logs/regression.log` |
 | Functional Coverage (Bins Hit / Total) | Not measured (Phase 5) | Section 10 (100% goal) | `docs/logs/func_cov.log` |
 | Code Coverage (Verilator Line / Toggle) | Not measured (Phase 5) | Section 10 | `docs/logs/code_cov/` |
-| Formal Properties Proven / BMC Depth | Not measured (Phase 1, 2, 5) | Section 11 | `docs/logs/formal_summary.log` |
+| Formal Properties Proven / BMC Depth | 10 assertions proven (2 modules), 9 cover traces reached; `rr_arbiter` k-induction depth 20, `async_fifo` BMC depth 25 | Section 11 | `docs/logs/phase1_gate.log` |
 | CDC Clock Ratios & Phases Swept | Not measured (Phase 3-4) | Section 9.1 (CD-01) | `docs/logs/cdc_sweep.log` |
 | Mutants Generated / Killed / Score | Not measured (Phase 6) | Section 12 | `docs/logs/mutation_summary.log` |
 | Crossbar Added Latency (Cycles) | Not measured (Phase 2) | Section 7.2 (≤1 cycle) | Waveform measurement |
@@ -33,3 +33,13 @@ This document records **real, measured results** from actual tool execution.
 - **Status:** **PASS** (1/1 tests passed on both Icarus Verilog 14.0 and Verilator 5.055)
 - **Artifacts:** `docs/interfaces.md` (FROZEN), `docs/vplan.md`, `Makefile`, `scripts/env.sh`
 - **Tag:** `phase-0-done`
+
+### Phase 1: Common Blocks and AXI-Lite Basics
+- **Date Completed:** 2026-11-23
+- **Gate Command:** `make lint && make unit SIM=icarus && make formal`
+- **Status:** **PASS**
+  - Verilator Lint: 9 modules clean, 0 warnings.
+  - L0 Unit Tests: 8/8 PASS on Icarus Verilog; 8/8 PASS on Verilator.
+  - Formal Verification: 2/2 modules PASS (`rr_arbiter`: k-induction depth 20; `async_fifo`: BMC depth 25, 4 cover traces).
+- **Log Reference:** `docs/logs/phase1_gate.log`
+- **Tag:** `phase-1-done`

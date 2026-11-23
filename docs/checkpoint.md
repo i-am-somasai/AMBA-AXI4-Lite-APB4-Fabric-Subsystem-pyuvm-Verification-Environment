@@ -49,10 +49,73 @@ For every phase, it records what was completed, executed, created, observed, and
 
 ## Phase 1: Common Blocks and AXI-Lite Basics
 
-- **Status:** **IN PROGRESS**
-- **Timestamp:** 2026-11-23
+- **Status:** **COMPLETED** (Gate Passed & Tagged `phase-1-done`)
+- **Timestamp:** 2026-11-23 12:44 IST
+- **Active Branch:** `main` (merging `rtl`, `dv`, `formal`, tag `phase-1-done`)
+
+### 1. What was Completed
+- **RTL Implementation (7 modules, 913 lines of Verilog):**
+  - `rtl/common/rst_sync.v`: 2-FF reset synchronizer with asynchronous assert, synchronous deassert.
+  - `rtl/common/sync_fifo.v`: Single-clock synchronous FIFO with occupancy counter, overflow/underflow flags, and simultaneous read/write handling.
+  - `rtl/common/async_fifo.v`: Cummings dual-clock Gray pointer asynchronous FIFO with registered empty/full flags and CDC multi-clock formal hooks.
+  - `rtl/common/rr_arbiter.v`: Round-robin arbiter with transaction lock, one-hot priority pointer rotation, and formal induction invariants.
+  - `rtl/axil/axil_default_slave.v`: AXI4-Lite error termination slave responding DECERR on arbitrary request arrival orders (AW before W, W before AW, simultaneous).
+  - `rtl/axil/axil_ram.v`: 1 KB scratchpad RAM supporting byte-strobe writes (`WSTRB`), 32-bit single-cycle reads/writes, and out-of-range address SLVERR response.
+  - `rtl/axil/axil_csr.v`: CSR block implementing 5 registers (RO identification `REV_ID`, RW `SCRATCH`, W1C `STATUS`, RW `INT_ENABLE`, RO `VERSION`) and level interrupt aggregation to `irq_o`.
+- **DV Implementation:**
+  - `tb/models/axil_driver.py`: Reusable AXI4-Lite master driver class supporting non-blocking concurrent channel drivers for AW, W, B, AR, R channels with write ordering permutation controls (`aw_first`, `w_first`, `simultaneous`).
+  - Unit test harnesses and Makefiles (`tb/unit/Makefile`, `tb/unit/Makefile.single`) executing clean, isolated simulation builds for both Icarus Verilog and Verilator.
+  - 8 L0 cocotb unit tests: `test_hello_world.py`, `test_rst_sync.py`, `test_sync_fifo.py`, `test_async_fifo.py`, `test_rr_arbiter.py`, `test_axil_default_slave.py`, `test_axil_ram.py`, `test_axil_csr.py`.
+- **Formal Verification (SymbiYosys):**
+  - `formal/rr_arbiter.sby`: Verified one-hot grant, no spurious grant, requester grant consistency, transaction lock persistence, and 5 cover scenarios via k-induction (depth 20) with Boolector.
+  - `formal/async_fifo.sby`: Verified 1-bit Gray pointer transitions, binary/Gray pointer consistency, and cross-domain data integrity via magic value tracking over multi-clock domains (`multiclock on`, `async2sync`) with Boolector (BMC depth 25, 4 cover traces reached).
+  - `scripts/run_all_formal.sh`: Automated formal runner generating summary pass/fail tables across all SBY targets.
+
+### 2. Files Created
+- `rtl/common/rst_sync.v`
+- `rtl/common/sync_fifo.v`
+- `rtl/common/async_fifo.v`
+- `rtl/common/rr_arbiter.v`
+- `rtl/axil/axil_default_slave.v`
+- `rtl/axil/axil_ram.v`
+- `rtl/axil/axil_csr.v`
+- `tb/models/axil_driver.py`
+- `tb/unit/Makefile.single`
+- `tb/unit/test_rst_sync.py`
+- `tb/unit/test_sync_fifo.py`
+- `tb/unit/test_async_fifo.py`
+- `tb/unit/test_rr_arbiter.py`
+- `tb/unit/test_axil_default_slave.py`
+- `tb/unit/test_axil_ram.py`
+- `tb/unit/test_axil_csr.py`
+- `formal/rr_arbiter.sby`
+- `formal/rr_arbiter_props.v`
+- `formal/async_fifo.sby`
+- `scripts/run_all_formal.sh`
+- `docs/logs/phase1_gate.log`
+
+### 3. Commands Executed & Results
+- `make lint`: 9 RTL modules linted cleanly with Verilator 5.055. (PASS - 0 errors, 0 warnings)
+- `make unit SIM=icarus`: 8/8 unit tests passed on Icarus Verilog. (PASS)
+- `make unit SIM=verilator`: 8/8 unit tests passed on Verilator 5.055. (PASS)
+- `make formal`: 2/2 SBY targets passed. (PASS)
+  - `rr_arbiter`: k-induction prove depth 20 (PASS), cover 5 traces (PASS).
+  - `async_fifo`: BMC depth 25 multiclock (PASS), cover 4 traces (PASS).
+- `git tag phase-1-done`: Tagged repository upon passing acceptance gate.
+
+### 4. Bugs Found & Resolved
+- `BUG-001`: Asynchronous FIFO read pointer duplicate continuous assignment. Resolved in `rtl/common/async_fifo.v`.
+- `BUG-002`: Magic-value data integrity formal tracker lifecycle reset on wraparound. Resolved in `rtl/common/async_fifo.v` with full `PTR_WIDTH` tracking.
+- `BUG-003`: Multi-clock reset glitch injection by SMT solver between clock edges. Resolved with combinational invariant `always @(*)`.
+- `BUG-004`: VPI teardown race causing `vvp` segfault on exit in `test_axil_default_slave.py`. Resolved with post-handshake clock settling delay.
+
+---
+
+## Phase 2: Crossbar and APB Bridge
+
+- **Status:** **NOT STARTED (Next Phase)**
 - **Objectives:**
-  - RTL: `rst_sync.v`, `sync_fifo.v`, `async_fifo.v`, `rr_arbiter.v`, `axil_ram.v`, `axil_csr.v`, `axil_default_slave.v`.
-  - DV: L0 cocotb unit tests in `tb/unit/` for each module, basic AXI-Lite master driver.
-  - Formal: SymbiYosys property sets and proofs for `rr_arbiter` and `async_fifo`.
-  - Gate: All L0 unit tests pass, formal proofs pass, Verilator lint clean, tag `phase-1-done`.
+  - RTL: `axil_decoder.v`, `axil_xbar.v` (2M x 4S + default, round-robin, lock, error handling), `axil2apb_bridge.v`, `apb_decoder.v`.
+  - DV: AXI-Lite master agent, slave responder agents, APB responder agent, protocol monitor; directed tests XB-01 through XB-08 and BR-01 through BR-03.
+  - Formal: Crossbar routing/lock properties, APB bridge protocol properties, shared AXI-Lite protocol checker.
+  - Deliverable: Listed directed tests pass, formal proofs pass, contention waveform (VCD + screenshot) in `docs/img/`.
