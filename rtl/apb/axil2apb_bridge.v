@@ -160,7 +160,7 @@ module axil2apb_bridge #(
 
                 ST_ACCESS: begin
                     m_apb_penable <= 1'b1;
-                    if (m_apb_pready) begin
+                    if (m_apb_penable && m_apb_pready) begin
                         m_apb_psel    <= 1'b0;
                         m_apb_penable <= 1'b0;
 
