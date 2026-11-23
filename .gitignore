@@ -1,5 +1,5 @@
 # Build and simulation artifacts
-sim_build/
+sim_build*/
 obj_dir/
 *.vcd
 *.fst
