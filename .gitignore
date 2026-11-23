@@ -1,0 +1,42 @@
+# Build and simulation artifacts
+sim_build/
+obj_dir/
+*.vcd
+*.fst
+*.vpd
+*.vpi
+*.o
+*.so
+*.pyc
+__pycache__/
+.pytest_cache/
+results.xml
+dump.vcd
+
+# Python virtual environment
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Formal artifacts
+*.sby/
+formal/*/
+
+# Synthesis and STA artifacts
+synth/results/*.v
+synth/results/*.rpt
+synth/results/*.log
+synth/results/*.json
+
+# Mutation artifacts
+mutation/mutants/
+mutation/results/
+
+# Editor and OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
