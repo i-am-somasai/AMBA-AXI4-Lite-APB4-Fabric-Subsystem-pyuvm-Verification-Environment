@@ -2,7 +2,14 @@
 SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 SIM_BUILD ?= sim_build_$(TOPLEVEL)
-COMPILE_ARGS += -g2012
+
+ifeq ($(SIM),icarus)
+COMPILE_ARGS += -g2012 -DCOCOTB_SIM
+endif
+
+ifeq ($(SIM),verilator)
+EXTRA_ARGS += -DCOCOTB_SIM
+endif
 
 # Include standard cocotb Makefile
 include $(shell cocotb-config --makefiles)/Makefile.sim

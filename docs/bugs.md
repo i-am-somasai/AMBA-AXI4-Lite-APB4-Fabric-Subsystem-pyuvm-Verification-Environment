@@ -55,3 +55,40 @@ Per project rules, every bug must be reproduced deterministically, diagnosed to 
 - **Root Cause:** Cocotb test exited immediately following a response handshake without allowing the VPI callback queue to settle before `vpi_control(vpiFinish)`.
 - **Fix Applied:** Added a settled clock edge delay before test completion in `tb/unit/test_axil_default_slave.py`.
 - **Regression Test:** `tb/unit/test_axil_default_slave.py`
+
+### [BUG-005] APB Bridge Premature Access Completion on Zero Wait States
+- **Date Discovered:** 2026-11-23
+- **Target Component:** `rtl/apb/axil2apb_bridge.v`
+- **Detection Method:** Directed Test (`BR-01`) & Waveform Analysis
+- **Symptom:** APB transfer completed in `ST_ACCESS` before `m_apb_penable` was ever observed high on the bus.
+- **Root Cause:** In `ST_ACCESS`, `m_apb_penable <= 1'b1; if (m_apb_pready)` was evaluated in the very first clock cycle of `ST_ACCESS` when `m_apb_penable` was still 0 from `ST_SETUP`. Because `m_apb_pready` was already 1 (zero wait states), the bridge immediately transitioned to response state without ever presenting `PENABLE=1` to the slave.
+- **Fix Applied:** Qualified completion condition with `if (m_apb_penable && m_apb_pready)`.
+- **Regression Test:** `tb/block/test_axil2apb_bridge.py` (`test_br01_single_rw_zero_wait`)
+
+### [BUG-006] Protocol Checker False Handshake Stability Assertion Failure
+- **Date Discovered:** 2026-11-23
+- **Target Component:** `tb/models/axil_monitor.py`
+- **Detection Method:** Block Test execution (`test_xb01_single_rw_each_master_to_each_slave`)
+- **Symptom:** `AssertionError: AXI-Lite stability violation` fired on valid handshake completion cycle.
+- **Root Cause:** Monitor checked `if last_valid and not cur_ready`, asserting that `valid` must remain high. On the cycle where handshake completed, `cur_ready` was 0 (slave deasserted ready for the next transaction), but `last_ready` was 1 (handshake completed in previous cycle).
+- **Fix Applied:** Changed condition to `if self.last_valid and not self.last_ready:` so stability is only checked when previous cycle handshake was unacknowledged.
+- **Regression Test:** `tb/block/test_axil_xbar.py` (`test_xb01_single_rw_each_master_to_each_slave`)
+
+### [BUG-007] Cocotb Scheduler Incompatibility with asyncio.gather
+- **Date Discovered:** 2026-11-23
+- **Target Component:** `tb/block/test_axil_xbar.py`
+- **Detection Method:** Block Test execution (`test_xb07_arbitration_fairness`)
+- **Symptom:** `TypeError: Coroutine yielded <_GatheringFuture pending>, which the scheduler can't handle`.
+- **Root Cause:** `asyncio.gather` returns an asyncio future incompatible with cocotb's native coroutine scheduler.
+- **Fix Applied:** Started parallel background tasks with `cocotb.start_soon(tb.m0.write(...))` and awaited each task directly (`await t0; await t1`).
+- **Regression Test:** `tb/block/test_axil_xbar.py` (`test_xb07_arbitration_fairness`)
+
+### [BUG-008] Master Driver Staggered W-First Transaction Hang on Multi-Slave Crossbar
+- **Date Discovered:** 2026-11-23
+- **Target Component:** `tb/models/axil_driver.py`
+- **Detection Method:** Block Test execution (`test_xb08_write_orderings`)
+- **Symptom:** `TimeoutError: AXI-Lite write handshake timeout on addr 0x50000064` when test executed `order="w_first"`.
+- **Root Cause:** In multi-slave crossbar without store-and-forward write data FIFOs, write data `W` is routed to the target slave decoded from `AWADDR`. Master driver held `AWVALID=0` waiting for `WREADY=1` before asserting `AWVALID=1`. Because crossbar cannot route W to the addressed slave until AW arrives, neither side could proceed (mutual wait).
+- **Fix Applied:** In `tb/models/axil_driver.py`, for `order="w_first"`, master asserts `WVALID=1`, waits 2 clock cycles stagger, and then asserts `AWVALID=1` without waiting for `WREADY`.
+- **Regression Test:** `tb/block/test_axil_xbar.py` (`test_xb08_write_orderings`)
+

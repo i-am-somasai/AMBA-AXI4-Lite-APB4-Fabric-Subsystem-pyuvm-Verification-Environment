@@ -9,16 +9,16 @@ This document records **real, measured results** from actual tool execution.
 
 | Metric | Measured Value | Spec Reference | Log Reference / Command |
 |---|---|---|---|
-| RTL Modules / Total Lines | 7 modules / 913 lines | Section 17 | `find rtl/ -name "*.v" \| xargs wc -l` |
-| Total Tests (Directed / Random) | 8 unit tests (8/8 PASS on Icarus, 8/8 PASS on Verilator) | Section 9 | `docs/logs/phase1_gate.log` |
+| RTL Modules / Total Lines | 11 modules / 1717 lines | Section 17 | `find rtl/ -name "*.v" \| xargs wc -l` |
+| Total Tests (Directed / Random) | 19 tests (8 L0 unit + 11 L1 block: 19/19 PASS on Icarus, 19/19 PASS on Verilator) | Section 9 | `docs/logs/phase2_gate.log` |
 | Random Transactions Executed | Not measured (Phase 4) | Section 9.1 (XB-13) | `docs/logs/xb13_stress.log` |
 | Multi-seed Regression Seeds Passed | Not measured (Phase 5) | Section 9.2 (≥20 seeds) | `docs/logs/regression.log` |
 | Functional Coverage (Bins Hit / Total) | Not measured (Phase 5) | Section 10 (100% goal) | `docs/logs/func_cov.log` |
 | Code Coverage (Verilator Line / Toggle) | Not measured (Phase 5) | Section 10 | `docs/logs/code_cov/` |
-| Formal Properties Proven / BMC Depth | 10 assertions proven (2 modules), 9 cover traces reached; `rr_arbiter` k-induction depth 20, `async_fifo` BMC depth 25 | Section 11 | `docs/logs/phase1_gate.log` |
+| Formal Properties Proven / BMC Depth | 4 modules proven (100% PASS), 19 cover traces reached: `rr_arbiter` (k-induction depth 20, 5 covers), `async_fifo` (BMC depth 25, 4 covers), `axil_xbar` (BMC depth 20, 5 covers), `axil2apb_bridge` (BMC depth 25, 5 covers) | Section 11 | `docs/logs/phase2_gate.log` |
 | CDC Clock Ratios & Phases Swept | Not measured (Phase 3-4) | Section 9.1 (CD-01) | `docs/logs/cdc_sweep.log` |
 | Mutants Generated / Killed / Score | Not measured (Phase 6) | Section 12 | `docs/logs/mutation_summary.log` |
-| Crossbar Added Latency (Cycles) | Not measured (Phase 2) | Section 7.2 (≤1 cycle) | Waveform measurement |
+| Crossbar Added Latency (Cycles) | 0 cycles added latency (measured in XB-06) | Section 7.2 (≤1 cycle) | `docs/img/contention.png`, `tb/block/test_axil_xbar.py` |
 | Synthesis: Cell Count / Flop Count / Area | Not measured (Phase 6) | Section 13 (SKY130) | `synth/results/synth.log` |
 | STA: Target Period / WNS / TNS / $F_{\max}$ | Not measured (Phase 6) | Section 13 (100 MHz target) | `synth/results/sta.log` |
 | CI Status | In progress (Phase 6) | Section 14 | GitHub Actions workflow |
@@ -43,3 +43,15 @@ This document records **real, measured results** from actual tool execution.
   - Formal Verification: 2/2 modules PASS (`rr_arbiter`: k-induction depth 20; `async_fifo`: BMC depth 25, 4 cover traces).
 - **Log Reference:** `docs/logs/phase1_gate.log`
 - **Tag:** `phase-1-done`
+
+### Phase 2: Crossbar and APB Bridge
+- **Date Completed:** 2026-11-23
+- **Gate Command:** `make lint && make unit SIM=icarus && make block SIM=icarus && make block SIM=verilator && make formal`
+- **Status:** **PASS**
+  - Verilator Lint: 13 RTL modules clean, 0 errors, 0 warnings.
+  - L0 Unit Tests: 8/8 PASS on Icarus Verilog.
+  - L1 Block Tests: 11/11 PASS on Icarus Verilog (`test_axil2apb_bridge` 3/3, `test_axil_xbar` 8/8); 11/11 PASS on Verilator 5.055.
+  - Formal Verification: 4/4 modules PASS (`async_fifo` BMC depth 25, `axil2apb_bridge` BMC depth 25, `axil_xbar` BMC depth 20, `rr_arbiter` k-induction depth 20).
+  - Waveform Artifacts: Contention waveform generated and verified (`docs/img/contention.png`, `docs/img/contention.vcd`).
+- **Log Reference:** `docs/logs/phase2_gate.log`
+- **Tag:** `phase-2-done`

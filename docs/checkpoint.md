@@ -113,9 +113,89 @@ For every phase, it records what was completed, executed, created, observed, and
 
 ## Phase 2: Crossbar and APB Bridge
 
-- **Status:** **NOT STARTED (Next Phase)**
-- **Objectives:**
-  - RTL: `axil_decoder.v`, `axil_xbar.v` (2M x 4S + default, round-robin, lock, error handling), `axil2apb_bridge.v`, `apb_decoder.v`.
-  - DV: AXI-Lite master agent, slave responder agents, APB responder agent, protocol monitor; directed tests XB-01 through XB-08 and BR-01 through BR-03.
-  - Formal: Crossbar routing/lock properties, APB bridge protocol properties, shared AXI-Lite protocol checker.
-  - Deliverable: Listed directed tests pass, formal proofs pass, contention waveform (VCD + screenshot) in `docs/img/`.
+- **Status:** **COMPLETED** (Gate Passed & Tagged `phase-2-done`)
+- **Timestamp:** 2026-11-23 13:16 IST
+- **Active Branch:** `main` (merging `rtl`, `dv`, `formal`, tag `phase-2-done`)
+
+### 1. What was Completed
+- **RTL Implementation (4 modules, 804 lines of Verilog, 13 total modules in system):**
+  - `rtl/axil/axil_decoder.v`: Address decoder for 4 external slaves (`S0_APB: 0x4000_0000`, `S1_RAM: 0x5000_0000`, `S2_CSR: 0x6000_0000`, `S3_CDC: 0x7000_0000`) and unmapped space decode error flag.
+  - `rtl/axil/axil_xbar.v`: 2-Master × 4-Slave (+ internal default slave) crossbar with independent write and read round-robin arbiters (`rr_arbiter`), transaction locking from address phase until response handshake completes, 0-cycle added routing latency, and per-master response isolation.
+  - `rtl/apb/axil2apb_bridge.v`: AXI4-Lite to APB4 bridge FSM (`ST_IDLE`, `ST_WAIT_W`, `ST_WAIT_AW`, `ST_SETUP`, `ST_ACCESS`, `ST_BRESP`, `ST_RRESP`) with strict APB setup/access timing and `PSLVERR` to `SLVERR` translation.
+  - `rtl/apb/apb_decoder.v`: APB peripheral address decoder routing `PSEL` to UART (`0x4000_0000`), Timer (`0x4000_1000`), GPIO (`0x4000_2000`), and unmapped APB error space.
+- **DV Implementation:**
+  - `tb/models/axil_slave_responder.py`: Configurable reactive AXI4-Lite slave responder supporting arbitrary backpressure delays and byte strobe verification.
+  - `tb/models/apb_slave_responder.py`: Synchronous APB4 slave responder handling byte strobes, programmable wait-state insertion, and `PSLVERR` injection.
+  - `tb/models/axil_monitor.py`: Passive protocol monitor checking AXI4-Lite handshake stability rules, legal response codes, and request-response matching.
+  - `tb/block/tb_axil_xbar.v`: Verilog top-level wrapper exposing individual M0/M1 and S0..S3 ports with VCD waveform dumping.
+  - `tb/block/test_axil_xbar.py`: Directed tests `XB-01` through `XB-08` verifying master-slave routing, RAM data integrity, all 16 `WSTRB` patterns, unmapped DECERR handling, concurrent same-slave contention serialization, concurrent different-slave parallel execution, round-robin fairness, and write channel orderings (AW-first, W-first, simultaneous).
+  - `tb/block/test_axil2apb_bridge.py`: Directed tests `BR-01` through `BR-03` verifying 0 wait-state transfers, 1..4 cycle wait states, and `PSLVERR` propagation to `SLVERR`.
+  - `tb/block/Makefile` & `tb/block/Makefile.single`: Block test runner harness supporting both Icarus Verilog and Verilator 5.055.
+- **Formal Verification (SymbiYosys):**
+  - `formal/axil_props.v`: Reusable AXI4-Lite protocol property checker validating handshake stability, legal response codes (excluding EXOKAY 2'b01), and request-response causality tracking.
+  - `formal/axil_xbar.sby` & `formal/axil_xbar_props.v`: Proved mutual exclusivity, decode isolation, default slave DECERR routing, and response stability across 20 BMC steps; reached 5 cover scenarios including simultaneous M0/M1 contention for S1 RAM and parallel multi-slave transactions.
+  - `formal/axil2apb_bridge.sby` & `formal/axil2apb_bridge_props.v`: Proved APB protocol compliance (`PENABLE` sequencing, signal stability during wait states, single-cycle completion, `PSLVERR` translation to `SLVERR`) across 25 BMC steps; reached 5 cover scenarios.
+- **Waveform & Visual Artifacts:**
+  - `scripts/render_waveform.py`: Python script parsing VCD dumps and rendering publication-quality digital timing diagrams.
+  - `docs/img/contention.png`: High-resolution timing diagram capturing M0 and M1 concurrent contention for S1 RAM (XB-05), illustrating arbitration grant, M1 backpressure stall, and subsequent serialized completion.
+  - `docs/img/contention.vcd`: Raw VCD trace for inspection in GTKWave.
+
+### 2. Files Created & Modified
+- `rtl/axil/axil_decoder.v`: Created
+- `rtl/axil/axil_xbar.v`: Created
+- `rtl/apb/axil2apb_bridge.v`: Created
+- `rtl/apb/apb_decoder.v`: Created
+- `tb/models/axil_driver.py`: Modified (enhanced kwargs, alias, staggered W-first handling)
+- `tb/models/axil_slave_responder.py`: Created
+- `tb/models/apb_slave_responder.py`: Created
+- `tb/models/axil_monitor.py`: Created
+- `tb/block/tb_axil_xbar.v`: Created
+- `tb/block/test_axil_xbar.py`: Created
+- `tb/block/test_axil2apb_bridge.py`: Created
+- `tb/block/Makefile`: Created
+- `tb/block/Makefile.single`: Created
+- `formal/axil_props.v`: Created
+- `formal/axil_xbar.sby`: Created
+- `formal/axil_xbar_props.v`: Created
+- `formal/axil2apb_bridge.sby`: Created
+- `formal/axil2apb_bridge_props.v`: Created
+- `scripts/render_waveform.py`: Created
+- `docs/img/contention.png`: Created
+- `docs/img/contention.vcd`: Created
+- `docs/logs/phase2_gate.log`: Created
+- `Makefile`: Modified (added `block` target)
+- `docs/bugs.md`: Modified (added BUG-005..BUG-008)
+- `docs/decisions.md`: Modified (added DEC-004)
+- `docs/results.md`: Modified (updated metrics table and gate log)
+
+### 3. Commands Executed & Results
+- `make lint`: 13 RTL modules linted cleanly with Verilator 5.055 (PASS - 0 errors, 0 warnings).
+- `make unit SIM=icarus`: 8/8 L0 unit tests passed on Icarus Verilog (PASS).
+- `make block SIM=icarus`: 11/11 L1 block tests passed on Icarus Verilog (PASS).
+- `make block SIM=verilator`: 11/11 L1 block tests passed on Verilator 5.055 (PASS).
+- `make formal`: 4/4 SBY formal proof suites passed (PASS):
+  - `async_fifo`: BMC depth 25 (PASS), cover 4 traces (PASS).
+  - `axil2apb_bridge`: BMC depth 25 (PASS), cover 5 traces (PASS).
+  - `axil_xbar`: BMC depth 20 (PASS), cover 5 traces (PASS).
+  - `rr_arbiter`: k-induction prove depth 20 (PASS), cover 5 traces (PASS).
+- `git tag phase-2-done`: Tagged repository upon passing acceptance gate.
+
+### 4. Bugs Found & Resolved
+- `BUG-005`: APB Bridge premature completion on zero wait states when `PREADY` sampled before `PENABLE` was asserted. Resolved in `rtl/apb/axil2apb_bridge.v` by qualifying with `m_apb_penable && m_apb_pready`.
+- `BUG-006`: `axil_monitor.py` protocol checker false stability assertion failure when checking `not cur_ready`. Resolved by checking `not self.last_ready`.
+- `BUG-007`: Cocotb scheduler incompatibility with `asyncio.gather`. Resolved by starting background tasks with `cocotb.start_soon` and awaiting directly.
+- `BUG-008`: Master driver staggered W-first transaction deadlock on multi-slave crossbar. Resolved by driving `AWVALID=1` after 2 cycles stagger without waiting for `WREADY`.
+
+### 5. Architectural Decisions
+- `DEC-004`: AXI-Lite W-First Ordering on Multi-Slave Crossbar (spec Section 6.2 clarification for non-buffered crossbar).
+
+---
+
+## Phase 3: Peripherals, CDC, and Top Level
+
+- **Status:** **PAUSED (Awaiting Next Phase Instruction)**
+- **User Instruction:** Stopped after Phase 2 per user directive (`stop after phase 2`).
+- **Upcoming Scope:**
+  - RTL: `apb_uart.v`, `apb_timer.v`, `apb_gpio.v`, IRQ aggregation, `axil_cdc_bridge.v`, `slow_regs.v`, `amba_fabric_top.v`.
+  - DV: Peripheral agents, clock-reset driver, directed tests UA-01, TM-01..TM-03, GP-01..GP-03, CS-01..CS-03, CD-01..CD-05, and top-level connectivity test.
+
