@@ -1,0 +1,23 @@
+[tasks]
+bmc
+cover
+
+[options]
+bmc: mode bmc
+bmc: depth 25
+bmc: multiclock on
+cover: mode cover
+cover: depth 25
+cover: multiclock on
+
+[engines]
+smtbmc boolector
+
+[script]
+read -formal -DFORMAL async_fifo.v
+prep -top async_fifo
+async2sync
+
+[files]
+../rtl/common/async_fifo.v
+

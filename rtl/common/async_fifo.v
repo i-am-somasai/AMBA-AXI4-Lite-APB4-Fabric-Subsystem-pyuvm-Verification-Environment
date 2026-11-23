@@ -77,6 +77,7 @@ module async_fifo #(
         end
     end
 
+    // --- Read Domain Logic ---
     // Empty condition (Cummings registered empty)
     wire rempty_val = (rgray_next == sync_w2r_q2);
 
@@ -105,5 +106,92 @@ module async_fifo #(
             sync_w2r_q2 <= sync_w2r_q1;
         end
     end
+
+`ifdef FORMAL
+    // Initial reset sequence: reset initially, stable active-high afterwards
+    reg f_w_past_valid = 1'b0;
+    reg f_r_past_valid = 1'b0;
+
+    always @(posedge wclk) f_w_past_valid <= 1'b1;
+    always @(posedge rclk) f_r_past_valid <= 1'b1;
+
+    always @(*) begin
+        if (!f_w_past_valid) assume (!wrst_n);
+        else assume (wrst_n);
+
+        if (!f_r_past_valid) assume (!rrst_n);
+        else assume (rrst_n);
+    end
+
+    // Protocol assumptions: never write when full, never read when empty
+    always @(posedge wclk) begin
+        if (wrst_n && wfull) assume (!winc);
+    end
+
+    always @(posedge rclk) begin
+        if (rrst_n && rempty) assume (!rinc);
+    end
+
+    // 1. Gray pointer properties: Gray pointer matches binary pointer
+    // and changes by at most 1 bit per clock edge
+    always @(posedge wclk) begin
+        if (wrst_n) begin
+            assert (wptr_gray == ((wbin >> 1) ^ wbin));
+            assert ($onehot0(wgray_next ^ wptr_gray));
+        end
+    end
+
+    // 2. Gray pointer properties on read domain
+    always @(posedge rclk) begin
+        if (rrst_n) begin
+            assert (rptr_gray == ((rbin >> 1) ^ rbin));
+            assert ($onehot0(rgray_next ^ rptr_gray));
+        end
+    end
+
+    // 3. Data Integrity via Formal Magic Value Tracking
+    (* anyconst *) reg [WIDTH-1:0] f_magic_val;
+    reg f_magic_written = 1'b0;
+    reg [PTR_WIDTH-1:0] f_magic_ptr = {PTR_WIDTH{1'b0}};
+    reg f_magic_read = 1'b0;
+
+    always @(posedge wclk) begin
+        if (!wrst_n) begin
+            f_magic_written <= 1'b0;
+            f_magic_ptr     <= {PTR_WIDTH{1'b0}};
+        end else if (winc && !wfull && (wdata == f_magic_val) && !f_magic_written) begin
+            f_magic_written <= 1'b1;
+            f_magic_ptr     <= wbin;
+        end
+    end
+
+    always @(posedge rclk) begin
+        if (!rrst_n) begin
+            f_magic_read <= 1'b0;
+        end else if (f_magic_written && !f_magic_read) begin
+            if ((rbin == f_magic_ptr) && !rempty) begin
+                assert (rdata == f_magic_val);
+                if (rinc) begin
+                    f_magic_read <= 1'b1;
+                end
+            end
+        end
+    end
+
+    // 4. Cover statements
+    always @(posedge wclk) begin
+        if (wrst_n && f_w_past_valid) begin
+            cover (wfull);
+        end
+    end
+
+    always @(posedge rclk) begin
+        if (rrst_n && f_r_past_valid) begin
+            cover (!rempty);
+            cover (rinc && !rempty);
+            cover (f_magic_read);
+        end
+    end
+`endif
 
 endmodule

@@ -64,4 +64,67 @@ module rr_arbiter #(
         end
     end
 
+`ifdef FORMAL
+    reg f_past_valid;
+    initial f_past_valid = 1'b0;
+
+    always @(posedge clk) begin
+        f_past_valid <= 1'b1;
+    end
+
+    always @(*) begin
+        if (!f_past_valid)
+            assume (!rst_n);
+    end
+
+    reg [2:0] f_cycles_active = 0;
+    always @(posedge clk) begin
+        if (!rst_n)
+            f_cycles_active <= 0;
+        else if (f_cycles_active < 4)
+            f_cycles_active <= f_cycles_active + 1;
+    end
+
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            assert (grant == {NUM_REQS{1'b0}});
+            assert (grant_q == {NUM_REQS{1'b0}});
+            assert (grant_valid == 1'b0);
+        end else begin
+            // 1. One-hot or zero grant
+            assert (grant == {NUM_REQS{1'b0}} || $onehot(grant));
+            assert (grant_q == {NUM_REQS{1'b0}} || $onehot(grant_q));
+
+            // 2. grant_valid matches reduction OR of grant
+            assert (grant_valid == (|grant));
+
+            if (f_cycles_active >= 2) begin
+                // 3. Grant only given to requesters active in the previous cycle
+                assert ((grant & $past(req)) == grant);
+
+                // 4. No grant if no request in previous cycle
+                if ($past(req) == {NUM_REQS{1'b0}}) begin
+                    assert (grant == {NUM_REQS{1'b0}});
+                end
+
+                // 5. Transaction lock: if lock was asserted and locked requester still requested, hold grant
+                if ($past(lock) && $past(grant_valid) && (|($past(grant) & $past(req)))) begin
+                    assert (grant == $past(grant));
+                end
+            end
+        end
+    end
+
+    // Cover statements
+    always @(posedge clk) begin
+        if (rst_n && f_cycles_active >= 2) begin
+            cover (grant == 2'b01);
+            cover (grant == 2'b10);
+            cover ($past(grant) == 2'b01 && grant == 2'b10);
+            cover ($past(grant) == 2'b10 && grant == 2'b01);
+            cover (lock && grant_valid);
+        end
+    end
+`endif
+
 endmodule
