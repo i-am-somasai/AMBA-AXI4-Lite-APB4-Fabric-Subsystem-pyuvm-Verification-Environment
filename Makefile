@@ -116,7 +116,7 @@ synth:
 	@$(ENV_CMD) && echo "=== Running Yosys Synthesis for SKY130 ===" && \
 	mkdir -p synth/results && \
 	if [ -f "$(PROJ_DIR)/synth/synth.ys" ]; then \
-		yosys -c $(PROJ_DIR)/synth/synth.ys | tee synth/results/synth.log; \
+		yosys $(PROJ_DIR)/synth/synth.ys | tee synth/results/synth.log; \
 	else \
 		echo "Synthesis script will be populated in Phase 6."; \
 	fi
@@ -124,8 +124,10 @@ synth:
 # OpenSTA Static Timing Analysis
 sta:
 	@$(ENV_CMD) && echo "=== Running OpenSTA Timing Analysis ===" && \
+	mkdir -p synth/results && \
 	if [ -f "$(PROJ_DIR)/synth/sta.tcl" ]; then \
-		sta $(PROJ_DIR)/synth/sta.tcl | tee synth/results/sta.log; \
+		sta -exit $(PROJ_DIR)/synth/sta.tcl | tee synth/results/sta.log && \
+		python3 $(PROJ_DIR)/synth/fmax_sweep.py; \
 	else \
 		echo "STA script will be populated in Phase 6."; \
 	fi
