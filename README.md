@@ -123,13 +123,13 @@ Every number reported below is derived from an actual execution of open-source E
 |---|---|---|---|
 | **RTL Modules / Lines of RTL** | **17 modules / 3,238 lines** | Section 17 | `find rtl/ -name "*.v" \| xargs wc -l` |
 | **Total Testcases (Directed / Random)** | **40 / 40 Spec Tests PASS (54 executable testcases total across L0, L1, L2)** | Section 9 | [`docs/test_map.csv`](docs/test_map.csv), [`docs/vplan.md`](docs/vplan.md) |
-| **Random Transactions Executed** | **50,000 transactions** (5 seeds × 10,000 txns, 0 mismatches) | Section 9.1 (XB-13) | [`docs/logs/xb13_stress.log`](docs/logs/xb13_stress.log) |
-| **Regression Seeds Passed** | **5 / 5 seeds passed** (Seeds: 42, 123, 777, 2024, 9999) | Section 9.1 (XB-13) | [`docs/logs/xb13_stress.log`](docs/logs/xb13_stress.log) |
+| **Random Transactions Executed** | **200,000 transactions** (20 seeds × 10,000 txns, 0 mismatches) | Section 9.1 (XB-13) | [`docs/logs/regression_20seeds.log`](docs/logs/regression_20seeds.log) |
+| **Regression Seeds Passed** | **20 / 20 seeds passed** (Seeds 1..20: 100% PASS, zero mismatches) | Section 9.1 (XB-13) | [`docs/logs/regression_20seeds.log`](docs/logs/regression_20seeds.log) |
 | **Functional Coverage (cocotb-coverage)** | **83.88% (229 / 273 bins hit, zero synthetic calls, 6 unreachable bins waived)** | Section 10 | [`docs/logs/func_cov.log`](docs/logs/func_cov.log) |
 | **Code Coverage (Verilator 5.055)** | **Line: 87.8%, Toggle: 75.1%, Branch: 86.9%, Expr: 92.9%, FSM: 100%** | Section 10 | [`docs/logs/code_cov_summary.txt`](docs/logs/code_cov_summary.txt) |
 | **Formal Properties Proven / BMC (SymbiYosys)** | **10 / 10 modules verified (4 proven via k-induction, 6 BMC, 81 cover traces reached, 0 fails)** | Section 11 | [`docs/logs/formal_suite.log`](docs/logs/formal_suite.log) |
 | **CDC Clock Ratios & Phases Swept** | **2.5:1 ratio (100 MHz : 40 MHz), multiclock SMT BMC, 3 ratio bins** | Section 9.1 (CD-01) | [`formal/async_fifo.sby`](formal/async_fifo.sby), [`docs/logs/func_cov.log`](docs/logs/func_cov.log) |
-| **Mutants Evaluated / Killed / Score** | **20 mutants, 13 killed (Score: 65.00%, raised from 45.00%)** | Section 12 | [`docs/logs/mutation_summary.log`](docs/logs/mutation_summary.log) |
+| **Mutants Evaluated / Killed / Score** | **240 mutants across 8 modules, 196 killed, 44 survived (Raw: 81.67%, True Adjusted: 92.45% after triaging 28 equivalent mutants)** | Section 12 | [`docs/logs/mutation.log`](docs/logs/mutation.log), [`docs/mutation_report.md`](docs/mutation_report.md) |
 | **Bugs Found & Resolved** | **22 real bugs diagnosed, fixed, and verified (including BUG-022 AXI crossbar WREADY gating fix)** | Section 6 | [`docs/bugs.md`](docs/bugs.md) |
 | **Crossbar Added Latency (Cycles)** | **0 cycles added latency** (proven in XB-06 parallel transfers) | Section 7.2 (≤1 cycle) | [`docs/img/contention.png`](docs/img/contention.png), `test_axil_xbar.py` |
 | **Synthesis (SKY130 HD): Cells / Flops / Area**| **9,376 cells / 3,623 flops / 137,867.23 µm² (~0.138 mm²)** | Section 13 | [`docs/logs/synth.log`](docs/logs/synth.log), [`synth/synth.ys`](synth/synth.ys) |
@@ -169,13 +169,16 @@ All 10 suites pass with **81 cover traces reached**. Bounded properties are hone
 
 ### 5.3 Mutation Testing & Survivor Triage (Yosys Native)
 Using Yosys `mutate -list` and `mutate -mode`:
-- Evaluated 20 mutants across 5 modules (`rr_arbiter`, `sync_fifo`, `axil_ram`, `axil_csr`, `axil2apb_bridge`).
-- **Initial Baseline Score:** 45.00% (9 killed, 11 survived).
-- **Survivor Triage & Test Improvements:**
-  - *Triage Gap 1 (`BUG-020`):* APB bridge test compared readback against slave memory rather than golden stimulus, and test data `0xDEADBEEF` had bit 29=0. Added direct stimulus comparison and inverted patterns (`0x21524110`) in `test_axil2apb_bridge.py`.
-  - *Triage Gap 2 (`BUG-021`):* RAM unit test only exercised words 4 and 8. Added full address sweep across memory depth and all-zero readback in `test_axil_ram.py`.
-  - *Triage Gap 3:* Added byte-lane strobe isolation in `test_axil_csr.py` and full 8-bit dynamic range patterns in `test_sync_fifo.py`.
-- **Final Mutation Score:** **65.00%** (13 killed, 7 survived) — an improvement of **+20.00%**.
+- Evaluated **240 mutants** (30 mutants each) across **8 modules** (`rr_arbiter`, `sync_fifo`, `async_fifo`, `axil_decoder`, `axil_ram`, `axil_csr`, `axil2apb_bridge`, `tb_axil_xbar`).
+- **Initial Baseline Score:** 73.75% (177 killed, 63 survived).
+- **Survivor Triage & Test Hardening:**
+  - *RAM full memory sweep & reset:* Added full 256-word walking data patterns and complements, out-of-order handshakes, and reset assertions in `test_axil_ram.py`.
+  - *FIFO depth patterns:* Added walking 1s and 0s patterns across all 8 depth entries in `test_sync_fifo.py`.
+  - *CSR bit coverage & interrupts:* Added walking bit patterns across scratchpad registers, full 8-bit W1C assertion sequence, dedicated Timer IRQ testing, and reset checks in `test_axil_csr.py`.
+  - *Arbiter priority loop:* Added out-of-idle requester 1 grant testing exercising fallback priority loop in `test_rr_arbiter.py`.
+  - *Bridge protection propagation:* Added protection bit pass-through checks (`awprot`/`arprot` -> `m_apb_pprot`) in `test_axil2apb_bridge.py`.
+- **Final Mutation Score:** **81.67%** raw score (196 killed, 44 survived) — an improvement of **+7.92%**.
+- **Equivalence Triage:** Proved 28 surviving mutants are architecturally equivalent (unreachable address bits, constant decoder outputs, APB read PSTRB don't-cares, and invariant upper register zeros), yielding an adjusted true mutation score of **92.45%** (196 / 212 non-equivalent mutants). See [`docs/mutation_report.md`](docs/mutation_report.md) and [`docs/mutation_triage.md`](docs/mutation_triage.md).
 
 ### 5.4 Synthesis and STA (SKY130 High Density)
 - **Synthesis:** Synthesized top-level `amba_fabric_top` with `RAM_DEPTH=64` using Yosys to SKY130 HD library. Total area: 137,867.23 µm² (~0.138 mm²), 9,376 cells, 3,623 flip-flops.
@@ -245,17 +248,17 @@ make unit SIM=icarus
 # Run L1 block and subsystem tests
 make block SIM=icarus
 
-# Run full pyuvm multi-seed regression (XB-13 stress, 50,000 txns)
-make regress SIM=icarus SEEDS=5
+# Run full pyuvm multi-seed regression (XB-13 stress, 20 seeds, 200,000 txns)
+make regress SIM=icarus SEEDS=20
 
 # Run Verilator code coverage and merge functional coverage
 make cov-report
 
-# Run all 8 SymbiYosys formal proof suites
+# Run all 10 SymbiYosys formal proof suites
 make formal
 
-# Run sampled mutation testing flow (20 mutants)
-make mutation-sample
+# Run full mutation testing across 240 mutants
+make mutation
 
 # Run full Yosys synthesis for SKY130 HD
 make synth
@@ -271,7 +274,7 @@ make sta
 **Title line:** *AMBA AXI4-Lite/APB Fabric with pyuvm Verification Environment | Verilog-2005 (SystemVerilog-compatible), Python, cocotb, pyuvm, SymbiYosys, Yosys, OpenSTA*
 
 - Designed a parameterized AXI4-Lite 2×4 crossbar with round-robin arbitration, transaction locking, default-error slave, AXI-to-APB bridge, UART/Timer/GPIO peripherals, and an async-FIFO CDC bridge across two asynchronous clock domains.
-- Built an end-to-end pyuvm verification environment (agents, protocol monitors, reference-model scoreboards) with constrained-random sequences; achieved **83.88%** functional coverage across **273** defined bins (zero synthetic calls, 6 unreachable bins waived) and **87.8%** line coverage across **50,000** random transactions (5 seeds, 0 mismatches).
+- Built an end-to-end pyuvm verification environment (agents, protocol monitors, reference-model scoreboards) with constrained-random sequences; achieved **83.88%** functional coverage across **273** defined bins (zero synthetic calls, 6 unreachable bins waived) and **87.8%** line coverage across **200,000** random transactions (20 seeds, 0 mismatches).
 - Formally verified **10/10** core modules (protocol compliance via axil_props, arbiter fairness, bounded liveness, APB bridge timing, CDC request/response integrity, UART FIFO/status flags) with SymbiYosys (4 k-induction proofs, 6 BMC suites to depth 20-30); reached **81** cover traces; diagnosed and resolved **22** hardware and testbench bugs.
 - Evaluated testbench defect detection quality with Yosys mutation testing; scaled to **240** mutants across 8 modules, achieving **81.67%** raw score and **92.45%** true score after triaging 28 equivalent mutants and closing test gaps; automated regression in GitHub Actions.
 - Synthesized on SKY130 HD (1.8V, 25°C) with Yosys/OpenSTA: **9,376** cells, **3,623** flip-flops, **137,867 µm²** area, achieving **81.63 MHz** operating frequency under 2.0 ns I/O constraints (**95.15 MHz** core reg-to-reg).

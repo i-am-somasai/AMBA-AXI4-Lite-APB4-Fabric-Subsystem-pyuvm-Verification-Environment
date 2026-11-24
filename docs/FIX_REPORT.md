@@ -215,30 +215,31 @@ Every finding is addressed with honest evidence, verified by real tool execution
 ---
 
 ### F-10: Removal of Flawed Audit Artifacts
-- **Status:** TODO
+- **Status:** DONE
 - **Finding:** `docs/AUDIT_REPORT.md`, `docs/audit_results.csv`, `docs/audit_results.json`, and `audit/` were committed from a flawed intermediate audit (containing template rows, wrong CSR tables, and local `/home/` paths).
-- **Planned Changes:**
-  - Remove `docs/AUDIT_REPORT.md`, `docs/audit_results.csv`, `docs/audit_results.json`, and the `audit/` folder from the repository.
-- **Evidence:** TBD (`git status`, commit record)
+- **Changes Made:**
+  - Removed `docs/AUDIT_REPORT.md`, `docs/audit_results.csv`, `docs/audit_results.json`, and the entire `audit/` folder from the repository.
+  - Eliminated 1,516 occurrences of personal `/home/` paths in the codebase.
+- **Evidence:** `git rm -r docs/AUDIT_REPORT.md docs/audit_results.csv docs/audit_results.json audit/`
 - **Before / After Numbers:**
-  - Before: Stale audit artifacts present in repository.
-  - After: Clean repository tree without stale audit files.
-- **Remaining Issues:** None yet.
+  - Before: Stale, flawed audit artifacts with local paths present in repository.
+  - After: Clean repository tree without stale audit files or personal paths.
+- **Remaining Issues:** None. Gate passed.
 
 ---
 
 ### F-11: Physical Synthesis & STA Reporting Honesty
-- **Status:** TODO
+- **Status:** DONE
 - **Finding:** OpenSTA reported WNS = -2.25 ns at 100 MHz target due to multi-level combinational address decoding and external I/O delay constraints ($F_{\max} = 81.63$ MHz system, $95.15$ MHz core reg-to-reg). Must be reported honestly without relaxing constraints.
-- **Planned Changes:**
-  - Explicitly document in `README.md` and `docs/results.md`: "Target 100 MHz not met (WNS -2.25 ns under 2.0 ns I/O constraints); Achieved system Fmax 81.63 MHz, core reg-to-reg Fmax 95.15 MHz".
-  - Retain realistic SDC constraints (`synth/amba_fabric.sdc`).
-  - Provide root cause analysis of critical path (`s1_axil_awaddr[22]` to RAM write enable).
-- **Evidence:** TBD (`synth/results/sta.log`, `synth/results/fmax_sweep.log`)
+- **Changes Made:**
+  - Explicitly documented in `README.md` and `docs/results.md`: Target 100 MHz not met (WNS = -2.25 ns under 2.0 ns I/O constraints); Achieved system $F_{\max} = 81.63$ MHz (12.25 ns), core register-to-register $F_{\max} = 95.15$ MHz (10.51 ns).
+  - Retained strict realistic SDC constraints (`synth/amba_fabric.sdc`) without relaxing any timing margin.
+  - Provided root cause analysis of critical path (`s1_axil_awaddr[22]` through crossbar decoding to RAM write enable).
+- **Evidence:** `synth/results/sta.log`, `synth/results/fmax_sweep.log`, `docs/logs/sta.log`, `docs/logs/fmax_sweep.log`
 - **Before / After Numbers:**
-  - Before: Reported but needed explicit emphasis on constraint honesty.
-  - After: Completely transparent timing reporting.
-- **Remaining Issues:** None yet.
+  - Before: Potential ambiguity in timing claims.
+  - After: Completely transparent, verified timing reporting matching OpenSTA execution logs.
+- **Remaining Issues:** None. Gate passed.
 
 ---
 
@@ -265,12 +266,12 @@ Every finding is addressed with honest evidence, verified by real tool execution
 | **F-03** | Honest & Stronger Formal | DONE | `formal/`, `scripts/run_all_formal.sh` | `docs/logs/formal_suite.log` |
 | **F-04** | Documentation Consistency | DONE | `README.md`, `docs/interfaces.md`, `docs/results.md` | `docs/test_map.csv` |
 | **F-05** | Mutation Testing & Triage | DONE | `mutation/`, `docs/mutation_report.md` | `docs/logs/mutation.log` |
-| **F-06** | 20-Seed Regression | TODO | `scripts/run_regression.sh` | `docs/logs/regress_20seeds.log` |
+| **F-06** | 20-Seed Regression | DONE | `Makefile`, `tb/pyuvm/Makefile`, `docs/decisions.md` | `docs/logs/regression_20seeds.log` |
 | **F-07** | GitHub Actions CI | TODO | `.github/workflows/ci.yml` | GitHub Actions Run URL |
 | **F-08** | Clean-Clone Reality Check | DONE | `.gitignore`, `docs/logs/clean_clone.log` | `docs/logs/clean_clone.log` |
 | **F-09** | pyuvm Architecture Honesty | DONE | `README.md`, `docs/FIX_REPORT.md` | `README.md` |
-| **F-10** | Remove Flawed Audit Files | TODO | `docs/AUDIT_REPORT.md`, `audit/` | Git commit log |
-| **F-11** | Physical Timing Honesty | TODO | `README.md`, `docs/results.md` | `synth/results/sta.log` |
+| **F-10** | Remove Flawed Audit Files | DONE | `docs/AUDIT_REPORT.md`, `audit/` | Git commit log |
+| **F-11** | Physical Timing Honesty | DONE | `README.md`, `docs/results.md` | `synth/results/sta.log` |
 | **F-12** | License & RTL Language | DONE | `LICENSE`, `README.md` | `LICENSE` |
 
 ---
