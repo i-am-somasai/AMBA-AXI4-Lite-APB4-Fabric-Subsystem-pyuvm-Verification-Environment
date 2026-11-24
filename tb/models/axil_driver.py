@@ -2,11 +2,6 @@
 import cocotb
 from cocotb.triggers import RisingEdge, Timer
 
-try:
-    from func_cov.fabric_cov import sample_backpressure, CoverageCollector
-except ImportError:
-    sample_backpressure = None
-    CoverageCollector = None
 
 def safe_int(val, default=0):
     try:
@@ -139,10 +134,6 @@ class AxilMasterDriver:
             b_delay += 1
 
         self.bready.value = 0
-        if sample_backpressure and CoverageCollector:
-            sample_backpressure("AW", CoverageCollector.delay_to_bucket(aw_delay))
-            sample_backpressure("W", CoverageCollector.delay_to_bucket(w_delay))
-            sample_backpressure("B", CoverageCollector.delay_to_bucket(b_delay))
         return resp
 
     async def read(self, addr, prot=0):
@@ -180,9 +171,6 @@ class AxilMasterDriver:
             r_delay += 1
 
         self.rready.value = 0
-        if sample_backpressure and CoverageCollector:
-            sample_backpressure("AR", CoverageCollector.delay_to_bucket(ar_delay))
-            sample_backpressure("R", CoverageCollector.delay_to_bucket(r_delay))
         return rdata, rresp
 
 

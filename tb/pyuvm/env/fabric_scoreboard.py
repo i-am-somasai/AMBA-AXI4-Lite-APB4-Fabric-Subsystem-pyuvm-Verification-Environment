@@ -43,9 +43,6 @@ class FabricScoreboard(uvm_scoreboard):
         """Validates a single completed transaction against the reference model."""
         self.total_transactions += 1
 
-        if CoverageCollector:
-            CoverageCollector.get().sample_transaction(item)
-
         if item.is_write:
             exp_resp = self.ref_model.predict_write(
                 addr=item.addr,

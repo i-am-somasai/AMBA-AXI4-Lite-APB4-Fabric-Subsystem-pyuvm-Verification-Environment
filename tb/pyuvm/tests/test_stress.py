@@ -33,9 +33,14 @@ class TestStress(uvm_test):
         dut.gpio_i.value = 0
         dut.uart_rx.value = 1
 
-        # Start asynchronous dual clocks: sys = 100MHz (10ns), slow = 40MHz (25ns)
+        # Start asynchronous dual clocks: sys = 100MHz (10ns), slow configurable
+        slow_period = float(os.environ.get("CLK_SLOW_PERIOD_NS", "25.0"))
+        slow_phase = float(os.environ.get("CLK_SLOW_PHASE_NS", "0.0"))
+
         cocotb.start_soon(Clock(dut.clk_sys, 10, unit="ns").start())
-        cocotb.start_soon(Clock(dut.clk_slow, 25, unit="ns").start())
+        if slow_phase > 0:
+            await Timer(slow_phase, unit="ns")
+        cocotb.start_soon(Clock(dut.clk_slow, slow_period, unit="ns").start())
 
         # Reset sequence
         dut.rst_n.value = 0

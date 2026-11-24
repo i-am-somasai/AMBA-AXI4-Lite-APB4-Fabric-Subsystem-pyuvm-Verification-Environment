@@ -1,37 +1,37 @@
 cg_apb:
-  cover_percentage: 0.0
-  coverage: 0
+  cover_percentage: 50.0
+  coverage: 18
   size: 36
   type: <class 'cocotb_coverage.coverage.CoverItem'>
 cg_apb.err:
   at_least: 1
   bins:_hits:
-    err: 0
-    no_err: 0
-  cover_percentage: 0.0
-  coverage: 0
+    err: 381
+    no_err: 1132
+  cover_percentage: 100.0
+  coverage: 2
   size: 2
   type: <class 'cocotb_coverage.coverage.CoverPoint'>
   weight: 1
 cg_apb.op:
   at_least: 1
   bins:_hits:
-    RD: 0
-    WR: 0
-  cover_percentage: 0.0
-  coverage: 0
+    RD: 745
+    WR: 768
+  cover_percentage: 100.0
+  coverage: 2
   size: 2
   type: <class 'cocotb_coverage.coverage.CoverPoint'>
   weight: 1
 cg_apb.strb_class:
   at_least: 1
   bins:_hits:
-    byte: 0
-    halfword: 0
-    sparse: 0
-    word: 0
-  cover_percentage: 0.0
-  coverage: 0
+    byte: 328
+    halfword: 166
+    sparse: 937
+    word: 82
+  cover_percentage: 100.0
+  coverage: 4
   size: 4
   type: <class 'cocotb_coverage.coverage.CoverPoint'>
   weight: 1
@@ -39,37 +39,37 @@ cg_apb.strb_cross:
   at_least: 1
   bins:_hits:
     ('byte', 'RD'): 0
-    ('byte', 'WR'): 0
+    ('byte', 'WR'): 328
     ('halfword', 'RD'): 0
-    ('halfword', 'WR'): 0
-    ('sparse', 'RD'): 0
-    ('sparse', 'WR'): 0
+    ('halfword', 'WR'): 166
+    ('sparse', 'RD'): 745
+    ('sparse', 'WR'): 192
     ('word', 'RD'): 0
-    ('word', 'WR'): 0
-  cover_percentage: 0.0
-  coverage: 0
+    ('word', 'WR'): 82
+  cover_percentage: 62.5
+  coverage: 5
   size: 8
   type: <class 'cocotb_coverage.coverage.CoverCross'>
   weight: 1
 cg_apb.wait:
   at_least: 1
   bins:_hits:
-    '0': 0
+    '0': 1513
     '1': 0
     2-4: 0
     5+: 0
-  cover_percentage: 0.0
-  coverage: 0
+  cover_percentage: 25.0
+  coverage: 1
   size: 4
   type: <class 'cocotb_coverage.coverage.CoverPoint'>
   weight: 1
 cg_apb.wait_cross:
   at_least: 1
   bins:_hits:
-    ('0', 'err', 'RD'): 0
-    ('0', 'err', 'WR'): 0
-    ('0', 'no_err', 'RD'): 0
-    ('0', 'no_err', 'WR'): 0
+    ('0', 'err', 'RD'): 184
+    ('0', 'err', 'WR'): 197
+    ('0', 'no_err', 'RD'): 561
+    ('0', 'no_err', 'WR'): 571
     ('1', 'err', 'RD'): 0
     ('1', 'err', 'WR'): 0
     ('1', 'no_err', 'RD'): 0
@@ -82,23 +82,23 @@ cg_apb.wait_cross:
     ('5+', 'err', 'WR'): 0
     ('5+', 'no_err', 'RD'): 0
     ('5+', 'no_err', 'WR'): 0
-  cover_percentage: 0.0
-  coverage: 0
+  cover_percentage: 25.0
+  coverage: 4
   size: 16
   type: <class 'cocotb_coverage.coverage.CoverCross'>
   weight: 1
 cg_backpressure:
-  cover_percentage: 93.1
-  coverage: 27
+  cover_percentage: 79.31
+  coverage: 23
   size: 29
   type: <class 'cocotb_coverage.coverage.CoverItem'>
 cg_backpressure.bucket:
   at_least: 1
   bins:_hits:
-    '0': 7921
-    '1': 1390
-    2-4: 1644
-    5-16: 1583
+    '0': 19069
+    '1': 2826
+    2-4: 1811
+    5-16: 1425
   cover_percentage: 100.0
   coverage: 4
   size: 4
@@ -107,11 +107,11 @@ cg_backpressure.bucket:
 cg_backpressure.channel:
   at_least: 1
   bins:_hits:
-    AR: 2462
-    AW: 2538
-    B: 2538
-    R: 2462
-    W: 2538
+    AR: 4869
+    AW: 5131
+    B: 5131
+    R: 4869
+    W: 5131
   cover_percentage: 100.0
   coverage: 5
   size: 5
@@ -120,80 +120,73 @@ cg_backpressure.channel:
 cg_backpressure.cross:
   at_least: 1
   bins:_hits:
-    ('AR', '0'): 1633
-    ('AR', '1'): 496
-    ('AR', '2-4'): 64
-    ('AR', '5-16'): 269
-    ('AW', '0'): 1717
-    ('AW', '1'): 478
-    ('AW', '2-4'): 47
-    ('AW', '5-16'): 296
-    ('B', '0'): 1762
+    ('AR', '0'): 3298
+    ('AR', '1'): 966
+    ('AR', '2-4'): 106
+    ('AR', '5-16'): 499
+    ('AW', '0'): 3475
+    ('AW', '1'): 993
+    ('AW', '2-4'): 119
+    ('AW', '5-16'): 544
+    ('B', '0'): 5131
     ('B', '1'): 0
-    ('B', '2-4'): 357
-    ('B', '5-16'): 419
-    ('R', '0'): 1673
+    ('B', '2-4'): 0
+    ('B', '5-16'): 0
+    ('R', '0'): 4869
     ('R', '1'): 0
-    ('R', '2-4'): 399
-    ('R', '5-16'): 390
-    ('W', '0'): 1136
-    ('W', '1'): 416
-    ('W', '2-4'): 777
-    ('W', '5-16'): 209
-  cover_percentage: 90.0
-  coverage: 18
+    ('R', '2-4'): 0
+    ('R', '5-16'): 0
+    ('W', '0'): 2296
+    ('W', '1'): 867
+    ('W', '2-4'): 1586
+    ('W', '5-16'): 382
+  cover_percentage: 70.0
+  coverage: 14
   size: 20
   type: <class 'cocotb_coverage.coverage.CoverCross'>
   weight: 1
 cg_cdc:
-  cover_percentage: 0.0
-  coverage: 0
-  size: 26
+  cover_percentage: 31.58
+  coverage: 6
+  size: 19
   type: <class 'cocotb_coverage.coverage.CoverItem'>
 cg_cdc.cross:
   at_least: 1
   bins:_hits:
     ('approx_equal', 'empty', 'RD'): 0
     ('approx_equal', 'empty', 'WR'): 0
-    ('approx_equal', 'full', 'RD'): 0
-    ('approx_equal', 'full', 'WR'): 0
     ('approx_equal', 'partial', 'RD'): 0
     ('approx_equal', 'partial', 'WR'): 0
-    ('slow<sys', 'empty', 'RD'): 0
-    ('slow<sys', 'empty', 'WR'): 0
-    ('slow<sys', 'full', 'RD'): 0
-    ('slow<sys', 'full', 'WR'): 0
+    ('slow<sys', 'empty', 'RD'): 747
+    ('slow<sys', 'empty', 'WR'): 787
     ('slow<sys', 'partial', 'RD'): 0
     ('slow<sys', 'partial', 'WR'): 0
     ('slow>sys', 'empty', 'RD'): 0
     ('slow>sys', 'empty', 'WR'): 0
-    ('slow>sys', 'full', 'RD'): 0
-    ('slow>sys', 'full', 'WR'): 0
     ('slow>sys', 'partial', 'RD'): 0
     ('slow>sys', 'partial', 'WR'): 0
-  cover_percentage: 0.0
-  coverage: 0
-  size: 18
+  cover_percentage: 16.67
+  coverage: 2
+  size: 12
   type: <class 'cocotb_coverage.coverage.CoverCross'>
   weight: 1
 cg_cdc.occupancy:
   at_least: 1
   bins:_hits:
-    empty: 0
-    full: 0
+    empty: 1534
     partial: 0
-  cover_percentage: 0.0
-  coverage: 0
-  size: 3
+  cover_percentage: 50.0
+  coverage: 1
+  size: 2
   type: <class 'cocotb_coverage.coverage.CoverPoint'>
   weight: 1
 cg_cdc.op:
   at_least: 1
   bins:_hits:
-    RD: 0
-    WR: 0
-  cover_percentage: 0.0
-  coverage: 0
+    RD: 747
+    WR: 787
+  cover_percentage: 100.0
+  coverage: 2
   size: 2
   type: <class 'cocotb_coverage.coverage.CoverPoint'>
   weight: 1
@@ -201,100 +194,100 @@ cg_cdc.ratio:
   at_least: 1
   bins:_hits:
     approx_equal: 0
-    slow<sys: 0
+    slow<sys: 1534
     slow>sys: 0
-  cover_percentage: 0.0
-  coverage: 0
+  cover_percentage: 33.33
+  coverage: 1
   size: 3
   type: <class 'cocotb_coverage.coverage.CoverPoint'>
   weight: 1
 cg_contention:
-  cover_percentage: 0.0
-  coverage: 0
+  cover_percentage: 93.33
+  coverage: 14
   size: 15
   type: <class 'cocotb_coverage.coverage.CoverItem'>
 cg_contention.combo:
   at_least: 1
   bins:_hits:
-    R/R: 0
-    R/W: 0
-    W/W: 0
-  cover_percentage: 0.0
-  coverage: 0
+    R/R: 12064
+    R/W: 1140
+    W/W: 14148
+  cover_percentage: 100.0
+  coverage: 3
   size: 3
   type: <class 'cocotb_coverage.coverage.CoverPoint'>
   weight: 1
 cg_contention.cross:
   at_least: 1
   bins:_hits:
-    ('diff_slaves', 'R/R'): 0
-    ('diff_slaves', 'R/W'): 0
-    ('diff_slaves', 'W/W'): 0
-    ('one_idle', 'R/R'): 0
+    ('diff_slaves', 'R/R'): 415
+    ('diff_slaves', 'R/W'): 853
+    ('diff_slaves', 'W/W'): 422
+    ('one_idle', 'R/R'): 11489
     ('one_idle', 'R/W'): 0
-    ('one_idle', 'W/W'): 0
-    ('same_slave', 'R/R'): 0
-    ('same_slave', 'R/W'): 0
-    ('same_slave', 'W/W'): 0
-  cover_percentage: 0.0
-  coverage: 0
+    ('one_idle', 'W/W'): 13581
+    ('same_slave', 'R/R'): 160
+    ('same_slave', 'R/W'): 287
+    ('same_slave', 'W/W'): 145
+  cover_percentage: 88.89
+  coverage: 8
   size: 9
   type: <class 'cocotb_coverage.coverage.CoverCross'>
   weight: 1
 cg_contention.type:
   at_least: 1
   bins:_hits:
-    diff_slaves: 0
-    one_idle: 0
-    same_slave: 0
-  cover_percentage: 0.0
-  coverage: 0
+    diff_slaves: 1690
+    one_idle: 25070
+    same_slave: 592
+  cover_percentage: 100.0
+  coverage: 3
   size: 3
   type: <class 'cocotb_coverage.coverage.CoverPoint'>
   weight: 1
 cg_order:
-  cover_percentage: 100.0
-  coverage: 19
+  cover_percentage: 73.68
+  coverage: 14
   size: 19
   type: <class 'cocotb_coverage.coverage.CoverItem'>
 cg_order.cross:
   at_least: 1
   bins:_hits:
-    ('APB', 'aw_first'): 111
-    ('APB', 'simultaneous'): 127
-    ('APB', 'w_first'): 119
-    ('CDC', 'aw_first'): 136
-    ('CDC', 'simultaneous'): 148
-    ('CDC', 'w_first'): 135
-    ('CSR', 'aw_first'): 170
-    ('CSR', 'simultaneous'): 164
-    ('CSR', 'w_first'): 161
-    ('RAM', 'aw_first'): 348
-    ('RAM', 'simultaneous'): 324
-    ('RAM', 'w_first'): 346
-  cover_percentage: 100.0
-  coverage: 12
+    ('APB', 'aw_first'): 257
+    ('APB', 'simultaneous'): 511
+    ('APB', 'w_first'): 0
+    ('CDC', 'aw_first'): 259
+    ('CDC', 'simultaneous'): 528
+    ('CDC', 'w_first'): 0
+    ('CSR', 'aw_first'): 352
+    ('CSR', 'simultaneous'): 670
+    ('CSR', 'w_first'): 0
+    ('RAM', 'aw_first'): 676
+    ('RAM', 'simultaneous'): 1347
+    ('RAM', 'w_first'): 0
+  cover_percentage: 66.67
+  coverage: 8
   size: 12
   type: <class 'cocotb_coverage.coverage.CoverCross'>
   weight: 1
 cg_order.order:
   at_least: 1
   bins:_hits:
-    aw_first: 765
-    simultaneous: 763
-    w_first: 761
-  cover_percentage: 100.0
-  coverage: 3
+    aw_first: 1544
+    simultaneous: 3056
+    w_first: 0
+  cover_percentage: 66.67
+  coverage: 2
   size: 3
   type: <class 'cocotb_coverage.coverage.CoverPoint'>
   weight: 1
 cg_order.target:
   at_least: 1
   bins:_hits:
-    APB: 357
-    CDC: 419
-    CSR: 495
-    RAM: 1018
+    APB: 768
+    CDC: 787
+    CSR: 1022
+    RAM: 2023
   cover_percentage: 100.0
   coverage: 4
   size: 4
@@ -326,42 +319,42 @@ cg_txn:
 cg_txn.cross:
   at_least: 1
   bins:_hits:
-    (0, 'APB', 'RD', 'OKAY'): 200
+    (0, 'APB', 'RD', 'OKAY'): 377
     (0, 'APB', 'RD', 'SLVERR'): 0
-    (0, 'APB', 'WR', 'OKAY'): 187
+    (0, 'APB', 'WR', 'OKAY'): 381
     (0, 'APB', 'WR', 'SLVERR'): 0
-    (0, 'CDC', 'RD', 'OKAY'): 195
+    (0, 'CDC', 'RD', 'OKAY'): 377
     (0, 'CDC', 'RD', 'SLVERR'): 0
-    (0, 'CDC', 'WR', 'OKAY'): 214
+    (0, 'CDC', 'WR', 'OKAY'): 380
     (0, 'CDC', 'WR', 'SLVERR'): 0
-    (0, 'CSR', 'RD', 'OKAY'): 247
+    (0, 'CSR', 'RD', 'OKAY'): 494
     (0, 'CSR', 'RD', 'SLVERR'): 0
-    (0, 'CSR', 'WR', 'OKAY'): 243
+    (0, 'CSR', 'WR', 'OKAY'): 510
     (0, 'CSR', 'WR', 'SLVERR'): 0
-    (0, 'RAM', 'RD', 'OKAY'): 474
+    (0, 'RAM', 'RD', 'OKAY'): 976
     (0, 'RAM', 'RD', 'SLVERR'): 0
-    (0, 'RAM', 'WR', 'OKAY'): 503
+    (0, 'RAM', 'WR', 'OKAY'): 1014
     (0, 'RAM', 'WR', 'SLVERR'): 0
-    (0, 'UNMAPPED', 'RD', 'DECERR'): 111
-    (0, 'UNMAPPED', 'WR', 'DECERR'): 126
-    (1, 'APB', 'RD', 'OKAY'): 100
-    (1, 'APB', 'RD', 'SLVERR'): 99
-    (1, 'APB', 'WR', 'OKAY'): 86
-    (1, 'APB', 'WR', 'SLVERR'): 84
-    (1, 'CDC', 'RD', 'OKAY'): 195
+    (0, 'UNMAPPED', 'RD', 'DECERR'): 233
+    (0, 'UNMAPPED', 'WR', 'DECERR'): 258
+    (1, 'APB', 'RD', 'OKAY'): 184
+    (1, 'APB', 'RD', 'SLVERR'): 184
+    (1, 'APB', 'WR', 'OKAY'): 190
+    (1, 'APB', 'WR', 'SLVERR'): 197
+    (1, 'CDC', 'RD', 'OKAY'): 370
     (1, 'CDC', 'RD', 'SLVERR'): 0
-    (1, 'CDC', 'WR', 'OKAY'): 205
+    (1, 'CDC', 'WR', 'OKAY'): 407
     (1, 'CDC', 'WR', 'SLVERR'): 0
-    (1, 'CSR', 'RD', 'OKAY'): 254
+    (1, 'CSR', 'RD', 'OKAY'): 485
     (1, 'CSR', 'RD', 'SLVERR'): 0
-    (1, 'CSR', 'WR', 'OKAY'): 252
+    (1, 'CSR', 'WR', 'OKAY'): 512
     (1, 'CSR', 'WR', 'SLVERR'): 0
-    (1, 'RAM', 'RD', 'OKAY'): 463
+    (1, 'RAM', 'RD', 'OKAY'): 942
     (1, 'RAM', 'RD', 'SLVERR'): 0
-    (1, 'RAM', 'WR', 'OKAY'): 515
+    (1, 'RAM', 'WR', 'OKAY'): 1009
     (1, 'RAM', 'WR', 'SLVERR'): 0
-    (1, 'UNMAPPED', 'RD', 'DECERR'): 124
-    (1, 'UNMAPPED', 'WR', 'DECERR'): 123
+    (1, 'UNMAPPED', 'RD', 'DECERR'): 247
+    (1, 'UNMAPPED', 'WR', 'DECERR'): 273
   cover_percentage: 61.11
   coverage: 22
   size: 36
@@ -370,8 +363,8 @@ cg_txn.cross:
 cg_txn.master:
   at_least: 1
   bins:_hits:
-    0: 2500
-    1: 2500
+    0: 5000
+    1: 5000
   cover_percentage: 100.0
   coverage: 2
   size: 2
@@ -380,8 +373,8 @@ cg_txn.master:
 cg_txn.op:
   at_least: 1
   bins:_hits:
-    RD: 2462
-    WR: 2538
+    RD: 4869
+    WR: 5131
   cover_percentage: 100.0
   coverage: 2
   size: 2
@@ -390,9 +383,9 @@ cg_txn.op:
 cg_txn.resp:
   at_least: 1
   bins:_hits:
-    DECERR: 484
-    OKAY: 4333
-    SLVERR: 183
+    DECERR: 1011
+    OKAY: 8608
+    SLVERR: 381
   cover_percentage: 100.0
   coverage: 3
   size: 3
@@ -401,46 +394,46 @@ cg_txn.resp:
 cg_txn.target:
   at_least: 1
   bins:_hits:
-    APB: 756
-    CDC: 809
-    CSR: 996
-    RAM: 1955
-    UNMAPPED: 484
+    APB: 1513
+    CDC: 1534
+    CSR: 2001
+    RAM: 3941
+    UNMAPPED: 1011
   cover_percentage: 100.0
   coverage: 5
   size: 5
   type: <class 'cocotb_coverage.coverage.CoverPoint'>
   weight: 1
 cg_uart:
-  cover_percentage: 0.0
-  coverage: 0
+  cover_percentage: 66.67
+  coverage: 12
   size: 18
   type: <class 'cocotb_coverage.coverage.CoverItem'>
 cg_uart.baud:
   at_least: 1
   bins:_hits:
-    '0': 0
+    '0': 5
     '1': 0
-    2+: 0
-  cover_percentage: 0.0
-  coverage: 0
+    2+: 422
+  cover_percentage: 66.67
+  coverage: 2
   size: 3
   type: <class 'cocotb_coverage.coverage.CoverPoint'>
   weight: 1
 cg_uart.cross:
   at_least: 1
   bins:_hits:
-    ('0', 'empty'): 0
+    ('0', 'empty'): 2
     ('0', 'full'): 0
-    ('0', 'partial'): 0
+    ('0', 'partial'): 3
     ('1', 'empty'): 0
     ('1', 'full'): 0
     ('1', 'partial'): 0
-    ('2+', 'empty'): 0
-    ('2+', 'full'): 0
-    ('2+', 'partial'): 0
-  cover_percentage: 0.0
-  coverage: 0
+    ('2+', 'empty'): 75
+    ('2+', 'full'): 285
+    ('2+', 'partial'): 62
+  cover_percentage: 55.56
+  coverage: 5
   size: 9
   type: <class 'cocotb_coverage.coverage.CoverCross'>
   weight: 1
@@ -448,21 +441,21 @@ cg_uart.err:
   at_least: 1
   bins:_hits:
     frame_err: 0
-    none: 0
-    overflow: 0
-  cover_percentage: 0.0
-  coverage: 0
+    none: 247
+    overflow: 180
+  cover_percentage: 66.67
+  coverage: 2
   size: 3
   type: <class 'cocotb_coverage.coverage.CoverPoint'>
   weight: 1
 cg_uart.fifo:
   at_least: 1
   bins:_hits:
-    empty: 0
-    full: 0
-    partial: 0
-  cover_percentage: 0.0
-  coverage: 0
+    empty: 77
+    full: 285
+    partial: 65
+  cover_percentage: 100.0
+  coverage: 3
   size: 3
   type: <class 'cocotb_coverage.coverage.CoverPoint'>
   weight: 1
@@ -475,68 +468,68 @@ cg_wstrb.cross:
   at_least: 1
   bins:_hits:
     ('APB', 0): 0
-    ('APB', 1): 37
-    ('APB', 10): 56
+    ('APB', 1): 76
+    ('APB', 10): 107
     ('APB', 11): 0
-    ('APB', 12): 33
+    ('APB', 12): 85
     ('APB', 13): 0
     ('APB', 14): 0
-    ('APB', 15): 37
-    ('APB', 2): 38
-    ('APB', 3): 37
-    ('APB', 4): 42
-    ('APB', 5): 39
+    ('APB', 15): 82
+    ('APB', 2): 77
+    ('APB', 3): 81
+    ('APB', 4): 89
+    ('APB', 5): 85
     ('APB', 6): 0
     ('APB', 7): 0
-    ('APB', 8): 38
+    ('APB', 8): 86
     ('APB', 9): 0
     ('CDC', 0): 0
-    ('CDC', 1): 52
-    ('CDC', 10): 48
+    ('CDC', 1): 88
+    ('CDC', 10): 89
     ('CDC', 11): 0
-    ('CDC', 12): 50
+    ('CDC', 12): 85
     ('CDC', 13): 0
     ('CDC', 14): 0
-    ('CDC', 15): 47
-    ('CDC', 2): 46
-    ('CDC', 3): 45
-    ('CDC', 4): 49
-    ('CDC', 5): 40
+    ('CDC', 15): 84
+    ('CDC', 2): 81
+    ('CDC', 3): 89
+    ('CDC', 4): 90
+    ('CDC', 5): 95
     ('CDC', 6): 0
     ('CDC', 7): 0
-    ('CDC', 8): 42
+    ('CDC', 8): 86
     ('CDC', 9): 0
     ('CSR', 0): 0
-    ('CSR', 1): 48
-    ('CSR', 10): 43
+    ('CSR', 1): 109
+    ('CSR', 10): 98
     ('CSR', 11): 0
-    ('CSR', 12): 51
+    ('CSR', 12): 100
     ('CSR', 13): 0
     ('CSR', 14): 0
-    ('CSR', 15): 59
-    ('CSR', 2): 58
-    ('CSR', 3): 50
-    ('CSR', 4): 66
-    ('CSR', 5): 69
+    ('CSR', 15): 114
+    ('CSR', 2): 109
+    ('CSR', 3): 115
+    ('CSR', 4): 122
+    ('CSR', 5): 150
     ('CSR', 6): 0
     ('CSR', 7): 0
-    ('CSR', 8): 51
+    ('CSR', 8): 105
     ('CSR', 9): 0
     ('RAM', 0): 0
-    ('RAM', 1): 112
-    ('RAM', 10): 112
+    ('RAM', 1): 209
+    ('RAM', 10): 223
     ('RAM', 11): 0
-    ('RAM', 12): 123
+    ('RAM', 12): 249
     ('RAM', 13): 0
     ('RAM', 14): 0
-    ('RAM', 15): 129
-    ('RAM', 2): 99
-    ('RAM', 3): 124
-    ('RAM', 4): 121
-    ('RAM', 5): 94
+    ('RAM', 15): 238
+    ('RAM', 2): 208
+    ('RAM', 3): 233
+    ('RAM', 4): 211
+    ('RAM', 5): 217
     ('RAM', 6): 0
     ('RAM', 7): 0
-    ('RAM', 8): 104
+    ('RAM', 8): 235
     ('RAM', 9): 0
   cover_percentage: 56.25
   coverage: 36
@@ -547,21 +540,21 @@ cg_wstrb.strb:
   at_least: 1
   bins:_hits:
     0: 0
-    1: 249
-    2: 241
-    3: 256
-    4: 278
-    5: 242
+    1: 482
+    2: 475
+    3: 518
+    4: 512
+    5: 547
     6: 0
     7: 0
-    8: 235
+    8: 512
     9: 0
-    10: 259
+    10: 517
     11: 0
-    12: 257
+    12: 519
     13: 0
     14: 0
-    15: 272
+    15: 518
   cover_percentage: 56.25
   coverage: 9
   size: 16
@@ -570,10 +563,10 @@ cg_wstrb.strb:
 cg_wstrb.target:
   at_least: 1
   bins:_hits:
-    APB: 357
-    CDC: 419
-    CSR: 495
-    RAM: 1018
+    APB: 768
+    CDC: 787
+    CSR: 1022
+    RAM: 2023
   cover_percentage: 100.0
   coverage: 4
   size: 4

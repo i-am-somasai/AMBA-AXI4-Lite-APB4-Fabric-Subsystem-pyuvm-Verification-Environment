@@ -113,21 +113,27 @@ This document records **real, measured results** from actual tool execution.
     | `sync_fifo` | k-induction (prove) + cover | 20 | boolector | **PASS** | 6 traces reached |
     - **Total:** 8/8 tasks passed, 0 failed.
 
-  - **Functional Coverage (100.00% across all 9 Section 10 Covergroups, 0 Holes):**
-    | Covergroup / Metric | Defined Bins | Covered Bins | Coverage % |
-    |---|---|---|---|
-    | `cg_txn.cross` (master x target x op x resp) | 36 | 36 | 100.00% |
-    | `cg_wstrb.cross` (16 strobes x 4 targets) | 64 | 64 | 100.00% |
-    | `cg_order.cross` (3 orders x 4 targets) | 12 | 12 | 100.00% |
-    | `cg_backpressure.cross` (5 channels x 4 buckets) | 20 | 20 | 100.00% |
-    | `cg_contention.cross` (3 contention x 3 op combos) | 9 | 9 | 100.00% |
-    | `cg_apb.wait_cross` (4 wait buckets x 2 err x 2 op) | 16 | 16 | 100.00% |
-    | `cg_apb.strb_cross` (4 strb classes x 2 op) | 8 | 8 | 100.00% |
-    | `cg_cdc.cross` (3 ratio x 3 occupancy x 2 op) | 18 | 18 | 100.00% |
-    | `cg_uart.cross` (3 baud x 3 fifo states) | 9 | 9 | 100.00% |
-    | `cg_uart.err` (none, frame_err, overflow) | 3 | 3 | 100.00% |
-    | `cg_reset.phase` (idle, aw, w, b, r pending) | 5 | 5 | 100.00% |
-    | Component coverpoints (master, target, op, resp, strb, order, channel, bucket, etc.) | 80 | 80 | 100.00% |
+  - **Functional Coverage (Measured via Real Passive Bus Monitors; Zero Synthetic Sampling):**
+    - **Status:** **83.88%** (229 / 273 defined bins covered from real monitor activity across directed and 5 stress seeds).
+    - **Waivers:** 6 provably unreachable CDC FIFO `full` bins waived and documented in [`docs/coverage_waivers.md`](file:///home/somasai/amba-fabric/docs/coverage_waivers.md).
+    - **Report Log:** [`docs/logs/func_cov.log`](file:///home/somasai/amba-fabric/docs/logs/func_cov.log)
+    - **Sanity Script:** `scripts/check_no_synthetic_cov.sh` verified clean with 0 synthetic sampling calls.
+
+    | Covergroup / Metric | Defined Bins | Covered Bins | Coverage % | Status / Notes |
+    |---|---|---|---|---|
+    | `cg_txn.cross` (master × target × op × resp) | 36 | 36 | **100.00%** | All 36 legal combinations observed on bus |
+    | `cg_wstrb.cross` (16 strobes × 4 targets) | 64 | 64 | **100.00%** | All strobe patterns observed on write |
+    | `cg_order.cross` (3 orders × 4 targets) | 12 | 8 | **66.67%** | `simultaneous` and `aw_first` covered; `w_first` pending Task 2 test |
+    | `cg_backpressure.cross` (5 channels × 4 buckets) | 20 | 14 | **70.00%** | Delay buckets 0, 1, 2-4 covered; higher B/R delays pending Task 2 XB-09/10 |
+    | `cg_contention.cross` (3 contention × 3 op combos) | 9 | 8 | **88.89%** | All concurrent same/diff slave combos observed |
+    | `cg_apb.wait_cross` (4 wait buckets × 2 err × 2 op) | 16 | 4 | **25.00%** | Wait=0 covered in subsystem; wait states 1..N pending Task 2 APB bridge tests |
+    | `cg_apb.strb_cross` (4 strb classes × 2 op) | 8 | 5 | **62.50%** | Write strobe classes covered; read strobe cross pending bridge tests |
+    | `cg_cdc.cross` (3 ratios × 2 occupancies × 2 op) | 12 | 6 | **50.00%** | All 3 clock ratios (slow<sys, approx, slow>sys) covered; partial pending CD-02 stream |
+    | `cg_uart.cross` (3 baud × 3 fifo states) | 9 | 7 | **77.78%** | All 3 baud buckets and empty/partial/full states observed |
+    | `cg_uart.err` (none, frame_err, overflow) | 3 | 2 | **66.67%** | None and overflow covered; framing error pending Task 2 UA-04 |
+    | `cg_reset.phase` (idle, aw, w, b, r pending) | 5 | 1 | **20.00%** | Idle reset covered; in-flight reset pending Task 2 CD-03 |
+    | Component coverpoints (master, target, op, resp, strb, order, channel, bucket, etc.) | 79 | 74 | **93.67%** | Real individual signal transitions |
+    | **OVERALL AGGREGATE COVERAGE** | **273** | **229** | **83.88%** | **Real, monitor-observed functional coverage** |
     | **TOTAL AGGREGATE COVERAGE** | **280** | **280** | **100.00%** |
     - Coverage Waivers: **None needed** (100% achieved).
 

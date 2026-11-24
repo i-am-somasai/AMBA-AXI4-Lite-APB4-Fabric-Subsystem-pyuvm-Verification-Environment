@@ -40,6 +40,21 @@ test_directed:
 		MODULE=test_directed \
 		VERILOG_SOURCES="$(ALL_RTL_SOURCES)" \
 		SIM=$(SIM)
+	@echo "--- Running CDC sweeps across clock ratios and phases ---"
+	CLK_SLOW_PERIOD_NS=10.3 CLK_SLOW_PHASE_NS=2.5 SEED=103 \
+	$(MAKE) -f $(PROJ_DIR)/tb/pyuvm/Makefile.single \
+		TOPLEVEL=amba_fabric_top \
+		MODULE=test_directed \
+		TESTCASE=TestCoverageClosure \
+		VERILOG_SOURCES="$(ALL_RTL_SOURCES)" \
+		SIM=$(SIM)
+	CLK_SLOW_PERIOD_NS=6.0 CLK_SLOW_PHASE_NS=1.2 SEED=60 \
+	$(MAKE) -f $(PROJ_DIR)/tb/pyuvm/Makefile.single \
+		TOPLEVEL=amba_fabric_top \
+		MODULE=test_directed \
+		TESTCASE=TestCoverageClosure \
+		VERILOG_SOURCES="$(ALL_RTL_SOURCES)" \
+		SIM=$(SIM)
 
 test_stress:
 	@echo "--- Running XB-13 stress test (SEED=$(SEED), TRANS=$(shell echo $$(($(NUM_TRANS_PER_MASTER)*2)))) ---"

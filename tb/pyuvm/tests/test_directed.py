@@ -1,5 +1,6 @@
 # tb/pyuvm/tests/test_directed.py
 # pyuvm directed tests for XB-09..XB-15, BR-04..BR-06
+import os
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, Timer
@@ -30,8 +31,13 @@ class BaseFabricTest(uvm_test):
         dut.gpio_i.value = 0
         dut.uart_rx.value = 1
 
+        slow_period = float(os.environ.get("CLK_SLOW_PERIOD_NS", "25.0"))
+        slow_phase = float(os.environ.get("CLK_SLOW_PHASE_NS", "0.0"))
+
         cocotb.start_soon(Clock(dut.clk_sys, 10, unit="ns").start())
-        cocotb.start_soon(Clock(dut.clk_slow, 25, unit="ns").start())
+        if slow_phase > 0:
+            await Timer(slow_phase, unit="ns")
+        cocotb.start_soon(Clock(dut.clk_slow, slow_period, unit="ns").start())
 
         dut.rst_n.value = 0
         for _ in range(10):

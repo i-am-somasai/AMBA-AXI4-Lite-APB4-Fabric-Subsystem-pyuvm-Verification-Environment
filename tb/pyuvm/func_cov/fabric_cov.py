@@ -83,12 +83,20 @@ def sample_apb(w, err, op, s):
 
 # -----------------------------------------------------------------------------
 # 7. cg_cdc: Asynchronous CDC bridge characteristics
-# Clock ratio (slow<sys, approx_equal, slow>sys) x FIFO occupancy (empty, partial, full) x op = 18 bins
+# Clock ratio (slow<sys, approx_equal, slow>sys) x FIFO occupancy (empty, partial) x op = 12 bins
+# NOTE: FIFO occupancy "full" is physically unreachable under normal bridge operation
+# because the bridge allows at most 1 outstanding transaction (FIFO depth = 4).
+# "full" bins are excluded via ign_bins and documented in docs/coverage_waivers.md.
 # -----------------------------------------------------------------------------
+ign_bins_cdc = []
+for r in ["slow<sys", "approx_equal", "slow>sys"]:
+    for op in ["RD", "WR"]:
+        ign_bins_cdc.append((r, "full", op))
+
 @CoverPoint("cg_cdc.ratio", xf=lambda r, occ, op: r, bins=["slow<sys", "approx_equal", "slow>sys"])
-@CoverPoint("cg_cdc.occupancy", xf=lambda r, occ, op: occ, bins=["empty", "partial", "full"])
+@CoverPoint("cg_cdc.occupancy", xf=lambda r, occ, op: occ, bins=["empty", "partial"])
 @CoverPoint("cg_cdc.op", xf=lambda r, occ, op: op, bins=["RD", "WR"])
-@CoverCross("cg_cdc.cross", items=["cg_cdc.ratio", "cg_cdc.occupancy", "cg_cdc.op"])
+@CoverCross("cg_cdc.cross", items=["cg_cdc.ratio", "cg_cdc.occupancy", "cg_cdc.op"], ign_bins=ign_bins_cdc)
 def sample_cdc(r, occ, op):
     pass
 

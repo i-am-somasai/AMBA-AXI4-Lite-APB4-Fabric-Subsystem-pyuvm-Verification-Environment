@@ -8,26 +8,30 @@ Every finding is addressed with honest evidence, verified by real tool execution
 ## Finding Details & Status
 
 ### F-01: Functional Coverage Fabrication & Monitor-Based Real Sampling
-- **Status:** TODO
+- **Status:** DONE
 - **Finding:** Functional coverage "100%" was achieved synthetically: `tb/pyuvm/sequences/coverage_closure_seq.py` directly invoked `sample_*` functions with hardcoded loops across bins. Monitors did not perform genuine bus observation for all covergroups. CDC lacked ratio/phase sweeps; framing error was sampled without driving bad stop bits.
-- **Planned Changes:**
-  - Delete all `sample_*` calls from `tb/pyuvm/sequences/` and `tb/pyuvm/tests/`.
-  - Re-architect `tb/pyuvm/func_cov/fabric_cov.py` and monitors to sample strictly from real DUT signal transitions:
-    - `cg_txn`: Sampled from AXI-Lite monitor on transaction completion.
-    - `cg_wstrb`, `cg_order`: Sampled from observed WSTRB and observed AW/W handshake arrival cycles.
-    - `cg_backpressure`: Sampled from observed ready/valid delays across all five channels.
-    - `cg_contention`: Sampled from cycle-aligned crossbar monitor watching both masters.
-    - `cg_apb`: Sampled from APB monitor observing PSEL, PENABLE, PREADY, PSLVERR, PSTRB.
-    - `cg_cdc`: Sampled from configured clock ratio/phase and FIFO occupancy probes.
-    - `cg_uart`: Sampled from observed UART pins, status registers, and baud dividers.
-    - `cg_reset`: Sampled by reset monitor recording in-flight transaction phases during reset.
-  - Add `scripts/check_no_synthetic_cov.sh` to enforce zero `sample_*` calls outside monitor/collector files.
-  - Document unreachable bins in `docs/coverage_waivers.md` with explicit justification.
-- **Evidence:** TBD (`docs/logs/check_no_synthetic_cov.log`, `docs/logs/coverage_merged.log`)
+- **Changes Made:**
+  - Deleted every `sample_*` call from `tb/pyuvm/sequences/` and `tb/pyuvm/tests/`. Converted sequences into pure stimulus generators.
+  - Implemented 6 passive hardware monitors in `tb/pyuvm/monitors/fabric_monitors.py` observing real signal transitions:
+    - `AxilBusMonitor`: watches physical bus transitions on AW, W, B, AR, R channels; decodes addresses and responses for `cg_txn`; observes `wstrb` bits and handshake timestamps for `cg_wstrb` and `cg_order`; measures valid/ready delay cycles for `cg_backpressure`.
+    - `CrossbarContentionMonitor`: cycle-aligned observer sampling `cg_contention` based on concurrent master request signals.
+    - `ApbBusMonitor`: watches APB SETUP and ACCESS phases, wait states, PSLVERR, and strobe classes for `cg_apb`.
+    - `CdcMonitor`: monitors CDC bridge FSM state, request FIFO occupancy, and clock ratio for `cg_cdc`.
+    - `UartActivityMonitor`: monitors UART register accesses, baud divisors, FIFO states, and error flags for `cg_uart`.
+    - `ResetPhaseMonitor`: monitors falling edge of `rst_n` and records in-flight transaction phases for `cg_reset`.
+  - Added `scripts/check_no_synthetic_cov.sh` and integrated it into `make lint`. Verified clean pass.
+  - Parameterized clock helper with `CLK_SLOW_PERIOD_NS` and `CLK_SLOW_PHASE_NS` environment variables, exercising all 3 clock ratios (25.0 ns, 10.3 ns, 6.0 ns) and multiple phases.
+  - Excluded 6 provably unreachable CDC FIFO `full` bins in `tb/pyuvm/func_cov/fabric_cov.py` and documented comprehensive architectural justifications in `docs/coverage_waivers.md`.
+  - Replaced fabricated 100% claim in `docs/results.md` with true measured functional coverage: **83.88%** (229 / 273 bins).
+- **Evidence:**
+  - `scripts/check_no_synthetic_cov.sh` (PASS)
+  - `docs/logs/func_cov.log` (real merged functional coverage report)
+  - `docs/coverage_waivers.md` (formal architectural waiver justifications)
+  - Commit `fix(F-01)`
 - **Before / After Numbers:**
-  - Before: 100.00% (280/280 bins) via synthetic sampling.
-  - After: TBD (measured honest coverage from real monitors).
-- **Remaining Issues:** None yet.
+  - Before: Fabricated 100.00% (280/280 bins) via synthetic loops in sequences.
+  - After: Honest **83.88%** (229/273 bins) observed from real DUT activity by monitors; 6 unreachable FIFO full bins waived.
+- **Remaining Issues:** The 44 uncovered bins (wait-states > 0, delayed B/R ready backpressure, framing error, and in-flight resets) correlate directly with the missing test cases to be implemented in Task 2.
 
 ---
 
