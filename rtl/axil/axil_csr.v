@@ -216,4 +216,58 @@ module axil_csr #(
         end
     end
 
+`ifdef FORMAL
+    reg f_past_valid = 0;
+    always @(posedge clk) f_past_valid <= 1;
+
+    always @(*) begin
+        if (!f_past_valid) assume (!rst_n);
+    end
+
+    // Master stability assumptions
+    always @(posedge clk) begin
+        if (f_past_valid && $past(rst_n) && rst_n) begin
+            if ($past(s_axil_awvalid) && !$past(s_axil_awready)) begin
+                assume (s_axil_awvalid);
+                assume ($stable(s_axil_awaddr));
+            end
+            if ($past(s_axil_wvalid) && !$past(s_axil_wready)) begin
+                assume (s_axil_wvalid);
+                assume ($stable(s_axil_wdata));
+                assume ($stable(s_axil_wstrb));
+            end
+            if ($past(s_axil_arvalid) && !$past(s_axil_arready)) begin
+                assume (s_axil_arvalid);
+                assume ($stable(s_axil_araddr));
+            end
+        end
+    end
+
+    always @(posedge clk) begin
+        if (rst_n) begin
+            // Constant identifiers
+            if (s_axil_rvalid && s_axil_rresp == RESP_OKAY) begin
+                if ($past(s_axil_arvalid && s_axil_arready && (read_offset == 8'h00)))
+                    assert (s_axil_rdata == CONST_ID);
+                if ($past(s_axil_arvalid && s_axil_arready && (read_offset == 8'h04)))
+                    assert (s_axil_rdata == CONST_VERSION);
+            end
+
+            // IRQ aggregation
+            assert (irq_o == |reg_irq_status[2:0]);
+            assert (reg_irq_raw == {29'b0, irq_sources});
+        end
+    end
+
+    // Covers
+    always @(posedge clk) begin
+        if (rst_n) begin
+            cover (irq_o);
+            cover (s_axil_bvalid && s_axil_bresp == RESP_OKAY);
+            cover (s_axil_rvalid && s_axil_rresp == RESP_OKAY);
+            cover (s_axil_bvalid && s_axil_bresp == RESP_SLVERR);
+        end
+    end
+`endif
+
 endmodule

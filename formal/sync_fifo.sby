@@ -1,0 +1,21 @@
+[tasks]
+prove
+cover
+
+[options]
+prove: mode prove
+prove: depth 20
+cover: mode cover
+cover: depth 20
+
+[engines]
+smtbmc boolector
+
+[script]
+read -formal -sv -DFORMAL sync_fifo.v
+read -formal -sv -DFORMAL sync_fifo_props.v
+prep -top sync_fifo_props
+
+[files]
+../rtl/common/sync_fifo.v
+sync_fifo_props.v

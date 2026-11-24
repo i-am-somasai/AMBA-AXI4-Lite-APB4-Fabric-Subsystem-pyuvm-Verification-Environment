@@ -144,4 +144,75 @@ module axil_ram #(
         end
     end
 
+`ifdef FORMAL
+    reg f_past_valid = 0;
+    always @(posedge clk) f_past_valid <= 1;
+
+    always @(*) begin
+        if (!f_past_valid) assume (!rst_n);
+    end
+
+    // AXI master protocol assumptions
+    always @(posedge clk) begin
+        if (f_past_valid && $past(rst_n) && rst_n) begin
+            if ($past(s_axil_awvalid) && !$past(s_axil_awready)) begin
+                assume (s_axil_awvalid);
+                assume ($stable(s_axil_awaddr));
+                assume ($stable(s_axil_awprot));
+            end
+            if ($past(s_axil_wvalid) && !$past(s_axil_wready)) begin
+                assume (s_axil_wvalid);
+                assume ($stable(s_axil_wdata));
+                assume ($stable(s_axil_wstrb));
+            end
+            if ($past(s_axil_arvalid) && !$past(s_axil_arready)) begin
+                assume (s_axil_arvalid);
+                assume ($stable(s_axil_araddr));
+                assume ($stable(s_axil_arprot));
+            end
+        end
+    end
+
+    wire write_commit = ((s_axil_awvalid && s_axil_awready || aw_done) &&
+                         (s_axil_wvalid && s_axil_wready || w_done) &&
+                         (!s_axil_bvalid || s_axil_bready));
+    wire read_commit  = (s_axil_arvalid && s_axil_arready);
+
+    always @(posedge clk) begin
+        if (rst_n) begin
+            assert (s_axil_bresp == RESP_OKAY || s_axil_bresp == RESP_SLVERR);
+            assert (s_axil_rresp == RESP_OKAY || s_axil_rresp == RESP_SLVERR);
+
+            if (f_past_valid && $past(rst_n)) begin
+                if ($past(write_commit)) begin
+                    assert (s_axil_bvalid);
+                    assert (s_axil_bresp == ($past(write_in_bounds) ? RESP_OKAY : RESP_SLVERR));
+                end else if ($past(s_axil_bvalid && !s_axil_bready)) begin
+                    assert (s_axil_bvalid);
+                    assert ($stable(s_axil_bresp));
+                end
+
+                if ($past(read_commit)) begin
+                    assert (s_axil_rvalid);
+                    assert (s_axil_rresp == ($past(read_in_bounds) ? RESP_OKAY : RESP_SLVERR));
+                end else if ($past(s_axil_rvalid && !s_axil_rready)) begin
+                    assert (s_axil_rvalid);
+                    assert ($stable(s_axil_rdata));
+                    assert ($stable(s_axil_rresp));
+                end
+            end
+        end
+    end
+
+    // Covers
+    always @(posedge clk) begin
+        if (rst_n) begin
+            cover (s_axil_bvalid && s_axil_bresp == RESP_OKAY);
+            cover (s_axil_bvalid && s_axil_bresp == RESP_SLVERR);
+            cover (s_axil_rvalid && s_axil_rresp == RESP_OKAY);
+            cover (s_axil_rvalid && s_axil_rresp == RESP_SLVERR);
+        end
+    end
+`endif
+
 endmodule

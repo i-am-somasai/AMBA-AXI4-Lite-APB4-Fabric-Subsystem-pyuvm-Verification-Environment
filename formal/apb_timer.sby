@@ -1,0 +1,19 @@
+[tasks]
+prove
+cover
+
+[options]
+prove: mode prove
+prove: depth 20
+cover: mode cover
+cover: depth 20
+
+[engines]
+smtbmc boolector
+
+[script]
+read -formal -DFORMAL apb_timer.v
+prep -top apb_timer
+
+[files]
+../rtl/apb/apb_timer.v

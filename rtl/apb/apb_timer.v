@@ -116,4 +116,81 @@ module apb_timer #(
         end
     end
 
+`ifdef FORMAL
+    wire apb_write = psel && penable && pwrite;
+    reg f_past_valid = 0;
+    always @(posedge clk) f_past_valid <= 1;
+
+    always @(*) begin
+        if (!f_past_valid) assume (!rst_n);
+    end
+
+    // APB protocol assumptions
+    always @(posedge clk) begin
+        if (f_past_valid && $past(rst_n) && rst_n) begin
+            if ($past(psel) && !$past(penable)) begin
+                assume (psel);
+                assume (penable);
+                assume ($stable(paddr));
+                assume ($stable(pwrite));
+                assume ($stable(pwdata));
+                assume ($stable(pstrb));
+                assume ($stable(pprot));
+            end
+            if ($past(psel) && $past(penable) && $past(pready)) begin
+                if (psel) assume (!penable);
+            end
+        end
+    end
+
+    // Functional assertions
+    always @(posedge clk) begin
+        if (rst_n) begin
+            assert (pslverr == 1'b0);
+            assert (timer_irq == (reg_ctrl[2] & reg_timeout));
+        end
+    end
+
+    always @(posedge clk) begin
+        if (f_past_valid && $past(rst_n) && rst_n) begin
+            // Down-counting when enabled, value > 0, and not written by APB
+            if ($past(reg_ctrl[0]) && ($past(reg_value) > 0) && !$past(apb_write && (paddr[3:2] == 2'b10))) begin
+                assert (reg_value == $past(reg_value) - 1'b1);
+            end
+            // Timeout event when value reaches 0
+            if ($past(reg_ctrl[0]) && ($past(reg_value) == 0)) begin
+                if (!$past(apb_write && (paddr[3:2] == 2'b11) && pwdata[0])) begin
+                    assert (reg_timeout == 1'b1);
+                end
+                if ($past(reg_ctrl[1])) begin
+                    if (!$past(apb_write && (paddr[3:2] == 2'b10))) begin
+                        assert (reg_value == $past(reg_load));
+                    end
+                    if (!$past(apb_write && (paddr[3:2] == 2'b00))) begin
+                        assert (reg_ctrl[0] == 1'b1);
+                    end
+                end else begin
+                    if (!$past(apb_write && (paddr[3:2] == 2'b00))) begin
+                        assert (reg_ctrl[0] == 1'b0);
+                    end
+                end
+            end
+            // Clear timeout on write-1-to-clear to STATUS
+            if ($past(apb_write && (paddr[3:2] == 2'b11) && pwdata[0])) begin
+                assert (reg_timeout == 1'b0);
+            end
+        end
+    end
+
+    // Covers
+    always @(posedge clk) begin
+        if (rst_n) begin
+            cover (timer_irq);
+            cover (reg_ctrl[0] && reg_timeout);
+            cover (reg_ctrl[1] && (reg_value == reg_load) && reg_timeout);
+            cover (psel && penable && pwrite && (paddr[3:2] == 2'b11) && pwdata[0]);
+        end
+    end
+`endif
+
 endmodule
