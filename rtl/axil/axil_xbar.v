@@ -315,16 +315,20 @@ module axil_xbar #(
                     w_done[gt]    <= 1'b0;
                     wr_prio[gt]   <= 1'b0;
                 end else begin
-                    // AW tracking
-                    if (aw_hs) begin
-                        aw_done[gt]   <= 1'b1;
+                    // Lock target to granted master as soon as transfer begins
+                    if (wr_active[gt] && !wr_locked[gt]) begin
                         wr_locked[gt] <= 1'b1;
                         wr_owner[gt]  <= active_wr_owner[gt];
                     end
 
+                    // AW tracking
+                    if (aw_hs) begin
+                        aw_done[gt] <= 1'b1;
+                    end
+
                     // W tracking
                     if (w_hs) begin
-                        w_done[gt]    <= 1'b1;
+                        w_done[gt]  <= 1'b1;
                     end
 
                     // B completion & lock release
@@ -434,12 +438,18 @@ module axil_xbar #(
                     ar_done[gt]   <= 1'b0;
                     rd_prio[gt]   <= 1'b0;
                 end else begin
-                    if (ar_hs) begin
-                        ar_done[gt]   <= 1'b1;
+                    // Lock target to granted master as soon as transfer begins
+                    if (rd_active[gt] && !rd_locked[gt]) begin
                         rd_locked[gt] <= 1'b1;
                         rd_owner[gt]  <= active_rd_owner[gt];
                     end
 
+                    // AR handshake tracking
+                    if (ar_hs) begin
+                        ar_done[gt] <= 1'b1;
+                    end
+
+                    // R completion & lock release
                     if (r_hs) begin
                         rd_locked[gt] <= 1'b0;
                         ar_done[gt]   <= 1'b0;
