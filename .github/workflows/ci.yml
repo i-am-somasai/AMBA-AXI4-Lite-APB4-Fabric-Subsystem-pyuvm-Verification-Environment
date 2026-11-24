@@ -1,0 +1,63 @@
+name: AMBA Fabric CI
+
+on:
+  push:
+    branches: [ main, 'phase-*' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  lint-and-verify:
+    name: Lint, Unit, Regression, Formal & Mutation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup OSS CAD Suite
+        uses: YosysHQ/setup-oss-cad-suite@v3
+        with:
+          version: '2024-05-01'
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Environment Sanity Check
+        run: |
+          which iverilog verilator yosys sby
+          python -c "import cocotb, pyuvm, cocotb_coverage; print('Python EDA packages OK')"
+
+      - name: RTL Lint (Verilator)
+        run: make lint
+
+      - name: L0 Unit Tests
+        run: make unit SIM=icarus
+
+      - name: L1/L2 Subsystem Regression
+        run: make regress SIM=icarus SEEDS=3
+
+      - name: SymbiYosys Formal Verification
+        run: make formal
+
+      - name: Sampled Mutation Testing (Sanity Check)
+        run: make mutation-sample
+
+      - name: Upload Logs and Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-logs-and-reports
+          path: |
+            docs/logs/
+            synth/results/
+            *.log
+            *.xml
