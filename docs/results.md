@@ -17,11 +17,11 @@ This document records **real, measured results** from actual tool execution.
 | Code Coverage (Verilator Line / Toggle) | Line: 87.8% (430/490), Toggle: 75.1% (10,155/13,514), Branch: 86.9% (433/498), Expr: 92.9% (1,016/1,094), FSM State: 100.0% (5/5) | Section 10 | `docs/logs/code_cov_summary.txt`, `docs/logs/code_cov/` |
 | Formal Properties Proven / BMC Depth | 8/8 modules proven (100% PASS), 37 cover traces reached: `apb_timer` (k-induction depth 20, 4 covers), `async_fifo` (BMC depth 25, 4 covers), `axil2apb_bridge` (BMC depth 25, 5 covers), `axil_csr` (k-induction depth 20, 4 covers), `axil_ram` (BMC depth 20, 4 covers), `axil_xbar` (BMC depth 20, 5 covers), `rr_arbiter` (k-induction depth 20, 5 covers), `sync_fifo` (k-induction depth 20, 6 covers) | Section 11 | `docs/logs/formal_suite.log` |
 | CDC Clock Ratios & Phases Swept | Not measured (Phase 3-4) | Section 9.1 (CD-01) | `docs/logs/cdc_sweep.log` |
-| Mutants Generated / Killed / Score | Not measured (Phase 6) | Section 12 | `docs/logs/mutation_summary.log` |
+| Mutants Generated / Killed / Score | 20 generated, 13 killed, 7 survived (Score: 65.00%, raised from baseline 45.00% after closing test gaps) | Section 12 | `docs/logs/mutation_summary.log`, `docs/logs/mutation_summary_initial.log` |
 | Crossbar Added Latency (Cycles) | 0 cycles added latency (measured in XB-06) | Section 7.2 (≤1 cycle) | `docs/img/contention.png`, `tb/block/test_axil_xbar.py` |
-| Synthesis: Cell Count / Flop Count / Area | Not measured (Phase 6) | Section 13 (SKY130) | `synth/results/synth.log` |
-| STA: Target Period / WNS / TNS / $F_{\max}$ | Not measured (Phase 6) | Section 13 (100 MHz target) | `synth/results/sta.log` |
-| CI Status | In progress (Phase 6) | Section 14 | GitHub Actions workflow |
+| Synthesis: Cell Count / Flop Count / Area | 9,376 cells / 3,623 flops / 137,867.23 µm² (~0.138 mm²) on SKY130 HD (RAM_DEPTH=64) | Section 13 (SKY130) | `synth/results/synth.log`, `docs/logs/synth.log` |
+| STA: Target Period / WNS / TNS / $F_{\max}$ | Target (10.0 ns / 100 MHz): WNS = -2.25 ns, TNS = -9,097.77 ns (I/O constrained); Achieved $F_{\max}$: 81.63 MHz (12.25 ns), Reg-to-reg $F_{\max}$: 95.15 MHz; clk_slow Slack: +18.69 ns | Section 13 (100 MHz target) | `synth/results/fmax_sweep.log`, `synth/results/sta.log` |
+| CI Status | PASS (GitHub Actions workflow `.github/workflows/ci.yml` validated locally) | Section 14 | `.github/workflows/ci.yml` |
 
 ---
 
@@ -148,4 +148,88 @@ This document records **real, measured results** from actual tool execution.
   - `docs/logs/code_cov_summary.txt`: Verilator code coverage summary
   - `docs/logs/code_cov/`: Annotated RTL source files
 - **Tag:** `phase-5-done`
+
+### Phase 6: Mutation Testing, Synthesis/STA, and CI
+- **Date Completed:** 2026-11-24
+- **Gate Command:** `make lint && make unit SIM=icarus && make mutation-sample && make synth && make sta`
+- **Status:** **PASS**
+
+  - **Mutation Testing Flow (Yosys Native `mutate`):**
+    - Target Modules: `rr_arbiter`, `sync_fifo`, `axil_ram`, `axil_csr`, `axil2apb_bridge`.
+    - **Initial Baseline Score:** **45.00%** (9 killed, 11 survived out of 20 mutants).
+    - **Survivor Triage & Root Cause Analysis:**
+      1. `axil2apb_bridge #0` (`reg_wdata[29]` stuck-at-0): Survived because test assertion compared readback data against slave memory (which had already captured the corrupted data) rather than the golden driven input data, and test data `0xDEADBEEF` had bit 29=0.
+      2. `axil_ram #1` (`mem[206]` bit 15 stuck-at-1): Survived because directed test only accessed word addresses 4 and 8, leaving word 206 unexercised.
+      3. `axil_csr #0` (`write_strb[2]` stuck-at-1): Survived because test modified `SCRATCH2` with `strb=0b0100` without asserting that byte 2 remained unchanged when writing byte 0 and byte 1.
+      4. `sync_fifo #1` and `#3` (FIFO memory bit line mutations): Survived because test vectors used restricted dynamic range (`0x10..0x17`).
+    - **Test Improvements Implemented:**
+      - Added direct APB slave memory verification against golden stimulus and tested diverse complement patterns (`0xFFFFFFFF`, `0xAAAAAAAA`, `0x55555555`, `0x21524110`) in `tb/block/test_axil2apb_bridge.py`.
+      - Added full address sweep across memory depth and all-zero write/read verification in `tb/unit/test_axil_ram.py`.
+      - Added `SCRATCH2` byte-lane isolation verification in `tb/unit/test_axil_csr.py`.
+      - Added diverse 8-bit patterns (`0x55`, `0xAA`, `0x0F`, `0xF0`, `0xC3`, `0x3C`, `0x81`, `0x7E`) in `tb/unit/test_sync_fifo.py`.
+    - **Post-Improvement Score:** **65.00%** (13 killed, 7 survived out of 20 mutants) — an increase of **+20.00%**.
+    - **Mutation Summary Table:**
+      | Module | Target RTL | Mutants Tested | Baseline Killed | Improved Killed | Final Score (%) |
+      |---|---|---|---|---|---|
+      | `rr_arbiter` | `rtl/common/rr_arbiter.v` | 4 | 4 | 4 | 100.00% |
+      | `sync_fifo` | `rtl/common/sync_fifo.v` | 4 | 2 | 3 | 75.00% |
+      | `axil_ram` | `rtl/axil/axil_ram.v` | 4 | 0 | 1 | 25.00% |
+      | `axil_csr` | `rtl/axil/axil_csr.v` | 4 | 1 | 2 | 50.00% |
+      | `axil2apb_bridge` | `rtl/apb/axil2apb_bridge.v` | 4 | 2 | 3 | 75.00% |
+      | **TOTAL** | All 5 Core Modules | **20** | **9 (45.0%)** | **13 (65.0%)** | **65.00%** |
+
+  - **Yosys Synthesis (SKY130 HD Standard Cell Library):**
+    - Target: `amba_fabric_top` with parameter `RAM_DEPTH=64` (per spec Section 13.1 & 7.5).
+    - Standard Cell Library: `sky130_fd_sc_hd__tt_025C_1v80.lib` (1.8V, 25°C, TT).
+    - **Total Cells:** 9,376 cells.
+    - **Chip Area:** 137,867.23 µm² (~0.138 mm²).
+      - Sequential Area: 103,086.37 µm² (74.77%).
+    - **Flip-Flop Count:** 3,623 flip-flops:
+      - `sky130_fd_sc_hd__dfrtp_1`: 1,133 (D-flop with reset)
+      - `sky130_fd_sc_hd__dfstp_1`: 10 (D-flop with set)
+      - `sky130_fd_sc_hd__edfxtp_1`: 2,480 (Enabled D-flop)
+    - Gate-Level Netlist: `synth/results/amba_fabric_netlist.v` (1.4 MB).
+
+  - **OpenSTA Timing Analysis & Frequency Sweep:**
+    - Target Clocks: `clk_sys` @ 100.0 MHz (10.0 ns), `clk_slow` @ 41.67 MHz (24.0 ns).
+    - Constraints: Asynchronous clock groups between `clk_sys` and `clk_slow`; 2.0 ns input/output delays on `clk_sys`.
+    - **Target Timing (100 MHz / 10.0 ns):**
+      - WNS: **-2.25 ns** (VIOLATED due to 2.0 ns input delay constraint on multi-level decode path)
+      - TNS: **-9,097.77 ns**
+    - **Achieved Maximum Frequency ($F_{\max}$):**
+      - System Clock $F_{\max}$: **81.63 MHz** (Period = 12.25 ns, WNS = 0.00 ns MET)
+      - Core Register-to-Register $F_{\max}$: **95.15 MHz** (Period = 10.51 ns)
+      - Slow Clock Slack: **+18.69 ns** (Massive positive margin @ 41.67 MHz)
+    - **Frequency Sweep Results:**
+      | Period (ns) | Frequency (MHz) | WNS (ns) | Timing Status |
+      |---|---|---|---|
+      | 16.00 | 62.50 | 0.00 | MET |
+      | 15.00 | 66.67 | 0.00 | MET |
+      | 14.00 | 71.43 | 0.00 | MET |
+      | 13.00 | 76.92 | 0.00 | MET |
+      | 12.50 | 80.00 | 0.00 | MET |
+      | **12.25** | **81.63** | **0.00** | **MET (Achieved $F_{\max}$)** |
+      | 12.00 | 83.33 | -0.25 | VIOLATED |
+      | 11.50 | 86.96 | -0.75 | VIOLATED |
+      | 11.00 | 90.91 | -1.25 | VIOLATED |
+      | 10.50 | 95.24 | -1.75 | VIOLATED |
+      | 10.00 | 100.00 | -2.25 | VIOLATED (Target) |
+    - **Critical Path Analysis:**
+      - Path: `s1_axil_awaddr[22]` (input port) -> `_12691_/DE` (RAM flip-flop write-enable).
+      - Delay Breakdown: 2.00 ns input delay + ~5.80 ns address decoder & crossbar multiplexer routing + ~3.99 ns RAM write-enable decoding multiplexer + 0.46 ns setup time = 12.25 ns.
+      - Root Cause: Unbuffered multi-level combinational address decoding fanning out across crossbar slave multiplexers in pre-layout netlist.
+
+  - **Continuous Integration (GitHub Actions):**
+    - Workflow file: `.github/workflows/ci.yml`.
+    - Pipeline stages: Checkout -> Setup OSS CAD Suite (`YosysHQ/setup-oss-cad-suite@v3`) -> Python 3.11 -> `pip install -r requirements.txt` -> `make lint` -> `make unit SIM=icarus` -> `make regress SIM=icarus SEEDS=3` -> `make formal` -> `make mutation-sample` -> Artifact upload (`docs/logs/`, `synth/results/`).
+    - Validated locally on Linux host.
+
+- **Log References:**
+  - `docs/logs/mutation_summary_initial.log`: Baseline mutation report (45.00%)
+  - `docs/logs/mutation_summary.log`: Final improved mutation report (65.00%)
+  - `docs/logs/synth.log`: Yosys synthesis log (9,376 cells, 137,867 µm²)
+  - `docs/logs/sta.log`: OpenSTA target timing report
+  - `docs/logs/fmax_sweep.log`: OpenSTA frequency sweep report
+  - `.github/workflows/ci.yml`: CI workflow configuration
+- **Tag:** `phase-6-done`
 

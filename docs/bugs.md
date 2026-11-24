@@ -191,5 +191,23 @@ Per project rules, every bug must be reproduced deterministically, diagnosed to 
 - **Fix Applied:** Embedded formal properties directly within each RTL module under `` `ifdef FORMAL ``, keeping formal verification clean, self-contained, and portable.
 - **Regression Test:** `make formal` (all 8 suites)
 
+### [BUG-020] APB Bridge Test Stimulus Self-Comparison Masking Write Data Bit-Corruption
+- **Date Discovered:** 2026-11-24
+- **Target Component:** `tb/block/test_axil2apb_bridge.py`
+- **Detection Method:** Mutation Testing (`mutation/results/survivors/axil2apb_bridge_mut_0.v`)
+- **Symptom:** Mutant with `reg_wdata[29]` stuck at 0 survived test execution without detection.
+- **Root Cause:** The testbench read back from the APB slave memory and compared read data against `apb_slave.memory.get(offset)`. Because the APB slave memory captured the already-corrupted write data presented on `pwdata`, the assertion `rdata == apb_slave.memory` evaluated true, comparing the corrupted output to the corrupted internal state rather than the golden driven input stimulus. Furthermore, the test data vector `0xDEADBEEF` had bit 29 equal to 0, masking the fault.
+- **Fix Applied:** In `tb/block/test_axil2apb_bridge.py`, added direct verification that `apb_slave.memory[offset] == pdata` against the golden input stimulus, and added complementary test patterns (`0xFFFFFFFF`, `0xAAAAAAAA`, `0x55555555`, `0x21524110`) where bit 29 is 1.
+- **Regression Test:** `make mutation-sample` (`axil2apb_bridge`)
+
+### [BUG-021] AXI-Lite RAM Directed Test Address Locality Masking Memory Word Faults
+- **Date Discovered:** 2026-11-24
+- **Target Component:** `tb/unit/test_axil_ram.py`
+- **Detection Method:** Mutation Testing (`mutation/results/survivors/axil_ram_mut_1.v`)
+- **Symptom:** Mutant with `mem[206]` bit 15 stuck at 1 survived test execution without detection.
+- **Root Cause:** `test_axil_ram.py` only exercised two word addresses (word 4: `0x50000010` and word 8: `0x50000020`), leaving the remaining 254 words in the 256-word scratchpad RAM completely untouched during unit test verification.
+- **Fix Applied:** In `tb/unit/test_axil_ram.py`, added a memory sweep across the full depth (words 0, 1, 16, 64, 128, 206, 255) writing unique pseudorandom patterns, followed by an all-zero write/read pass to detect any stuck-at-1 bits across the memory array.
+- **Regression Test:** `make mutation-sample` (`axil_ram`)
+
 
 
