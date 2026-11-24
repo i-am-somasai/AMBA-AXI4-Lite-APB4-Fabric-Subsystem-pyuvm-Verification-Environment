@@ -1,0 +1,552 @@
+=== Running RTL Lint (Verilator) ===
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 1.205 MB sources in 19 modules, into 0.507 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.274 s (elab=0.057, cvt=0.159, bld=0.000); cpu 0.251 s on 1 threads; allocated 27.285 MB
+Lint CLEAN.
+=== Running L0 Unit Tests (SIM=icarus) ===
+make[1]: Entering directory './tb/unit'
+rm -rf sim_build* results*.xml results.xml dump.vcd *.vcd __pycache__
+make[1]: Leaving directory './tb/unit'
+make[1]: Entering directory './tb/unit'
+--- Running test_hello_world ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=hello_world \
+	MODULE=test_hello_world \
+	VERILOG_SOURCES=./tb/unit/hello_world.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f results.xml
+"make" -f ./tb/unit/Makefile.single results.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p sim_build_hello_world
+oss-cad-suite/bin/iverilog -o sim_build_hello_world/sim.vvp -s hello_world -g2012 -f sim_build_hello_world/cmds.f  ./tb/unit/hello_world.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_hello_world COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=hello_world TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_hello_world/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795525770
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_hello_world.test_hello_world (1/1)
+                                                            Phase 0 cocotb + pyuvm integration smoke test
+     0.00ns INFO     cocotb.hello_world                 Starting Phase 0 cocotb + pyuvm smoke test
+     0.00ns INFO     ../tb/unit/test_hello_world.py(17) [uvm_test_top]: HelloTest: build_phase executed
+     0.00ns INFO     ../tb/unit/test_hello_world.py(11) [uvm_test_top.env]: HelloEnv: build_phase executed
+     0.00ns INFO     ../tb/unit/test_hello_world.py(22) [uvm_test_top]: HelloTest: driving clock and reset
+    81.00ns INFO     ../tb/unit/test_hello_world.py(39) [uvm_test_top]: HelloTest: count verified successfully (5)
+    81.00ns INFO     cocotb.hello_world                 Phase 0 cocotb + pyuvm smoke test PASSED
+    81.00ns INFO     cocotb.regression                  test_hello_world.test_hello_world passed
+    81.00ns INFO     cocotb.regression                  *******************************************************************************************
+                                                        ** TEST                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************
+                                                        ** test_hello_world.test_hello_world   PASS          81.00           0.06       1425.29  **
+                                                        *******************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                      81.00           0.06       1274.02  **
+                                                        *******************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+--- Running test_rst_sync ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=rst_sync \
+	MODULE=test_rst_sync \
+	VERILOG_SOURCES=./rtl/common/rst_sync.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f results.xml
+"make" -f ./tb/unit/Makefile.single results.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p sim_build_rst_sync
+oss-cad-suite/bin/iverilog -o sim_build_rst_sync/sim.vvp -s rst_sync -g2012 -f sim_build_rst_sync/cmds.f  ./rtl/common/rst_sync.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_rst_sync COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=rst_sync TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_rst_sync/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795525775
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_rst_sync.test_rst_sync_basic (1/1)
+                                                            Verify asynchronous assertion and 2-cycle synchronous deassertion.
+     0.00ns INFO     cocotb.rst_sync                    Starting test_rst_sync_basic
+    56.00ns INFO     cocotb.rst_sync                    test_rst_sync_basic PASSED
+    56.00ns INFO     cocotb.regression                  test_rst_sync.test_rst_sync_basic passed
+    56.00ns INFO     cocotb.regression                  *******************************************************************************************
+                                                        ** TEST                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************
+                                                        ** test_rst_sync.test_rst_sync_basic   PASS          56.00           0.00      32419.74  **
+                                                        *******************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                      56.00           0.01       6532.82  **
+                                                        *******************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+--- Running test_sync_fifo ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=sync_fifo \
+	MODULE=test_sync_fifo \
+	VERILOG_SOURCES=./rtl/common/sync_fifo.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f results.xml
+"make" -f ./tb/unit/Makefile.single results.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p sim_build_sync_fifo
+oss-cad-suite/bin/iverilog -o sim_build_sync_fifo/sim.vvp -s sync_fifo -g2012 -f sim_build_sync_fifo/cmds.f  ./rtl/common/sync_fifo.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_sync_fifo COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=sync_fifo TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_sync_fifo/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795525779
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_sync_fifo.test_sync_fifo_all (1/1)
+                                                            Test full, empty, count, overflow, underflow, and simultaneous push/pop.
+     0.00ns INFO     cocotb.sync_fifo                   Starting test_sync_fifo_all
+   260.00ns INFO     cocotb.sync_fifo                   test_sync_fifo_all PASSED
+   260.00ns INFO     cocotb.regression                  test_sync_fifo.test_sync_fifo_all passed
+   260.00ns INFO     cocotb.regression                  *******************************************************************************************
+                                                        ** TEST                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************
+                                                        ** test_sync_fifo.test_sync_fifo_all   PASS         260.00           0.00      75677.93  **
+                                                        *******************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                     260.00           0.01      29236.44  **
+                                                        *******************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+--- Running test_async_fifo ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=async_fifo \
+	MODULE=test_async_fifo \
+	VERILOG_SOURCES=./rtl/common/async_fifo.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f results.xml
+"make" -f ./tb/unit/Makefile.single results.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p sim_build_async_fifo
+oss-cad-suite/bin/iverilog -o sim_build_async_fifo/sim.vvp -s async_fifo -g2012 -f sim_build_async_fifo/cmds.f  ./rtl/common/async_fifo.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_async_fifo COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=async_fifo TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_async_fifo/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795525782
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_async_fifo.test_async_fifo_dual_clock (1/1)
+                                                            Verify dual-clock async FIFO across different clock ratios and data integrity.
+     0.00ns INFO     cocotb.async_fifo                  Starting test_async_fifo_dual_clock
+   443.00ns INFO     cocotb.async_fifo                  test_async_fifo_dual_clock PASSED
+   443.00ns INFO     cocotb.regression                  test_async_fifo.test_async_fifo_dual_clock passed
+   443.00ns INFO     cocotb.regression                  ****************************************************************************************************
+                                                        ** TEST                                        STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ****************************************************************************************************
+                                                        ** test_async_fifo.test_async_fifo_dual_clock   PASS         443.00           0.00      95910.63  **
+                                                        ****************************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                              443.00           0.01      46928.24  **
+                                                        ****************************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+--- Running test_rr_arbiter ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=rr_arbiter \
+	MODULE=test_rr_arbiter \
+	VERILOG_SOURCES=./rtl/common/rr_arbiter.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f results.xml
+"make" -f ./tb/unit/Makefile.single results.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p sim_build_rr_arbiter
+oss-cad-suite/bin/iverilog -o sim_build_rr_arbiter/sim.vvp -s rr_arbiter -g2012 -f sim_build_rr_arbiter/cmds.f  ./rtl/common/rr_arbiter.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_rr_arbiter COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=rr_arbiter TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_rr_arbiter/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795525784
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_rr_arbiter.test_rr_arbiter_fairness_and_lock (1/1)
+                                                            Test single request, round-robin fairness, and transaction lock behavior.
+     0.00ns INFO     cocotb.rr_arbiter                  Starting test_rr_arbiter_fairness_and_lock
+   191.00ns INFO     cocotb.rr_arbiter                  test_rr_arbiter_fairness_and_lock PASSED
+   191.00ns INFO     cocotb.regression                  test_rr_arbiter.test_rr_arbiter_fairness_and_lock passed
+   191.00ns INFO     cocotb.regression                  ***********************************************************************************************************
+                                                        ** TEST                                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ***********************************************************************************************************
+                                                        ** test_rr_arbiter.test_rr_arbiter_fairness_and_lock   PASS         191.00           0.01      19706.10  **
+                                                        ***********************************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                                     191.00           0.01      13535.73  **
+                                                        ***********************************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+--- Running test_axil_default_slave ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=axil_default_slave \
+	MODULE=test_axil_default_slave \
+	VERILOG_SOURCES=./rtl/axil/axil_default_slave.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f results.xml
+"make" -f ./tb/unit/Makefile.single results.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p sim_build_axil_default_slave
+oss-cad-suite/bin/iverilog -o sim_build_axil_default_slave/sim.vvp -s axil_default_slave -g2012 -f sim_build_axil_default_slave/cmds.f  ./rtl/axil/axil_default_slave.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_axil_default_slave COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=axil_default_slave TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_axil_default_slave/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795525787
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_axil_default_slave.test_axil_default_slave_all (1/1)
+                                                            Verify that default slave returns DECERR on writes and reads in all channel arrival orders.
+     0.00ns INFO     cocotb.axil_default_slave          Starting test_axil_default_slave_all
+   160.00ns INFO     cocotb.axil_default_slave          test_axil_default_slave_all PASSED
+   160.00ns INFO     cocotb.regression                  test_axil_default_slave.test_axil_default_slave_all passed
+   160.00ns INFO     cocotb.regression                  *************************************************************************************************************
+                                                        ** TEST                                                 STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *************************************************************************************************************
+                                                        ** test_axil_default_slave.test_axil_default_slave_all   PASS         160.00           0.00      45063.70  **
+                                                        *************************************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                                       160.00           0.01      22512.95  **
+                                                        *************************************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+--- Running test_axil_ram ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=axil_ram \
+	MODULE=test_axil_ram \
+	VERILOG_SOURCES=./rtl/axil/axil_ram.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f results.xml
+"make" -f ./tb/unit/Makefile.single results.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p sim_build_axil_ram
+oss-cad-suite/bin/iverilog -o sim_build_axil_ram/sim.vvp -s axil_ram -g2012 -f sim_build_axil_ram/cmds.f  ./rtl/axil/axil_ram.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_axil_ram COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=axil_ram TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_axil_ram/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795525790
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_axil_ram.test_axil_ram_operations (1/1)
+                                                            Verify RAM reads, writes, byte enables, and out-of-range SLVERR.
+     0.00ns INFO     cocotb.axil_ram                    Starting test_axil_ram_operations
+   910.00ns INFO     cocotb.axil_ram                    test_axil_ram_operations PASSED
+   910.00ns INFO     cocotb.regression                  test_axil_ram.test_axil_ram_operations passed
+   910.00ns INFO     cocotb.regression                  ************************************************************************************************
+                                                        ** TEST                                    STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ************************************************************************************************
+                                                        ** test_axil_ram.test_axil_ram_operations   PASS         910.00           0.01      74078.42  **
+                                                        ************************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                          910.00           0.02      53071.79  **
+                                                        ************************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+--- Running test_axil_csr ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=axil_csr \
+	MODULE=test_axil_csr \
+	VERILOG_SOURCES=./rtl/axil/axil_csr.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f results.xml
+"make" -f ./tb/unit/Makefile.single results.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p sim_build_axil_csr
+oss-cad-suite/bin/iverilog -o sim_build_axil_csr/sim.vvp -s axil_csr -g2012 -f sim_build_axil_csr/cmds.f  ./rtl/axil/axil_csr.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_axil_csr COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=axil_csr TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_axil_csr/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795525792
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_axil_csr.test_axil_csr_all (1/1)
+                                                            Verify CSR register map, read-only behavior, W1C semantics, and IRQ aggregation.
+     0.00ns INFO     cocotb.axil_csr                    Starting test_axil_csr_all
+   690.00ns INFO     cocotb.axil_csr                    test_axil_csr_all PASSED
+   690.00ns INFO     cocotb.regression                  test_axil_csr.test_axil_csr_all passed
+   690.00ns INFO     cocotb.regression                  *****************************************************************************************
+                                                        ** TEST                             STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *****************************************************************************************
+                                                        ** test_axil_csr.test_axil_csr_all   PASS         690.00           0.01      72984.89  **
+                                                        *****************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                   690.00           0.01      47068.76  **
+                                                        *****************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+=====================================================
+All L0 unit tests executed successfully (SIM=icarus).
+=====================================================
+make[1]: Leaving directory './tb/unit'
+=== Running pyuvm Regression (SIM=icarus, SEEDS=1) ===
+make[1]: Entering directory './tb/pyuvm'
+--- Running pyuvm directed tests (XB-09..XB-15, BR-04..BR-06) ---
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_directed \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=icarus
+make[2]: Entering directory './tb/pyuvm'
+rm -f results.xml
+"make" -f ./tb/pyuvm/Makefile.single results.xml
+make[3]: Entering directory './tb/pyuvm'
+mkdir -p sim_build_amba_fabric_top
+oss-cad-suite/bin/iverilog -o sim_build_amba_fabric_top/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f sim_build_amba_fabric_top/cmds.f  ./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_directed COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_amba_fabric_top/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795525795
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_directed.TestSlverr (1/8)
+                                                            XB-11: SLVERR propagation from all subsystems.
+   920.00ns INFO     ..uvm/env/fabric_scoreboard.py(84) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=8 Writes=4 Reads=4 Mismatches=0 ---
+   920.00ns INFO     ..uvm/env/fabric_scoreboard.py(97) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+   920.00ns INFO     cocotb.regression                  test_directed.TestSlverr passed
+   920.00ns INFO     cocotb.regression                  running test_directed.TestProtPassThrough (2/8)
+                                                            XB-14: AWPROT and ARPROT pass-through.
+  1720.00ns INFO     ..uvm/env/fabric_scoreboard.py(84) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10 Writes=5 Reads=5 Mismatches=0 ---
+  1720.00ns INFO     ..uvm/env/fabric_scoreboard.py(97) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  1720.00ns INFO     cocotb.regression                  test_directed.TestProtPassThrough passed
+  1720.00ns INFO     cocotb.regression                  running test_directed.TestUnaligned (3/8)
+                                                            XB-15: Unaligned address LSBs.
+  2120.00ns INFO     ..uvm/env/fabric_scoreboard.py(84) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=5 Writes=2 Reads=3 Mismatches=0 ---
+  2120.00ns INFO     ..uvm/env/fabric_scoreboard.py(97) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  2120.00ns INFO     cocotb.regression                  test_directed.TestUnaligned passed
+  2120.00ns INFO     cocotb.regression                  running test_directed.TestWriteOrder (4/8)
+                                                            BR-06 & XB write channel ordering test.
+  2570.00ns INFO     ..uvm/env/fabric_scoreboard.py(84) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=6 Writes=3 Reads=3 Mismatches=0 ---
+  2570.00ns INFO     ..uvm/env/fabric_scoreboard.py(97) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  2570.00ns INFO     cocotb.regression                  test_directed.TestWriteOrder passed
+  2570.00ns INFO     cocotb.regression                  running test_directed.TestStrobes (5/8)
+                                                            BR-04: WSTRB and PSTRB permutations.
+  3010.00ns INFO     ..uvm/env/fabric_scoreboard.py(84) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=7 Writes=4 Reads=3 Mismatches=0 ---
+  3010.00ns INFO     ..uvm/env/fabric_scoreboard.py(97) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  3010.00ns INFO     cocotb.regression                  test_directed.TestStrobes passed
+  3010.00ns INFO     cocotb.regression                  running test_directed.TestResetRecovery (6/8)
+                                                            XB-12: Reset during in-flight transaction, then verify clean recovery.
+  3490.01ns INFO     ..uvm/env/fabric_scoreboard.py(84) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=4 Writes=2 Reads=2 Mismatches=0 ---
+  3490.01ns INFO     ..uvm/env/fabric_scoreboard.py(97) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  3490.01ns INFO     cocotb.regression                  test_directed.TestResetRecovery passed
+  3490.01ns INFO     cocotb.regression                  running test_directed.TestContention (7/8)
+                                                            BR-05: Back-to-back mixed access from both masters to same slave (RAM).
+  3900.01ns INFO     ..uvm/env/fabric_scoreboard.py(84) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=4 Writes=2 Reads=2 Mismatches=0 ---
+  3900.01ns INFO     ..uvm/env/fabric_scoreboard.py(97) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  3900.01ns INFO     cocotb.regression                  test_directed.TestContention passed
+  3900.01ns INFO     cocotb.regression                  running test_directed.TestCoverageClosure (8/8)
+                                                            Phase 5: Functional coverage closure exercising all Section 10 covergroups.
+ 17490.01ns INFO     ..uvm/env/fabric_scoreboard.py(84) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=188 Writes=170 Reads=18 Mismatches=0 ---
+ 17490.01ns INFO     ..uvm/env/fabric_scoreboard.py(97) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+ 17490.01ns INFO     cocotb.regression                  test_directed.TestCoverageClosure passed
+ 17490.01ns INFO     cocotb.regression                  *******************************************************************************************
+                                                        ** TEST                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************
+                                                        ** test_directed.TestSlverr            PASS         920.00           0.09      10813.58  **
+                                                        ** test_directed.TestProtPassThrough   PASS         800.00           0.04      20967.33  **
+                                                        ** test_directed.TestUnaligned         PASS         400.00           0.03      12577.76  **
+                                                        ** test_directed.TestWriteOrder        PASS         450.00           0.03      13837.31  **
+                                                        ** test_directed.TestStrobes           PASS         440.00           0.03      13536.66  **
+                                                        ** test_directed.TestResetRecovery     PASS         480.00           0.03      14812.68  **
+                                                        ** test_directed.TestContention        PASS         410.00           0.03      12387.91  **
+                                                        ** test_directed.TestCoverageClosure   PASS       13590.00           0.26      52195.48  **
+                                                        *******************************************************************************************
+                                                        ** TESTS=8 PASS=8 FAIL=0 SKIP=0                   17490.01           0.57      30716.56  **
+                                                        *******************************************************************************************
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+=== Starting XB-13 Multi-Seed Stress Regression (5 Seeds) ===
+>>> Running stress seed 42...
+make[2]: Entering directory './tb/pyuvm'
+rm -f results.xml
+"make" -f ./tb/pyuvm/Makefile.single results.xml
+make[3]: Entering directory './tb/pyuvm'
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_amba_fabric_top/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795525798
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.TestStress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=42 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(51) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+377400.00ns INFO     ..b/pyuvm/tests/test_stress.py(66) [uvm_test_top]: === Stress sequence completed successfully ===
+377400.00ns INFO     ..uvm/env/fabric_scoreboard.py(84) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4985 Reads=5015 Mismatches=0 ---
+377400.00ns INFO     ..uvm/env/fabric_scoreboard.py(97) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_42.yaml
+377400.00ns INFO     cocotb.regression                  test_stress.TestStress passed
+377400.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.TestStress         PASS      377400.00           7.33      51488.03  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             377400.00           7.33      51457.51  **
+                                                        **************************************************************************************
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+>>> Running stress seed 123...
+make[2]: Entering directory './tb/pyuvm'
+rm -f results.xml
+"make" -f ./tb/pyuvm/Makefile.single results.xml
+make[3]: Entering directory './tb/pyuvm'
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_amba_fabric_top/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795525809
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.TestStress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=123 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(51) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+385390.00ns INFO     ..b/pyuvm/tests/test_stress.py(66) [uvm_test_top]: === Stress sequence completed successfully ===
+385390.00ns INFO     ..uvm/env/fabric_scoreboard.py(84) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5109 Reads=4891 Mismatches=0 ---
+385390.00ns INFO     ..uvm/env/fabric_scoreboard.py(97) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_123.yaml
+385390.00ns INFO     cocotb.regression                  test_stress.TestStress passed
+385390.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.TestStress         PASS      385390.00           7.22      53393.45  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             385390.00           7.22      53361.83  **
+                                                        **************************************************************************************
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+>>> Running stress seed 777...
+make[2]: Entering directory './tb/pyuvm'
+rm -f results.xml
+"make" -f ./tb/pyuvm/Makefile.single results.xml
+make[3]: Entering directory './tb/pyuvm'
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_amba_fabric_top/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795525818
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.TestStress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=777 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(51) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+389290.00ns INFO     ..b/pyuvm/tests/test_stress.py(66) [uvm_test_top]: === Stress sequence completed successfully ===
+389290.00ns INFO     ..uvm/env/fabric_scoreboard.py(84) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4990 Reads=5010 Mismatches=0 ---
+389290.00ns INFO     ..uvm/env/fabric_scoreboard.py(97) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_777.yaml
+389290.00ns INFO     cocotb.regression                  test_stress.TestStress passed
+389290.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.TestStress         PASS      389290.00           7.66      50815.87  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             389290.00           7.67      50787.57  **
+                                                        **************************************************************************************
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+>>> Running stress seed 2024...
+make[2]: Entering directory './tb/pyuvm'
+rm -f results.xml
+"make" -f ./tb/pyuvm/Makefile.single results.xml
+make[3]: Entering directory './tb/pyuvm'
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_amba_fabric_top/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795525829
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.TestStress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=2024 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(51) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+391400.00ns INFO     ..b/pyuvm/tests/test_stress.py(66) [uvm_test_top]: === Stress sequence completed successfully ===
+391400.00ns INFO     ..uvm/env/fabric_scoreboard.py(84) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5035 Reads=4965 Mismatches=0 ---
+391400.00ns INFO     ..uvm/env/fabric_scoreboard.py(97) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_2024.yaml
+391400.00ns INFO     cocotb.regression                  test_stress.TestStress passed
+391400.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.TestStress         PASS      391400.00           7.35      53266.90  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             391400.00           7.35      53236.17  **
+                                                        **************************************************************************************
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+>>> Running stress seed 9999...
+make[2]: Entering directory './tb/pyuvm'
+rm -f results.xml
+"make" -f ./tb/pyuvm/Makefile.single results.xml
+make[3]: Entering directory './tb/pyuvm'
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_amba_fabric_top/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795525839
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.TestStress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=9999 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(51) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+392100.00ns INFO     ..b/pyuvm/tests/test_stress.py(66) [uvm_test_top]: === Stress sequence completed successfully ===
+392100.00ns INFO     ..uvm/env/fabric_scoreboard.py(84) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5131 Reads=4869 Mismatches=0 ---
+392100.00ns INFO     ..uvm/env/fabric_scoreboard.py(97) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_9999.yaml
+392100.00ns INFO     cocotb.regression                  test_stress.TestStress passed
+392100.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.TestStress         PASS      392100.00           7.35      53376.99  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             392100.00           7.35      53345.90  **
+                                                        **************************************************************************************
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+=== All 5 stress seeds passed with zero mismatches ===
+=====================================================
+All pyuvm directed and stress tests passed successfully.
+=====================================================
+make[1]: Leaving directory './tb/pyuvm'
