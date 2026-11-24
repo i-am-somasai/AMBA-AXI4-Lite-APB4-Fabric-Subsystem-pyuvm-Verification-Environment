@@ -12,10 +12,12 @@ cover: depth 25
 smtbmc boolector
 
 [script]
+read -formal -sv -DFORMAL axil_props.v
 read -formal -sv -DFORMAL axil2apb_bridge.v
 read -formal -sv -DFORMAL axil2apb_bridge_props.v
 prep -top axil2apb_bridge_props
 
 [files]
+axil_props.v
 ../rtl/apb/axil2apb_bridge.v
 axil2apb_bridge_props.v

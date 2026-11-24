@@ -113,6 +113,76 @@ module axil_xbar_props #(
         .m_axil_rready  (m_axil_rready)
     );
 
+    // Shared AXI-Lite Protocol Checker on Master Ports (DUT is slave)
+    genvar pm;
+    generate
+        for (pm = 0; pm < NUM_MASTERS; pm = pm + 1) begin : gen_master_props
+            axil_props #(
+                .ADDR_WIDTH(ADDR_WIDTH),
+                .DATA_WIDTH(DATA_WIDTH),
+                .STRB_WIDTH(STRB_WIDTH),
+                .IS_SLAVE(1)
+            ) u_axil_props_m (
+                .clk     (clk),
+                .rst_n   (rst_n),
+                .awaddr  (s_axil_awaddr[pm*ADDR_WIDTH +: ADDR_WIDTH]),
+                .awprot  (s_axil_awprot[pm*3 +: 3]),
+                .awvalid (s_axil_awvalid[pm]),
+                .awready (s_axil_awready[pm]),
+                .wdata   (s_axil_wdata[pm*DATA_WIDTH +: DATA_WIDTH]),
+                .wstrb   (s_axil_wstrb[pm*STRB_WIDTH +: STRB_WIDTH]),
+                .wvalid  (s_axil_wvalid[pm]),
+                .wready  (s_axil_wready[pm]),
+                .bresp   (s_axil_bresp[pm*2 +: 2]),
+                .bvalid  (s_axil_bvalid[pm]),
+                .bready  (s_axil_bready[pm]),
+                .araddr  (s_axil_araddr[pm*ADDR_WIDTH +: ADDR_WIDTH]),
+                .arprot  (s_axil_arprot[pm*3 +: 3]),
+                .arvalid (s_axil_arvalid[pm]),
+                .arready (s_axil_arready[pm]),
+                .rdata   (s_axil_rdata[pm*DATA_WIDTH +: DATA_WIDTH]),
+                .rresp   (s_axil_rresp[pm*2 +: 2]),
+                .rvalid  (s_axil_rvalid[pm]),
+                .rready  (s_axil_rready[pm])
+            );
+        end
+    endgenerate
+
+    // Shared AXI-Lite Protocol Checker on Slave Ports (DUT is master)
+    genvar ps;
+    generate
+        for (ps = 0; ps < NUM_SLAVES; ps = ps + 1) begin : gen_slave_props
+            axil_props #(
+                .ADDR_WIDTH(ADDR_WIDTH),
+                .DATA_WIDTH(DATA_WIDTH),
+                .STRB_WIDTH(STRB_WIDTH),
+                .IS_SLAVE(0)
+            ) u_axil_props_s (
+                .clk     (clk),
+                .rst_n   (rst_n),
+                .awaddr  (m_axil_awaddr[ps*ADDR_WIDTH +: ADDR_WIDTH]),
+                .awprot  (m_axil_awprot[ps*3 +: 3]),
+                .awvalid (m_axil_awvalid[ps]),
+                .awready (m_axil_awready[ps]),
+                .wdata   (m_axil_wdata[ps*DATA_WIDTH +: DATA_WIDTH]),
+                .wstrb   (m_axil_wstrb[ps*STRB_WIDTH +: STRB_WIDTH]),
+                .wvalid  (m_axil_wvalid[ps]),
+                .wready  (m_axil_wready[ps]),
+                .bresp   (m_axil_bresp[ps*2 +: 2]),
+                .bvalid  (m_axil_bvalid[ps]),
+                .bready  (m_axil_bready[ps]),
+                .araddr  (m_axil_araddr[ps*ADDR_WIDTH +: ADDR_WIDTH]),
+                .arprot  (m_axil_arprot[ps*3 +: 3]),
+                .arvalid (m_axil_arvalid[ps]),
+                .arready (m_axil_arready[ps]),
+                .rdata   (m_axil_rdata[ps*DATA_WIDTH +: DATA_WIDTH]),
+                .rresp   (m_axil_rresp[ps*2 +: 2]),
+                .rvalid  (m_axil_rvalid[ps]),
+                .rready  (m_axil_rready[ps])
+            );
+        end
+    endgenerate
+
     // Initial reset assumptions
     reg f_past_valid;
     initial f_past_valid = 1'b0;
@@ -274,6 +344,120 @@ module axil_xbar_props #(
             // Unmapped address yields DECERR (2'b11) to M0
             cover (s_axil_bvalid[0] && s_axil_bresp[1:0] == 2'b11);
             cover (s_axil_rvalid[0] && s_axil_rresp[1:0] == 2'b11);
+
+            // Bounded liveness precondition covers
+            cover (f_m_wr_live[0] && s_axil_bvalid[0] && f_m_wr_timer[0] > 0);
+            cover (f_m_rd_live[0] && s_axil_rvalid[0] && f_m_rd_timer[0] > 0);
+            cover (f_m_wr_live[1] && s_axil_bvalid[1] && f_m_wr_timer[1] > 0);
+            cover (f_m_rd_live[1] && s_axil_rvalid[1] && f_m_rd_timer[1] > 0);
+        end
+    end
+
+    // -------------------------------------------------------------
+    // Bounded Liveness Verification
+    // -------------------------------------------------------------
+    reg [2:0] f_s_bresp_wait [NUM_SLAVES-1:0];
+    reg [2:0] f_s_rresp_wait [NUM_SLAVES-1:0];
+    reg [2:0] f_m_bready_wait [NUM_MASTERS-1:0];
+    reg [2:0] f_m_rready_wait [NUM_MASTERS-1:0];
+
+    integer si, mi;
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            for (si = 0; si < NUM_SLAVES; si = si + 1) begin
+                f_s_bresp_wait[si] <= 3'd0;
+                f_s_rresp_wait[si] <= 3'd0;
+            end
+            for (mi = 0; mi < NUM_MASTERS; mi = mi + 1) begin
+                f_m_bready_wait[mi] <= 3'd0;
+                f_m_rready_wait[mi] <= 3'd0;
+            end
+        end else begin
+            for (si = 0; si < NUM_SLAVES; si = si + 1) begin
+                if (m_axil_awvalid[si] && !m_axil_bvalid[si]) f_s_bresp_wait[si] <= f_s_bresp_wait[si] + 1'b1;
+                else f_s_bresp_wait[si] <= 3'd0;
+
+                if (m_axil_arvalid[si] && !m_axil_rvalid[si]) f_s_rresp_wait[si] <= f_s_rresp_wait[si] + 1'b1;
+                else f_s_rresp_wait[si] <= 3'd0;
+            end
+            for (mi = 0; mi < NUM_MASTERS; mi = mi + 1) begin
+                if (s_axil_bvalid[mi] && !s_axil_bready[mi]) f_m_bready_wait[mi] <= f_m_bready_wait[mi] + 1'b1;
+                else f_m_bready_wait[mi] <= 3'd0;
+
+                if (s_axil_rvalid[mi] && !s_axil_rready[mi]) f_m_rready_wait[mi] <= f_m_rready_wait[mi] + 1'b1;
+                else f_m_rready_wait[mi] <= 3'd0;
+            end
+        end
+    end
+
+    // Slaves must respond within 3 cycles, masters must accept within 3 cycles
+    always @(*) begin
+        for (si = 0; si < NUM_SLAVES; si = si + 1) begin
+            if (f_s_bresp_wait[si] >= 3'd3) assume (m_axil_bvalid[si]);
+            if (f_s_rresp_wait[si] >= 3'd3) assume (m_axil_rvalid[si]);
+        end
+        for (mi = 0; mi < NUM_MASTERS; mi = mi + 1) begin
+            if (f_m_bready_wait[mi] >= 3'd3) assume (s_axil_bready[mi]);
+            if (f_m_rready_wait[mi] >= 3'd3) assume (s_axil_rready[mi]);
+        end
+    end
+
+    // Master bounded liveness: response within 16 cycles
+    reg [NUM_MASTERS-1:0] f_m_aw_seen;
+    reg [NUM_MASTERS-1:0] f_m_w_seen;
+    reg [NUM_MASTERS-1:0] f_m_wr_live;
+    reg [4:0]             f_m_wr_timer [NUM_MASTERS-1:0];
+    reg [NUM_MASTERS-1:0] f_m_rd_live;
+    reg [4:0]             f_m_rd_timer [NUM_MASTERS-1:0];
+
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            f_m_aw_seen <= {NUM_MASTERS{1'b0}};
+            f_m_w_seen  <= {NUM_MASTERS{1'b0}};
+            f_m_wr_live <= {NUM_MASTERS{1'b0}};
+            f_m_rd_live <= {NUM_MASTERS{1'b0}};
+            for (mi = 0; mi < NUM_MASTERS; mi = mi + 1) begin
+                f_m_wr_timer[mi] <= 5'd0;
+                f_m_rd_timer[mi] <= 5'd0;
+            end
+        end else begin
+            for (mi = 0; mi < NUM_MASTERS; mi = mi + 1) begin
+                if (s_axil_awvalid[mi] && s_axil_awready[mi]) f_m_aw_seen[mi] <= 1'b1;
+                if (s_axil_wvalid[mi]  && s_axil_wready[mi])  f_m_w_seen[mi]  <= 1'b1;
+
+                if ((f_m_aw_seen[mi] || (s_axil_awvalid[mi] && s_axil_awready[mi])) &&
+                    (f_m_w_seen[mi]  || (s_axil_wvalid[mi]  && s_axil_wready[mi])) &&
+                    !f_m_wr_live[mi] && !(s_axil_bvalid[mi] && s_axil_bready[mi])) begin
+                    f_m_wr_live[mi]  <= 1'b1;
+                    f_m_wr_timer[mi] <= 5'd0;
+                end else if (f_m_wr_live[mi]) begin
+                    if (s_axil_bvalid[mi] && s_axil_bready[mi]) begin
+                        f_m_wr_live[mi]  <= 1'b0;
+                        f_m_wr_timer[mi] <= 5'd0;
+                        f_m_aw_seen[mi]  <= 1'b0;
+                        f_m_w_seen[mi]   <= 1'b0;
+                    end else begin
+                        f_m_wr_timer[mi] <= f_m_wr_timer[mi] + 1'b1;
+                        assert (f_m_wr_timer[mi] < 5'd18);
+                    end
+                end else if (s_axil_bvalid[mi] && s_axil_bready[mi]) begin
+                    f_m_aw_seen[mi] <= 1'b0;
+                    f_m_w_seen[mi]  <= 1'b0;
+                end
+
+                if (s_axil_arvalid[mi] && s_axil_arready[mi]) begin
+                    f_m_rd_live[mi]  <= 1'b1;
+                    f_m_rd_timer[mi] <= 5'd0;
+                end else if (f_m_rd_live[mi]) begin
+                    if (s_axil_rvalid[mi] && s_axil_rready[mi]) begin
+                        f_m_rd_live[mi]  <= 1'b0;
+                        f_m_rd_timer[mi] <= 5'd0;
+                    end else begin
+                        f_m_rd_timer[mi] <= f_m_rd_timer[mi] + 1'b1;
+                        assert (f_m_rd_timer[mi] < 5'd18);
+                    end
+                end
+            end
         end
     end
 

@@ -427,4 +427,132 @@ module apb_uart #(
                     (paddr[4:2] == 3'b100) ? {16'd0, reg_bauddiv} :
                     32'd0;
 
+`ifdef FORMAL
+    // Reset sequence: rst_n low initially, then high
+    reg f_past_valid = 1'b0;
+    reg f_past_rst_n = 1'b0;
+    always @(posedge clk) begin
+        f_past_valid <= 1'b1;
+        f_past_rst_n <= rst_n;
+    end
+
+    always @(*) begin
+        if (!f_past_valid) assume (!rst_n);
+        else assume (rst_n);
+    end
+
+    // APB Protocol assumptions on slave inputs
+    always @(*) begin
+        if (!psel) assume (!penable);
+    end
+
+    reg                  f_past_psel;
+    reg                  f_past_penable;
+    reg                  f_past_pready;
+    reg [ADDR_WIDTH-1:0] f_past_paddr;
+    reg                  f_past_pwrite;
+    reg [DATA_WIDTH-1:0] f_past_pwdata;
+
+    always @(posedge clk) begin
+        f_past_psel    <= psel;
+        f_past_penable <= penable;
+        f_past_pready  <= pready;
+        f_past_paddr   <= paddr;
+        f_past_pwrite  <= pwrite;
+        f_past_pwdata  <= pwdata;
+    end
+
+    always @(*) begin
+        if (f_past_valid && rst_n && psel && penable && (f_past_psel && !f_past_penable)) begin
+            assume (paddr == f_past_paddr);
+            assume (pwrite == f_past_pwrite);
+            assume (pwdata == f_past_pwdata);
+        end
+    end
+
+    always @(*) begin
+        if (f_past_valid && rst_n && f_past_psel && f_past_penable && f_past_pready) begin
+            assume (!penable);
+        end
+    end
+
+    // 1. FIFO pointer consistency and full/empty flags
+    always @(posedge clk) begin
+        if (rst_n && f_past_valid) begin
+            assert (tx_fifo_full == (_unused_tx_count == FIFO_DEPTH));
+            assert (tx_fifo_empty == (_unused_tx_count == 0));
+            assert (rx_fifo_full == (_unused_rx_count == FIFO_DEPTH));
+            assert (rx_fifo_empty == (_unused_rx_count == 0));
+
+            // FIFO protection
+            assert (!(tx_fifo_push && tx_fifo_full));
+            assert (!(tx_fifo_pop && tx_fifo_empty));
+            assert (!(rx_fifo_push && rx_fifo_full));
+            assert (!(rx_fifo_pop && rx_fifo_empty));
+        end
+    end
+
+    // 2. Status register flag mapping
+    always @(posedge clk) begin
+        if (rst_n && f_past_valid) begin
+            if (psel && penable && !pwrite && (paddr[4:2] == 3'b010) && pready) begin
+                assert (prdata[7:0] == {
+                    tx_busy,
+                    reg_tx_ovf,
+                    reg_rx_ovf,
+                    reg_frame_err,
+                    rx_fifo_empty,
+                    rx_fifo_full,
+                    tx_fifo_empty,
+                    tx_fifo_full
+                });
+                assert (prdata[31:8] == 24'd0);
+            end
+        end
+    end
+
+    // 3. Interrupt definition
+    always @(posedge clk) begin
+        if (rst_n && f_past_valid) begin
+            assert (uart_irq == (reg_ctrl[3] & ~rx_fifo_empty));
+        end
+    end
+
+    // 4. Status W1C clearing
+    always @(posedge clk) begin
+        if (rst_n && f_past_valid && f_past_rst_n) begin
+            if (f_past_psel && f_past_penable && f_past_pwrite && (f_past_paddr[4:2] == 3'b010)) begin
+                if (f_past_pwdata[4]) assert (!reg_frame_err || (rx_state == RX_ST_STOP && baud_tick_16x && rx_tick_cnt == 4'd7 && rx_sync_q2 == 1'b0));
+                if (f_past_pwdata[5]) assert (!reg_rx_ovf    || (rx_state == RX_ST_STOP && baud_tick_16x && rx_tick_cnt == 4'd7 && rx_sync_q2 == 1'b1 && rx_fifo_full));
+                if (f_past_pwdata[6]) assert (!reg_tx_ovf    || (psel && penable && pwrite && (paddr[4:2] == 3'b000) && tx_fifo_full));
+            end
+        end
+    end
+
+    // 5. APB handshake & responsiveness
+    always @(posedge clk) begin
+        if (rst_n && f_past_valid && f_past_rst_n) begin
+            if (f_past_psel && !f_past_penable) begin
+                assert (pready);
+                assert (!pslverr);
+            end
+        end
+    end
+
+    // 6. Precondition covers
+    always @(posedge clk) begin
+        if (rst_n && f_past_valid) begin
+            cover (psel && penable && pwrite && (paddr[4:2] == 3'b000) && pready);
+            cover (psel && penable && !pwrite && (paddr[4:2] == 3'b001) && pready);
+            cover (psel && penable && !pwrite && (paddr[4:2] == 3'b010) && pready);
+            cover (psel && penable && pwrite && (paddr[4:2] == 3'b011) && pready);
+            cover (psel && penable && pwrite && (paddr[4:2] == 3'b100) && pready);
+            cover (tx_fifo_full);
+            cover (tx_busy);
+            cover (reg_tx_ovf);
+            cover (f_past_psel && f_past_penable && f_past_pwrite && (f_past_paddr[4:2] == 3'b010) && f_past_pwdata[6] && !reg_tx_ovf);
+        end
+    end
+`endif
+
 endmodule

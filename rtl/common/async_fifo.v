@@ -179,6 +179,7 @@ module async_fifo #(
     end
 
     // 4. Cover statements
+`ifndef NO_INTERNAL_FIFO_COVERS
     always @(posedge wclk) begin
         if (wrst_n && f_w_past_valid) begin
             cover (wfull);
@@ -192,6 +193,7 @@ module async_fifo #(
             cover (f_magic_read);
         end
     end
+`endif
 `endif
 
 endmodule

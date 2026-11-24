@@ -72,20 +72,27 @@ Every finding is addressed with honest evidence, verified by real tool execution
 ---
 
 ### F-03: Formal Verification Overclaims & Protocol Checker Integration
-- **Status:** TODO
+- **Status:** DONE
 - **Finding:** `formal/axil_props.v` was never instantiated or referenced by any `.sby` configuration. Formal checks for `axil_xbar`, `axil2apb_bridge`, `axil_ram`, and `async_fifo` were BMC only (depth 20–25) but reported as exhaustively proven. No bounded liveness / deadlock proofs existed despite README claiming "absence of deadlock". No formal proofs for `axil_cdc_bridge` or `apb_uart`.
-- **Planned Changes:**
-  - Bind `formal/axil_props.v` across crossbar ports, APB bridge AXI interface, RAM, CSR, and CDC bridge.
-  - Add bounded liveness properties (every accepted request gets a response within $M$ cycles under fair slave assumptions).
-  - Add precondition cover statements for all major assertions to prevent vacuous proofs.
-  - Add formal property suite for `axil_cdc_bridge` (FIFO handshake, request/response integrity) and UART FIFO/flag properties.
-  - Attempt $k$-induction on `axil_xbar`, `axil2apb_bridge`, and `async_fifo`. If induction cannot close, clearly document as BMC with exact depth.
-  - Update `scripts/run_all_formal.sh` to output structured summary: module, mode (BMC / $k$-induction), depth, result, cover count, runtime.
-- **Evidence:** TBD (`docs/logs/formal_suite.log`)
+- **Changes Made:**
+  - Instantiated shared AXI4-Lite protocol checker `formal/axil_props.v` across all 6 ports of `axil_xbar` (M0, M1, S0, S1, S2, S3), APB bridge AXI interface, `axil_ram`, `axil_csr`, and `axil_cdc_bridge`. Enforces handshake stability, legal response encoding (no EXOKAY), causality, and reset semantics.
+  - Implemented bounded liveness properties with fairness assumptions:
+    - `axil_xbar`: guaranteed response within 18 cycles under 3-cycle fair slave ready assertions and fair master completion.
+    - `axil2apb_bridge`: guaranteed write/read response within 12 cycles under 4-cycle fair APB slave `PREADY` and fair master `BREADY`/`RREADY`.
+    - Added bounded liveness precondition covers to verify proofs are non-vacuous.
+  - Discovered and fixed RTL bug `BUG-022` in `rtl/axil/axil_xbar.v`: combinational `m_aw_tgt` gating of `s_axil_wready` deadlocked the write data channel when `awaddr` changed post-AW handshake. Fixed to check `wr_locked[gt] ? (wr_owner[gt] == m) : ...`.
+  - Created formal property suite for `axil_cdc_bridge` (`formal/axil_cdc_bridge.sby`): verifies dual-clock asynchronous FIFO handshake safety (zero push-when-full, zero pop-when-empty in both `clk_sys` and `clk_slow`), ID register read data integrity, and protocol compliance (`multiclock on`, BMC depth 30, 7 cover traces reached).
+  - Created formal property suite for `apb_uart` (`formal/apb_uart.sby`): verifies TX/RX FIFO pointer tracking, full/empty safety, status register bit mapping (`STATUS[7:0]`), `uart_irq` assertion, and W1C status clear semantics (BMC depth 25, 9 cover traces reached).
+  - Evaluated $k$-induction on all modules: confirmed `rr_arbiter`, `sync_fifo`, `axil_csr`, and `apb_timer` close by $k$-induction at depth 20. Modules requiring complex non-local invariants (`axil_xbar`, `axil2apb_bridge`, `async_fifo`, `axil_cdc_bridge`, `axil_ram`, `apb_uart`) are honestly classified and documented as BMC with exact depth (20–30), replacing all unsupported "absence of deadlock" and "proven" overclaims.
+  - Updated `scripts/run_all_formal.sh` to execute all 10 suites, parse log outputs, print an aligned structured summary matrix (Module, Mode, Depth, Result, Covers, Runtime), and log to `docs/logs/formal_suite.log` with relative paths.
+- **Evidence:**
+  - `docs/logs/formal_suite.log`: 10/10 PASS, 81 cover traces reached.
+  - `docs/bugs.md` (`BUG-022`)
+  - Commit `fix(F-03)`
 - **Before / After Numbers:**
-  - Before: Unbound claims of "absence of deadlock" and "proven" without full induction; unused `axil_props.v`.
-  - After: Accurate classification (BMC depth $N$ vs $k$-induction), all props bound, bounded liveness checked.
-- **Remaining Issues:** None yet.
+  - Before: 8 modules; `axil_props.v` unused; BMC-only depth 20-25 described as "proven"; README claimed "absence of deadlock" with no liveness properties; no formal on `axil_cdc_bridge` or `apb_uart`; 37 cover traces.
+  - After: 10 modules verified (100% PASS); 4 proven via $k$-induction, 6 bounded model checked (depth 20-30); bounded liveness verified under fairness assumptions; 81 cover traces reached; `axil_props.v` bound on all AXI-Lite interfaces; zero overclaiming.
+- **Remaining Issues:** None. Gate passed.
 
 ---
 

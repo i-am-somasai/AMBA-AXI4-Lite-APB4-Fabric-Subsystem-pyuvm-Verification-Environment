@@ -12,6 +12,7 @@ cover: depth 20
 smtbmc boolector
 
 [script]
+read -formal -sv -DFORMAL axil_props.v
 read -formal -sv -DFORMAL rr_arbiter.v
 read -formal -sv -DFORMAL axil_decoder.v
 read -formal -sv -DFORMAL axil_default_slave.v
@@ -20,6 +21,7 @@ read -formal -sv -DFORMAL axil_xbar_props.v
 prep -top axil_xbar_props
 
 [files]
+axil_props.v
 ../rtl/common/rr_arbiter.v
 ../rtl/axil/axil_decoder.v
 ../rtl/axil/axil_default_slave.v

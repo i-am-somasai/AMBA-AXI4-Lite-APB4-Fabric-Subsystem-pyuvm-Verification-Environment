@@ -259,6 +259,38 @@ module axil_csr #(
         end
     end
 
+    // Shared Protocol Checker
+    axil_props #(
+        .ADDR_WIDTH(ADDR_WIDTH),
+        .DATA_WIDTH(DATA_WIDTH),
+        .STRB_WIDTH(DATA_WIDTH / 8),
+        .IS_SLAVE(1),
+        .SINGLE_OUTSTANDING(1),
+        .CHECK_CAUSALITY(0)
+    ) u_axil_props (
+        .clk     (clk),
+        .rst_n   (rst_n),
+        .awaddr  (s_axil_awaddr),
+        .awprot  (3'b000),
+        .awvalid (s_axil_awvalid),
+        .awready (s_axil_awready),
+        .wdata   (s_axil_wdata),
+        .wstrb   (s_axil_wstrb),
+        .wvalid  (s_axil_wvalid),
+        .wready  (s_axil_wready),
+        .bresp   (s_axil_bresp),
+        .bvalid  (s_axil_bvalid),
+        .bready  (s_axil_bready),
+        .araddr  (s_axil_araddr),
+        .arprot  (3'b000),
+        .arvalid (s_axil_arvalid),
+        .arready (s_axil_arready),
+        .rdata   (s_axil_rdata),
+        .rresp   (s_axil_rresp),
+        .rvalid  (s_axil_rvalid),
+        .rready  (s_axil_rready)
+    );
+
     // Covers
     always @(posedge clk) begin
         if (rst_n) begin

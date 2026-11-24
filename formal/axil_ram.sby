@@ -12,9 +12,11 @@ cover: depth 20
 smtbmc boolector
 
 [script]
-read -formal -DFORMAL axil_ram.v
+read -formal -sv -DFORMAL axil_props.v
+read -formal -sv -DFORMAL axil_ram.v
 chparam -set RAM_DEPTH 16 axil_ram
 prep -top axil_ram
 
 [files]
+axil_props.v
 ../rtl/axil/axil_ram.v

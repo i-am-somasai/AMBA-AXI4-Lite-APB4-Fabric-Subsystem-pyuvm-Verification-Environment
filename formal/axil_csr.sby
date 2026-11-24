@@ -12,8 +12,10 @@ cover: depth 20
 smtbmc boolector
 
 [script]
-read -formal -DFORMAL axil_csr.v
+read -formal -sv -DFORMAL axil_props.v
+read -formal -sv -DFORMAL axil_csr.v
 prep -top axil_csr
 
 [files]
+axil_props.v
 ../rtl/axil/axil_csr.v

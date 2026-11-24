@@ -86,6 +86,36 @@ module axil2apb_bridge_props #(
         .m_apb_pslverr  (m_apb_pslverr)
     );
 
+    // Shared AXI4-Lite Protocol Checker
+    axil_props #(
+        .ADDR_WIDTH(ADDR_WIDTH),
+        .DATA_WIDTH(DATA_WIDTH),
+        .STRB_WIDTH(STRB_WIDTH),
+        .IS_SLAVE(1)
+    ) u_axil_props (
+        .clk     (clk),
+        .rst_n   (rst_n),
+        .awaddr  (s_axil_awaddr),
+        .awprot  (s_axil_awprot),
+        .awvalid (s_axil_awvalid),
+        .awready (s_axil_awready),
+        .wdata   (s_axil_wdata),
+        .wstrb   (s_axil_wstrb),
+        .wvalid  (s_axil_wvalid),
+        .wready  (s_axil_wready),
+        .bresp   (s_axil_bresp),
+        .bvalid  (s_axil_bvalid),
+        .bready  (s_axil_bready),
+        .araddr  (s_axil_araddr),
+        .arprot  (s_axil_arprot),
+        .arvalid (s_axil_arvalid),
+        .arready (s_axil_arready),
+        .rdata   (s_axil_rdata),
+        .rresp   (s_axil_rresp),
+        .rvalid  (s_axil_rvalid),
+        .rready  (s_axil_rready)
+    );
+
     // Initial reset assumptions
     reg f_past_valid;
     initial f_past_valid = 1'b0;
@@ -188,10 +218,103 @@ module axil2apb_bridge_props #(
     end
 
     // -------------------------------------------------------------
+    // Bounded Liveness Properties
+    // Under fair slave (PREADY asserted within N cycles) and fair master
+    // (BREADY/RREADY asserted within N cycles), every accepted request
+    // receives its response within M cycles.
+    // -------------------------------------------------------------
+    reg [3:0] f_bready_wait = 0;
+    reg [3:0] f_rready_wait = 0;
+    reg [3:0] f_pready_wait = 0;
+
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            f_bready_wait <= 4'd0;
+            f_rready_wait <= 4'd0;
+            f_pready_wait <= 4'd0;
+        end else begin
+            if (s_axil_bvalid && !s_axil_bready) f_bready_wait <= f_bready_wait + 1'b1;
+            else f_bready_wait <= 4'd0;
+
+            if (s_axil_rvalid && !s_axil_rready) f_rready_wait <= f_rready_wait + 1'b1;
+            else f_rready_wait <= 4'd0;
+
+            if (m_apb_psel && m_apb_penable && !m_apb_pready) f_pready_wait <= f_pready_wait + 1'b1;
+            else f_pready_wait <= 4'd0;
+        end
+    end
+
+    always @(*) begin
+        if (f_bready_wait >= 4'd4) assume (s_axil_bready);
+        if (f_rready_wait >= 4'd4) assume (s_axil_rready);
+        if (f_pready_wait >= 4'd4) assume (m_apb_pready);
+    end
+
+    reg f_aw_seen = 0;
+    reg f_w_seen  = 0;
+    reg       f_wr_live_active = 0;
+    reg [3:0] f_wr_live_timer  = 0;
+    reg       f_rd_live_active = 0;
+    reg [3:0] f_rd_live_timer  = 0;
+
+    wire f_wr_committed = (f_aw_seen || (s_axil_awvalid && s_axil_awready)) &&
+                          (f_w_seen  || (s_axil_wvalid  && s_axil_wready));
+
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            f_aw_seen        <= 1'b0;
+            f_w_seen         <= 1'b0;
+            f_wr_live_active <= 1'b0;
+            f_wr_live_timer  <= 4'd0;
+            f_rd_live_active <= 1'b0;
+            f_rd_live_timer  <= 4'd0;
+        end else begin
+            if (s_axil_awvalid && s_axil_awready) f_aw_seen <= 1'b1;
+            if (s_axil_wvalid  && s_axil_wready)  f_w_seen  <= 1'b1;
+
+            // Write bounded liveness starts when BOTH AW and W handshakes are committed
+            if (f_wr_committed && !f_wr_live_active && !(s_axil_bvalid && s_axil_bready)) begin
+                f_wr_live_active <= 1'b1;
+                f_wr_live_timer  <= 4'd0;
+            end else if (f_wr_live_active) begin
+                if (s_axil_bvalid && s_axil_bready) begin
+                    f_wr_live_active <= 1'b0;
+                    f_wr_live_timer  <= 4'd0;
+                    f_aw_seen        <= 1'b0;
+                    f_w_seen         <= 1'b0;
+                end else begin
+                    f_wr_live_timer <= f_wr_live_timer + 1'b1;
+                    assert (f_wr_live_timer < 4'd12);
+                end
+            end else if (s_axil_bvalid && s_axil_bready) begin
+                f_aw_seen <= 1'b0;
+                f_w_seen  <= 1'b0;
+            end
+
+            // Read bounded liveness
+            if (s_axil_arvalid && s_axil_arready) begin
+                f_rd_live_active <= 1'b1;
+                f_rd_live_timer  <= 4'd0;
+            end else if (f_rd_live_active) begin
+                if (s_axil_rvalid && s_axil_rready) begin
+                    f_rd_live_active <= 1'b0;
+                    f_rd_live_timer  <= 4'd0;
+                end else begin
+                    f_rd_live_timer <= f_rd_live_timer + 1'b1;
+                    assert (f_rd_live_timer < 4'd12);
+                end
+            end
+        end
+    end
+
+    // -------------------------------------------------------------
     // Cover scenarios
     // -------------------------------------------------------------
     always @(posedge clk) begin
         if (rst_n && f_past_valid) begin
+            // Bounded liveness precondition covers
+            cover (f_wr_live_active && s_axil_bvalid && f_wr_live_timer > 0);
+            cover (f_rd_live_active && s_axil_rvalid && f_rd_live_timer > 0);
             // 0 wait-state write transfer
             cover (m_apb_psel && m_apb_penable && m_apb_pready && m_apb_pwrite);
             // 0 wait-state read transfer

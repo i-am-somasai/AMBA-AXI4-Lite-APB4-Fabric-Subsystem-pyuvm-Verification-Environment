@@ -258,4 +258,101 @@ module axil_cdc_bridge #(
         end
     end
 
+`ifdef FORMAL
+    // Protocol checker on s_axil
+    axil_props #(
+        .ADDR_WIDTH        (ADDR_WIDTH),
+        .DATA_WIDTH        (DATA_WIDTH),
+        .STRB_WIDTH        (STRB_WIDTH),
+        .IS_SLAVE          (1),
+        .SINGLE_OUTSTANDING(1),
+        .CHECK_CAUSALITY   (1)
+    ) u_axil_props (
+        .clk    (clk_sys),
+        .rst_n  (rst_sys_n),
+        .awaddr (s_axil_awaddr),
+        .awprot (s_axil_awprot),
+        .awvalid(s_axil_awvalid),
+        .awready(s_axil_awready),
+        .wdata  (s_axil_wdata),
+        .wstrb  (s_axil_wstrb),
+        .wvalid (s_axil_wvalid),
+        .wready (s_axil_wready),
+        .bresp  (s_axil_bresp),
+        .bvalid (s_axil_bvalid),
+        .bready (s_axil_bready),
+        .araddr (s_axil_araddr),
+        .arprot (s_axil_arprot),
+        .arvalid(s_axil_arvalid),
+        .arready(s_axil_arready),
+        .rdata  (s_axil_rdata),
+        .rresp  (s_axil_rresp),
+        .rvalid (s_axil_rvalid),
+        .rready (s_axil_rready)
+    );
+
+    reg f_sys_past = 1'b0;
+    reg f_slow_past = 1'b0;
+    always @(posedge clk_sys) f_sys_past <= 1'b1;
+    always @(posedge clk_slow) f_slow_past <= 1'b1;
+
+    // FIFO Handshake Safety (clk_sys domain)
+    always @(posedge clk_sys) begin
+        if (rst_sys_n && f_sys_past) begin
+            assert (!(req_push && req_full));
+            assert (!(resp_pop && resp_empty));
+        end
+    end
+
+    // FIFO Handshake Safety (clk_slow domain)
+    always @(posedge clk_slow) begin
+        if (rst_slow_n && f_slow_past) begin
+            assert (!(req_pop && req_empty));
+            assert (!(resp_push && resp_full));
+        end
+    end
+
+    // Response code validity
+    always @(posedge clk_sys) begin
+        if (rst_sys_n && f_sys_past) begin
+            if (s_axil_bvalid) begin
+                assert (s_axil_bresp == 2'b00 || s_axil_bresp == 2'b10);
+            end
+            if (s_axil_rvalid) begin
+                assert (s_axil_rresp == 2'b00 || s_axil_rresp == 2'b10);
+            end
+        end
+    end
+
+    // Data integrity on SLOW_ID (offset 0x00) read
+    reg [7:0] f_saved_araddr;
+    always @(posedge clk_sys) begin
+        if (!rst_sys_n) begin
+            f_saved_araddr <= 8'd0;
+        end else if (s_axil_arvalid && s_axil_arready) begin
+            f_saved_araddr <= s_axil_araddr[7:0];
+        end
+    end
+
+    always @(posedge clk_sys) begin
+        if (rst_sys_n && f_sys_past) begin
+            if (s_axil_rvalid && (f_saved_araddr == 8'h00)) begin
+                assert (s_axil_rdata == 32'h510E_0001);
+                assert (s_axil_rresp == 2'b00);
+            end
+        end
+    end
+
+    // Precondition Covers
+    always @(posedge clk_sys) begin
+        if (rst_sys_n && f_sys_past) begin
+            cover (s_axil_bvalid && s_axil_bready);
+            cover (s_axil_rvalid && s_axil_rready);
+            cover (s_axil_rvalid && s_axil_rready && s_axil_rdata == 32'h510E_0001);
+            cover (s_axil_bvalid && s_axil_bready && s_axil_bresp == 2'b10);
+            cover (s_axil_rvalid && s_axil_rready && s_axil_rresp == 2'b10);
+        end
+    end
+`endif
+
 endmodule

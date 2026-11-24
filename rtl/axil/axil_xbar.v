@@ -362,11 +362,11 @@ module axil_xbar #(
                 else if (wr_active[4] && active_wr_owner[4] == 0 && !aw_done[4] && m_aw_tgt[0][4]) s_axil_awready[0] = tgt_awready[4];
 
                 // WREADY
-                if (wr_active[0] && active_wr_owner[0] == 0 && !w_done[0] && m_aw_tgt[0][0]) s_axil_wready[0] = tgt_wready[0];
-                else if (wr_active[1] && active_wr_owner[1] == 0 && !w_done[1] && m_aw_tgt[0][1]) s_axil_wready[0] = tgt_wready[1];
-                else if (wr_active[2] && active_wr_owner[2] == 0 && !w_done[2] && m_aw_tgt[0][2]) s_axil_wready[0] = tgt_wready[2];
-                else if (wr_active[3] && active_wr_owner[3] == 0 && !w_done[3] && m_aw_tgt[0][3]) s_axil_wready[0] = tgt_wready[3];
-                else if (wr_active[4] && active_wr_owner[4] == 0 && !w_done[4] && m_aw_tgt[0][4]) s_axil_wready[0] = tgt_wready[4];
+                if      (wr_active[0] && !w_done[0] && (wr_locked[0] ? (wr_owner[0] == 0) : (active_wr_owner[0] == 0 && m_aw_tgt[0][0]))) s_axil_wready[0] = tgt_wready[0];
+                else if (wr_active[1] && !w_done[1] && (wr_locked[1] ? (wr_owner[1] == 0) : (active_wr_owner[1] == 0 && m_aw_tgt[0][1]))) s_axil_wready[0] = tgt_wready[1];
+                else if (wr_active[2] && !w_done[2] && (wr_locked[2] ? (wr_owner[2] == 0) : (active_wr_owner[2] == 0 && m_aw_tgt[0][2]))) s_axil_wready[0] = tgt_wready[2];
+                else if (wr_active[3] && !w_done[3] && (wr_locked[3] ? (wr_owner[3] == 0) : (active_wr_owner[3] == 0 && m_aw_tgt[0][3]))) s_axil_wready[0] = tgt_wready[3];
+                else if (wr_active[4] && !w_done[4] && (wr_locked[4] ? (wr_owner[4] == 0) : (active_wr_owner[4] == 0 && m_aw_tgt[0][4]))) s_axil_wready[0] = tgt_wready[4];
 
                 // BVALID & BRESP
                 if (wr_locked[0] && wr_owner[0] == 0) begin s_axil_bvalid[0] = tgt_bvalid[0]; s_axil_bresp[0*2 +: 2] = tgt_bresp[0]; end
@@ -385,11 +385,11 @@ module axil_xbar #(
                 else if (wr_active[4] && active_wr_owner[4] == 1 && !aw_done[4] && m_aw_tgt[1][4]) s_axil_awready[1] = tgt_awready[4];
 
                 // WREADY
-                if (wr_active[0] && active_wr_owner[0] == 1 && !w_done[0] && m_aw_tgt[1][0]) s_axil_wready[1] = tgt_wready[0];
-                else if (wr_active[1] && active_wr_owner[1] == 1 && !w_done[1] && m_aw_tgt[1][1]) s_axil_wready[1] = tgt_wready[1];
-                else if (wr_active[2] && active_wr_owner[2] == 1 && !w_done[2] && m_aw_tgt[1][2]) s_axil_wready[1] = tgt_wready[2];
-                else if (wr_active[3] && active_wr_owner[3] == 1 && !w_done[3] && m_aw_tgt[1][3]) s_axil_wready[1] = tgt_wready[3];
-                else if (wr_active[4] && active_wr_owner[4] == 1 && !w_done[4] && m_aw_tgt[1][4]) s_axil_wready[1] = tgt_wready[4];
+                if      (wr_active[0] && !w_done[0] && (wr_locked[0] ? (wr_owner[0] == 1) : (active_wr_owner[0] == 1 && m_aw_tgt[1][0]))) s_axil_wready[1] = tgt_wready[0];
+                else if (wr_active[1] && !w_done[1] && (wr_locked[1] ? (wr_owner[1] == 1) : (active_wr_owner[1] == 1 && m_aw_tgt[1][1]))) s_axil_wready[1] = tgt_wready[1];
+                else if (wr_active[2] && !w_done[2] && (wr_locked[2] ? (wr_owner[2] == 1) : (active_wr_owner[2] == 1 && m_aw_tgt[1][2]))) s_axil_wready[1] = tgt_wready[2];
+                else if (wr_active[3] && !w_done[3] && (wr_locked[3] ? (wr_owner[3] == 1) : (active_wr_owner[3] == 1 && m_aw_tgt[1][3]))) s_axil_wready[1] = tgt_wready[3];
+                else if (wr_active[4] && !w_done[4] && (wr_locked[4] ? (wr_owner[4] == 1) : (active_wr_owner[4] == 1 && m_aw_tgt[1][4]))) s_axil_wready[1] = tgt_wready[4];
 
                 // BVALID & BRESP
                 if (wr_locked[0] && wr_owner[0] == 1) begin s_axil_bvalid[1] = tgt_bvalid[0]; s_axil_bresp[1*2 +: 2] = tgt_bresp[0]; end

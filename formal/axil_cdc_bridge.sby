@@ -1,0 +1,28 @@
+[tasks]
+bmc
+cover
+
+[options]
+bmc: mode bmc
+bmc: depth 30
+bmc: multiclock on
+cover: mode cover
+cover: depth 30
+cover: multiclock on
+
+[engines]
+smtbmc boolector
+
+[script]
+read -formal -sv -DFORMAL -DNO_INTERNAL_FIFO_COVERS axil_props.v
+read -formal -DNO_INTERNAL_FIFO_COVERS async_fifo.v
+read -formal slow_regs.v
+read -formal -sv -DFORMAL -DNO_INTERNAL_FIFO_COVERS axil_cdc_bridge.v
+prep -top axil_cdc_bridge
+async2sync
+
+[files]
+axil_props.v
+../rtl/common/async_fifo.v
+../rtl/cdc/slow_regs.v
+../rtl/cdc/axil_cdc_bridge.v

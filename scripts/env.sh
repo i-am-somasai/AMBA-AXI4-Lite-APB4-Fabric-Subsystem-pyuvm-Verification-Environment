@@ -17,4 +17,4 @@ fi
 export SKY130_LIB="/home/somasai/.volare/volare/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib"
 
 # Python path
-export PYTHONPATH="$PROJ_DIR:$PROJ_DIR/tb:$PROJ_DIR/tb/unit:$PROJ_DIR/tb/pyuvm:$PROJ_DIR/tb/models:$PYTHONPATH"
+export PYTHONPATH="$PROJ_DIR:$PROJ_DIR/tb:$PROJ_DIR/tb/unit:$PROJ_DIR/tb/pyuvm:$PROJ_DIR/tb/models${PYTHONPATH:+:$PYTHONPATH}"

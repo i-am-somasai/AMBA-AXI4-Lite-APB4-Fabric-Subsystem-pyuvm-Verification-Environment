@@ -209,5 +209,15 @@ Per project rules, every bug must be reproduced deterministically, diagnosed to 
 - **Fix Applied:** In `tb/unit/test_axil_ram.py`, added a memory sweep across the full depth (words 0, 1, 16, 64, 128, 206, 255) writing unique pseudorandom patterns, followed by an all-zero write/read pass to detect any stuck-at-1 bits across the memory array.
 - **Regression Test:** `make mutation-sample` (`axil_ram`)
 
+### [BUG-022] AXI Crossbar WREADY Gating on Combinational AWADDR Decoder Causing Write Deadlock
+- **Date Discovered:** 2026-11-24
+- **Target Component:** `rtl/axil/axil_xbar.v`
+- **Detection Method:** SymbiYosys Formal BMC verification (`formal/axil_xbar.sby`)
+- **Symptom:** Crossbar BMC failed at step 3 due to write channel deadlock. After master AW handshake completed, master deasserted `awvalid` and changed `awaddr` before W data arrived. Subsequently `s_axil_wready` was held low (0) even though `wvalid` was high and the targeted slave had `wready` high (`tgt_wready=1`).
+- **Root Cause:** In `rtl/axil/axil_xbar.v`, `s_axil_wready` for both master 0 and master 1 was generated using the combinationally decoded address target `m_aw_tgt[m][gt]`. If the master changed `s_axil_awaddr` after the AW handshake while the target slave was already locked (`wr_locked[gt] && wr_owner[gt] == m`), `m_aw_tgt[m][gt]` became 0, gating `s_axil_wready` to 0. This caused a permanent write channel stall while `tgt_wvalid[gt]` was asserted to the slave.
+- **Fix Applied:** In `rtl/axil/axil_xbar.v`, updated the `m_wready_grant` logic for all masters to check `(wr_locked[gt] ? (wr_owner[gt] == m) : (active_wr_owner[gt] == m && m_aw_tgt[m][gt]))`. When a write channel is locked to a slave, WREADY gating depends on the recorded owner, not the transient input `awaddr`.
+- **Regression Test:** `formal/axil_xbar.sby` (BMC depth 20), `tb/pyuvm/tests/test_xb09_backpressure_burst.py`
+
+
 
 
