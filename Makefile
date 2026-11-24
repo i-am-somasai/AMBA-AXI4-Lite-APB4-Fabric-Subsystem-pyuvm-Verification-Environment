@@ -78,10 +78,10 @@ regress-verilator:
 # Coverage collection and reporting
 cov-report:
 	@$(ENV_CMD) && echo "=== Generating Coverage Report ===" && \
-	if [ -f "$(PROJ_DIR)/scripts/merge_cov.py" ]; then \
+	if [ -f "$(PROJ_DIR)/scripts/run_regression.sh" ]; then \
+		bash $(PROJ_DIR)/scripts/run_regression.sh; \
+	elif [ -f "$(PROJ_DIR)/scripts/merge_cov.py" ]; then \
 		python3 $(PROJ_DIR)/scripts/merge_cov.py; \
-	else \
-		echo "Coverage merge script will be populated in Phase 5."; \
 	fi
 
 # Formal verification with SymbiYosys

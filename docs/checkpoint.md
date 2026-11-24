@@ -341,11 +341,113 @@ For every phase, it records what was completed, executed, created, observed, and
 
 ## Phase 5: Coverage and Formal Closure
 
-- **Status:** **PAUSED (Awaiting Instruction Before Starting Phase 5)**
-- **User Instruction:** Stopped after completing Phase 4 per user directive (`stop after every phase completed and checkpoint was written`).
+- **Status:** **COMPLETED** (Gate Passed & Tagged `phase-5-done`)
+- **Timestamp:** 2026-11-24 12:22 IST
+- **Active Branch:** `main` (commit to be merged, tag `phase-5-done`)
+
+### 1. What was Completed
+- **Formal Verification Closure (Spec Section 11):**
+  - Completed all 8 SymbiYosys formal verification suites:
+    1. `apb_timer`: k-induction proof (depth 20) with Boolector proving down-counting, timeout assertion on reaching zero, periodic reload, one-shot stop, and W1C status clear. 4 cover scenarios reached.
+    2. `async_fifo`: Multi-clock BMC (depth 25) proving Gray code sequencing, pointer consistency, and cross-domain data integrity via magic value tracking. 4 cover scenarios reached.
+    3. `axil2apb_bridge`: BMC (depth 25) proving APB setup/access protocol timing, wait-state stability, single-cycle completion, and PSLVERR-to-SLVERR mapping. 5 cover scenarios reached.
+    4. `axil_csr`: k-induction proof (depth 20) proving read-only constants (`REV_ID`), scratch read/write byte strobes, W1C status behavior, and interrupt aggregation. 4 cover scenarios reached.
+    5. `axil_ram`: BMC (depth 20) proving in-bounds OKAY responses, out-of-bounds SLVERR responses, response stability, and byte strobes. 4 cover scenarios reached.
+    6. `axil_xbar`: BMC (depth 20) proving mutual exclusivity, decode isolation, default slave DECERR routing, and master response isolation. 5 cover scenarios reached.
+    7. `rr_arbiter`: k-induction proof (depth 20) proving one-hot grants, no spurious grant, priority rotation, and transaction lock persistence. 5 cover scenarios reached.
+    8. `sync_fifo`: k-induction proof (depth 20) proving occupancy count consistency with simultaneous push/pop, full/empty flags, and no data corruption. 6 cover scenarios reached.
+  - Total: **8/8 formal proof targets PASS (100%)**, 37 cover traces reached.
+- **Functional Coverage Model (Spec Section 10):**
+  - Implemented `tb/pyuvm/func_cov/fabric_cov.py` using `cocotb-coverage`:
+    - `cg_txn`: Master (0, 1) x Target (RAM, CSR, CDC, APB, UNMAPPED) x Op (RD, WR) x Resp (OKAY, SLVERR, DECERR). Legal cross bins = 36 (illegal DECERR on mapped slaves and OKAY/SLVERR on unmapped space cleanly excluded via `ign_bins`).
+    - `cg_wstrb`: 16 `WSTRB` patterns x 4 mapped targets = 64 bins.
+    - `cg_order`: 3 write orders (`simultaneous`, `aw_first`, `w_first`) x 4 mapped targets = 12 bins.
+    - `cg_backpressure`: 5 channels (AW, W, B, AR, R) x 4 delay buckets {0, 1, 2-4, 5-16} = 20 bins.
+    - `cg_contention`: 3 contention scenarios (`same_slave`, `diff_slaves`, `one_idle`) x 3 op combinations (R/R, R/W, W/W) = 9 bins.
+    - `cg_apb`: 4 wait-state buckets x 2 error values x 2 ops = 16 bins; 4 strobe pattern classes x 2 ops = 8 bins.
+    - `cg_cdc`: 3 clock ratio buckets x 3 FIFO occupancy states x 2 ops = 18 bins.
+    - `cg_uart`: 3 baud divisor buckets x 3 FIFO states = 9 bins; 3 error types = 3 bins.
+    - `cg_reset`: 5 reset phases (`idle`, `aw_in_flight`, `w_in_flight`, `b_pending`, `r_pending`) = 5 bins.
+    - Plus 80 individual coverpoints = **280 total defined bins**.
+  - Integrated automatic transaction sampling in `FabricScoreboard.check_transaction()`.
+  - Integrated backpressure delay cycle sampling in `AxilMasterDriver.write()` and `read()`.
+  - Added `TestCoverageClosure` in `tb/pyuvm/tests/test_directed.py` exercising edge strobe combinations, write channel ordering permutations, and multi-master protocol corners.
+  - Implemented `scripts/merge_cov.py` to aggregate YAML coverage databases across multi-seed runs, compute coverage statistics, and detect holes.
+  - **Achieved 100.00% Functional Coverage (280/280 bins hit, 0 holes, 0 waivers).**
+- **Verilator HDL Code Coverage (Spec Section 10):**
+  - Configured Verilator `--coverage` build via `VERILATOR_COVERAGE=1` in `tb/pyuvm/Makefile.single`.
+  - Executed full multi-seed regression (directed tests + 5 stress seeds = 25,000 transactions).
+  - Merged coverage data from all runs into `docs/logs/coverage_merged.dat`.
+  - Measured metrics:
+    - **Line Coverage:** 87.8% (430 / 490 lines)
+    - **Toggle Coverage:** 75.1% (10,155 / 13,514 transitions)
+    - **Branch Coverage:** 86.9% (433 / 498 branches)
+    - **Expression Coverage:** 92.9% (1,016 / 1,094 sub-expressions)
+    - **FSM State Coverage:** 100.0% (5 / 5 states)
+    - **FSM Transition Arc Coverage:** 25.0% (1 / 4 transitions)
+  - Generated source code coverage annotations for all 17 RTL modules under `docs/logs/code_cov/`.
+- **Regression & Tool Automation:**
+  - Created `scripts/run_regression.sh` automating end-to-end regression execution, Verilator coverage data merging, annotation generation, and functional coverage reporting.
+  - Updated `Makefile` targets `formal` and `cov-report`.
+
+### 2. Files Created & Modified
+- `rtl/apb/apb_timer.v`: Modified (added formal properties for countdown, reload, timeout, and APB write priority)
+- `rtl/axil/axil_ram.v`: Modified (added formal properties for bounds check and response stability)
+- `rtl/axil/axil_csr.v`: Modified (added formal properties for register read/write and interrupt aggregation)
+- `formal/apb_timer.sby`: Created
+- `formal/axil_ram.sby`: Created
+- `formal/axil_csr.sby`: Created
+- `formal/sync_fifo.sby`: Created
+- `formal/sync_fifo_props.v`: Created
+- `tb/pyuvm/func_cov/fabric_cov.py`: Created
+- `tb/pyuvm/func_cov/__init__.py`: Created
+- `tb/pyuvm/sequences/coverage_closure_seq.py`: Created
+- `tb/pyuvm/tests/test_directed.py`: Modified (added `TestCoverageClosure`)
+- `tb/pyuvm/env/fabric_scoreboard.py`: Modified (integrated coverage sampling & export)
+- `tb/models/axil_driver.py`: Modified (integrated backpressure delay tracking & sampling)
+- `tb/pyuvm/Makefile.single`: Modified (added `VERILATOR_COVERAGE` flag)
+- `scripts/merge_cov.py`: Created
+- `scripts/run_regression.sh`: Created
+- `Makefile`: Modified (`cov-report` targets)
+- `docs/logs/formal_suite.log`: Created
+- `docs/logs/func_cov.log`: Created
+- `docs/logs/code_cov_summary.txt`: Created
+- `docs/results.md`: Modified (updated with real measured metrics)
+- `docs/checkpoint.md`: Modified
+
+### 3. Commands Executed & Results
+- `make formal`: 8/8 formal proof suites passed (PASS).
+  - `apb_timer`: PASS (k-induction depth 20, cover 4 traces)
+  - `async_fifo`: PASS (BMC depth 25, cover 4 traces)
+  - `axil2apb_bridge`: PASS (BMC depth 25, cover 5 traces)
+  - `axil_csr`: PASS (k-induction depth 20, cover 4 traces)
+  - `axil_ram`: PASS (BMC depth 20, cover 4 traces)
+  - `axil_xbar`: PASS (BMC depth 20, cover 5 traces)
+  - `rr_arbiter`: PASS (k-induction depth 20, cover 5 traces)
+  - `sync_fifo`: PASS (k-induction depth 20, cover 6 traces)
+- `make cov-report`: Executed full regression and coverage pipeline (PASS):
+  - Directed verification suite: 8/8 PASS (`test_directed.py`)
+  - Stress multi-seed regression: 5/5 seeds PASS (25,000 transactions, 0 mismatches)
+  - Verilator code coverage: Line 87.8%, Toggle 75.1%, Branch 86.9%, Expr 92.9%
+  - Functional coverage: 280/280 bins hit (100.00%, 0 holes)
+- `git tag phase-5-done`: Tagged repository upon passing acceptance gate.
+
+### 4. Bugs Found & Resolved
+- `BUG-016`: APB Timer countdown formal assertion failing due to unconstrained past APB register write collision. Resolved by qualifying countdown check with `!$past(apb_write && (paddr[3:2] == 2'b00))`.
+- `BUG-017`: AXI-Lite RAM response assertion failing when multiple writes arrived without `bready`. Resolved by checking response validity on exact `write_commit` cycles and checking stability while waiting for `bready`.
+- `BUG-018`: Cocotb Makefile `COVERAGE=1` reserving Python coverage module name, causing namespace shadowing with local `coverage/` package. Resolved by renaming local package to `func_cov` and using `VERILATOR_COVERAGE=1` for HDL coverage.
+- `BUG-019`: Yosys SBY parser rejecting cross-module hierarchical references for width detection. Resolved by embedding assertions within module bodies under `` `ifdef FORMAL ``.
+
+---
+
+## Phase 6: Mutation Testing, Synthesis/STA, and CI
+
+- **Status:** **PAUSED (Awaiting Instruction Before Starting Phase 6)**
+- **User Instruction:** Stopped after completing Phase 5 per user directive (`stop after every phase completed and checkpoint was written`).
 - **Upcoming Scope:**
-  - Functional covergroups implementation in `tb/pyuvm/coverage/`.
-  - Formal property completion for all sets in spec Section 11.
-  - Multi-seed regression coverage merge (spec Section 10).
+  - Mutation flow using Yosys `mutate` with survivor analysis.
+  - Synthesis and OpenSTA on SKY130 HD library with timing constraints.
+  - GitHub Actions CI workflow creation.
+
 
 

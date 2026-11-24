@@ -155,4 +155,41 @@ Per project rules, every bug must be reproduced deterministically, diagnosed to 
 - **Fix Applied:** Implemented `safe_int()` helper that verifies `val.is_resolvable` and substitutes unresolved bits with `'0'`.
 - **Regression Test:** `tb/pyuvm/tests/test_stress.py`
 
+### [BUG-016] APB Timer Countdown Formal Assertion False Failure on APB Write Collision
+- **Date Discovered:** 2026-11-24
+- **Target Component:** `formal/apb_timer.sby`, `rtl/apb/apb_timer.v`
+- **Detection Method:** SymbiYosys k-induction formal check (`sby -f formal/apb_timer.sby`)
+- **Symptom:** `assert (reg_ctrl[0] == 1'b0)` failed at induction step 4.
+- **Root Cause:** In `apb_timer.v`, APB register writes override autonomous timer counting and reload logic. The assertion checked that `reg_ctrl[0]` was cleared on timeout under `!reg_ctrl[1]`, but did not check if an APB write occurred in the preceding cycle writing `1` to `CTRL`.
+- **Fix Applied:** Qualified autonomous timer assertions with `!$past(apb_write && (paddr[3:2] == 2'b00))`.
+- **Regression Test:** `make formal` (`apb_timer.sby`)
+
+### [BUG-017] AXI-Lite RAM Slave Response Latency Tracking Skew under Backpressure
+- **Date Discovered:** 2026-11-24
+- **Target Component:** `formal/axil_ram.sby`, `rtl/axil/axil_ram.v`
+- **Detection Method:** SymbiYosys BMC formal check (`sby -f formal/axil_ram.sby`)
+- **Symptom:** `assert (s_axil_bresp == ($past(write_in_bounds) ? RESP_OKAY : RESP_SLVERR))` failed at step 5.
+- **Root Cause:** When `s_axil_bready` was held low, `bvalid` remained high while `awready`/`wready` were briefly high, allowing a second write address to arrive. The property was asserting the new write's response while `bresp` still held the previous write's response waiting for `bready`.
+- **Fix Applied:** Verified that `bresp` matches bounds on the cycle following `write_commit = ((aw_hs || aw_done) && (w_hs || w_done) && (!bvalid || bready))`, and asserted `$stable(s_axil_bresp)` while waiting for `bready`.
+- **Regression Test:** `make formal` (`axil_ram.sby`)
+
+### [BUG-018] Cocotb COVERAGE Variable Collision with pyuvm Functional Coverage Directory
+- **Date Discovered:** 2026-11-24
+- **Target Component:** `tb/pyuvm/func_cov/`, `tb/pyuvm/Makefile.single`
+- **Detection Method:** Make regression with `COVERAGE=1`
+- **Symptom:** `AttributeError: module 'coverage' has no attribute 'coverage'`.
+- **Root Cause:** Cocotb uses `COVERAGE=1` to invoke Python code coverage (`import coverage`). Having a directory named `tb/pyuvm/coverage` on `PYTHONPATH` caused Python to import the local directory instead of the standard Python coverage package.
+- **Fix Applied:** Renamed `tb/pyuvm/coverage` to `tb/pyuvm/func_cov`, and used `VERILATOR_COVERAGE=1` in the Makefiles to distinguish HDL code coverage from Python code coverage.
+- **Regression Test:** `make cov-report`
+
+### [BUG-019] Yosys SymbiYosys Downward Hierarchical Reference Width Detection Rejection
+- **Date Discovered:** 2026-11-24
+- **Target Component:** `formal/` sby suites
+- **Detection Method:** `sby` elaboration
+- **Symptom:** `ERROR: Failed to resolve identifier \dut.reg_load for width detection`.
+- **Root Cause:** Yosys AST parser does not support downward cross-module hierarchical references for port/wire width detection in separate wrapper modules.
+- **Fix Applied:** Embedded formal properties directly within each RTL module under `` `ifdef FORMAL ``, keeping formal verification clean, self-contained, and portable.
+- **Regression Test:** `make formal` (all 8 suites)
+
+
 

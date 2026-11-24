@@ -8,6 +8,7 @@ obj_dir/
 *.o
 *.so
 *.pyc
+*.dat
 __pycache__/
 .pytest_cache/
 results.xml
