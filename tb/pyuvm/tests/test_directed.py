@@ -16,6 +16,7 @@ from sequences.directed_seqs import (
     ContentionM0Seq,
     ContentionM1Seq
 )
+from sequences.coverage_closure_seq import CoverageClosureSeq
 from sequences.axil_base_seq import AxilBaseSeq
 
 class BaseFabricTest(uvm_test):
@@ -150,5 +151,25 @@ class TestContention(BaseFabricTest):
         await t1
 
         for _ in range(10):
+            await RisingEdge(cocotb.top.clk_sys)
+        self.drop_objection()
+
+
+@pyuvm.test()
+class TestCoverageClosure(BaseFabricTest):
+    """Phase 5: Functional coverage closure exercising all Section 10 covergroups."""
+    async def run_phase(self):
+        self.raise_objection()
+        await self.init_clocks_and_reset()
+
+        seq0 = CoverageClosureSeq("seq0", master_id=0)
+        seq1 = CoverageClosureSeq("seq1", master_id=1)
+
+        t0 = cocotb.start_soon(seq0.start(self.env.m0_agent.sequencer))
+        t1 = cocotb.start_soon(seq1.start(self.env.m1_agent.sequencer))
+        await t0
+        await t1
+
+        for _ in range(20):
             await RisingEdge(cocotb.top.clk_sys)
         self.drop_objection()

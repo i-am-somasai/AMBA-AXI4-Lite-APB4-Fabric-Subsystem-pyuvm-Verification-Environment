@@ -1,7 +1,13 @@
 # tb/pyuvm/env/fabric_scoreboard.py
 # pyuvm Scoreboard comparing DUT transactions against independent reference model
+import os
 from pyuvm import uvm_scoreboard, uvm_subscriber
 from models.fabric_ref_model import FabricRefModel
+
+try:
+    from func_cov.fabric_cov import CoverageCollector
+except ImportError:
+    CoverageCollector = None
 
 class FabricMasterSubscriber(uvm_subscriber):
     """Subscriber that receives completed transactions from an AxilMasterAgent."""
@@ -36,6 +42,9 @@ class FabricScoreboard(uvm_scoreboard):
     def check_transaction(self, item):
         """Validates a single completed transaction against the reference model."""
         self.total_transactions += 1
+
+        if CoverageCollector:
+            CoverageCollector.get().sample_transaction(item)
 
         if item.is_write:
             exp_resp = self.ref_model.predict_write(
@@ -78,3 +87,11 @@ class FabricScoreboard(uvm_scoreboard):
             f"Mismatches={self.mismatches} ---"
         )
         assert self.mismatches == 0, f"Scoreboard detected {self.mismatches} mismatches!"
+
+        if CoverageCollector:
+            seed = os.environ.get("SEED", "0")
+            test_name = os.environ.get("TESTCASE", os.environ.get("MODULE", "sim"))
+            proj_dir = os.environ.get("PROJ_DIR", os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+            cov_path = os.path.join(proj_dir, f"docs/logs/cov_{test_name}_seed_{seed}.yaml")
+            CoverageCollector.get().export(cov_path)
+            self.logger.info(f"Functional coverage exported to: {cov_path}")

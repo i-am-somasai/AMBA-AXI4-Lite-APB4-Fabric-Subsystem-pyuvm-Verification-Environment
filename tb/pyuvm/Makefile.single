@@ -10,6 +10,9 @@ endif
 
 ifeq ($(SIM),verilator)
 EXTRA_ARGS += -DCOCOTB_SIM --trace
+ifeq ($(VERILATOR_COVERAGE),1)
+EXTRA_ARGS += --coverage
+endif
 endif
 
 # Export PYTHONPATH so pyuvm finds tb/models, tb/pyuvm, and test files

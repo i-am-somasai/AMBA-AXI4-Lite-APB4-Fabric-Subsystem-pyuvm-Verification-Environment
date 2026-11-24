@@ -2,6 +2,12 @@
 import cocotb
 from cocotb.triggers import RisingEdge, Timer
 
+try:
+    from func_cov.fabric_cov import sample_backpressure, CoverageCollector
+except ImportError:
+    sample_backpressure = None
+    CoverageCollector = None
+
 def safe_int(val, default=0):
     try:
         if hasattr(val, "is_resolvable"):
@@ -66,16 +72,25 @@ class AxilMasterDriver:
 
         aw_done = False
         w_done = False
+        aw_delay = 0
+        w_delay = 0
+        b_delay = 0
+        aw_asserted = False
+        w_asserted = False
 
         if order == "simultaneous":
             self.awvalid.value = 1
             self.wvalid.value = 1
+            aw_asserted = True
+            w_asserted = True
         elif order == "aw_first":
             self.awvalid.value = 1
             self.wvalid.value = 0
+            aw_asserted = True
         elif order == "w_first":
             self.awvalid.value = 0
             self.wvalid.value = 1
+            w_asserted = True
 
         cycles = 0
         w_first_stagger = 2 if order == "w_first" else 0
@@ -86,21 +101,29 @@ class AxilMasterDriver:
             if cycles > self.timeout_cycles:
                 raise TimeoutError(f"AXI-Lite write handshake timeout on addr 0x{addr:08x}")
 
-            if not aw_done and self.awvalid.value and self.awready.value:
-                aw_done = True
-                self.awvalid.value = 0
+            if not aw_done:
+                if self.awvalid.value and self.awready.value:
+                    aw_done = True
+                    self.awvalid.value = 0
+                elif aw_asserted:
+                    aw_delay += 1
 
-            if not w_done and self.wvalid.value and self.wready.value:
-                w_done = True
-                self.wvalid.value = 0
+            if not w_done:
+                if self.wvalid.value and self.wready.value:
+                    w_done = True
+                    self.wvalid.value = 0
+                elif w_asserted:
+                    w_delay += 1
 
             # Advance second channel if staggered
             if order == "aw_first" and aw_done and not w_done and not self.wvalid.value:
                 self.wvalid.value = 1
+                w_asserted = True
             elif order == "w_first" and not aw_done and not self.awvalid.value:
                 w_first_stagger -= 1
                 if w_first_stagger <= 0:
                     self.awvalid.value = 1
+                    aw_asserted = True
 
         # Wait for B response
         self.bready.value = 1
@@ -113,12 +136,19 @@ class AxilMasterDriver:
             if self.bvalid.value:
                 resp = safe_int(self.bresp.value)
                 break
+            b_delay += 1
 
         self.bready.value = 0
+        if sample_backpressure and CoverageCollector:
+            sample_backpressure("AW", CoverageCollector.delay_to_bucket(aw_delay))
+            sample_backpressure("W", CoverageCollector.delay_to_bucket(w_delay))
+            sample_backpressure("B", CoverageCollector.delay_to_bucket(b_delay))
         return resp
 
     async def read(self, addr, prot=0):
         """Performs an AXI-Lite read transaction."""
+        ar_delay = 0
+        r_delay = 0
         self.araddr.value = addr
         if self.arprot is not None:
             self.arprot.value = prot
@@ -132,6 +162,7 @@ class AxilMasterDriver:
                 raise TimeoutError(f"AXI-Lite read address timeout on addr 0x{addr:08x}")
             if self.arready.value:
                 break
+            ar_delay += 1
         self.arvalid.value = 0
 
         # Wait for R response
@@ -146,8 +177,12 @@ class AxilMasterDriver:
                 rdata = safe_int(self.rdata.value)
                 rresp = safe_int(self.rresp.value)
                 break
+            r_delay += 1
 
         self.rready.value = 0
+        if sample_backpressure and CoverageCollector:
+            sample_backpressure("AR", CoverageCollector.delay_to_bucket(ar_delay))
+            sample_backpressure("R", CoverageCollector.delay_to_bucket(r_delay))
         return rdata, rresp
 
 
