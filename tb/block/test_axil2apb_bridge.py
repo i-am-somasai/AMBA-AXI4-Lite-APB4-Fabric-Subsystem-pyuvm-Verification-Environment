@@ -180,3 +180,192 @@ async def test_br03_pslverr_propagation(dut):
     apb_slave.stop()
     await RisingEdge(dut.clk)
     await Timer(10, unit="ns")
+
+
+@cocotb.test()
+async def test_br04_pstrb_patterns(dut):
+    """BR-04: Verify PSTRB patterns match WSTRB at bridge level."""
+    await setup_dut(dut)
+
+    driver = AxilDriver(
+        clk=dut.clk, rst_n=dut.rst_n, name="m0_driver",
+        awaddr=dut.s_axil_awaddr, awprot=dut.s_axil_awprot, awvalid=dut.s_axil_awvalid, awready=dut.s_axil_awready,
+        wdata=dut.s_axil_wdata, wstrb=dut.s_axil_wstrb, wvalid=dut.s_axil_wvalid, wready=dut.s_axil_wready,
+        bresp=dut.s_axil_bresp, bvalid=dut.s_axil_bvalid, bready=dut.s_axil_bready,
+        araddr=dut.s_axil_araddr, arprot=dut.s_axil_arprot, arvalid=dut.s_axil_arvalid, arready=dut.s_axil_arready,
+        rdata=dut.s_axil_rdata, rresp=dut.s_axil_rresp, rvalid=dut.s_axil_rvalid, rready=dut.s_axil_rready,
+    )
+
+    apb_slave = ApbSlaveResponder(
+        clk=dut.clk, rst_n=dut.rst_n, name="apb_slave_pstrb",
+        wait_states=0, inject_pslverr=False, base_addr=0x40000000,
+        paddr=dut.m_apb_paddr, psel=dut.m_apb_psel, penable=dut.m_apb_penable,
+        pwrite=dut.m_apb_pwrite, pwdata=dut.m_apb_pwdata, pstrb=dut.m_apb_pstrb,
+        pready=dut.m_apb_pready, prdata=dut.m_apb_prdata, pslverr=dut.m_apb_pslverr,
+    )
+    apb_slave.start()
+
+    # Track observed PSTRB on APB side
+    observed_pstrb = []
+    async def monitor_apb_pstrb():
+        while True:
+            await RisingEdge(dut.clk)
+            if int(dut.m_apb_psel.value) == 1 and int(dut.m_apb_pwrite.value) == 1 and int(dut.m_apb_penable.value) == 0:
+                observed_pstrb.append(int(dut.m_apb_pstrb.value))
+
+    mon_task = cocotb.start_soon(monitor_apb_pstrb())
+
+    patterns = [0x1, 0x2, 0x4, 0x8, 0x3, 0xC, 0xF, 0x5, 0xA, 0x0]
+    for i, strb in enumerate(patterns):
+        addr = 0x40000000 + (i * 4)
+        data = 0xA0B0C0D0 + i
+        resp = await driver.write(addr=addr, data=data, strb=strb)
+        assert resp == 0, f"Write with strb={hex(strb)} failed: {resp}"
+        assert observed_pstrb[-1] == strb, f"PSTRB mismatch: expected {hex(strb)}, observed {hex(observed_pstrb[-1])}"
+
+    mon_task.cancel()
+    apb_slave.stop()
+    await RisingEdge(dut.clk)
+    await Timer(10, unit="ns")
+
+
+@cocotb.test()
+async def test_br05_back_to_back_mixed_rw(dut):
+    """BR-05: Back-to-back mixed read/write transfers, verify single-outstanding arbitration and no starvation."""
+    await setup_dut(dut)
+
+    driver = AxilDriver(
+        clk=dut.clk, rst_n=dut.rst_n, name="m0_driver",
+        awaddr=dut.s_axil_awaddr, awprot=dut.s_axil_awprot, awvalid=dut.s_axil_awvalid, awready=dut.s_axil_awready,
+        wdata=dut.s_axil_wdata, wstrb=dut.s_axil_wstrb, wvalid=dut.s_axil_wvalid, wready=dut.s_axil_wready,
+        bresp=dut.s_axil_bresp, bvalid=dut.s_axil_bvalid, bready=dut.s_axil_bready,
+        araddr=dut.s_axil_araddr, arprot=dut.s_axil_arprot, arvalid=dut.s_axil_arvalid, arready=dut.s_axil_arready,
+        rdata=dut.s_axil_rdata, rresp=dut.s_axil_rresp, rvalid=dut.s_axil_rvalid, rready=dut.s_axil_rready,
+    )
+
+    apb_slave = ApbSlaveResponder(
+        clk=dut.clk, rst_n=dut.rst_n, name="apb_slave_rw",
+        wait_states=1, inject_pslverr=False, base_addr=0x40000000,
+        paddr=dut.m_apb_paddr, psel=dut.m_apb_psel, penable=dut.m_apb_penable,
+        pwrite=dut.m_apb_pwrite, pwdata=dut.m_apb_pwdata, pstrb=dut.m_apb_pstrb,
+        pready=dut.m_apb_pready, prdata=dut.m_apb_prdata, pslverr=dut.m_apb_pslverr,
+    )
+    apb_slave.start()
+
+    # Pre-populate memory
+    apb_slave.memory[0x10] = 0x11112222
+    apb_slave.memory[0x20] = 0x33334444
+
+    # Issue simultaneous write and read requests on AXI bus
+    dut.s_axil_awaddr.value = 0x40000010
+    dut.s_axil_wdata.value = 0x9999AAAA
+    dut.s_axil_wstrb.value = 0xF
+    dut.s_axil_awvalid.value = 1
+    dut.s_axil_wvalid.value = 1
+    dut.s_axil_bready.value = 1
+
+    dut.s_axil_araddr.value = 0x40000020
+    dut.s_axil_arvalid.value = 1
+    dut.s_axil_rready.value = 1
+
+    # Wait for both to complete
+    b_done = False
+    r_done = False
+    rdata_captured = 0
+
+    for _ in range(50):
+        await RisingEdge(dut.clk)
+        if dut.s_axil_awvalid.value and dut.s_axil_awready.value:
+            dut.s_axil_awvalid.value = 0
+        if dut.s_axil_wvalid.value and dut.s_axil_wready.value:
+            dut.s_axil_wvalid.value = 0
+        if dut.s_axil_bvalid.value and dut.s_axil_bready.value:
+            b_done = True
+        if dut.s_axil_arvalid.value and dut.s_axil_arready.value:
+            dut.s_axil_arvalid.value = 0
+        if dut.s_axil_rvalid.value and dut.s_axil_rready.value:
+            r_done = True
+            rdata_captured = int(dut.s_axil_rdata.value)
+        if b_done and r_done:
+            break
+
+    assert b_done, "Write response not received under concurrent R/W!"
+    assert r_done, "Read response not received under concurrent R/W!"
+    assert rdata_captured == 0x33334444, f"Read data corrupted: {hex(rdata_captured)}"
+    assert apb_slave.memory.get(0x10) == 0x9999AAAA, "Write data not committed!"
+
+    # Follow with back-to-back writes and reads
+    for i in range(10):
+        w_addr = 0x40000000 + (i * 4)
+        w_val = 0xCAFE0000 + i
+        bresp = await driver.write(addr=w_addr, data=w_val)
+        assert bresp == 0
+        r_val, rresp = await driver.read(addr=w_addr)
+        assert rresp == 0
+        assert r_val == w_val
+
+    apb_slave.stop()
+    await RisingEdge(dut.clk)
+    await Timer(10, unit="ns")
+
+
+@cocotb.test()
+async def test_br06_delayed_w_no_early_psel(dut):
+    """BR-06: Write with W arriving long after AW; assert PSEL never rises before W arrives."""
+    await setup_dut(dut)
+
+    apb_slave = ApbSlaveResponder(
+        clk=dut.clk, rst_n=dut.rst_n, name="apb_slave_br06",
+        wait_states=0, inject_pslverr=False, base_addr=0x40000000,
+        paddr=dut.m_apb_paddr, psel=dut.m_apb_psel, penable=dut.m_apb_penable,
+        pwrite=dut.m_apb_pwrite, pwdata=dut.m_apb_pwdata, pstrb=dut.m_apb_pstrb,
+        pready=dut.m_apb_pready, prdata=dut.m_apb_prdata, pslverr=dut.m_apb_pslverr,
+    )
+    apb_slave.start()
+
+    # Step 1: Drive AWVALID=1, WVALID=0
+    dut.s_axil_awaddr.value = 0x40000050
+    dut.s_axil_awvalid.value = 1
+    dut.s_axil_wvalid.value = 0
+    dut.s_axil_bready.value = 1
+
+    # Wait for AWREADY handshake
+    while True:
+        await RisingEdge(dut.clk)
+        if int(dut.s_axil_awready.value) == 1:
+            dut.s_axil_awvalid.value = 0
+            break
+
+    # Step 2: Hold WVALID=0 for 15 cycles; assert PSEL is strictly 0 on every cycle
+    for cycle in range(15):
+        await RisingEdge(dut.clk)
+        assert int(dut.m_apb_psel.value) == 0, f"Cycle {cycle}: PSEL asserted before W data arrived!"
+        assert int(dut.m_apb_penable.value) == 0, f"Cycle {cycle}: PENABLE asserted before W data arrived!"
+
+    # Step 3: Now drive WVALID=1
+    dut.s_axil_wdata.value = 0x55AA33CC
+    dut.s_axil_wstrb.value = 0xF
+    dut.s_axil_wvalid.value = 1
+
+    # Wait for WREADY
+    while True:
+        await RisingEdge(dut.clk)
+        if int(dut.s_axil_wready.value) == 1:
+            dut.s_axil_wvalid.value = 0
+            break
+
+    # Step 4: Now PSEL should assert and complete the APB transfer
+    completed = False
+    for _ in range(20):
+        await RisingEdge(dut.clk)
+        if int(dut.s_axil_bvalid.value) == 1:
+            assert int(dut.s_axil_bresp.value) == 0
+            completed = True
+            break
+
+    assert completed, "Write failed to complete after W data provided!"
+    assert apb_slave.memory.get(0x50) == 0x55AA33CC, "APB memory data mismatch after delayed W!"
+
+    apb_slave.stop()
+    await RisingEdge(dut.clk)
+    await Timer(10, unit="ns")

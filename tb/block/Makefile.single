@@ -2,6 +2,7 @@
 SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 SIM_BUILD ?= sim_build_$(TOPLEVEL)
+COCOTB_RESULTS_FILE ?= results_$(MODULE).xml
 
 ifeq ($(SIM),icarus)
 COMPILE_ARGS += -g2012 -DCOCOTB_SIM

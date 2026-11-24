@@ -55,7 +55,7 @@ class AxilMasterDriver:
         self.arvalid.value = 0
         self.rready.value  = 0
 
-    async def write(self, addr, data, strb=0xF, prot=0, order="simultaneous"):
+    async def write(self, addr, data, strb=0xF, prot=0, order="simultaneous", bready_delay=0):
         """Performs an AXI-Lite write transaction.
            order can be: 'simultaneous', 'aw_first', 'w_first'
         """
@@ -121,7 +121,11 @@ class AxilMasterDriver:
                     aw_asserted = True
 
         # Wait for B response
-        self.bready.value = 1
+        if bready_delay == 0:
+            self.bready.value = 1
+        else:
+            self.bready.value = 0
+
         cycles = 0
         while True:
             await RisingEdge(self.clk)
@@ -129,14 +133,24 @@ class AxilMasterDriver:
             if cycles > self.timeout_cycles:
                 raise TimeoutError(f"AXI-Lite write response timeout on addr 0x{addr:08x}")
             if self.bvalid.value:
-                resp = safe_int(self.bresp.value)
-                break
+                if bready_delay > 0:
+                    for _ in range(bready_delay):
+                        self.bready.value = 0
+                        await RisingEdge(self.clk)
+                    self.bready.value = 1
+                    resp = safe_int(self.bresp.value)
+                    await RisingEdge(self.clk)
+                    self.bready.value = 0
+                    break
+                else:
+                    resp = safe_int(self.bresp.value)
+                    break
             b_delay += 1
 
         self.bready.value = 0
         return resp
 
-    async def read(self, addr, prot=0):
+    async def read(self, addr, prot=0, rready_delay=0):
         """Performs an AXI-Lite read transaction."""
         ar_delay = 0
         r_delay = 0
@@ -157,7 +171,11 @@ class AxilMasterDriver:
         self.arvalid.value = 0
 
         # Wait for R response
-        self.rready.value = 1
+        if rready_delay == 0:
+            self.rready.value = 1
+        else:
+            self.rready.value = 0
+
         cycles = 0
         while True:
             await RisingEdge(self.clk)
@@ -165,9 +183,20 @@ class AxilMasterDriver:
             if cycles > self.timeout_cycles:
                 raise TimeoutError(f"AXI-Lite read response timeout on addr 0x{addr:08x}")
             if self.rvalid.value:
-                rdata = safe_int(self.rdata.value)
-                rresp = safe_int(self.rresp.value)
-                break
+                if rready_delay > 0:
+                    for _ in range(rready_delay):
+                        self.rready.value = 0
+                        await RisingEdge(self.clk)
+                    self.rready.value = 1
+                    rdata = safe_int(self.rdata.value)
+                    rresp = safe_int(self.rresp.value)
+                    await RisingEdge(self.clk)
+                    self.rready.value = 0
+                    break
+                else:
+                    rdata = safe_int(self.rdata.value)
+                    rresp = safe_int(self.rresp.value)
+                    break
             r_delay += 1
 
         self.rready.value = 0

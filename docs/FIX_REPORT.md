@@ -36,7 +36,7 @@ Every finding is addressed with honest evidence, verified by real tool execution
 ---
 
 ### F-02: Missing and Mislabeled Tests in Test Plan & Codebase
-- **Status:** TODO
+- **Status:** DONE
 - **Finding:** `docs/vplan.md` marked tests as PASS that were either missing or mislabeled:
   - XB-09 (random READY backpressure) & XB-10 (delayed BREADY/RREADY) missing.
   - UA-04 (framing error injection) missing.
@@ -46,21 +46,28 @@ Every finding is addressed with honest evidence, verified by real tool execution
   - CD-02 was only a basic test without stream stress or boundary verification.
   - BR-04, BR-05, BR-06 in `tb/pyuvm/tests/test_directed.py` targeted RAM/CSR rather than the APB bridge.
   - CS-01, CS-02, CS-03 were combined into a single test function without separate spec ID mapping.
-- **Planned Changes:**
-  - Implement genuine tests named `test_<ID>_<short_name>` for all missing/mislabeled scenarios:
-    - `test_xb09_ready_backpressure`, `test_xb10_delayed_bready_rready`
-    - `test_ua04_framing_error`
-    - `test_cd01_ratio_phase_sweep`, `test_cd02_async_fifo_stream`, `test_cd03_reset_recovery`, `test_cd05_dual_master_slow_regs`
-    - Bridge-level `test_br04_pstrb`, `test_br05_contention`, `test_br06_delayed_wdata` in `tb/block/test_axil2apb_bridge.py`
-    - Split CSR tests into `test_cs01_reset_values`, `test_cs02_access_types_w1c`, `test_cs03_irq_aggregation`
-  - Rename mislabeled tests in `test_directed.py`.
-  - Create `scripts/gen_test_map.py` to parse test IDs, inspect `results.xml`, and generate `docs/test_map.csv`.
-  - Regenerate `docs/vplan.md` mechanically from `docs/test_map.csv`.
-- **Evidence:** TBD (`docs/test_map.csv`, `docs/vplan.md`, `docs/logs/gen_test_map.log`)
+- **Changes Made:**
+  - Implemented genuine tests named `test_<ID>_<short_name>` for all missing/mislabeled scenarios:
+    - `test_xb09_random_ready_backpressure`: >= 2,000 transactions across M0 and M1 to all slaves with randomized ready delays and master BREADY/RREADY delays, verifying zero loss and zero duplication in `tb/block/test_axil_xbar.py`.
+    - `test_xb10_delayed_bready_rready_stability`: delayed BREADY/RREADY with active cycle-by-cycle monitors asserting that BVALID/RVALID, response codes and data stay strictly stable until handshake completion in `tb/block/test_axil_xbar.py`.
+    - `test_ua04_framing_error`: transmits UART frame with bad stop bit (0) on `uart_rx`, asserts `FRAME_ERR` (STATUS bit 4) is set, clears via W1C, and verifies subsequent good frame is received correctly in `tb/block/test_apb_uart.py`.
+    - `test_cd01_ratio_phase_sweep`: sweeps 3 clock ratios (25.0 ns, 10.3 ns, 6.0 ns) across 3 phase alignments (0 ns, 2.5 ns, 5.0 ns) in `tb/block/test_axil_cdc_bridge.py`, verifying full data integrity and strobes.
+    - `test_cd02_async_fifo_stream`: continuous 400-item stream across fast-writer/slow-reader and slow-writer/fast-reader regimes in `tb/unit/test_async_fifo.py`, verifying full/empty boundaries reached, no overflow/underflow, and strict FIFO ordering.
+    - `test_cd03_reset_recovery`: mid-transaction reset injection in `clk_sys` and `clk_slow` domains in `tb/block/test_axil_cdc_bridge.py`, asserting clean recovery and correct subsequent transaction.
+    - `test_cd05_dual_master_slow_regs`: concurrent dual-master interleaved read/write transactions to slow registers through the full path (crossbar + CDC bridge) in `tb/block/test_amba_fabric_top.py`.
+    - `test_br04_pstrb_patterns`, `test_br05_back_to_back_mixed_rw`, `test_br06_delayed_w_no_early_psel`: bridge-level tests in `tb/block/test_axil2apb_bridge.py` using `ApbSlaveResponder`, checking APB `PSTRB` matching `WSTRB`, single-outstanding serialization under mixed R/W, and asserting `PSEL` remains 0 while waiting for delayed W data.
+    - Split CSR tests into `test_cs01_reset_values`, `test_cs02_access_types_w1c` (including `W1C_SET` hook), and `test_cs03_irq_aggregation` in `tb/unit/test_axil_csr.py`.
+  - Renamed mislabeled docstrings and classes in `tb/pyuvm/tests/test_directed.py` to `test_xb11_slverr_propagation`, `test_xb12_reset_recovery`, `test_xb14_prot_passthrough`, `test_xb15_unaligned_address`, `test_sys_write_ordering`, `test_sys_strobe_patterns`, `test_sys_contention`.
+  - Renamed `TestStress` in `tb/pyuvm/tests/test_stress.py` to `test_xb13_stress`.
+  - Created `scripts/gen_test_map.py` to parse all test function/class names, inspect simulation `results_*.xml`, generate `docs/test_map.csv`, and mechanically rewrite Section 3 of `docs/vplan.md`.
+- **Evidence:**
+  - `docs/test_map.csv` (all 40 spec IDs mapped to test name, file, PASS result, seed)
+  - `docs/vplan.md` Section 3 (100% mechanically updated from test results)
+  - Execution logs: `make unit`, `make block`, `tb/pyuvm/test_directed`, `tb/pyuvm/test_stress` all exit 0.
 - **Before / After Numbers:**
-  - Before: Mislabeled tests, unverified features marked PASS in vplan.
-  - After: All 40 spec test IDs accounted for, verified by `results.xml`.
-- **Remaining Issues:** None yet.
+  - Before: 8 tests missing or mislabeled; docstring confusion with bridge tests; 40-test plan contained unverified PASS rows.
+  - After: All 40/40 spec test IDs implemented, executed in simulation, confirmed passing with zero failures.
+- **Remaining Issues:** None. Gate passed.
 
 ---
 

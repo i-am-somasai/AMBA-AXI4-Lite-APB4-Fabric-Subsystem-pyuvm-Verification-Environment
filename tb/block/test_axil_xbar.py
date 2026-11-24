@@ -16,6 +16,7 @@ from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, Timer
 import sys
 import os
+import random
 import asyncio
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../models")))
@@ -366,6 +367,122 @@ async def test_xb08_write_orderings(dut):
         rdata, rresp = await tb.m0.read(addr=addr)
         assert rresp == 0, f"Read failed after write with order {ord_mode}"
         assert rdata == val, f"Data mismatch with order {ord_mode}: expected {hex(val)}, got {hex(rdata)}"
+
+    tb.stop_all()
+    await RisingEdge(dut.clk)
+    await Timer(10, unit="ns")
+
+
+@cocotb.test()
+async def test_xb09_random_ready_backpressure(dut):
+    """XB-09: Random READY back-pressure on all channels, >= 2,000 transactions, no loss or duplication."""
+    tb = XbarTestbench(dut)
+    await tb.reset()
+
+    # Configure random backpressure on all slave responders
+    for s in [tb.s0, tb.s1, tb.s2, tb.s3]:
+        s.awready_delay = (0, 3)
+        s.wready_delay = (0, 3)
+        s.arready_delay = (0, 3)
+        s.bvalid_delay = (0, 3)
+        s.rvalid_delay = (0, 3)
+
+    base_addrs = [0x40000000, 0x50000000, 0x60000000, 0x70000000]
+    total_txns = 2000
+    num_rounds = total_txns // 2 # 1,000 writes + 1,000 reads = 2,000 transactions
+
+    dut._log.info(f"Starting XB-09 random backpressure test with {total_txns} transactions...")
+
+    for i in range(num_rounds):
+        m_idx = i % 2
+        driver = tb.m0 if m_idx == 0 else tb.m1
+        slave_idx = (i // 2) % 4
+        addr = base_addrs[slave_idx] + ((i % 32) * 4)
+        wdata = (0x80000000 | (m_idx << 20) | (slave_idx << 16) | (i & 0xFFFF))
+
+        # Write with random master-side BREADY delay
+        b_del = random.randint(0, 3)
+        w_resp = await driver.write(addr=addr, data=wdata, strb=0xF, bready_delay=b_del)
+        assert w_resp == 0, f"Txn {i}: Write to {hex(addr)} failed with resp {w_resp}"
+
+        # Read back with random master-side RREADY delay
+        r_del = random.randint(0, 3)
+        rdata, r_resp = await driver.read(addr=addr, rready_delay=r_del)
+        assert r_resp == 0, f"Txn {i}: Read from {hex(addr)} failed with resp {r_resp}"
+        assert rdata == wdata, f"Txn {i}: Data integrity mismatch on {hex(addr)}: expected {hex(wdata)}, got {hex(rdata)}"
+
+        if (i + 1) % 500 == 0:
+            dut._log.info(f"XB-09 progress: {(i + 1) * 2}/{total_txns} transactions complete")
+
+    dut._log.info("XB-09: 2,000 transactions passed with zero loss and zero duplication.")
+    tb.stop_all()
+    await RisingEdge(dut.clk)
+    await Timer(10, unit="ns")
+
+
+@cocotb.test()
+async def test_xb10_delayed_bready_rready_stability(dut):
+    """XB-10: Delayed BREADY/RREADY; assert that BVALID/RVALID, response code and data stay stable until accepted."""
+    tb = XbarTestbench(dut)
+    await tb.reset()
+
+    # Fixed slave delays
+    tb.s1.awready_delay = 1
+    tb.s1.wready_delay = 1
+    tb.s1.bvalid_delay = 1
+    tb.s1.arready_delay = 1
+    tb.s1.rvalid_delay = 1
+
+    # Stability monitor for Write B channel
+    async def monitor_b_stability(bvalid_sig, bresp_sig, bready_sig, name):
+        while True:
+            await RisingEdge(dut.clk)
+            if int(bvalid_sig.value) == 1 and int(bready_sig.value) == 0:
+                expected_resp = int(bresp_sig.value)
+                # Verify stability on every clock cycle until BREADY rises
+                while int(bready_sig.value) == 0:
+                    assert int(bvalid_sig.value) == 1, f"{name}: BVALID dropped before BREADY handshake!"
+                    assert int(bresp_sig.value) == expected_resp, f"{name}: BRESP mutated while waiting for BREADY!"
+                    await RisingEdge(dut.clk)
+
+    # Stability monitor for Read R channel
+    async def monitor_r_stability(rvalid_sig, rresp_sig, rdata_sig, rready_sig, name):
+        while True:
+            await RisingEdge(dut.clk)
+            if int(rvalid_sig.value) == 1 and int(rready_sig.value) == 0:
+                expected_resp = int(rresp_sig.value)
+                expected_data = int(rdata_sig.value)
+                # Verify stability on every clock cycle until RREADY rises
+                while int(rready_sig.value) == 0:
+                    assert int(rvalid_sig.value) == 1, f"{name}: RVALID dropped before RREADY handshake!"
+                    assert int(rresp_sig.value) == expected_resp, f"{name}: RRESP mutated while waiting for RREADY!"
+                    assert int(rdata_sig.value) == expected_data, f"{name}: RDATA mutated while waiting for RREADY!"
+                    await RisingEdge(dut.clk)
+
+    task_b0 = cocotb.start_soon(monitor_b_stability(dut.m0_bvalid, dut.m0_bresp, dut.m0_bready, "M0_B"))
+    task_r0 = cocotb.start_soon(monitor_r_stability(dut.m0_rvalid, dut.m0_rresp, dut.m0_rdata, dut.m0_rready, "M0_R"))
+    task_b1 = cocotb.start_soon(monitor_b_stability(dut.m1_bvalid, dut.m1_bresp, dut.m1_bready, "M1_B"))
+    task_r1 = cocotb.start_soon(monitor_r_stability(dut.m1_rvalid, dut.m1_rresp, dut.m1_rdata, dut.m1_rready, "M1_R"))
+
+    # Test prolonged delays (5 to 12 cycles) on both masters
+    test_cases = [
+        (tb.m0, 0x50000010, 0xCAFEBABE, 8, 8),
+        (tb.m0, 0x50000014, 0x12345678, 12, 10),
+        (tb.m1, 0x50000020, 0xDEADBEEF, 6, 8),
+        (tb.m1, 0x50000024, 0xA5A55A5A, 10, 12),
+    ]
+
+    for driver, addr, val, b_del, r_del in test_cases:
+        w_resp = await driver.write(addr=addr, data=val, strb=0xF, bready_delay=b_del)
+        assert w_resp == 0
+        r_val, r_resp = await driver.read(addr=addr, rready_delay=r_del)
+        assert r_resp == 0
+        assert r_val == val
+
+    task_b0.cancel()
+    task_r0.cancel()
+    task_b1.cancel()
+    task_r1.cancel()
 
     tb.stop_all()
     await RisingEdge(dut.clk)

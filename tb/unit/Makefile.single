@@ -2,6 +2,7 @@
 SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 SIM_BUILD ?= sim_build_$(TOPLEVEL)
+COCOTB_RESULTS_FILE ?= results_$(MODULE).xml
 
 # Include standard cocotb Makefile
 include $(shell cocotb-config --makefiles)/Makefile.sim

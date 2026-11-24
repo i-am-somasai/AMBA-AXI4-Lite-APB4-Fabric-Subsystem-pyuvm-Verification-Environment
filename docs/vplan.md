@@ -65,67 +65,67 @@ The AMBA-Fabric subsystem is verified using a rigorous, three-tier verification 
 
 | Test ID | Scenario Description | Expected Checks | Test Location | Result |
 |---|---|---|---|---|
-| **XB-01** | Single write and read from each master to each slave | OKAY response, payload verified against reference model | `tb/block/test_axil_xbar.py` | **PASS** |
+| **XB-01** | Single write and read, each master to each mapped slave | OKAY response, payload verified against reference model | `tb/block/test_axil_xbar.py` | **PASS** |
 | **XB-02** | Write-then-read memory data integrity on RAM | Word and byte matches reference memory | `tb/block/test_axil_xbar.py` | **PASS** |
-| **XB-03** | All 16 `WSTRB` strobe combinations | Only strobed byte lanes modified; non-strobed bytes preserved | `tb/unit/test_axil_ram.py`, `test_directed.py` | **PASS** |
-| **XB-04** | Unmapped address read and write access | `DECERR` returned, no bus stall, write data consumed | `tb/block/test_axil_xbar.py` | **PASS** |
-| **XB-05** | Master contention: both masters target same slave concurrently | Clean serialization, no data corruption, transaction lock honored | `tb/block/test_axil_xbar.py` | **PASS** |
-| **XB-06** | Master parallelism: masters target distinct slaves concurrently | Parallel completion with 0 added serialization cycles | `tb/block/test_axil_xbar.py` | **PASS** |
-| **XB-07** | Bounded arbitration fairness under continuous contention | Grant count difference $\le 1$ across alternating requests | `tb/block/test_axil_xbar.py` | **PASS** |
-| **XB-08** | Write channel arrival permutations (AW-first, W-first, simultaneous) | Normal handshake completion in all three orderings without deadlock | `tb/block/test_axil_xbar.py`, `test_directed.py` | **PASS** |
-| **XB-09** | Random ready backpressure delays across all 5 channels | Handshake hold stability, no lost transfers | `tb/pyuvm/tests/test_directed.py` | **PASS** |
-| **XB-10** | Delayed `BREADY` and `RREADY` assertions | Response code and data held stable until handshake complete | `tb/pyuvm/tests/test_directed.py` | **PASS** |
-| **XB-11** | `SLVERR` response validation on out-of-bounds RAM and undefined regs | `SLVERR` response returned without hanging the interconnect | `tb/unit/test_axil_ram.py`, `test_axil_csr.py` | **PASS** |
-| **XB-12** | Asynchronous reset recovery during in-flight transactions | DUT returns to clean idle state; subsequent transactions succeed | `tb/pyuvm/tests/test_directed.py` | **PASS** |
-| **XB-13** | Multi-master constrained-random stress (50,000 transactions across 5 seeds) | Zero scoreboard mismatches, 100% data and response accuracy | `tb/pyuvm/tests/test_stress.py` | **PASS** |
-| **XB-14** | `AWPROT` and `ARPROT` pass-through to APB `PPROT` | APB `pprot` matches AXI-Lite input protection bits | `tb/pyuvm/tests/test_directed.py` | **PASS** |
+| **XB-03** | All 16 WSTRB patterns on RAM and CSR scratch | Only strobed bytes change; non-strobed preserved | `tb/block/test_axil_xbar.py` | **PASS** |
+| **XB-04** | Unmapped address read and write access | DECERR, no bus stall, write data consumed | `tb/block/test_axil_xbar.py` | **PASS** |
+| **XB-05** | Both masters to the same slave simultaneously | Clean serialization, no data corruption, transaction lock honored | `tb/block/test_axil_xbar.py` | **PASS** |
+| **XB-06** | Both masters to different slaves simultaneously | Parallel completion without serialization penalty | `tb/block/test_axil_xbar.py` | **PASS** |
+| **XB-07** | Arbitration fairness under sustained contention | Grant count difference <= 1 across alternating requests | `tb/block/test_axil_xbar.py` | **PASS** |
+| **XB-08** | AW before W / W before AW / simultaneous orderings | Normal handshake completion in all three orderings | `tb/block/test_axil_xbar.py` | **PASS** |
+| **XB-09** | Random READY back-pressure on all channels | >= 2,000 transactions, no loss, no duplication | `tb/block/test_axil_xbar.py` | **PASS** |
+| **XB-10** | Delayed BREADY / RREADY response holding | BVALID/RVALID, response code and data held stable until accepted | `tb/block/test_axil_xbar.py` | **PASS** |
+| **XB-11** | SLVERR response validation on out-of-bounds RAM and undefined regs | SLVERR response returned without hanging interconnect | `tb/pyuvm/tests/test_directed.py` | **PASS** |
+| **XB-12** | Asynchronous reset recovery during in-flight transaction | DUT returns to clean idle state; subsequent transactions succeed | `tb/pyuvm/tests/test_directed.py` | **PASS** |
+| **XB-13** | Multi-master constrained-random stress (>= 10,000 transactions) | Zero scoreboard mismatches, 100% data and response accuracy | `tb/pyuvm/tests/test_stress.py` | **PASS** |
+| **XB-14** | AWPROT and ARPROT pass-through to APB PPROT | APB PPROT matches AXI-Lite input protection bits | `tb/pyuvm/tests/test_directed.py` | **PASS** |
 | **XB-15** | Address alignment handling (LSBs [1:0] non-zero) | Address treated as word-aligned without bus hang | `tb/pyuvm/tests/test_directed.py` | **PASS** |
 
 ### 3.2 APB Bridge Suite (`BR-*`)
 
 | Test ID | Scenario Description | Expected Checks | Test Location | Result |
 |---|---|---|---|---|
-| **BR-01** | Basic APB read/write with 0 wait states | Correct SETUP $\rightarrow$ ACCESS timing; `PENABLE` pulses high | `tb/block/test_axil2apb_bridge.py` | **PASS** |
-| **BR-02** | APB wait states (PREADY low for 1..4 cycles) | Signals held stable during wait states; completes upon `PREADY=1` | `tb/block/test_axil2apb_bridge.py` | **PASS** |
-| **BR-03** | APB slave error (`PSLVERR=1`) mapping | Maps cleanly to AXI-Lite `SLVERR` (2'b10) response on read and write | `tb/block/test_axil2apb_bridge.py` | **PASS** |
-| **BR-04** | APB strobe propagation (`PSTRB`) | `m_apb_pstrb` accurately reflects `s_axil_wstrb` on write transfers | `tb/block/test_axil2apb_bridge.py` | **PASS** |
-| **BR-05** | Back-to-back mixed read/write transfers | No pipeline stall or data corruption across successive transfers | `tb/block/test_axil2apb_bridge.py` | **PASS** |
-| **BR-06** | Delayed W data arrival relative to AW | Bridge waits in `ST_WAIT_W` until W arrives; no premature APB access | `tb/block/test_axil2apb_bridge.py` | **PASS** |
+| **BR-01** | Single write and read, 0 wait states | Correct SETUP -> ACCESS timing; PENABLE pulses high | `tb/block/test_axil2apb_bridge.py` | **PASS** |
+| **BR-02** | APB wait states (PREADY delayed 1..4 cycles) | Signals held stable during wait states; completes upon PREADY=1 | `tb/block/test_axil2apb_bridge.py` | **PASS** |
+| **BR-03** | PSLVERR on read and write maps to SLVERR | Maps cleanly to AXI-Lite SLVERR (2'b10) response on read and write | `tb/block/test_axil2apb_bridge.py` | **PASS** |
+| **BR-04** | APB strobe propagation (PSTRB) | m_apb_pstrb accurately reflects s_axil_wstrb on write transfers | `tb/block/test_axil2apb_bridge.py` | **PASS** |
+| **BR-05** | Back-to-back mixed read/write transfers | Single-outstanding arbitration honored, no starvation or pipeline stall | `tb/block/test_axil2apb_bridge.py` | **PASS** |
+| **BR-06** | Delayed W data arrival relative to AW | Bridge waits in ST_WAIT_W; PSEL never rises before W arrives | `tb/block/test_axil2apb_bridge.py` | **PASS** |
 
 ### 3.3 Peripheral Suite (`UA-*`, `TM-*`, `GP-*`, `CS-*`)
 
 | Test ID | Scenario Description | Expected Checks | Test Location | Result |
 |---|---|---|---|---|
-| **UA-01** | UART internal loopback mode across all 256 byte values | RX data matches TX data; FIFO status flags update accurately | `tb/block/test_apb_uart.py` | **PASS** |
-| **UA-02** | UART FIFO full, empty, and overflow flags | `TX_FULL`, `RX_EMPTY`, `TX_OVF`, `RX_OVF` set and clear via W1C | `tb/block/test_apb_uart.py` | **PASS** |
-| **UA-03** | UART baud rate divisor sweep | Bit timing verified against programmed `BAUDDIV` divisor | `tb/block/test_apb_uart.py` | **PASS** |
-| **UA-04** | UART framing error detection | Stop bit held low during frame generates `FRAME_ERR` flag | `tb/block/test_apb_uart.py` | **PASS** |
-| **UA-05** | UART interrupt generation | `uart_irq` asserts when `RX_IRQ_EN` is enabled and RX FIFO non-empty | `tb/block/test_apb_uart.py` | **PASS** |
-| **TM-01** | Timer one-shot countdown mode | Generates timeout interrupt after exactly $(LOAD+1)$ cycles | `tb/block/test_apb_timer.py` | **PASS** |
-| **TM-02** | Timer periodic mode | Automatically reloads from `LOAD` register on timeout; periodic IRQ | `tb/block/test_apb_timer.py` | **PASS** |
-| **TM-03** | Timer interrupt W1C clearing | Writing 1 to `TIMEOUT` clears interrupt flag and deasserts IRQ | `tb/block/test_apb_timer.py` | **PASS** |
+| **UA-01** | UART internal loopback mode across byte values | RX data matches TX data; FIFO status flags update accurately | `tb/block/test_apb_uart.py` | **PASS** |
+| **UA-02** | UART FIFO full, empty, and overflow flags | TX_FULL, RX_EMPTY, TX_OVF, RX_OVF set and clear via W1C | `tb/block/test_apb_uart.py` | **PASS** |
+| **UA-03** | UART baud rate divisor sweep | Bit timing verified against programmed BAUDDIV divisor | `tb/block/test_apb_uart.py` | **PASS** |
+| **UA-04** | External RX stimulus with bad stop bit | FRAME_ERR set, W1C clears it, next good frame received correctly | `tb/block/test_apb_uart.py` | **PASS** |
+| **UA-05** | UART interrupt generation | uart_irq follows RX_IRQ_EN & ~RX_EMPTY | `tb/block/test_apb_uart.py` | **PASS** |
+| **TM-01** | Timer one-shot countdown mode | Generates timeout interrupt after exactly (LOAD+1) cycles | `tb/block/test_apb_timer.py` | **PASS** |
+| **TM-02** | Timer periodic mode | Automatically reloads from LOAD register on timeout; periodic IRQ | `tb/block/test_apb_timer.py` | **PASS** |
+| **TM-03** | Timer interrupt W1C clearing | Writing 1 to TIMEOUT clears interrupt flag and deasserts IRQ | `tb/block/test_apb_timer.py` | **PASS** |
 | **GP-01** | GPIO direction and output drive | Output pins drive programmed value when configured as output | `tb/block/test_apb_gpio.py` | **PASS** |
 | **GP-02** | GPIO 2-FF input synchronizer latency | Input sampled with exact 2-cycle synchronization pipeline delay | `tb/block/test_apb_gpio.py` | **PASS** |
 | **GP-03** | GPIO rising-edge interrupt detection | Pin rising edge triggers interrupt when unmasked; cleared via W1C | `tb/block/test_apb_gpio.py` | **PASS** |
-| **CS-01** | System CSR reset values verification | `REV_ID` (0xA3BA0001), `VERSION` (0x00010000), defaults match spec | `tb/unit/test_axil_csr.py` | **PASS** |
-| **CS-02** | System CSR access types (RO, RW, W1C) | RO registers ignore writes with OKAY; W1C clears only set bits | `tb/unit/test_axil_csr.py` | **PASS** |
-| **CS-03** | System CSR interrupt aggregation | UART, Timer, GPIO interrupts masked by `IRQ_MASK` and drive `irq_o` | `tb/unit/test_axil_csr.py` | **PASS** |
+| **CS-01** | System CSR reset values verification | ID (0xA3BA0001), VERSION (0x00010000), defaults match spec | `tb/unit/test_axil_csr.py` | **PASS** |
+| **CS-02** | System CSR access types (RO, RW, W1C) | RO ignores writes with OKAY; W1C clears only set bits; W1C_SET hook | `tb/unit/test_axil_csr.py` | **PASS** |
+| **CS-03** | System CSR interrupt aggregation | UART, Timer, GPIO interrupts masked by IRQ_MASK and drive irq_o | `tb/unit/test_axil_csr.py` | **PASS** |
 
 ### 3.4 CDC Bridge Suite (`CD-*`)
 
 | Test ID | Scenario Description | Expected Checks | Test Location | Result |
 |---|---|---|---|---|
-| **CD-01** | Cross-domain data integrity across clock ratios | Error-free transfers with $f_{\text{slow}} < f_{\text{sys}}$, $f_{\text{slow}} \approx f_{\text{sys}}$, $f_{\text{slow}} > f_{\text{sys}}$ | `tb/block/test_axil_cdc_bridge.py` | **PASS** |
-| **CD-02** | Async FIFO full and empty boundary safety | No overflow or underflow across continuous transfer streams | `tb/unit/test_async_fifo.py` | **PASS** |
-| **CD-03** | Independent domain reset recovery | Reset assertion in either clock domain recovers cleanly without hang | `tb/block/test_axil_cdc_bridge.py` | **PASS** |
-| **CD-04** | `SLOW_COUNTER` rate verification | Reading free-running counter confirms increment rate matches `clk_slow` | `tb/block/test_axil_cdc_bridge.py` | **PASS** |
-| **CD-05** | Interleaved multi-master access to slow registers | Both masters successfully access `slow_regs` concurrently | `tb/block/test_axil_cdc_bridge.py` | **PASS** |
+| **CD-01** | Data integrity through bridge across ratio/phase sweep | 3 clock ratios (25ns, 10.3ns, 6ns) x 3 phases each; 0 errors | `tb/block/test_axil_cdc_bridge.py` | **PASS** |
+| **CD-02** | Async FIFO continuous random-rate stream | Fast/slow and slow/fast streams; wfull/rempty reached; 0 loss/corruption | `tb/unit/test_async_fifo.py` | **PASS** |
+| **CD-03** | Independent domain reset recovery mid-transaction | Reset assertion in either domain recovers cleanly without hang | `tb/block/test_axil_cdc_bridge.py` | **PASS** |
+| **CD-04** | SLOW_COUNTER rate verification and control | Counter increments at clk_slow rate; pauses and resumes via SLOW_CTRL | `tb/block/test_axil_cdc_bridge.py` | **PASS** |
+| **CD-05** | Interleaved multi-master access to slow registers | Both masters access slow_regs concurrently through full path | `tb/block/test_amba_fabric_top.py` | **PASS** |
 
 ---
 
 ## 4. Functional Coverage Closure Matrix
 
-All 9 covergroups specified in Spec Section 10 are fully implemented in [`tb/pyuvm/func_cov/fabric_cov.py`](file:///home/somasai/amba-fabric/tb/pyuvm/func_cov/fabric_cov.py) using `cocotb-coverage`.
+All 9 covergroups specified in Spec Section 10 are fully implemented in [`tb/pyuvm/func_cov/fabric_cov.py`](file://amba-fabric/tb/pyuvm/func_cov/fabric_cov.py) using `cocotb-coverage`.
 
 | Covergroup | Cross / Coverpoints Definition | Goal | Hit Bins | Covered % | Status |
 |---|---|---|---|---|---|
@@ -163,7 +163,7 @@ Formal properties implemented in `formal/` and proven using SymbiYosys with the 
 
 ## 6. Mutation Testing & Testbench Quality Matrix
 
-Executed via [`mutation/run_mutants.py`](file:///home/somasai/amba-fabric/mutation/run_mutants.py) using Yosys native mutation operators:
+Executed via [`mutation/run_mutants.py`](file://amba-fabric/mutation/run_mutants.py) using Yosys native mutation operators:
 
 | Target Module | Mutants Evaluated | Initial Killed | Initial Score | Post-Improvement Killed | Final Score | Triage Insights & Added Tests |
 |---|---|---|---|---|---|---|

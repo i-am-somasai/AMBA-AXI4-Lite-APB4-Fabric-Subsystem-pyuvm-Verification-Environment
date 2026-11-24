@@ -79,6 +79,13 @@ class AxilSlaveResponder:
         self._write_task = None
         self._read_task = None
 
+    def _get_delay(self, d):
+        if callable(d):
+            return d()
+        if isinstance(d, (list, tuple)):
+            return random.randint(d[0], d[1])
+        return int(d)
+
     def start(self):
         if not self.running:
             self.running = True
@@ -118,8 +125,9 @@ class AxilSlaveResponder:
                 # Drive AWREADY if AWVALID and not yet captured
                 if not captured_aw:
                     if int(self.awvalid.value) == 1:
-                        if self.awready_delay > 0:
-                            for _ in range(self.awready_delay):
+                        d_aw = self._get_delay(self.awready_delay)
+                        if d_aw > 0:
+                            for _ in range(d_aw):
                                 self.awready.value = 0
                                 await RisingEdge(self.clk)
                         self.awready.value = 1
@@ -131,8 +139,9 @@ class AxilSlaveResponder:
                 # Drive WREADY if WVALID and not yet captured
                 if not captured_w:
                     if int(self.wvalid.value) == 1:
-                        if self.wready_delay > 0:
-                            for _ in range(self.wready_delay):
+                        d_w = self._get_delay(self.wready_delay)
+                        if d_w > 0:
+                            for _ in range(d_w):
                                 self.wready.value = 0
                                 await RisingEdge(self.clk)
                         self.wready.value = 1
@@ -157,8 +166,9 @@ class AxilSlaveResponder:
             self.memory[offset] = new_val
 
             # B channel response
-            if self.bvalid_delay > 0:
-                for _ in range(self.bvalid_delay):
+            d_b = self._get_delay(self.bvalid_delay)
+            if d_b > 0:
+                for _ in range(d_b):
                     await RisingEdge(self.clk)
 
             self.bvalid.value = 1
@@ -186,8 +196,9 @@ class AxilSlaveResponder:
 
             # Wait for ARVALID
             if int(self.arvalid.value) == 1:
-                if self.arready_delay > 0:
-                    for _ in range(self.arready_delay):
+                d_ar = self._get_delay(self.arready_delay)
+                if d_ar > 0:
+                    for _ in range(d_ar):
                         self.arready.value = 0
                         await RisingEdge(self.clk)
                 self.arready.value = 1
@@ -199,8 +210,9 @@ class AxilSlaveResponder:
                 offset = rd_addr - self.base_addr
                 data = self.memory.get(offset, 0x00000000)
 
-                if self.rvalid_delay > 0:
-                    for _ in range(self.rvalid_delay):
+                d_r = self._get_delay(self.rvalid_delay)
+                if d_r > 0:
+                    for _ in range(d_r):
                         await RisingEdge(self.clk)
 
                 self.rvalid.value = 1

@@ -48,7 +48,7 @@ class BaseFabricTest(uvm_test):
 
 
 @pyuvm.test()
-class TestSlverr(BaseFabricTest):
+class test_xb11_slverr_propagation(BaseFabricTest):
     """XB-11: SLVERR propagation from all subsystems."""
     async def run_phase(self):
         self.raise_objection()
@@ -59,9 +59,11 @@ class TestSlverr(BaseFabricTest):
             await RisingEdge(cocotb.top.clk_sys)
         self.drop_objection()
 
+TestSlverr = test_xb11_slverr_propagation
+
 
 @pyuvm.test()
-class TestProtPassThrough(BaseFabricTest):
+class test_xb14_prot_passthrough(BaseFabricTest):
     """XB-14: AWPROT and ARPROT pass-through."""
     async def run_phase(self):
         self.raise_objection()
@@ -72,9 +74,11 @@ class TestProtPassThrough(BaseFabricTest):
             await RisingEdge(cocotb.top.clk_sys)
         self.drop_objection()
 
+TestProtPassThrough = test_xb14_prot_passthrough
+
 
 @pyuvm.test()
-class TestUnaligned(BaseFabricTest):
+class test_xb15_unaligned_address(BaseFabricTest):
     """XB-15: Unaligned address LSBs."""
     async def run_phase(self):
         self.raise_objection()
@@ -85,10 +89,12 @@ class TestUnaligned(BaseFabricTest):
             await RisingEdge(cocotb.top.clk_sys)
         self.drop_objection()
 
+TestUnaligned = test_xb15_unaligned_address
+
 
 @pyuvm.test()
-class TestWriteOrder(BaseFabricTest):
-    """BR-06 & XB write channel ordering test."""
+class test_sys_write_ordering(BaseFabricTest):
+    """System-level write channel ordering test (AW first, W first, simultaneous)."""
     async def run_phase(self):
         self.raise_objection()
         await self.init_clocks_and_reset()
@@ -98,10 +104,12 @@ class TestWriteOrder(BaseFabricTest):
             await RisingEdge(cocotb.top.clk_sys)
         self.drop_objection()
 
+TestWriteOrder = test_sys_write_ordering
+
 
 @pyuvm.test()
-class TestStrobes(BaseFabricTest):
-    """BR-04: WSTRB and PSTRB permutations."""
+class test_sys_strobe_patterns(BaseFabricTest):
+    """System-level WSTRB patterns on RAM and CSR."""
     async def run_phase(self):
         self.raise_objection()
         await self.init_clocks_and_reset()
@@ -111,9 +119,11 @@ class TestStrobes(BaseFabricTest):
             await RisingEdge(cocotb.top.clk_sys)
         self.drop_objection()
 
+TestStrobes = test_sys_strobe_patterns
+
 
 @pyuvm.test()
-class TestResetRecovery(BaseFabricTest):
+class test_xb12_reset_recovery(BaseFabricTest):
     """XB-12: Reset during in-flight transaction, then verify clean recovery."""
     async def run_phase(self):
         self.raise_objection()
@@ -140,10 +150,12 @@ class TestResetRecovery(BaseFabricTest):
             await RisingEdge(cocotb.top.clk_sys)
         self.drop_objection()
 
+TestResetRecovery = test_xb12_reset_recovery
+
 
 @pyuvm.test()
-class TestContention(BaseFabricTest):
-    """BR-05: Back-to-back mixed access from both masters to same slave (RAM)."""
+class test_sys_contention(BaseFabricTest):
+    """System-level dual-master contention on RAM."""
     async def run_phase(self):
         self.raise_objection()
         await self.init_clocks_and_reset()
@@ -159,6 +171,8 @@ class TestContention(BaseFabricTest):
         for _ in range(10):
             await RisingEdge(cocotb.top.clk_sys)
         self.drop_objection()
+
+TestContention = test_sys_contention
 
 
 @pyuvm.test()

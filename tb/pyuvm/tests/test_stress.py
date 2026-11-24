@@ -11,9 +11,9 @@ from env.fabric_env import FabricEnv
 from sequences.fabric_stress_seq import FabricStressSeq
 
 @pyuvm.test()
-class TestStress(uvm_test):
+class test_xb13_stress(uvm_test):
     """XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1."""
-    def __init__(self, name="TestStress", parent=None):
+    def __init__(self, name="test_xb13_stress", parent=None):
         super().__init__(name, parent)
         self.env = None
 
@@ -70,3 +70,5 @@ class TestStress(uvm_test):
 
         self.logger.info("=== Stress sequence completed successfully ===")
         self.drop_objection()
+
+TestStress = test_xb13_stress

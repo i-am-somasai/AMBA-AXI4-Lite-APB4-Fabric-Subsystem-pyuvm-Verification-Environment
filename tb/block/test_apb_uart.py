@@ -195,3 +195,67 @@ async def test_ua05_rx_irq(dut):
 
     await RisingEdge(dut.clk)
     await Timer(10, unit="ns")
+
+
+@cocotb.test()
+async def test_ua04_framing_error(dut):
+    """UA-04: Drive uart_rx with bad stop bit; assert FRAME_ERR set, W1C clears it, next good frame OK."""
+    tb = UartTestbench(dut)
+    await tb.reset()
+
+    # BAUDDIV = 0 (16 clock cycles per bit)
+    await tb.apb.write(addr=0x10, data=0)
+    # Enable RX (CTRL = RX_EN = 0x02, loopback disabled)
+    await tb.apb.write(addr=0x0C, data=0x02)
+
+    # Helper function to send UART frame on uart_rx
+    async def send_uart_frame(byte_val, stop_bit=1):
+        # Idle high
+        dut.uart_rx.value = 1
+        for _ in range(16):
+            await RisingEdge(dut.clk)
+        # Start bit: 0
+        dut.uart_rx.value = 0
+        for _ in range(16):
+            await RisingEdge(dut.clk)
+        # 8 Data bits (LSB first)
+        for bit_idx in range(8):
+            bit_val = (byte_val >> bit_idx) & 1
+            dut.uart_rx.value = bit_val
+            for _ in range(16):
+                await RisingEdge(dut.clk)
+        # Stop bit
+        dut.uart_rx.value = stop_bit
+        for _ in range(16):
+            await RisingEdge(dut.clk)
+        # Return to idle
+        dut.uart_rx.value = 1
+        for _ in range(16):
+            await RisingEdge(dut.clk)
+
+    # 1. Transmit frame with BAD stop bit (stop_bit = 0)
+    await send_uart_frame(0x55, stop_bit=0)
+
+    # Verify STATUS[4] (FRAME_ERR) is set to 1
+    status, _ = await tb.apb.read(addr=0x08)
+    assert ((status >> 4) & 1) == 1, f"FRAME_ERR not set after bad stop bit! STATUS={hex(status)}"
+
+    # 2. Clear FRAME_ERR via W1C (write 1 to bit 4 of STATUS)
+    await tb.apb.write(addr=0x08, data=(1 << 4))
+    status, _ = await tb.apb.read(addr=0x08)
+    assert ((status >> 4) & 1) == 0, f"FRAME_ERR not cleared via W1C! STATUS={hex(status)}"
+
+    # 3. Transmit a GOOD frame (stop_bit = 1)
+    await send_uart_frame(0x3C, stop_bit=1)
+
+    # Verify FRAME_ERR remains 0 and RX_EMPTY is 0
+    status, _ = await tb.apb.read(addr=0x08)
+    assert ((status >> 4) & 1) == 0, f"FRAME_ERR unexpectedly asserted on valid frame! STATUS={hex(status)}"
+    assert (status & 0x08) == 0, f"RX_EMPTY still set after valid frame! STATUS={hex(status)}"
+
+    # Read byte from RXDATA and verify payload
+    rdata, _ = await tb.apb.read(addr=0x04)
+    assert (rdata & 0xFF) == 0x3C, f"RX data mismatch: expected 0x3C, got {hex(rdata & 0xFF)}"
+
+    await RisingEdge(dut.clk)
+    await Timer(10, unit="ns")

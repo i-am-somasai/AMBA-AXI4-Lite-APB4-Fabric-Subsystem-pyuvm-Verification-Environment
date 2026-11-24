@@ -326,3 +326,41 @@ async def test_top02_irq_aggregation_to_pin(dut):
     dut._log.info("TOP-02: All 3 IRQ sources aggregated and verified on irq_o pin!")
     await RisingEdge(dut.clk_sys)
     await Timer(10, unit="ns")
+
+
+@cocotb.test()
+async def test_cd05_dual_master_slow_regs(dut):
+    """CD-05: Both masters interleaving reads and writes to slow registers through the full path."""
+    tb = FabricTopTestbench(dut)
+    await tb.reset()
+
+    dut._log.info("Starting CD-05: Dual-master interleaved access to CDC slow registers...")
+
+    for i in range(20):
+        val_m0 = 0xAA000000 + i
+        val_m1 = 0xBB000000 + i
+
+        # Master 0 writes scratch, Master 1 concurrently reads SLOW_ID
+        t0 = cocotb.start_soon(tb.m0.write(0x70000004, val_m0))
+        t1 = cocotb.start_soon(tb.m1.read(0x70000000))
+        resp0 = await t0
+        id_m1, rresp1 = await t1
+        assert resp0 == 0, f"Round {i}: M0 write failed"
+        assert rresp1 == 0 and id_m1 == 0x510E0001, f"Round {i}: M1 read SLOW_ID failed"
+
+        # Concurrently Master 1 writes scratch, Master 0 reads back scratch
+        t0_rd = cocotb.start_soon(tb.m0.read(0x70000004))
+        t1_wr = cocotb.start_soon(tb.m1.write(0x70000004, val_m1))
+        rd_m0, rresp0 = await t0_rd
+        resp1_wr = await t1_wr
+        assert rresp0 == 0
+        assert resp1_wr == 0
+
+        # Master 1 reads back scratch
+        rd_m1, rresp1_rd = await tb.m1.read(0x70000004)
+        assert rresp1_rd == 0
+        assert rd_m1 == val_m1, f"Round {i}: M1 scratch readback mismatch: expected {hex(val_m1)}, got {hex(rd_m1)}"
+
+    dut._log.info("CD-05 PASSED: 20 rounds of dual-master interleaved CDC access succeeded with 0 errors")
+    await RisingEdge(dut.clk_sys)
+    await Timer(10, unit="ns")
