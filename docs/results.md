@@ -11,8 +11,8 @@ This document records **real, measured results** from actual tool execution.
 |---|---|---|---|
 | RTL Modules / Total Lines | 17 modules / 3238 lines | Section 17 | `find rtl/ -name "*.v" \| xargs wc -l` |
 | Total Tests (Directed / Random) | 40 / 40 Spec Tests PASS (54 executable testcases total across L0, L1, L2: all PASS) | Section 9 | `docs/test_map.csv`, `docs/vplan.md` |
-| Random Transactions Executed | 50,000 transactions (5 seeds x 10,000 transactions, zero mismatches) | Section 9.1 (XB-13) | `docs/logs/xb13_stress.log`, `docs/logs/phase4_gate.log` |
-| Multi-seed Regression Seeds Passed | 5/5 seeds (42, 123, 777, 2024, 9999: 100% PASS) | Section 9.1 (XB-13 Gate) | `docs/logs/xb13_stress.log` |
+| Random Transactions Executed | 200,000 transactions (20 seeds x 10,000 transactions, zero mismatches) | Section 9.1 (XB-13) | `docs/logs/regression_20seeds.log` |
+| Multi-seed Regression Seeds Passed | 20/20 seeds (Seeds 1..20: 100% PASS, zero mismatches) | Section 9.1 (XB-13 Gate) | `docs/logs/regression_20seeds.log` |
 | Functional Coverage (Bins Hit / Total) | 83.88% (229/273 bins hit, zero synthetic calls, 6 unreachable bins waived) | Section 10 | `docs/logs/func_cov.log` |
 | Code Coverage (Verilator Line / Toggle) | Line: 87.8% (430/490), Toggle: 75.1% (10,155/13,514), Branch: 86.9% (433/498), Expr: 92.9% (1,016/1,094), FSM State: 100.0% (5/5) | Section 10 | `docs/logs/code_cov_summary.txt`, `docs/logs/code_cov/` |
 | Formal Properties Proven / BMC Depth | 10/10 modules passing (4 proven via k-induction depth 20, 6 bounded model checked to depth 20-30), 81 cover traces reached. Unified protocol checker `formal/axil_props.v` bound across crossbar, bridge, RAM, CSR, and CDC bridge; bounded liveness verified under fair slave/master assumptions; honest classification with zero overclaiming | Section 11 | `docs/logs/formal_suite.log` |

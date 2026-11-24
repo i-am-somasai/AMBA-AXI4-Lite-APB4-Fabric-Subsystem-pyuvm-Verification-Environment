@@ -14,8 +14,8 @@ ENV_CMD := source $(PROJ_DIR)/scripts/env.sh
 
 # Simulation parameters
 SIM ?= icarus
-SEEDS ?= 1
-MAX_JOBS ?= 2
+SEEDS ?= 20
+MAX_JOBS ?= 4
 
 # RTL Source directories
 RTL_DIRS := $(PROJ_DIR)/rtl/common $(PROJ_DIR)/rtl/axil $(PROJ_DIR)/rtl/apb $(PROJ_DIR)/rtl/cdc $(PROJ_DIR)/rtl
@@ -68,7 +68,7 @@ block:
 regress:
 	@$(ENV_CMD) && echo "=== Running pyuvm Regression (SIM=$(SIM), SEEDS=$(SEEDS)) ===" && \
 	if [ -f "$(PROJ_DIR)/tb/pyuvm/Makefile" ]; then \
-		$(MAKE) -C tb/pyuvm SIM=$(SIM) SEEDS=$(SEEDS) regress; \
+		$(MAKE) -C tb/pyuvm -j$(MAX_JOBS) SIM=$(SIM) SEEDS=$(SEEDS) regress; \
 	else \
 		echo "pyuvm testbench Makefile will be populated in Phase 2-4."; \
 	fi

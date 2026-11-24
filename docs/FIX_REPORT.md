@@ -147,17 +147,23 @@ Every finding is addressed with honest evidence, verified by real tool execution
 ---
 
 ### F-06: Regression Seed Count Verification
-- **Status:** TODO
+- **Status:** DONE
 - **Finding:** Full random stress regression ran only 5 seeds in Phase 4; spec Section 9.2 mandates at least 20 random seeds with $\ge 10,000$ transactions per seed.
-- **Planned Changes:**
-  - Execute full regression across 20 distinct random seeds on Icarus Verilog.
-  - Verify $\ge 10,000$ transactions per seed with zero scoreboard mismatches.
-  - Capture all seed outputs into `docs/logs/regress_20seeds.log`.
-- **Evidence:** TBD (`docs/logs/regress_20seeds.log`)
+- **Changes Made:**
+  - Configured `Makefile` and `tb/pyuvm/Makefile` with `SEEDS ?= 20` and `MAX_JOBS ?= 4` using isolated per-seed build and results artifacts (`sim_build_stress_*`, `results_test_stress_*.xml`).
+  - Executed full 20-seed regression (Seeds 1..20) with 4 parallel jobs, running 10,000 transactions per seed (200,000 transactions total) alongside directed tests and CDC ratio/phase sweeps.
+  - Recorded verification architectural deviation on V-01 under `DEC-005` in `docs/decisions.md`.
+  - Logged full run to `docs/logs/regression_20seeds.log` with all personal paths stripped.
+  - Verified 20/20 seeds PASS with zero scoreboard mismatches and zero simulation failures.
+- **Evidence:**
+  - `docs/logs/regression_20seeds.log` (20/20 stress seeds PASS, 200,000 transactions, 0 mismatches)
+  - `docs/decisions.md` (DEC-005 architectural deviation on V-01)
+  - `docs/test_map.csv` and `docs/vplan.md` updated via `scripts/gen_test_map.py`
+  - Commit `fix(F-06)`
 - **Before / After Numbers:**
-  - Before: 5 seeds (50,000 transactions).
-  - After: 20 seeds (200,000 transactions) with clean scoreboard logs.
-- **Remaining Issues:** None yet.
+  - Before: 5 seeds (50,000 transactions total).
+  - After: 20 seeds (200,000 transactions total, 20/20 PASS, zero mismatches).
+- **Remaining Issues:** None. Gate passed.
 
 ---
 
