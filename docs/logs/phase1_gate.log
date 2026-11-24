@@ -10,31 +10,31 @@ Lint CLEAN.
 
 --- Target: make unit SIM=icarus ---
 === Running L0 Unit Tests (SIM=icarus) ===
-make[1]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+make[1]: Entering directory 'amba-fabric/tb/unit'
 rm -rf sim_build* results*.xml results.xml dump.vcd *.vcd __pycache__
-make[1]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
-make[1]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+make[1]: Leaving directory 'amba-fabric/tb/unit'
+make[1]: Entering directory 'amba-fabric/tb/unit'
 --- Running test_hello_world ---
-make -f /home/somasai/amba-fabric/tb/unit/Makefile.single \
+make -f amba-fabric/tb/unit/Makefile.single \
 	TOPLEVEL=hello_world \
 	MODULE=test_hello_world \
-	VERILOG_SOURCES=/home/somasai/amba-fabric/tb/unit/hello_world.v \
+	VERILOG_SOURCES=amba-fabric/tb/unit/hello_world.v \
 	SIM=icarus
-make[2]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+make[2]: Entering directory 'amba-fabric/tb/unit'
 rm -f results.xml
-"make" -f /home/somasai/amba-fabric/tb/unit/Makefile.single results.xml
-make[3]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+"make" -f amba-fabric/tb/unit/Makefile.single results.xml
+make[3]: Entering directory 'amba-fabric/tb/unit'
 mkdir -p sim_build_hello_world
-/home/somasai/oss-cad-suite/bin/iverilog -o sim_build_hello_world/sim.vvp -s hello_world -g2012 -f sim_build_hello_world/cmds.f  /home/somasai/amba-fabric/tb/unit/hello_world.v
-/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+oss-cad-suite/bin/iverilog -o sim_build_hello_world/sim.vvp -s hello_world -g2012 -f sim_build_hello_world/cmds.f  amba-fabric/tb/unit/hello_world.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
 rm -f results.xml
 COCOTB_TEST_MODULES=test_hello_world COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=hello_world TOPLEVEL_LANG=verilog \
-         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_hello_world/sim.vvp   
-     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
-     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_hello_world/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
      0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
      0.00ns INFO     cocotb                             Seeding Python random module with 1795417785
-     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
      0.00ns INFO     cocotb                             Running tests
      0.00ns INFO     cocotb.regression                  running test_hello_world.test_hello_world (1/1)
                                                             Phase 0 cocotb + pyuvm integration smoke test
@@ -52,29 +52,29 @@ COCOTB_TEST_MODULES=test_hello_world COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB
                                                         *******************************************************************************************
                                                         ** TESTS=1 PASS=1 FAIL=0 SKIP=0                      81.00           0.03       2506.89  **
                                                         *******************************************************************************************
-make[3]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
-make[2]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[3]: Leaving directory 'amba-fabric/tb/unit'
+make[2]: Leaving directory 'amba-fabric/tb/unit'
 --- Running test_rst_sync ---
-make -f /home/somasai/amba-fabric/tb/unit/Makefile.single \
+make -f amba-fabric/tb/unit/Makefile.single \
 	TOPLEVEL=rst_sync \
 	MODULE=test_rst_sync \
-	VERILOG_SOURCES=/home/somasai/amba-fabric/rtl/common/rst_sync.v \
+	VERILOG_SOURCES=amba-fabric/rtl/common/rst_sync.v \
 	SIM=icarus
-make[2]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+make[2]: Entering directory 'amba-fabric/tb/unit'
 rm -f results.xml
-"make" -f /home/somasai/amba-fabric/tb/unit/Makefile.single results.xml
-make[3]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+"make" -f amba-fabric/tb/unit/Makefile.single results.xml
+make[3]: Entering directory 'amba-fabric/tb/unit'
 mkdir -p sim_build_rst_sync
-/home/somasai/oss-cad-suite/bin/iverilog -o sim_build_rst_sync/sim.vvp -s rst_sync -g2012 -f sim_build_rst_sync/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v
-/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+oss-cad-suite/bin/iverilog -o sim_build_rst_sync/sim.vvp -s rst_sync -g2012 -f sim_build_rst_sync/cmds.f  amba-fabric/rtl/common/rst_sync.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
 rm -f results.xml
 COCOTB_TEST_MODULES=test_rst_sync COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=rst_sync TOPLEVEL_LANG=verilog \
-         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_rst_sync/sim.vvp   
-     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
-     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_rst_sync/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
      0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
      0.00ns INFO     cocotb                             Seeding Python random module with 1795417788
-     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
      0.00ns INFO     cocotb                             Running tests
      0.00ns INFO     cocotb.regression                  running test_rst_sync.test_rst_sync_basic (1/1)
                                                             Verify asynchronous assertion and 2-cycle synchronous deassertion.
@@ -88,29 +88,29 @@ COCOTB_TEST_MODULES=test_rst_sync COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TO
                                                         *******************************************************************************************
                                                         ** TESTS=1 PASS=1 FAIL=0 SKIP=0                      56.00           0.01       8969.03  **
                                                         *******************************************************************************************
-make[3]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
-make[2]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[3]: Leaving directory 'amba-fabric/tb/unit'
+make[2]: Leaving directory 'amba-fabric/tb/unit'
 --- Running test_sync_fifo ---
-make -f /home/somasai/amba-fabric/tb/unit/Makefile.single \
+make -f amba-fabric/tb/unit/Makefile.single \
 	TOPLEVEL=sync_fifo \
 	MODULE=test_sync_fifo \
-	VERILOG_SOURCES=/home/somasai/amba-fabric/rtl/common/sync_fifo.v \
+	VERILOG_SOURCES=amba-fabric/rtl/common/sync_fifo.v \
 	SIM=icarus
-make[2]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+make[2]: Entering directory 'amba-fabric/tb/unit'
 rm -f results.xml
-"make" -f /home/somasai/amba-fabric/tb/unit/Makefile.single results.xml
-make[3]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+"make" -f amba-fabric/tb/unit/Makefile.single results.xml
+make[3]: Entering directory 'amba-fabric/tb/unit'
 mkdir -p sim_build_sync_fifo
-/home/somasai/oss-cad-suite/bin/iverilog -o sim_build_sync_fifo/sim.vvp -s sync_fifo -g2012 -f sim_build_sync_fifo/cmds.f  /home/somasai/amba-fabric/rtl/common/sync_fifo.v
-/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+oss-cad-suite/bin/iverilog -o sim_build_sync_fifo/sim.vvp -s sync_fifo -g2012 -f sim_build_sync_fifo/cmds.f  amba-fabric/rtl/common/sync_fifo.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
 rm -f results.xml
 COCOTB_TEST_MODULES=test_sync_fifo COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=sync_fifo TOPLEVEL_LANG=verilog \
-         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_sync_fifo/sim.vvp   
-     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
-     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_sync_fifo/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
      0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
      0.00ns INFO     cocotb                             Seeding Python random module with 1795417790
-     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
      0.00ns INFO     cocotb                             Running tests
      0.00ns INFO     cocotb.regression                  running test_sync_fifo.test_sync_fifo_all (1/1)
                                                             Test full, empty, count, overflow, underflow, and simultaneous push/pop.
@@ -124,29 +124,29 @@ COCOTB_TEST_MODULES=test_sync_fifo COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_T
                                                         *******************************************************************************************
                                                         ** TESTS=1 PASS=1 FAIL=0 SKIP=0                     260.00           0.01      28900.94  **
                                                         *******************************************************************************************
-make[3]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
-make[2]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[3]: Leaving directory 'amba-fabric/tb/unit'
+make[2]: Leaving directory 'amba-fabric/tb/unit'
 --- Running test_async_fifo ---
-make -f /home/somasai/amba-fabric/tb/unit/Makefile.single \
+make -f amba-fabric/tb/unit/Makefile.single \
 	TOPLEVEL=async_fifo \
 	MODULE=test_async_fifo \
-	VERILOG_SOURCES=/home/somasai/amba-fabric/rtl/common/async_fifo.v \
+	VERILOG_SOURCES=amba-fabric/rtl/common/async_fifo.v \
 	SIM=icarus
-make[2]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+make[2]: Entering directory 'amba-fabric/tb/unit'
 rm -f results.xml
-"make" -f /home/somasai/amba-fabric/tb/unit/Makefile.single results.xml
-make[3]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+"make" -f amba-fabric/tb/unit/Makefile.single results.xml
+make[3]: Entering directory 'amba-fabric/tb/unit'
 mkdir -p sim_build_async_fifo
-/home/somasai/oss-cad-suite/bin/iverilog -o sim_build_async_fifo/sim.vvp -s async_fifo -g2012 -f sim_build_async_fifo/cmds.f  /home/somasai/amba-fabric/rtl/common/async_fifo.v
-/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+oss-cad-suite/bin/iverilog -o sim_build_async_fifo/sim.vvp -s async_fifo -g2012 -f sim_build_async_fifo/cmds.f  amba-fabric/rtl/common/async_fifo.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
 rm -f results.xml
 COCOTB_TEST_MODULES=test_async_fifo COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=async_fifo TOPLEVEL_LANG=verilog \
-         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_async_fifo/sim.vvp   
-     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
-     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_async_fifo/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
      0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
      0.00ns INFO     cocotb                             Seeding Python random module with 1795417793
-     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
      0.00ns INFO     cocotb                             Running tests
      0.00ns INFO     cocotb.regression                  running test_async_fifo.test_async_fifo_dual_clock (1/1)
                                                             Verify dual-clock async FIFO across different clock ratios and data integrity.
@@ -160,29 +160,29 @@ COCOTB_TEST_MODULES=test_async_fifo COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_
                                                         ****************************************************************************************************
                                                         ** TESTS=1 PASS=1 FAIL=0 SKIP=0                              443.00           0.01      50645.35  **
                                                         ****************************************************************************************************
-make[3]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
-make[2]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[3]: Leaving directory 'amba-fabric/tb/unit'
+make[2]: Leaving directory 'amba-fabric/tb/unit'
 --- Running test_rr_arbiter ---
-make -f /home/somasai/amba-fabric/tb/unit/Makefile.single \
+make -f amba-fabric/tb/unit/Makefile.single \
 	TOPLEVEL=rr_arbiter \
 	MODULE=test_rr_arbiter \
-	VERILOG_SOURCES=/home/somasai/amba-fabric/rtl/common/rr_arbiter.v \
+	VERILOG_SOURCES=amba-fabric/rtl/common/rr_arbiter.v \
 	SIM=icarus
-make[2]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+make[2]: Entering directory 'amba-fabric/tb/unit'
 rm -f results.xml
-"make" -f /home/somasai/amba-fabric/tb/unit/Makefile.single results.xml
-make[3]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+"make" -f amba-fabric/tb/unit/Makefile.single results.xml
+make[3]: Entering directory 'amba-fabric/tb/unit'
 mkdir -p sim_build_rr_arbiter
-/home/somasai/oss-cad-suite/bin/iverilog -o sim_build_rr_arbiter/sim.vvp -s rr_arbiter -g2012 -f sim_build_rr_arbiter/cmds.f  /home/somasai/amba-fabric/rtl/common/rr_arbiter.v
-/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+oss-cad-suite/bin/iverilog -o sim_build_rr_arbiter/sim.vvp -s rr_arbiter -g2012 -f sim_build_rr_arbiter/cmds.f  amba-fabric/rtl/common/rr_arbiter.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
 rm -f results.xml
 COCOTB_TEST_MODULES=test_rr_arbiter COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=rr_arbiter TOPLEVEL_LANG=verilog \
-         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_rr_arbiter/sim.vvp   
-     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
-     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_rr_arbiter/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
      0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
      0.00ns INFO     cocotb                             Seeding Python random module with 1795417795
-     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
      0.00ns INFO     cocotb                             Running tests
      0.00ns INFO     cocotb.regression                  running test_rr_arbiter.test_rr_arbiter_fairness_and_lock (1/1)
                                                             Test single request, round-robin fairness, and transaction lock behavior.
@@ -196,29 +196,29 @@ COCOTB_TEST_MODULES=test_rr_arbiter COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_
                                                         ***********************************************************************************************************
                                                         ** TESTS=1 PASS=1 FAIL=0 SKIP=0                                     171.00           0.01      24927.92  **
                                                         ***********************************************************************************************************
-make[3]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
-make[2]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[3]: Leaving directory 'amba-fabric/tb/unit'
+make[2]: Leaving directory 'amba-fabric/tb/unit'
 --- Running test_axil_default_slave ---
-make -f /home/somasai/amba-fabric/tb/unit/Makefile.single \
+make -f amba-fabric/tb/unit/Makefile.single \
 	TOPLEVEL=axil_default_slave \
 	MODULE=test_axil_default_slave \
-	VERILOG_SOURCES=/home/somasai/amba-fabric/rtl/axil/axil_default_slave.v \
+	VERILOG_SOURCES=amba-fabric/rtl/axil/axil_default_slave.v \
 	SIM=icarus
-make[2]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+make[2]: Entering directory 'amba-fabric/tb/unit'
 rm -f results.xml
-"make" -f /home/somasai/amba-fabric/tb/unit/Makefile.single results.xml
-make[3]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+"make" -f amba-fabric/tb/unit/Makefile.single results.xml
+make[3]: Entering directory 'amba-fabric/tb/unit'
 mkdir -p sim_build_axil_default_slave
-/home/somasai/oss-cad-suite/bin/iverilog -o sim_build_axil_default_slave/sim.vvp -s axil_default_slave -g2012 -f sim_build_axil_default_slave/cmds.f  /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v
-/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+oss-cad-suite/bin/iverilog -o sim_build_axil_default_slave/sim.vvp -s axil_default_slave -g2012 -f sim_build_axil_default_slave/cmds.f  amba-fabric/rtl/axil/axil_default_slave.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
 rm -f results.xml
 COCOTB_TEST_MODULES=test_axil_default_slave COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=axil_default_slave TOPLEVEL_LANG=verilog \
-         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_axil_default_slave/sim.vvp   
-     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
-     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_axil_default_slave/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
      0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
      0.00ns INFO     cocotb                             Seeding Python random module with 1795417798
-     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
      0.00ns INFO     cocotb                             Running tests
      0.00ns INFO     cocotb.regression                  running test_axil_default_slave.test_axil_default_slave_all (1/1)
                                                             Verify that default slave returns DECERR on writes and reads in all channel arrival orders.
@@ -232,29 +232,29 @@ COCOTB_TEST_MODULES=test_axil_default_slave COCOTB_TESTCASE= COCOTB_TEST_FILTER=
                                                         *************************************************************************************************************
                                                         ** TESTS=1 PASS=1 FAIL=0 SKIP=0                                       150.00           0.01      25913.16  **
                                                         *************************************************************************************************************
-make[3]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
-make[2]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[3]: Leaving directory 'amba-fabric/tb/unit'
+make[2]: Leaving directory 'amba-fabric/tb/unit'
 --- Running test_axil_ram ---
-make -f /home/somasai/amba-fabric/tb/unit/Makefile.single \
+make -f amba-fabric/tb/unit/Makefile.single \
 	TOPLEVEL=axil_ram \
 	MODULE=test_axil_ram \
-	VERILOG_SOURCES=/home/somasai/amba-fabric/rtl/axil/axil_ram.v \
+	VERILOG_SOURCES=amba-fabric/rtl/axil/axil_ram.v \
 	SIM=icarus
-make[2]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+make[2]: Entering directory 'amba-fabric/tb/unit'
 rm -f results.xml
-"make" -f /home/somasai/amba-fabric/tb/unit/Makefile.single results.xml
-make[3]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+"make" -f amba-fabric/tb/unit/Makefile.single results.xml
+make[3]: Entering directory 'amba-fabric/tb/unit'
 mkdir -p sim_build_axil_ram
-/home/somasai/oss-cad-suite/bin/iverilog -o sim_build_axil_ram/sim.vvp -s axil_ram -g2012 -f sim_build_axil_ram/cmds.f  /home/somasai/amba-fabric/rtl/axil/axil_ram.v
-/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+oss-cad-suite/bin/iverilog -o sim_build_axil_ram/sim.vvp -s axil_ram -g2012 -f sim_build_axil_ram/cmds.f  amba-fabric/rtl/axil/axil_ram.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
 rm -f results.xml
 COCOTB_TEST_MODULES=test_axil_ram COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=axil_ram TOPLEVEL_LANG=verilog \
-         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_axil_ram/sim.vvp   
-     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
-     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_axil_ram/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
      0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
      0.00ns INFO     cocotb                             Seeding Python random module with 1795417800
-     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
      0.00ns INFO     cocotb                             Running tests
      0.00ns INFO     cocotb.regression                  running test_axil_ram.test_axil_ram_operations (1/1)
                                                             Verify RAM reads, writes, byte enables, and out-of-range SLVERR.
@@ -268,29 +268,29 @@ COCOTB_TEST_MODULES=test_axil_ram COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TO
                                                         ************************************************************************************************
                                                         ** TESTS=1 PASS=1 FAIL=0 SKIP=0                          230.00           0.01      29166.74  **
                                                         ************************************************************************************************
-make[3]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
-make[2]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[3]: Leaving directory 'amba-fabric/tb/unit'
+make[2]: Leaving directory 'amba-fabric/tb/unit'
 --- Running test_axil_csr ---
-make -f /home/somasai/amba-fabric/tb/unit/Makefile.single \
+make -f amba-fabric/tb/unit/Makefile.single \
 	TOPLEVEL=axil_csr \
 	MODULE=test_axil_csr \
-	VERILOG_SOURCES=/home/somasai/amba-fabric/rtl/axil/axil_csr.v \
+	VERILOG_SOURCES=amba-fabric/rtl/axil/axil_csr.v \
 	SIM=icarus
-make[2]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+make[2]: Entering directory 'amba-fabric/tb/unit'
 rm -f results.xml
-"make" -f /home/somasai/amba-fabric/tb/unit/Makefile.single results.xml
-make[3]: Entering directory '/home/somasai/amba-fabric/tb/unit'
+"make" -f amba-fabric/tb/unit/Makefile.single results.xml
+make[3]: Entering directory 'amba-fabric/tb/unit'
 mkdir -p sim_build_axil_csr
-/home/somasai/oss-cad-suite/bin/iverilog -o sim_build_axil_csr/sim.vvp -s axil_csr -g2012 -f sim_build_axil_csr/cmds.f  /home/somasai/amba-fabric/rtl/axil/axil_csr.v
-/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+oss-cad-suite/bin/iverilog -o sim_build_axil_csr/sim.vvp -s axil_csr -g2012 -f sim_build_axil_csr/cmds.f  amba-fabric/rtl/axil/axil_csr.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
 rm -f results.xml
 COCOTB_TEST_MODULES=test_axil_csr COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=axil_csr TOPLEVEL_LANG=verilog \
-         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_axil_csr/sim.vvp   
-     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
-     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   sim_build_axil_csr/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
      0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
      0.00ns INFO     cocotb                             Seeding Python random module with 1795417803
-     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
      0.00ns INFO     cocotb                             Running tests
      0.00ns INFO     cocotb.regression                  running test_axil_csr.test_axil_csr_all (1/1)
                                                             Verify CSR register map, read-only behavior, W1C semantics, and IRQ aggregation.
@@ -304,25 +304,25 @@ COCOTB_TEST_MODULES=test_axil_csr COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TO
                                                         *****************************************************************************************
                                                         ** TESTS=1 PASS=1 FAIL=0 SKIP=0                   570.00           0.01      38665.31  **
                                                         *****************************************************************************************
-make[3]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
-make[2]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[3]: Leaving directory 'amba-fabric/tb/unit'
+make[2]: Leaving directory 'amba-fabric/tb/unit'
 =====================================================
 All L0 unit tests executed successfully (SIM=icarus).
 =====================================================
-make[1]: Leaving directory '/home/somasai/amba-fabric/tb/unit'
+make[1]: Leaving directory 'amba-fabric/tb/unit'
 
 --- Target: make formal ---
 === Running Formal Proofs (SymbiYosys) ===
 ========================================================
  Running SymbiYosys Formal Verification Suite
- Directory: /home/somasai/amba-fabric/formal
+ Directory: amba-fabric/formal
 ========================================================
 --- Running SBY for async_fifo ---
-SBY 12:40:04 [async_fifo_bmc] Removing directory '/home/somasai/amba-fabric/formal/async_fifo_bmc'.
-SBY 12:40:04 [async_fifo_bmc] Copy '/home/somasai/amba-fabric/formal/../rtl/common/async_fifo.v' to '/home/somasai/amba-fabric/formal/async_fifo_bmc/src/async_fifo.v'.
+SBY 12:40:04 [async_fifo_bmc] Removing directory 'amba-fabric/formal/async_fifo_bmc'.
+SBY 12:40:04 [async_fifo_bmc] Copy 'amba-fabric/formal/../rtl/common/async_fifo.v' to 'amba-fabric/formal/async_fifo_bmc/src/async_fifo.v'.
 SBY 12:40:04 [async_fifo_bmc] engine_0: smtbmc boolector
-SBY 12:40:04 [async_fifo_cover] Removing directory '/home/somasai/amba-fabric/formal/async_fifo_cover'.
-SBY 12:40:04 [async_fifo_cover] Copy '/home/somasai/amba-fabric/formal/../rtl/common/async_fifo.v' to '/home/somasai/amba-fabric/formal/async_fifo_cover/src/async_fifo.v'.
+SBY 12:40:04 [async_fifo_cover] Removing directory 'amba-fabric/formal/async_fifo_cover'.
+SBY 12:40:04 [async_fifo_cover] Copy 'amba-fabric/formal/../rtl/common/async_fifo.v' to 'amba-fabric/formal/async_fifo_cover/src/async_fifo.v'.
 SBY 12:40:04 [async_fifo_cover] engine_0: smtbmc boolector
 SBY 12:40:04 [async_fifo_bmc] base: starting process "cd async_fifo_bmc/src; yosys -ql ../model/design.log ../model/design.ys"
 SBY 12:40:04 [async_fifo_cover] base: starting process "cd async_fifo_cover/src; yosys -ql ../model/design.log ../model/design.ys"
@@ -453,11 +453,11 @@ SBY 12:40:11 [async_fifo_bmc] summary: engine_0 did not produce any traces
 SBY 12:40:11 [async_fifo_bmc] DONE (PASS, rc=0)
 
 --- Running SBY for rr_arbiter ---
-SBY 12:40:12 [rr_arbiter_prove] Removing directory '/home/somasai/amba-fabric/formal/rr_arbiter_prove'.
-SBY 12:40:12 [rr_arbiter_prove] Copy '/home/somasai/amba-fabric/formal/../rtl/common/rr_arbiter.v' to '/home/somasai/amba-fabric/formal/rr_arbiter_prove/src/rr_arbiter.v'.
+SBY 12:40:12 [rr_arbiter_prove] Removing directory 'amba-fabric/formal/rr_arbiter_prove'.
+SBY 12:40:12 [rr_arbiter_prove] Copy 'amba-fabric/formal/../rtl/common/rr_arbiter.v' to 'amba-fabric/formal/rr_arbiter_prove/src/rr_arbiter.v'.
 SBY 12:40:12 [rr_arbiter_prove] engine_0: smtbmc boolector
-SBY 12:40:12 [rr_arbiter_cover] Removing directory '/home/somasai/amba-fabric/formal/rr_arbiter_cover'.
-SBY 12:40:12 [rr_arbiter_cover] Copy '/home/somasai/amba-fabric/formal/../rtl/common/rr_arbiter.v' to '/home/somasai/amba-fabric/formal/rr_arbiter_cover/src/rr_arbiter.v'.
+SBY 12:40:12 [rr_arbiter_cover] Removing directory 'amba-fabric/formal/rr_arbiter_cover'.
+SBY 12:40:12 [rr_arbiter_cover] Copy 'amba-fabric/formal/../rtl/common/rr_arbiter.v' to 'amba-fabric/formal/rr_arbiter_cover/src/rr_arbiter.v'.
 SBY 12:40:12 [rr_arbiter_cover] engine_0: smtbmc boolector
 SBY 12:40:12 [rr_arbiter_prove] base: starting process "cd rr_arbiter_prove/src; yosys -ql ../model/design.log ../model/design.ys"
 SBY 12:40:12 [rr_arbiter_cover] base: starting process "cd rr_arbiter_cover/src; yosys -ql ../model/design.log ../model/design.ys"

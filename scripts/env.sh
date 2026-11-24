@@ -3,8 +3,8 @@
 export PROJ_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # OSS CAD Suite (Yosys, SBY, Icarus, Verilator, GTKWave, Boolector, Yices, Z3)
-if [ -d "/home/somasai/oss-cad-suite" ]; then
-    source /home/somasai/oss-cad-suite/environment
+if [ -d "$HOME/oss-cad-suite" ]; then
+    source "$HOME/oss-cad-suite/environment"
 fi
 
 # OpenSTA
@@ -14,7 +14,7 @@ if [ -f "$STA_BIN" ]; then
 fi
 
 # SKY130 Liberty
-export SKY130_LIB="/home/somasai/.volare/volare/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib"
+export SKY130_LIB="${SKY130_LIB:-$HOME/.volare/volare/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib}"
 
 # Python path
 export PYTHONPATH="$PROJ_DIR:$PROJ_DIR/tb:$PROJ_DIR/tb/unit:$PROJ_DIR/tb/pyuvm:$PROJ_DIR/tb/models${PYTHONPATH:+:$PYTHONPATH}"

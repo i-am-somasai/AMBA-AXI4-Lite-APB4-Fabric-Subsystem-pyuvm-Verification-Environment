@@ -118,8 +118,8 @@ This document records **real, measured results** from actual tool execution.
 
   - **Functional Coverage (Measured via Real Passive Bus Monitors; Zero Synthetic Sampling):**
     - **Status:** **83.88%** (229 / 273 defined bins covered from real monitor activity across directed and 5 stress seeds).
-    - **Waivers:** 6 provably unreachable CDC FIFO `full` bins waived and documented in [`docs/coverage_waivers.md`](file:///home/somasai/amba-fabric/docs/coverage_waivers.md).
-    - **Report Log:** [`docs/logs/func_cov.log`](file:///home/somasai/amba-fabric/docs/logs/func_cov.log)
+    - **Waivers:** 6 provably unreachable CDC FIFO `full` bins waived and documented in [`docs/coverage_waivers.md`](docs/coverage_waivers.md).
+    - **Report Log:** [`docs/logs/func_cov.log`](docs/logs/func_cov.log)
     - **Sanity Script:** `scripts/check_no_synthetic_cov.sh` verified clean with 0 synthetic sampling calls.
 
     | Covergroup / Metric | Defined Bins | Covered Bins | Coverage % | Status / Notes |

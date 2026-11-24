@@ -14,7 +14,7 @@ import time
 PROJ_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 SKY130_LIB = os.environ.get(
     "SKY130_LIB",
-    "/home/somasai/.volare/volare/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib"
+    os.path.expanduser("~/.volare/volare/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib")
 )
 NETLIST = os.path.join(PROJ_DIR, "synth/results/amba_fabric_netlist.v")
 SDC = os.path.join(PROJ_DIR, "synth/amba_fabric.sdc")

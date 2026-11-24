@@ -5,9 +5,9 @@ SHELL := /bin/bash
 PROJ_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
 # Toolchain paths
-OSS_CAD_SUITE ?= /home/somasai/oss-cad-suite
+OSS_CAD_SUITE ?= $(HOME)/oss-cad-suite
 STA_BIN       ?= /nix/store/q5ycjmn0d9awbcq05c75z2rmgwjgbc9g-opensta/bin/sta
-SKY130_LIB    ?= /home/somasai/.volare/volare/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+SKY130_LIB    ?= $(HOME)/.volare/volare/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 
 # Environment setup wrapper
 ENV_CMD := source $(PROJ_DIR)/scripts/env.sh
@@ -117,11 +117,18 @@ mutation-sample:
 synth:
 	@$(ENV_CMD) && echo "=== Running Yosys Synthesis for SKY130 ===" && \
 	mkdir -p synth/results && \
-	if [ -f "$(PROJ_DIR)/synth/synth.ys" ]; then \
-		yosys $(PROJ_DIR)/synth/synth.ys | tee synth/results/synth.log; \
-	else \
-		echo "Synthesis script will be populated in Phase 6."; \
-	fi
+	yosys -p "\
+		read_verilog -sv $(PROJ_DIR)/rtl/common/rst_sync.v $(PROJ_DIR)/rtl/common/sync_fifo.v $(PROJ_DIR)/rtl/common/async_fifo.v $(PROJ_DIR)/rtl/common/rr_arbiter.v \
+		$(PROJ_DIR)/rtl/axil/axil_decoder.v $(PROJ_DIR)/rtl/axil/axil_default_slave.v $(PROJ_DIR)/rtl/axil/axil_xbar.v $(PROJ_DIR)/rtl/axil/axil_ram.v $(PROJ_DIR)/rtl/axil/axil_csr.v \
+		$(PROJ_DIR)/rtl/apb/axil2apb_bridge.v $(PROJ_DIR)/rtl/apb/apb_decoder.v $(PROJ_DIR)/rtl/apb/apb_uart.v $(PROJ_DIR)/rtl/apb/apb_timer.v $(PROJ_DIR)/rtl/apb/apb_gpio.v \
+		$(PROJ_DIR)/rtl/cdc/slow_regs.v $(PROJ_DIR)/rtl/cdc/axil_cdc_bridge.v $(PROJ_DIR)/rtl/amba_fabric_top.v; \
+		hierarchy -top amba_fabric_top -chparam RAM_DEPTH 64; \
+		synth -top amba_fabric_top -flatten; \
+		dfflibmap -liberty $(SKY130_LIB); \
+		abc -liberty $(SKY130_LIB) -D 10000; \
+		opt_clean -purge; \
+		stat -liberty $(SKY130_LIB); \
+		write_verilog -noattr synth/results/amba_fabric_netlist.v" | tee synth/results/synth.log
 
 # OpenSTA Static Timing Analysis
 sta:

@@ -16,17 +16,17 @@ TOTAL / OVERALL    | 20         | 20       | 13       | 7        |    65.00%
 ================================================================================
 
 Total Survivors: 7
-  - [sync_fifo #2]: mutate -mode const1 -module sync_fifo -cell $procdff$747 -port Q -portbit 3 -wire mem[1] -wirebit 3 -src /home/somasai/amba-fabric/rtl/common/sync_fifo.v:24.21-24.24 -src /home/somasai/amba-fabric/rtl/common/sync_fifo.v:31.5-88.8
-    Saved RTL: /home/somasai/amba-fabric/mutation/results/survivors/sync_fifo_mut_2.v
-  - [axil_ram #0]: mutate -mode const0 -module axil_ram -cell $procmux$60582 -port Y -portbit 3 -src /home/somasai/amba-fabric/rtl/axil/axil_ram.v:105.47-105.100
-    Saved RTL: /home/somasai/amba-fabric/mutation/results/survivors/axil_ram_mut_0.v
-  - [axil_ram #2]: mutate -mode cnot0 -module axil_ram -cell $procmux$90 -port B -portbit 2526 -ctrlbit 1101 -src /home/somasai/amba-fabric/rtl/axil/axil_ram.v:135.37-135.40
-    Saved RTL: /home/somasai/amba-fabric/mutation/results/survivors/axil_ram_mut_2.v
-  - [axil_ram #3]: mutate -mode cnot0 -module axil_ram -cell $procmux$72303 -port A -portbit 4 -ctrlbit 2 -src /home/somasai/amba-fabric/rtl/axil/axil_ram.v:95.17-97.50 -src /home/somasai/amba-fabric/rtl/axil/axil_ram.v:95.13-113.16
-    Saved RTL: /home/somasai/amba-fabric/mutation/results/survivors/axil_ram_mut_3.v
-  - [axil_csr #1]: mutate -mode const0 -module axil_csr -cell $procmux$62_CMP0 -port A -portbit 6 -src /home/somasai/amba-fabric/rtl/axil/axil_csr.v:191.24-191.24 -src /home/somasai/amba-fabric/rtl/axil/axil_csr.v:171.17-212.24
-    Saved RTL: /home/somasai/amba-fabric/mutation/results/survivors/axil_csr_mut_1.v
-  - [axil_csr #3]: mutate -mode const1 -module axil_csr -cell $procmux$63_CMP0 -port B -portbit 4 -src /home/somasai/amba-fabric/rtl/axil/axil_csr.v:187.24-187.24 -src /home/somasai/amba-fabric/rtl/axil/axil_csr.v:171.17-212.24
-    Saved RTL: /home/somasai/amba-fabric/mutation/results/survivors/axil_csr_mut_3.v
-  - [axil2apb_bridge #1]: mutate -mode const0 -module axil2apb_bridge -cell $procmux$160 -port B -portbit 5 -src /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v:111.34-111.48 -src /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v:111.30-129.24
-    Saved RTL: /home/somasai/amba-fabric/mutation/results/survivors/axil2apb_bridge_mut_1.v
+  - [sync_fifo #2]: mutate -mode const1 -module sync_fifo -cell $procdff$747 -port Q -portbit 3 -wire mem[1] -wirebit 3 -src amba-fabric/rtl/common/sync_fifo.v:24.21-24.24 -src amba-fabric/rtl/common/sync_fifo.v:31.5-88.8
+    Saved RTL: amba-fabric/mutation/results/survivors/sync_fifo_mut_2.v
+  - [axil_ram #0]: mutate -mode const0 -module axil_ram -cell $procmux$60582 -port Y -portbit 3 -src amba-fabric/rtl/axil/axil_ram.v:105.47-105.100
+    Saved RTL: amba-fabric/mutation/results/survivors/axil_ram_mut_0.v
+  - [axil_ram #2]: mutate -mode cnot0 -module axil_ram -cell $procmux$90 -port B -portbit 2526 -ctrlbit 1101 -src amba-fabric/rtl/axil/axil_ram.v:135.37-135.40
+    Saved RTL: amba-fabric/mutation/results/survivors/axil_ram_mut_2.v
+  - [axil_ram #3]: mutate -mode cnot0 -module axil_ram -cell $procmux$72303 -port A -portbit 4 -ctrlbit 2 -src amba-fabric/rtl/axil/axil_ram.v:95.17-97.50 -src amba-fabric/rtl/axil/axil_ram.v:95.13-113.16
+    Saved RTL: amba-fabric/mutation/results/survivors/axil_ram_mut_3.v
+  - [axil_csr #1]: mutate -mode const0 -module axil_csr -cell $procmux$62_CMP0 -port A -portbit 6 -src amba-fabric/rtl/axil/axil_csr.v:191.24-191.24 -src amba-fabric/rtl/axil/axil_csr.v:171.17-212.24
+    Saved RTL: amba-fabric/mutation/results/survivors/axil_csr_mut_1.v
+  - [axil_csr #3]: mutate -mode const1 -module axil_csr -cell $procmux$63_CMP0 -port B -portbit 4 -src amba-fabric/rtl/axil/axil_csr.v:187.24-187.24 -src amba-fabric/rtl/axil/axil_csr.v:171.17-212.24
+    Saved RTL: amba-fabric/mutation/results/survivors/axil_csr_mut_3.v
+  - [axil2apb_bridge #1]: mutate -mode const0 -module axil2apb_bridge -cell $procmux$160 -port B -portbit 5 -src amba-fabric/rtl/apb/axil2apb_bridge.v:111.34-111.48 -src amba-fabric/rtl/apb/axil2apb_bridge.v:111.30-129.24
+    Saved RTL: amba-fabric/mutation/results/survivors/axil2apb_bridge_mut_1.v

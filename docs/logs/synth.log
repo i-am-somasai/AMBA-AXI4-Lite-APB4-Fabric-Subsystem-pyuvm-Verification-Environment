@@ -6,7 +6,7 @@
  \----------------------------------------------------------------------------/
  Yosys 0.71+77 (git sha1 11d972c20, Release, Clang /usr/bin/clang++ 21.1.8)
 
--- Executing script file `/home/somasai/amba-fabric/synth/synth.ys' --
+-- Executing script file `amba-fabric/synth/synth.ys' --
 
 1. Executing Verilog-2005 frontend: rtl/common/rst_sync.v
 Parsing SystemVerilog input from `rtl/common/rst_sync.v' to AST representation.
@@ -5003,8 +5003,8 @@ Optimizing module amba_fabric_top.
 
 20.22. Executing TECHMAP pass (map to technology primitives).
 
-20.22.1. Executing Verilog-2005 frontend: /home/somasai/oss-cad-suite/lib/../share/yosys/techmap.v
-Parsing Verilog input from `/home/somasai/oss-cad-suite/lib/../share/yosys/techmap.v' to AST representation.
+20.22.1. Executing Verilog-2005 frontend: oss-cad-suite/lib/../share/yosys/techmap.v
+Parsing Verilog input from `oss-cad-suite/lib/../share/yosys/techmap.v' to AST representation.
 Generating RTLIL representation for module `\_90_simplemap_bool_ops'.
 Generating RTLIL representation for module `\_90_simplemap_reduce_ops'.
 Generating RTLIL representation for module `\_90_simplemap_logic_ops'.

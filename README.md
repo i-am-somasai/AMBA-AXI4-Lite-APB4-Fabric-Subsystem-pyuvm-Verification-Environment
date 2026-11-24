@@ -115,7 +115,7 @@ flowchart TD
 
 ## 4. Measured Verification & Implementation Results
 
-Every number reported below is derived from an actual execution of open-source EDA tools. Raw terminal logs are archived under [`docs/logs/`](file:///home/somasai/amba-fabric/docs/logs/).
+Every number reported below is derived from an actual execution of open-source EDA tools. Raw terminal logs are archived under [`docs/logs/`](docs/logs/).
 
 ### 4.1 Master Deliverables & Metrics Table (Spec Section 17)
 

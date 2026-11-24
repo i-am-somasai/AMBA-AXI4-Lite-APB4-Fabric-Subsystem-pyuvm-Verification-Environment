@@ -283,4 +283,14 @@ Every finding is addressed with honest evidence, verified by real tool execution
 
 | Commit SHA | Tag | Message | Gate Evidence |
 |---|---|---|---|
-| *Pending* | - | - | - |
+| `3ca92c7` | - | `fix(F-08): safeguard pyuvm env tracking in gitignore` | `git check-ignore -v tb/pyuvm/env/fabric_env.py` |
+| `b774333` | - | `fix(F-08): add clean clone validation log and mark F-08 DONE` | `docs/logs/clean_clone.log` |
+| `20a4e40` | - | `fix(F-01): implement honest monitor-based functional coverage, delete synthetic sampling, add waiver doc` | `docs/logs/func_cov.log`, `docs/coverage_waivers.md` |
+| `b08e632` | - | `fix(F-02): implement missing and mislabeled tests, generate mechanical test map and vplan` | `docs/test_map.csv`, `docs/vplan.md` |
+| `ab096c3` | - | `fix(F-03): strengthen formal suite, bind axil protocol checker, add cdc and uart proofs, fix crossbar wready bug` | `docs/logs/formal_suite.log`, `docs/bugs.md` (`BUG-022`) |
+| `8eb8b76` | - | `fix(F-04): reconcile test counts, fix uart fifo depth and address typos, add license` | `LICENSE`, `README.md` |
+| `37bd900` | - | `fix(F-09, F-12): clarify pyuvm agent architecture and specify Verilog-2005 RTL style in docs` | `README.md` |
+| `215c37a` | - | `fix(F-05): scale mutation testing to 240 mutants across 8 modules and triage survivors` | `docs/logs/mutation.log`, `docs/mutation_report.md` |
+| `f1ccb0f` | - | `fix(F-06): run 20-seed stress regression across 4 parallel jobs and log DEC-005 deviation` | `docs/logs/regression_20seeds.log`, `docs/decisions.md` (`DEC-005`) |
+| `de7c81f` | - | `fix(F-04, F-10, F-11): remove flawed audit artifacts, verify verilator regression, and align documentation metrics` | `docs/results.md`, `README.md` |
+| `149e37d` | - | `fix(F-07): modernize GitHub Actions CI toolchain, add synthetic coverage gate, and correct badge URL` | `.github/workflows/ci.yml`, `README.md` |
