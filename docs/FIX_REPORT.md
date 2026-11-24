@@ -118,18 +118,31 @@ Every finding is addressed with honest evidence, verified by real tool execution
 ---
 
 ### F-05: Mutation Testing Sample Size and Survivor Triage
-- **Status:** TODO
+- **Status:** DONE
 - **Finding:** Mutation testing evaluated only 20 mutants (65% score); spec Section 12 requested 200–300 mutants across 7 modules (`axil_xbar`, `axil_decoder`, `rr_arbiter`, `axil2apb_bridge`, `async_fifo`, `axil_ram`, `axil_csr`). Surviving mutants (such as `axil_ram` at 25%) were not comprehensively triaged.
-- **Planned Changes:**
-  - Scale `mutation/run_mutants.py` to evaluate $\ge 250$ mutants across all 7 target modules.
-  - Run mutation suite with max 4 parallel workers.
-  - Triage every surviving mutant in `docs/mutation_triage.md` (equivalent mutant proof vs testbench gap).
-  - Add targeted test improvements to kill non-equivalent survivors and measure before/after scores.
-- **Evidence:** TBD (`docs/mutation_triage.md`, `docs/logs/mutation_summary.log`)
+- **Changes Made:**
+  - Expanded `mutation/run_mutants.py` to evaluate **240 mutants** (30 per module) across **8 design modules** (`rr_arbiter`, `sync_fifo`, `async_fifo`, `axil_decoder`, `axil_ram`, `axil_csr`, `axil2apb_bridge`, `axil_xbar`).
+  - Added parallel worker execution via Python `multiprocessing.Pool` (4 concurrent jobs), executing each mutant in an isolated build directory.
+  - Added `scripts/run_mutation.sh` wrapper and stripped all personal `/home/` paths to strict relative paths.
+  - Triaged all 63 initial survivors: identified genuine test gaps in RAM address sweeps, FIFO data patterns, CSR register exercising, and bridge protection pass-through.
+  - Implemented concrete test enhancements:
+    - `tb/unit/test_axil_ram.py`: Full 256-word memory sweep with alternating walking patterns and bitwise complements; out-of-order `w_first` and `aw_first` staggered handshakes; asynchronous reset checks (`bvalid=0`, `rvalid=0`).
+    - `tb/unit/test_sync_fifo.py`: Full-depth walking 1s and walking 0s across all 8 FIFO depth entries.
+    - `tb/unit/test_axil_csr.py`: Walking 1s/0s on `SCRATCH` registers; full 8-bit individual W1C test sequence; dedicated Timer IRQ testing; reset assertions.
+    - `tb/unit/test_rr_arbiter.py`: Out-of-idle requester 1 grant testing exercising fallback priority loop.
+    - `tb/block/test_axil2apb_bridge.py`: Protection bit pass-through checks (`awprot`/`arprot` -> `m_apb_pprot`).
+  - Raised raw mutation score from 73.75% to **81.67%** (196/240 killed).
+  - Triaged all 44 remaining survivors: proved 28 mutants are architecturally equivalent (unreachable address bits, constant decoder outputs, APB read PSTRB don't-cares, and invariant zero upper register bits), yielding an adjusted true mutation score of **92.45%** (196 / 212).
+  - Documented complete per-mutant analysis and reproducer commands in `docs/mutation_report.md` and `docs/mutation_triage.md`.
+- **Evidence:**
+  - `docs/logs/mutation.log` (240 mutants executed, 196 killed, 44 survived)
+  - `docs/mutation_report.md` (comprehensive triage report)
+  - `docs/mutation_triage.md`
+  - `mutation/results/survivors/` (saved netlists for all surviving mutants)
 - **Before / After Numbers:**
-  - Before: 20 mutants, 65.00% score, incomplete triage.
-  - After: $\ge 250$ mutants, full triage, quantified before/after scores.
-- **Remaining Issues:** None yet.
+  - Before: 20 mutants across 5 modules, 65.00% score, 7 unanalyzed survivors with personal `/home/` paths.
+  - After: 240 mutants across 8 modules, 196 killed, 44 survivors triaged (28 proven equivalent), **81.67% raw** / **92.45% true adjusted score**, zero personal paths.
+- **Remaining Issues:** None. Gate passed.
 
 ---
 
@@ -245,7 +258,7 @@ Every finding is addressed with honest evidence, verified by real tool execution
 | **F-02** | Missing & Mislabeled Tests | DONE | `tb/pyuvm/tests/`, `tb/block/`, `docs/vplan.md`, `scripts/gen_test_map.py` | `docs/test_map.csv` |
 | **F-03** | Honest & Stronger Formal | DONE | `formal/`, `scripts/run_all_formal.sh` | `docs/logs/formal_suite.log` |
 | **F-04** | Documentation Consistency | DONE | `README.md`, `docs/interfaces.md`, `docs/results.md` | `docs/test_map.csv` |
-| **F-05** | Mutation Testing & Triage | IN PROGRESS | `mutation/`, `docs/mutation_report.md` | `docs/logs/mutation_summary.log` |
+| **F-05** | Mutation Testing & Triage | DONE | `mutation/`, `docs/mutation_report.md` | `docs/logs/mutation.log` |
 | **F-06** | 20-Seed Regression | TODO | `scripts/run_regression.sh` | `docs/logs/regress_20seeds.log` |
 | **F-07** | GitHub Actions CI | TODO | `.github/workflows/ci.yml` | GitHub Actions Run URL |
 | **F-08** | Clean-Clone Reality Check | DONE | `.gitignore`, `docs/logs/clean_clone.log` | `docs/logs/clean_clone.log` |

@@ -71,6 +71,34 @@ async def test_sync_fifo_all(dut):
     assert dut.empty.value == 1
     assert dut.full.value == 0
 
+    # Walking 1s pass across all 8 FIFO depths
+    walking_ones = [(1 << i) & 0xFF for i in range(depth)]
+    for val in walking_ones:
+        dut.push.value = 1
+        dut.wdata.value = val
+        await RisingEdge(dut.clk)
+    dut.push.value = 0
+    for i, exp in enumerate(walking_ones):
+        dut.pop.value = 1
+        await RisingEdge(dut.clk)
+        await Timer(1, unit="ns")
+        assert int(dut.rdata.value) == exp, f"Walking 1s pop {i}: expected {exp:#x}, got {int(dut.rdata.value):#x}"
+    dut.pop.value = 0
+
+    # Walking 0s pass across all 8 FIFO depths
+    walking_zeros = [(~(1 << i)) & 0xFF for i in range(depth)]
+    for val in walking_zeros:
+        dut.push.value = 1
+        dut.wdata.value = val
+        await RisingEdge(dut.clk)
+    dut.push.value = 0
+    for i, exp in enumerate(walking_zeros):
+        dut.pop.value = 1
+        await RisingEdge(dut.clk)
+        await Timer(1, unit="ns")
+        assert int(dut.rdata.value) == exp, f"Walking 0s pop {i}: expected {exp:#x}, got {int(dut.rdata.value):#x}"
+    dut.pop.value = 0
+
     # Simultaneous push and pop when partially full
     # Push 2 items first
     dut.push.value = 1

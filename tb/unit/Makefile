@@ -7,6 +7,7 @@ UNIT_TESTS = test_hello_world \
              test_sync_fifo \
              test_async_fifo \
              test_rr_arbiter \
+             test_axil_decoder \
              test_axil_default_slave \
              test_axil_ram \
              test_axil_csr
@@ -56,6 +57,14 @@ test_rr_arbiter:
 		TOPLEVEL=rr_arbiter \
 		MODULE=test_rr_arbiter \
 		VERILOG_SOURCES=$(PROJ_DIR)/rtl/common/rr_arbiter.v \
+		SIM=$(SIM)
+
+test_axil_decoder:
+	@echo "--- Running test_axil_decoder ---"
+	$(MAKE) -f $(PROJ_DIR)/tb/unit/Makefile.single \
+		TOPLEVEL=axil_decoder \
+		MODULE=test_axil_decoder \
+		VERILOG_SOURCES=$(PROJ_DIR)/rtl/axil/axil_decoder.v \
 		SIM=$(SIM)
 
 test_axil_default_slave:

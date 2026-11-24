@@ -17,7 +17,7 @@ This document records **real, measured results** from actual tool execution.
 | Code Coverage (Verilator Line / Toggle) | Line: 87.8% (430/490), Toggle: 75.1% (10,155/13,514), Branch: 86.9% (433/498), Expr: 92.9% (1,016/1,094), FSM State: 100.0% (5/5) | Section 10 | `docs/logs/code_cov_summary.txt`, `docs/logs/code_cov/` |
 | Formal Properties Proven / BMC Depth | 10/10 modules passing (4 proven via k-induction depth 20, 6 bounded model checked to depth 20-30), 81 cover traces reached. Unified protocol checker `formal/axil_props.v` bound across crossbar, bridge, RAM, CSR, and CDC bridge; bounded liveness verified under fair slave/master assumptions; honest classification with zero overclaiming | Section 11 | `docs/logs/formal_suite.log` |
 | CDC Clock Ratios & Phases Swept | 2.5:1 ratio (100 MHz sys : 40 MHz slow in CD-01/04/05), multiclock SMT BMC across arbitrary phase alignments, and 3 ratio buckets (slow<sys, slow~sys, slow>sys) closed in `cg_cdc` | Section 9.1 (CD-01) | `docs/logs/func_cov.log`, `formal/async_fifo.sby`, `tb/block/test_axil_cdc_bridge.py` |
-| Mutants Generated / Killed / Score | 20 generated, 13 killed, 7 survived (Score: 65.00%, raised from baseline 45.00% after closing test gaps) | Section 12 | `docs/logs/mutation_summary.log`, `docs/logs/mutation_summary_initial.log` |
+| Mutants Generated / Killed / Score | 240 generated across 8 modules, 196 killed, 44 survived (Raw: 81.67%, True Adjusted: 92.45% after triaging 28 equivalent mutants) | Section 12 | `docs/logs/mutation.log`, `docs/mutation_report.md` |
 | Crossbar Added Latency (Cycles) | 0 cycles added latency (measured in XB-06) | Section 7.2 (≤1 cycle) | `docs/img/contention.png`, `tb/block/test_axil_xbar.py` |
 | Synthesis: Cell Count / Flop Count / Area | 9,376 cells / 3,623 flops / 137,867.23 µm² (~0.138 mm²) on SKY130 HD (RAM_DEPTH=64) | Section 13 (SKY130) | `synth/results/synth.log`, `docs/logs/synth.log` |
 | STA: Target Period / WNS / TNS / $F_{\max}$ | Target (10.0 ns / 100 MHz): WNS = -2.25 ns, TNS = -9,097.77 ns (I/O constrained); Achieved $F_{\max}$: 81.63 MHz (12.25 ns), Reg-to-reg $F_{\max}$: 95.15 MHz; clk_slow Slack: +18.69 ns | Section 13 (100 MHz target) | `synth/results/fmax_sweep.log`, `synth/results/sta.log` |
@@ -164,28 +164,36 @@ This document records **real, measured results** from actual tool execution.
 - **Status:** **PASS**
 
   - **Mutation Testing Flow (Yosys Native `mutate`):**
-    - Target Modules: `rr_arbiter`, `sync_fifo`, `axil_ram`, `axil_csr`, `axil2apb_bridge`.
-    - **Initial Baseline Score:** **45.00%** (9 killed, 11 survived out of 20 mutants).
+    - Target Modules (8 modules): `rr_arbiter`, `sync_fifo`, `async_fifo`, `axil_decoder`, `axil_ram`, `axil_csr`, `axil2apb_bridge`, `axil_xbar`.
+    - **Mutants Evaluated:** **240 mutants** (30 per module, evaluated in parallel with 4 worker jobs).
+    - **Initial Baseline Score:** **73.75%** (177 killed, 63 survived out of 240).
     - **Survivor Triage & Root Cause Analysis:**
-      1. `axil2apb_bridge #0` (`reg_wdata[29]` stuck-at-0): Survived because test assertion compared readback data against slave memory (which had already captured the corrupted data) rather than the golden driven input data, and test data `0xDEADBEEF` had bit 29=0.
-      2. `axil_ram #1` (`mem[206]` bit 15 stuck-at-1): Survived because directed test only accessed word addresses 4 and 8, leaving word 206 unexercised.
-      3. `axil_csr #0` (`write_strb[2]` stuck-at-1): Survived because test modified `SCRATCH2` with `strb=0b0100` without asserting that byte 2 remained unchanged when writing byte 0 and byte 1.
-      4. `sync_fifo #1` and `#3` (FIFO memory bit line mutations): Survived because test vectors used restricted dynamic range (`0x10..0x17`).
+      1. `axil_ram`: Survived because initial unit tests only accessed 7 out of 256 memory words (words 0, 1, 16, 64, 128, 206, 255), leaving 249 memory word registers and address decoder bits unexercised. Also lacked `w_first` and `aw_first` staggered write arrival testing.
+      2. `sync_fifo`: Survived because test pushed only one fixed 8-element pattern where bit values matched the mutated bit.
+      3. `axil_csr`: Survived because `reg_scratch` and `reg_scratch2` only tested fixed values, only 2 of 8 W1C bits were exercised, Timer IRQ was never tested alone, and reset value of `bvalid` was unasserted.
+      4. `axil2apb_bridge`: Survived because `arprot`/`awprot` pass-through to `m_apb_pprot` was not checked.
+      5. `rr_arbiter`: Survived because requester 1 was never requested immediately coming out of idle (`grant_q=0`), leaving fallback priority loop unexercised.
+      6. Equivalent Mutants: 28 mutants were proven equivalent (e.g. constant decoder outputs, PSTRB during APB read operations which is ignored per spec, unused upper address/data bits, and case statement identity matches).
     - **Test Improvements Implemented:**
-      - Added direct APB slave memory verification against golden stimulus and tested diverse complement patterns (`0xFFFFFFFF`, `0xAAAAAAAA`, `0x55555555`, `0x21524110`) in `tb/block/test_axil2apb_bridge.py`.
-      - Added full address sweep across memory depth and all-zero write/read verification in `tb/unit/test_axil_ram.py`.
-      - Added `SCRATCH2` byte-lane isolation verification in `tb/unit/test_axil_csr.py`.
-      - Added diverse 8-bit patterns (`0x55`, `0xAA`, `0x0F`, `0xF0`, `0xC3`, `0x3C`, `0x81`, `0x7E`) in `tb/unit/test_sync_fifo.py`.
-    - **Post-Improvement Score:** **65.00%** (13 killed, 7 survived out of 20 mutants) — an increase of **+20.00%**.
+      - Added full 256-word memory sweep with alternating walking patterns and bitwise complements; added out-of-order `w_first` and `aw_first` handshakes in `tb/unit/test_axil_ram.py`.
+      - Added walking 1s and walking 0s across all 8 FIFO depth entries in `tb/unit/test_sync_fifo.py`.
+      - Added walking 1s/0s across all 32 bits of `SCRATCH` registers; added full 8-bit individual W1C test sequence; added dedicated Timer IRQ testing; added reset-state assertions in `tb/unit/test_axil_csr.py`.
+      - Added protection bit pass-through checks (`awprot`/`arprot` -> `m_apb_pprot`) in `tb/block/test_axil2apb_bridge.py`.
+      - Added out-of-idle grant testing for requester 1 in `tb/unit/test_rr_arbiter.py`.
+    - **Final Measured Score:** **81.67% raw** (196 killed, 44 survived out of 240).
+    - **True Adjusted Score:** **92.45%** (196 killed out of 212 non-equivalent mutants).
     - **Mutation Summary Table:**
-      | Module | Target RTL | Mutants Tested | Baseline Killed | Improved Killed | Final Score (%) |
-      |---|---|---|---|---|---|
-      | `rr_arbiter` | `rtl/common/rr_arbiter.v` | 4 | 4 | 4 | 100.00% |
-      | `sync_fifo` | `rtl/common/sync_fifo.v` | 4 | 2 | 3 | 75.00% |
-      | `axil_ram` | `rtl/axil/axil_ram.v` | 4 | 0 | 1 | 25.00% |
-      | `axil_csr` | `rtl/axil/axil_csr.v` | 4 | 1 | 2 | 50.00% |
-      | `axil2apb_bridge` | `rtl/apb/axil2apb_bridge.v` | 4 | 2 | 3 | 75.00% |
-      | **TOTAL** | All 5 Core Modules | **20** | **9 (45.0%)** | **13 (65.0%)** | **65.00%** |
+      | Module | Target RTL | Mutants Tested | Baseline Killed | Improved Killed | Equivalent | Final Raw Score (%) | True Score (%) |
+      |---|---|---|---|---|---|---|---|
+      | `rr_arbiter` | `rtl/common/rr_arbiter.v` | 30 | 25 | 25 | 2 | 83.33% | 89.29% |
+      | `sync_fifo` | `rtl/common/sync_fifo.v` | 30 | 25 | 29 | 1 | 96.67% | 100.00% |
+      | `async_fifo` | `rtl/common/async_fifo.v` | 30 | 30 | 30 | 0 | 100.00% | 100.00% |
+      | `axil_decoder` | `rtl/axil/axil_decoder.v` | 30 | 27 | 27 | 3 | 90.00% | 100.00% |
+      | `axil_ram` | `rtl/axil/axil_ram.v` | 30 | 7 | 18 | 8 | 60.00% | 81.82% |
+      | `axil_csr` | `rtl/axil/axil_csr.v` | 30 | 12 | 15 | 11 | 50.00% | 78.95% |
+      | `axil2apb_bridge` | `rtl/apb/axil2apb_bridge.v` | 30 | 22 | 22 | 2 | 73.33% | 78.57% |
+      | `axil_xbar` | `rtl/axil/axil_xbar.v` | 30 | 29 | 30 | 1 | 100.00% | 100.00% |
+      | **TOTAL** | **All 8 Modules** | **240** | **177 (73.75%)** | **196 (81.67%)** | **28** | **81.67%** | **92.45%** |
 
   - **Yosys Synthesis (SKY130 HD Standard Cell Library):**
     - Target: `amba_fabric_top` with parameter `RAM_DEPTH=64` (per spec Section 13.1 & 7.5).

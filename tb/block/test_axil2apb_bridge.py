@@ -99,6 +99,16 @@ async def test_br01_single_rw_zero_wait(dut):
         assert r_resp == 0
         assert r_val == apb_slave.memory.get(offset, 0)
 
+    # Protection bit pass-through checks (AWPROT/ARPROT -> PPROT)
+    for prot in [0b001, 0b010, 0b100, 0b111]:
+        paddr = 0x40000040 + (prot * 4)
+        pdata = 0x55AA0000 + prot
+        w_resp = await driver.write(addr=paddr, data=pdata, strb=0xF, prot=prot)
+        assert w_resp == 0
+        r_val, r_resp = await driver.read(addr=paddr, prot=prot)
+        assert r_resp == 0
+        assert r_val == pdata
+
     monitor.stop()
     apb_slave.stop()
     await RisingEdge(dut.clk)

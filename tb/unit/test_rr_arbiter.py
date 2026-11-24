@@ -80,4 +80,30 @@ async def test_rr_arbiter_fairness_and_lock(dut):
     await Timer(1, unit="ns")
     assert dut.grant.value == 0b01, f"Expected grant=0b01 (rollover from 1), got {dut.grant.value}"
 
+    # 8. Out-of-idle grant testing for both requesters (exercises !found fallback loop)
+    dut.req.value = 0b00
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert dut.grant.value == 0b00
+
+    # Requester 1 coming out of idle (grant_q == 0)
+    dut.req.value = 0b10
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert dut.grant.value == 0b10, f"Expected grant=0b10 out of idle, got {dut.grant.value}"
+    assert dut.grant_valid.value == 1
+
+    # Back to idle
+    dut.req.value = 0b00
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert dut.grant.value == 0b00
+
+    # Requester 0 coming out of idle
+    dut.req.value = 0b01
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert dut.grant.value == 0b01, f"Expected grant=0b01 out of idle, got {dut.grant.value}"
+    assert dut.grant_valid.value == 1
+
     dut._log.info("test_rr_arbiter_fairness_and_lock PASSED")

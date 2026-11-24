@@ -13,8 +13,13 @@ async def test_axil_ram_operations(dut):
     dut.rst_n.value = 0
     driver = AxilMasterDriver(dut, dut.clk)
     await Timer(25, unit="ns")
+    assert dut.s_axil_bvalid.value == 0, "bvalid must be 0 during reset"
+    assert dut.s_axil_rvalid.value == 0, "rvalid must be 0 during reset"
     dut.rst_n.value = 1
     await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert dut.s_axil_bvalid.value == 0, "bvalid must be 0 after reset"
+    assert dut.s_axil_rvalid.value == 0, "rvalid must be 0 after reset"
 
     RESP_OKAY   = 0b00
     RESP_SLVERR = 0b10
@@ -58,34 +63,93 @@ async def test_axil_ram_operations(dut):
     rdata, _ = await driver.read(addr_strobe)
     assert rdata == 0xBBCCAA55, f"Expected 0xBBCCAA55, got {rdata:#x}"
 
-    # 3. Comprehensive multi-address memory sweep across depth
-    # Addresses sampled across 256 words: 0, 1, 16, 64, 128, 206, 255
-    sweep_indices = [0, 1, 16, 64, 128, 206, 255]
-    for idx in sweep_indices:
+    # 3. Comprehensive full-depth memory sweep across all 256 words
+    # Pass A: Write distinct non-zero walking pattern to every single word
+    for idx in range(256):
         w_addr = 0x5000_0000 + (idx * 4)
-        val = 0xA5A50000 ^ (idx * 0x01010101) ^ 0x5A5A
-        val = val & 0xFFFFFFFF
+        val = ((idx * 0x01010101) ^ 0xA55A3CC3) & 0xFFFFFFFF
         resp = await driver.write(w_addr, val, strb=0xF)
-        assert resp == RESP_OKAY
-    for idx in sweep_indices:
+        assert resp == RESP_OKAY, f"Write failed at word {idx}"
+    for idx in range(256):
         w_addr = 0x5000_0000 + (idx * 4)
-        expected = (0xA5A50000 ^ (idx * 0x01010101) ^ 0x5A5A) & 0xFFFFFFFF
+        expected = ((idx * 0x01010101) ^ 0xA55A3CC3) & 0xFFFFFFFF
         rdata, rresp = await driver.read(w_addr)
         assert rresp == RESP_OKAY
-        assert rdata == expected, f"RAM sweep mismatch at word {idx} (addr {w_addr:#x}): expected {expected:#x}, got {rdata:#x}"
+        assert rdata == expected, f"RAM mismatch at word {idx}: expected {expected:#x}, got {rdata:#x}"
 
-    # Write all zeros to detect any stuck-at-1 bits across memory words
-    for idx in sweep_indices:
+    # Pass B: Write inverted bitwise complement to every word
+    for idx in range(256):
+        w_addr = 0x5000_0000 + (idx * 4)
+        val = (~((idx * 0x01010101) ^ 0xA55A3CC3)) & 0xFFFFFFFF
+        resp = await driver.write(w_addr, val, strb=0xF)
+        assert resp == RESP_OKAY
+    for idx in range(256):
+        w_addr = 0x5000_0000 + (idx * 4)
+        expected = (~((idx * 0x01010101) ^ 0xA55A3CC3)) & 0xFFFFFFFF
+        rdata, rresp = await driver.read(w_addr)
+        assert rresp == RESP_OKAY
+        assert rdata == expected, f"RAM complement mismatch at word {idx}: expected {expected:#x}, got {rdata:#x}"
+
+    # Pass C: Write all zeros to detect any stuck-at-1 bits across memory words
+    for idx in range(256):
         w_addr = 0x5000_0000 + (idx * 4)
         resp = await driver.write(w_addr, 0x00000000, strb=0xF)
         assert resp == RESP_OKAY
-    for idx in sweep_indices:
+    for idx in range(256):
         w_addr = 0x5000_0000 + (idx * 4)
         rdata, rresp = await driver.read(w_addr)
         assert rresp == RESP_OKAY
         assert rdata == 0, f"Stuck-at-1 bit detected at word {idx}: expected 0, got {rdata:#x}"
 
-    # 3. Out-of-range tests (RAM_DEPTH=256 words -> offset 256*4 = 0x400)
+    # 4. Out-of-order write handshakes: W before AW (w_first)
+    dut.s_axil_wdata.value = 0x12345678
+    dut.s_axil_wstrb.value = 0xF
+    dut.s_axil_wvalid.value = 1
+    while True:
+        await RisingEdge(dut.clk)
+        if int(dut.s_axil_wready.value) == 1:
+            dut.s_axil_wvalid.value = 0
+            break
+    for _ in range(3):
+        await RisingEdge(dut.clk)
+    dut.s_axil_awaddr.value = 0x5000_0030
+    dut.s_axil_awvalid.value = 1
+    dut.s_axil_bready.value = 1
+    while True:
+        await RisingEdge(dut.clk)
+        if int(dut.s_axil_awready.value) == 1:
+            dut.s_axil_awvalid.value = 0
+        if int(dut.s_axil_bvalid.value) == 1:
+            break
+    await RisingEdge(dut.clk)
+    rdata, rresp = await driver.read(0x5000_0030)
+    assert rresp == RESP_OKAY and rdata == 0x12345678, "w_first write data mismatch"
+
+    # 5. Out-of-order write handshakes: AW before W (aw_first)
+    dut.s_axil_awaddr.value = 0x5000_0034
+    dut.s_axil_awvalid.value = 1
+    dut.s_axil_bready.value = 1
+    while True:
+        await RisingEdge(dut.clk)
+        if int(dut.s_axil_awready.value) == 1:
+            dut.s_axil_awvalid.value = 0
+            break
+    for _ in range(3):
+        await RisingEdge(dut.clk)
+    dut.s_axil_wdata.value = 0x87654321
+    dut.s_axil_wstrb.value = 0xF
+    dut.s_axil_wvalid.value = 1
+    while True:
+        await RisingEdge(dut.clk)
+        if int(dut.s_axil_wready.value) == 1:
+            dut.s_axil_wvalid.value = 0
+        if int(dut.s_axil_bvalid.value) == 1:
+            break
+    await RisingEdge(dut.clk)
+    rdata, rresp = await driver.read(0x5000_0034)
+    assert rresp == RESP_OKAY and rdata == 0x87654321, "aw_first write data mismatch"
+
+    # 6. Out-of-range tests (RAM_DEPTH=256 words -> offset 256*4 = 0x400)
     oor_addr = 0x5000_0400
     resp = await driver.write(oor_addr, 0xBAD0BAD0, strb=0xF)
     assert resp == RESP_SLVERR, f"Expected SLVERR on OOR write, got {resp:#b}"
