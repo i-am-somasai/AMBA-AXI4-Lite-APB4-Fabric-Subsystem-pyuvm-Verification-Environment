@@ -58,9 +58,25 @@ async def test_axil_csr_all(dut):
 
     # 4. SCRATCH2 byte-enable RW
     await driver.write(0x6000_000C, 0xAABBCCDD, strb=0xF)
-    await driver.write(0x6000_000C, 0x00110000, strb=0b0100) # byte 2
+    # Modify only byte 2 (strb=0b0100)
+    await driver.write(0x6000_000C, 0x00110000, strb=0b0100)
     rdata, _ = await driver.read(0x6000_000C)
     assert rdata == 0xAA11CCDD
+
+    # Modify only byte 0 (strb=0b0001) - byte 2 must NOT change
+    await driver.write(0x6000_000C, 0x00000022, strb=0b0001)
+    rdata, _ = await driver.read(0x6000_000C)
+    assert rdata == 0xAA11CC22, f"Expected 0xAA11CC22, got {rdata:#x}"
+
+    # Modify only byte 1 (strb=0b0010) - byte 2 must NOT change
+    await driver.write(0x6000_000C, 0x00003300, strb=0b0010)
+    rdata, _ = await driver.read(0x6000_000C)
+    assert rdata == 0xAA113322, f"Expected 0xAA113322, got {rdata:#x}"
+
+    # Modify only byte 3 (strb=0b1000)
+    await driver.write(0x6000_000C, 0x44000000, strb=0b1000)
+    rdata, _ = await driver.read(0x6000_000C)
+    assert rdata == 0x44113322, f"Expected 0x44113322, got {rdata:#x}"
 
     # 5. IRQ Aggregation & Masking
     dut.irq_sources.value = 0b101 # UART (bit 0) and GPIO (bit 2) active

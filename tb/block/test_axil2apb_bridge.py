@@ -79,6 +79,26 @@ async def test_br01_single_rw_zero_wait(dut):
     assert rresp == 0, f"Expected OKAY (0), got {rresp}"
     assert data == 0xDEADBEEF, f"Expected 0xDEADBEEF, got {hex(data)}"
 
+    # Comprehensive pattern check (all-ones, walking-1s, complement pattern to catch bit-stuck mutants)
+    test_patterns = [
+        (0x40000014, 0xFFFFFFFF, 0xF),
+        (0x40000018, 0xAAAAAAAA, 0xF),
+        (0x4000001C, 0x55555555, 0xF),
+        (0x40000020, 0x21524110, 0xF), # Inverse of 0xDEADBEEF (bit 29 = 1)
+        (0x40000024, 0x12345678, 0b0011), # Byte strobe 0 and 1
+        (0x40000028, 0x9ABCDEF0, 0b1100), # Byte strobe 2 and 3
+    ]
+    for paddr, pdata, pstrb in test_patterns:
+        w_resp = await driver.write(addr=paddr, data=pdata, strb=pstrb)
+        assert w_resp == 0
+        offset = paddr - 0x40000000
+        # Verify directly that APB slave received the true input data (not comparing corrupted output to corrupted slave mem)
+        if pstrb == 0xF:
+            assert apb_slave.memory.get(offset, 0) == pdata, f"APB slave pwdata mismatch: expected {pdata:#x}, got {apb_slave.memory.get(offset, 0):#x}"
+        r_val, r_resp = await driver.read(addr=paddr)
+        assert r_resp == 0
+        assert r_val == apb_slave.memory.get(offset, 0)
+
     monitor.stop()
     apb_slave.stop()
     await RisingEdge(dut.clk)

@@ -35,8 +35,8 @@ async def test_sync_fifo_all(dut):
     await Timer(1, unit="ns")
     assert dut.underflow.value == 0
 
-    # Push depth items (0x10 to 0x17)
-    test_data = [0x10 + i for i in range(depth)]
+    # Push depth items with diverse bit patterns exercising all bit positions
+    test_data = [0x55, 0xAA, 0x0F, 0xF0, 0xC3, 0x3C, 0x81, 0x7E]
     for i, val in enumerate(test_data):
         dut.push.value = 1
         dut.wdata.value = val

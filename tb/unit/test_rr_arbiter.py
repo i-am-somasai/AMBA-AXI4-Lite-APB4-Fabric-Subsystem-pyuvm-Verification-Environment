@@ -67,4 +67,17 @@ async def test_rr_arbiter_fairness_and_lock(dut):
     await Timer(1, unit="ns")
     assert dut.grant.value == 0b10, f"Expected grant to switch to 0b10 after lock release, got {dut.grant.value}"
 
+    # 6. Deassert requests: verify grant drops to 0 immediately
+    dut.req.value = 0b00
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert dut.grant.value == 0b00, f"Expected grant=0b00 after deasserting req, got {dut.grant.value}"
+    assert dut.grant_valid.value == 0, f"Expected grant_valid=0, got {dut.grant_valid.value}"
+
+    # 7. Contention priority rollover: last granted was 1, so with req=0b11, master 0 should have priority
+    dut.req.value = 0b11
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert dut.grant.value == 0b01, f"Expected grant=0b01 (rollover from 1), got {dut.grant.value}"
+
     dut._log.info("test_rr_arbiter_fairness_and_lock PASSED")
