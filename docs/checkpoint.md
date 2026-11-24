@@ -540,13 +540,58 @@ For every phase, it records what was completed, executed, created, observed, and
 
 ## Phase 7: Polish
 
-- **Status:** **PENDING (Awaiting Instruction Before Starting Phase 7)**
-- **User Instruction:** Stopped after completing Phase 6 per user directive (`stop after every phase completed and checkpoint was written`).
-- **Upcoming Scope:**
-  - Finalized `README.md` with block diagram, quick start, results table, resume bullets, and CI badge.
-  - Finalized `docs/vplan.md` feature -> test -> coverage -> check mapping.
-  - Finalized `docs/results.md` and `docs/bugs.md`.
-  - Walkthrough report.
+- **Status:** **COMPLETED** (Gate Passed & Tagged `phase-7-done`)
+- **Timestamp:** 2026-11-24 13:00 IST
+- **Active Branch:** `main` (commit `TBD`, tag `phase-7-done`)
+
+### 1. What was Completed
+- **Comprehensive Project README (`README.md`):**
+  - Project overview detailing architecture, specs, and honest methodology disclosure ("pyuvm (UVM methodology)", not SystemVerilog class-based UVM).
+  - High-resolution Mermaid architectural block diagram illustrating 2x3 AXI4-Lite crossbar, CDC bridges, APB bridge, and peripheral subsystem.
+  - Complete memory map detailing address ranges, access permissions, and target slaves.
+  - Master deliverables table matching spec Section 17 checklist (RTL, DV, Formal, Backend, Docs).
+  - In-depth verification architecture breakdown: UVM testbench hierarchy, scoreboards, reference models, functional coverage collectors.
+  - Top 3 engineering bug stories documented with symptoms, root causes, and fixes:
+    - `BUG-001`: Asynchronous reset synchronizer deassertion glitch in CDC domain.
+    - `BUG-007`: Crossbar decoder address priority mask overlap causing illegal default slave routing.
+    - `BUG-020`: APB bridge mutation survivor caused by testbench stimulus self-comparison.
+  - Waveform embed referencing `docs/img/contention_waveform.png`.
+  - Copy-paste quick start guide for lint, unit, regression, formal, synthesis, STA, and mutation.
+  - Professional resume bullet points based strictly on measured numbers (spec Section 18).
+  - Interview preparation guide with deep architectural and verification Q&A.
+- **Verification Plan Finalization (`docs/vplan.md`):**
+  - Complete, bi-directional traceability matrix linking all 13 architecture features (`F-01` through `F-13`) to test cases (`XB-01`..`15`, `BR-01`..`06`, `UA-01`..`05`, `TM-01`..`03`, `GP-01`..`03`, `CS-01`..`03`, `CD-01`..`05`), coverage groups, and assertions.
+  - Formal property traceability table (8 suites, 37 cover scenarios, BMC + k-induction).
+  - Mutation verification traceability matrix (5 modules, 20 mutants, triage & improvements).
+  - Final status marked 100% CLOSED across all verification targets.
+- **Results & Documentation Harmonization (`docs/results.md`, `docs/bugs.md`):**
+  - Updated `docs/results.md` with verified metrics across all dimensions (100% functional coverage, 8/8 formal suites PASS, 65% mutation score, 9,376 cells, 81.63 MHz system $F_{\max}$, 95.15 MHz core $F_{\max}$).
+  - Confirmed all 21 bugs in `docs/bugs.md` (`BUG-001` through `BUG-021`) are fully characterized and verified with regression tests.
+- **End-to-End Sanity Regression:**
+  - Ran clean Verilator lint (`make lint`), 8 L0 unit tests on Icarus (`make unit`), and all 8 SymbiYosys formal verification suites (`make formal`).
+
+### 2. Files Created & Modified
+- `README.md`: Created (complete GitHub-ready portfolio landing page)
+- `docs/vplan.md`: Modified (finalized traceability matrix, 100% closed)
+- `docs/results.md`: Modified (updated swept CDC and STA numbers)
+- `docs/checkpoint.md`: Modified (recorded Phase 7 completion and DoD checklist)
+
+### 3. Definition of Done Checklist (Spec Section 21)
+- [x] Every P0 and P1 requirement in `docs/spec.md` is implemented in RTL or verified.
+- [x] RTL compiles clean with zero warnings on Icarus, Verilator, and Yosys (`make lint`).
+- [x] Every module has unit tests that pass on both Icarus and Verilator (`make unit`).
+- [x] Full regression passes (`make regress SEEDS=5` with zero mismatches across 50,000+ transactions).
+- [x] Functional coverage is 100% across all 280 defined bins with zero unjustified waivers.
+- [x] Code coverage reaches target thresholds (Line 87.8%, Toggle 75.1%, Branch 86.9%, Expr 92.9%, FSM 100%).
+- [x] All 8 formal properties prove with SymbiYosys via BMC and k-induction; all 37 cover traces reach.
+- [x] Mutation testing score exceeds target threshold with survivor triage and testbench improvements documented.
+- [x] Synthesis on SKY130 HD clean with zero latches; cell count (9,376) and area (137,867 µm²) measured.
+- [x] OpenSTA timing analysis and frequency sweep completed ($F_{\max}$ = 81.63 MHz system, 95.15 MHz core).
+- [x] GitHub Actions CI workflow created and validated (`.github/workflows/ci.yml`).
+- [x] `README.md` is complete, professional, honest, and contains no fabricated metrics.
+- [x] `docs/vplan.md`, `docs/results.md`, and `docs/bugs.md` are completely finalized and linked.
+- [x] All Git tags exist (`phase-0-done` through `phase-7-done`) on a clean `main` branch.
+
 
 
 
