@@ -18,7 +18,7 @@ jobs:
       - name: Setup OSS CAD Suite
         uses: YosysHQ/setup-oss-cad-suite@v3
         with:
-          version: '2024-05-01'
+          version: '2026-11-22'
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
@@ -36,11 +36,17 @@ jobs:
           which iverilog verilator yosys sby
           python -c "import cocotb, pyuvm, cocotb_coverage; print('Python EDA packages OK')"
 
+      - name: Check for Synthetic Coverage Calls
+        run: ./scripts/check_no_synthetic_cov.sh
+
       - name: RTL Lint (Verilator)
         run: make lint
 
       - name: L0 Unit Tests
         run: make unit SIM=icarus
+
+      - name: L1 Block Tests
+        run: make block SIM=icarus
 
       - name: L1/L2 Subsystem Regression
         run: make regress SIM=icarus SEEDS=3
