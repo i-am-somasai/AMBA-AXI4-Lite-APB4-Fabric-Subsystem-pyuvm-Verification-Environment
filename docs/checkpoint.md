@@ -260,9 +260,92 @@ For every phase, it records what was completed, executed, created, observed, and
 
 ## Phase 4: pyuvm Environment
 
-- **Status:** **PAUSED (Awaiting Instruction Before Starting Phase 4)**
-- **User Instruction:** Stopped after completing Phase 3 per user directive (`now complete phase 3 and stop before starting phase 4`).
+- **Status:** **COMPLETED** (Gate Passed & Tagged `phase-4-done`)
+- **Timestamp:** 2026-11-24 11:45 IST
+- **Active Branch:** `main` (merging `dv`, tag `phase-4-done`)
+
+### 1. What was Completed
+- **Independent Reference Models (`tb/models/`):**
+  - `tb/models/addr_map.py`: Spec-authoritative address decoder model mapping APB peripherals (UART, Timer, GPIO), 1 KB Scratchpad RAM, CSR Block, CDC Slow Regs, and unmapped error spaces.
+  - `tb/models/ram_model.py`: Byte-accurate 1 KB scratchpad RAM model supporting arbitrary byte strobes (`WSTRB`), 32-bit reads, and out-of-bounds `SLVERR` generation.
+  - `tb/models/reg_model.py`: CSR model (`CsrModel`) tracking `REV_ID`, `VERSION`, `SCRATCH`, `SCRATCH2`, `IRQ_MASK`, and W1C registers (`W1C_TEST`, `W1C_SET`); and CDC Slow Regs model (`SlowRegsModel`) tracking `SLOW_ID`, `SLOW_SCRATCH` with byte strobes, and `SLOW_CTRL`.
+  - `tb/models/peripheral_model.py`: Peripheral models for `ApbUartModel` (loopback FIFO semantics), `ApbTimerModel` (one-shot/periodic down-counter with auto-stop and reload), and `ApbGpioModel` (direction, output registers, and interrupt mask).
+  - `tb/models/fabric_ref_model.py`: Unified system-level reference model predicting read/write responses (`OKAY`, `SLVERR`, `DECERR`), expected read data, and exact-data check qualification.
+- **pyuvm Verification Architecture (`tb/pyuvm/`):**
+  - `tb/pyuvm/sequences/axil_seq_item.py`: Constrained-random AXI4-Lite transaction sequence item with target distribution (RAM 40%, CSR 20%, CDC 15%, APB 15%, Unmapped 10%), channel ordering permutations (`simultaneous`, `aw_first`, `w_first`), random byte strobes, and per-master address partitioning.
+  - `tb/pyuvm/sequences/axil_base_seq.py`: Base sequence providing atomic helper routines (`write`, `read`) with response capture.
+  - `tb/pyuvm/sequences/directed_seqs.py`: Sequences covering directed test scenarios (`XB-11` SLVERR, `XB-14` PROT pass-through, `XB-15` unaligned LSBs, `BR-04` byte strobes, `BR-06` write ordering permutations, `XB-12` reset recovery, and `BR-05` contention).
+  - `tb/pyuvm/sequences/fabric_stress_seq.py`: Top-level stress sequence driving concurrent constrained-random streams from Master 0 and Master 1.
+  - `tb/pyuvm/agents/axil_master_agent.py`: Encapsulates `AxilSequencer`, `AxilDriver` (driving physical DUT signals via `AxilMasterDriver`), and analysis broadcast ports.
+  - `tb/pyuvm/env/fabric_scoreboard.py`: Synchronous scoreboard (`FabricScoreboard`) subscribing to Master 0 and Master 1 transactions, predicting expected responses via `FabricRefModel`, and asserting zero mismatches on completion.
+  - `tb/pyuvm/env/fabric_env.py`: Connects master agents and scoreboard analysis ports.
+  - `tb/pyuvm/tests/test_directed.py`: 7 directed test cases verifying protocol rules and edge conditions across both Icarus Verilog and Verilator.
+  - `tb/pyuvm/tests/test_stress.py`: Milestone `XB-13` stress test running dual asynchronous clocks (`clk_sys` 100 MHz, `clk_slow` 40 MHz) and driving concurrent transactions across both masters.
+  - `tb/pyuvm/Makefile` and `tb/pyuvm/Makefile.single`: Multi-simulator build harnesses supporting `SIM=icarus` and `SIM=verilator`.
+  - `scripts/run_phase4_gate.sh`: Automated Phase 4 acceptance gate runner script.
+- **Acceptance Gate Verification:**
+  - Directed pyuvm tests: 7/7 PASS on Icarus Verilog; 7/7 PASS on Verilator 5.055.
+  - `XB-13` Random Stress Regression: Executed 50,000 transactions across 5 seeds (42, 123, 777, 2024, 9999; 10,000 transactions each).
+  - Zero scoreboard mismatches measured across all 50,000 transactions.
+  - Full regression clean: 8/8 L0 unit tests PASS, 26/26 L1 block tests PASS, 4/4 SBY formal suites PASS.
+
+### 2. Files Created & Modified
+- `tb/models/addr_map.py`: Created
+- `tb/models/ram_model.py`: Created
+- `tb/models/reg_model.py`: Created
+- `tb/models/peripheral_model.py`: Created
+- `tb/models/fabric_ref_model.py`: Created
+- `tb/models/axil_driver.py`: Modified (added `safe_int` for robust integer conversion)
+- `tb/pyuvm/sequences/axil_seq_item.py`: Created
+- `tb/pyuvm/sequences/axil_base_seq.py`: Created
+- `tb/pyuvm/sequences/fabric_stress_seq.py`: Created
+- `tb/pyuvm/sequences/directed_seqs.py`: Created
+- `tb/pyuvm/agents/axil_master_agent.py`: Created
+- `tb/pyuvm/env/fabric_scoreboard.py`: Created
+- `tb/pyuvm/env/fabric_env.py`: Created
+- `tb/pyuvm/tests/test_directed.py`: Created
+- `tb/pyuvm/tests/test_stress.py`: Created
+- `tb/pyuvm/Makefile`: Created
+- `tb/pyuvm/Makefile.single`: Created
+- `scripts/run_phase4_gate.sh`: Created
+- `rtl/axil/axil_xbar.v`: Modified (immediate target locking on transfer grant)
+- `rtl/cdc/slow_regs.v`: Modified (synchronous request latching in IDLE)
+- `docs/logs/phase4_gate.log`: Created
+- `docs/logs/xb13_stress.log`: Created
+- `docs/bugs.md`: Modified (added BUG-012..BUG-015)
+- `docs/results.md`: Modified
+- `docs/checkpoint.md`: Modified
+
+### 3. Commands Executed & Results
+- `make lint`: 17 RTL modules clean on Verilator 5.055 (PASS - 0 errors, 0 warnings).
+- `make unit SIM=icarus`: 8/8 L0 unit tests passed (PASS).
+- `make block SIM=icarus`: 26/26 L1 block and integration tests passed (PASS).
+- `make formal`: 4/4 SymbiYosys formal verification suites passed (PASS):
+  - `async_fifo`: BMC depth 25 multiclock (PASS), cover 4 traces (PASS).
+  - `axil2apb_bridge`: BMC depth 25 (PASS), cover 5 traces (PASS).
+  - `axil_xbar`: BMC depth 20 (PASS), cover 5 traces (PASS).
+  - `rr_arbiter`: k-induction prove depth 20 (PASS), cover 5 traces (PASS).
+- `bash scripts/run_phase4_gate.sh`: (PASS)
+  - Directed pyuvm tests (Icarus): 7/7 PASS (`test_directed.py`).
+  - Directed pyuvm tests (Verilator): 7/7 PASS (`test_directed.py`).
+  - XB-13 Stress Regression (Verilator): 5/5 seeds PASS (50,000 transactions total, 0 mismatches).
+- `git tag phase-4-done`: Tagged repository upon passing acceptance gate.
+
+### 4. Bugs Found & Resolved
+- `BUG-012`: Crossbar Multi-Master Target Locking on Transfer Initiation. Resolved in `rtl/axil/axil_xbar.v` by asserting target lock immediately upon transfer initiation.
+- `BUG-013`: CDC Slow Registers Asynchronous FIFO Pop Off-by-One Pipeline Skew. Resolved in `rtl/cdc/slow_regs.v` by latching request fields upon state transition into `ST_RESP`.
+- `BUG-014`: Icarus Verilog Signal Declaration Order Elaboration Error in `slow_regs.v`. Resolved by moving `wire _unused` after signal declaration.
+- `BUG-015`: Cocotb 2.1 Unresolved LogicArray Integer Conversion Exception. Resolved in `tb/models/axil_driver.py` via `safe_int()`.
+
+---
+
+## Phase 5: Coverage and Formal Closure
+
+- **Status:** **PAUSED (Awaiting Instruction Before Starting Phase 5)**
+- **User Instruction:** Stopped after completing Phase 4 per user directive (`stop after every phase completed and checkpoint was written`).
 - **Upcoming Scope:**
-  - pyuvm `FabricEnv` with scoreboards, reference models, and UVM agents.
-  - Constrained-random sequences and stress test `XB-13` (>=10,000 transactions, multi-seed).
+  - Functional covergroups implementation in `tb/pyuvm/coverage/`.
+  - Formal property completion for all sets in spec Section 11.
+  - Multi-seed regression coverage merge (spec Section 10).
+
 

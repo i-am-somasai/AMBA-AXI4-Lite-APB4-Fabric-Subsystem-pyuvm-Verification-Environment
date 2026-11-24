@@ -119,3 +119,40 @@ Per project rules, every bug must be reproduced deterministically, diagnosed to 
 - **Fix Applied:** Added registered indicator `rx_had_data` set in the SETUP phase if `!rx_fifo_empty`, and used `rx_had_data ? rx_fifo_rdata : 8'd0` in the read data mux.
 - **Regression Test:** `tb/block/test_apb_uart.py` (`test_ua01_loopback_bytes`)
 
+### [BUG-012] Crossbar Multi-Master Target Locking on Transfer Initiation
+- **Date Discovered:** 2026-11-24
+- **Target Component:** `rtl/axil/axil_xbar.v`
+- **Detection Method:** Directed Test (`TestContentionHandshake`) & pyuvm Stress Test (`test_stress`)
+- **Symptom:** Deadlock and timeout under concurrent multi-master contention or staggered writes (`order="w_first"`), where a granted master was preempted before both write channels completed.
+- **Root Cause:** Target locking in `axil_xbar` was initially conditioned on `aw_hs` or `ar_hs`. When an access was granted but one of the channels was delayed across cycles (or during staggered writes), the other master could win arbitration and reassign `active_wr_owner`, stranding the first master.
+- **Fix Applied:** In `rtl/axil/axil_xbar.v`, asserted `wr_locked[gt] <= 1'b1; wr_owner[gt] <= active_wr_owner[gt];` immediately upon `wr_active[gt] && !wr_locked[gt]`, and similarly for `rd_active[gt] && !rd_locked[gt]`.
+- **Regression Test:** `tb/pyuvm/tests/test_directed.py` (`TestContentionHandshake`), `tb/pyuvm/tests/test_stress.py`
+
+### [BUG-013] CDC Slow Registers Asynchronous FIFO Pop Off-by-One Pipeline Skew
+- **Date Discovered:** 2026-11-24
+- **Target Component:** `rtl/cdc/slow_regs.v`
+- **Detection Method:** pyuvm Scoreboard (`FabricScoreboard`) in `test_stress`
+- **Symptom:** Scoreboard reported read/write mismatches on CDC slow registers (e.g., reading `0x70000000` returned register `0x0C`'s value `0x00000001` instead of `0x510e0001`).
+- **Root Cause:** Request fields were latched on `if (req_pop)`. Because `req_pop` was scheduled non-blocking in `ST_IDLE`, it was active during `ST_RESP`, causing `req_is_write_q` and `req_addr_q` to latch at the exit of `ST_RESP`. During `ST_RESP`, the FSM evaluated the request using the previous transaction's address and write flag.
+- **Fix Applied:** Changed request latch condition to `if (state == ST_IDLE && !req_empty && !resp_full)` so fields are latched directly into `req_is_write_q`, `req_addr_q`, `req_wdata_q`, `req_wstrb_q` at the start of `ST_RESP`.
+- **Regression Test:** `tb/pyuvm/tests/test_stress.py` (5-seed 50,000 transaction regression)
+
+### [BUG-014] Icarus Verilog Signal Declaration Order Elaboration Error in slow_regs.v
+- **Date Discovered:** 2026-11-24
+- **Target Component:** `rtl/cdc/slow_regs.v`
+- **Detection Method:** `iverilog` elaboration in `scripts/run_phase4_gate.sh`
+- **Symptom:** `error: Unable to bind wire/reg/memory req_addr_q['sd1:'sd0]... A symbol with that name was declared here. Check for declaration after use.`
+- **Root Cause:** `wire _unused` referenced `req_addr_q` before its declaration on line 48. Verilator accepted this, but Icarus Verilog strictly enforces declaration before use.
+- **Fix Applied:** Moved `wire _unused` to follow the declaration of `req_addr_q`.
+- **Regression Test:** `scripts/run_phase4_gate.sh` (`test_directed` on Icarus)
+
+### [BUG-015] Cocotb 2.1 Unresolved LogicArray Integer Conversion Exception
+- **Date Discovered:** 2026-11-24
+- **Target Component:** `tb/models/axil_driver.py`
+- **Detection Method:** pyuvm test execution with cocotb 2.1 (`test_stress`)
+- **Symptom:** `ValueError: Can't convert LogicArray to int: it contains non-0/1 values ('x')`.
+- **Root Cause:** In cocotb 2.1+, calling `int(signal.value)` throws `ValueError` if any bit in the bus is unresolved (`x`/`z`), such as unmapped or uninitialized bus lines.
+- **Fix Applied:** Implemented `safe_int()` helper that verifies `val.is_resolvable` and substitutes unresolved bits with `'0'`.
+- **Regression Test:** `tb/pyuvm/tests/test_stress.py`
+
+

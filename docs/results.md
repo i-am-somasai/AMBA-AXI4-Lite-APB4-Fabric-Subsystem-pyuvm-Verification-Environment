@@ -10,9 +10,9 @@ This document records **real, measured results** from actual tool execution.
 | Metric | Measured Value | Spec Reference | Log Reference / Command |
 |---|---|---|---|
 | RTL Modules / Total Lines | 17 modules / 3238 lines | Section 17 | `find rtl/ -name "*.v" \| xargs wc -l` |
-| Total Tests (Directed / Random) | 34 tests (8 L0 unit + 26 L1 block/top: 34/34 PASS on Icarus, 34/34 PASS on Verilator) | Section 9 | `docs/logs/phase3_gate.log` |
-| Random Transactions Executed | Not measured (Phase 4) | Section 9.1 (XB-13) | `docs/logs/xb13_stress.log` |
-| Multi-seed Regression Seeds Passed | Not measured (Phase 5) | Section 9.2 (≥20 seeds) | `docs/logs/regression.log` |
+| Total Tests (Directed / Random) | 48 tests (8 L0 unit + 26 L1 block/top + 14 pyuvm directed across Icarus & Verilator: all PASS) | Section 9 | `docs/logs/phase3_gate.log`, `docs/logs/phase4_gate.log` |
+| Random Transactions Executed | 50,000 transactions (5 seeds x 10,000 transactions, zero mismatches) | Section 9.1 (XB-13) | `docs/logs/xb13_stress.log`, `docs/logs/phase4_gate.log` |
+| Multi-seed Regression Seeds Passed | 5/5 seeds (42, 123, 777, 2024, 9999: 100% PASS) | Section 9.1 (XB-13 Gate) | `docs/logs/xb13_stress.log` |
 | Functional Coverage (Bins Hit / Total) | Not measured (Phase 5) | Section 10 (100% goal) | `docs/logs/func_cov.log` |
 | Code Coverage (Verilator Line / Toggle) | Not measured (Phase 5) | Section 10 | `docs/logs/code_cov/` |
 | Formal Properties Proven / BMC Depth | 4 modules proven (100% PASS), 19 cover traces reached: `rr_arbiter` (k-induction depth 20, 5 covers), `async_fifo` (BMC depth 25, 4 covers), `axil_xbar` (BMC depth 20, 5 covers), `axil2apb_bridge` (BMC depth 25, 5 covers) | Section 11 | `docs/logs/phase2_gate.log` |
@@ -76,3 +76,22 @@ This document records **real, measured results** from actual tool execution.
   - Interrupt Aggregation: UART, Timer, and GPIO interrupts verified propagating to top-level `irq_o` pin.
 - **Log Reference:** `docs/logs/phase3_gate.log`
 - **Tag:** `phase-3-done`
+
+### Phase 4: pyuvm Environment
+- **Date Completed:** 2026-11-24
+- **Gate Command:** `bash scripts/run_phase4_gate.sh`
+- **Status:** **PASS**
+  - Directed pyuvm Tests (Icarus Verilog): 7/7 PASS (`test_directed.py`: TestSlverr, TestProtPassThrough, TestUnalignedLSBs, TestByteStrobes, TestWriteOrdering, TestResetRecovery, TestContentionHandshake).
+  - Directed pyuvm Tests (Verilator 5.055): 7/7 PASS.
+  - XB-13 Multi-Seed Stress Regression: 5/5 seeds PASS with **0 scoreboard mismatches**:
+    - Seed 42: Total=10,000 (Writes=4,985, Reads=5,015, Mismatches=0)
+    - Seed 123: Total=10,000 (Writes=5,005, Reads=4,995, Mismatches=0)
+    - Seed 777: Total=10,000 (Writes=4,972, Reads=5,028, Mismatches=0)
+    - Seed 2024: Total=10,000 (Writes=4,961, Reads=5,039, Mismatches=0)
+    - Seed 9999: Total=10,000 (Writes=5,131, Reads=4,869, Mismatches=0)
+    - **Total Random Transactions:** 50,000 transactions verified against independent reference models.
+  - L0 Unit Regression: 8/8 PASS on Icarus Verilog.
+  - L1 Block Regression: 26/26 PASS on Icarus Verilog.
+  - Formal Verification: 4/4 SBY formal suites PASS (`async_fifo`, `axil2apb_bridge`, `axil_xbar`, `rr_arbiter`).
+- **Log Reference:** `docs/logs/phase4_gate.log`, `docs/logs/xb13_stress.log`
+- **Tag:** `phase-4-done`
