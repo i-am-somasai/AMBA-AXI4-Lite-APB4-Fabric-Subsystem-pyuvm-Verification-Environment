@@ -143,7 +143,8 @@ Every number reported below is derived from an actual execution of open-source E
 
 ### 5.1 pyuvm Environment Hierarchy
 The testbench is structured strictly according to UVM guidelines in Python via `pyuvm`:
-- **`AxilMasterAgent` (x2):** Encapsulates an `AxilMasterDriver`, `AxilMasterMonitor`, and sequencer driving concurrent, independent AXI-Lite channels (AW, W, B, AR, R) with randomized channel arrival skews (`aw_first`, `w_first`, `simultaneous`).
+- **`AxilMasterAgent` (x2):** Encapsulates an `AxilMasterDriver`, `AxilMasterMonitor`, and sequencer driving concurrent, independent AXI-Lite channels (AW, W, B, AR, R) with randomized channel arrival skews (`aw_first`, `w_first`, `simultaneous`). Implemented as a genuine `pyuvm.uvm_agent`.
+- **Slave Responders & Peripheral Behavioral Models:** The slave responders (`AxilSlaveResponder`, `ApbSlaveResponder`) and peripheral models (`UartModel`, `TimerModel`, `GpioModel`, `RamModel`, `RegModel`) are implemented as plain Python/cocotb coroutine and callback models integrated with the pyuvm environment and scoreboard.
 - **`AxilProtocolMonitor`:** Passive checker monitoring bus signals on every clock edge, verifying AXI4-Lite stability rules (rule: once valid, address/data/valid must remain stable until ready).
 - **`FabricScoreboard`:** Self-checking scoreboard embedding independent reference models:
   - `ram_model.py`: Byte-enable memory model with out-of-bounds error injection.
@@ -267,10 +268,10 @@ make sta
 
 ## 9. Resume Bullets (Measured Numbers)
 
-**Title line:** *AMBA AXI4-Lite/APB Fabric with pyuvm Verification Environment | SystemVerilog, Python, cocotb, pyuvm, SymbiYosys, Yosys, OpenSTA*
+**Title line:** *AMBA AXI4-Lite/APB Fabric with pyuvm Verification Environment | Verilog-2005 (SystemVerilog-compatible), Python, cocotb, pyuvm, SymbiYosys, Yosys, OpenSTA*
 
 - Designed a parameterized AXI4-Lite 2×4 crossbar with round-robin arbitration, transaction locking, default-error slave, AXI-to-APB bridge, UART/Timer/GPIO peripherals, and an async-FIFO CDC bridge across two asynchronous clock domains.
-- Built an end-to-end pyuvm verification environment (agents, protocol monitors, reference-model scoreboards) with constrained-random sequences; achieved **100.00%** functional coverage across **280** defined bins and **87.8%** line coverage across **50,000** random transactions (5 seeds, 0 mismatches).
+- Built an end-to-end pyuvm verification environment (agents, protocol monitors, reference-model scoreboards) with constrained-random sequences; achieved **83.88%** functional coverage across **273** defined bins (zero synthetic calls, 6 unreachable bins waived) and **87.8%** line coverage across **50,000** random transactions (5 seeds, 0 mismatches).
 - Formally verified **10/10** core modules (protocol compliance via axil_props, arbiter fairness, bounded liveness, APB bridge timing, CDC request/response integrity, UART FIFO/status flags) with SymbiYosys (4 k-induction proofs, 6 BMC suites to depth 20-30); reached **81** cover traces; diagnosed and resolved **22** hardware and testbench bugs.
 - Evaluated testbench defect detection quality with Yosys mutation testing; increased mutation score from **45.00%** to **65.00%** (+20.00%) after triaging surviving mutants and closing test observability gaps; automated regression in GitHub Actions.
 - Synthesized on SKY130 HD (1.8V, 25°C) with Yosys/OpenSTA: **9,376** cells, **3,623** flip-flops, **137,867 µm²** area, achieving **81.63 MHz** operating frequency under 2.0 ns I/O constraints (**95.15 MHz** core reg-to-reg).
