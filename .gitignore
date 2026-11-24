@@ -17,6 +17,7 @@ dump.vcd
 # Python virtual environment
 .venv/
 venv/
+!tb/pyuvm/env/
 *.egg-info/
 dist/
 build/
