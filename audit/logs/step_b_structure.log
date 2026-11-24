@@ -1,0 +1,116 @@
+=== AMBA-Fabric Static Structure Audit Log ===
+
+--- Checking Spec Section 15 Repository Layout ---
+[PASS] FILE-README.md (INFO): File/dir README.md exists | Evidence: README.md | 
+[PASS] FILE-docs_spec.md (INFO): File/dir docs/spec.md exists | Evidence: docs/spec.md | 
+[PASS] FILE-docs_vplan.md (INFO): File/dir docs/vplan.md exists | Evidence: docs/vplan.md | 
+[PASS] FILE-docs_results.md (INFO): File/dir docs/results.md exists | Evidence: docs/results.md | 
+[PASS] FILE-docs_img (INFO): File/dir docs/img exists | Evidence: docs/img | 
+[PASS] FILE-rtl_common_rst_sync.v (INFO): File/dir rtl/common/rst_sync.v exists | Evidence: rtl/common/rst_sync.v | 
+[PASS] FILE-rtl_common_sync_fifo.v (INFO): File/dir rtl/common/sync_fifo.v exists | Evidence: rtl/common/sync_fifo.v | 
+[PASS] FILE-rtl_common_async_fifo.v (INFO): File/dir rtl/common/async_fifo.v exists | Evidence: rtl/common/async_fifo.v | 
+[PASS] FILE-rtl_common_rr_arbiter.v (INFO): File/dir rtl/common/rr_arbiter.v exists | Evidence: rtl/common/rr_arbiter.v | 
+[PASS] FILE-rtl_axil_axil_decoder.v (INFO): File/dir rtl/axil/axil_decoder.v exists | Evidence: rtl/axil/axil_decoder.v | 
+[PASS] FILE-rtl_axil_axil_xbar.v (INFO): File/dir rtl/axil/axil_xbar.v exists | Evidence: rtl/axil/axil_xbar.v | 
+[PASS] FILE-rtl_axil_axil_default_slave.v (INFO): File/dir rtl/axil/axil_default_slave.v exists | Evidence: rtl/axil/axil_default_slave.v | 
+[PASS] FILE-rtl_axil_axil_ram.v (INFO): File/dir rtl/axil/axil_ram.v exists | Evidence: rtl/axil/axil_ram.v | 
+[PASS] FILE-rtl_axil_axil_csr.v (INFO): File/dir rtl/axil/axil_csr.v exists | Evidence: rtl/axil/axil_csr.v | 
+[PASS] FILE-rtl_apb_axil2apb_bridge.v (INFO): File/dir rtl/apb/axil2apb_bridge.v exists | Evidence: rtl/apb/axil2apb_bridge.v | 
+[PASS] FILE-rtl_apb_apb_decoder.v (INFO): File/dir rtl/apb/apb_decoder.v exists | Evidence: rtl/apb/apb_decoder.v | 
+[PASS] FILE-rtl_apb_apb_uart.v (INFO): File/dir rtl/apb/apb_uart.v exists | Evidence: rtl/apb/apb_uart.v | 
+[PASS] FILE-rtl_apb_apb_timer.v (INFO): File/dir rtl/apb/apb_timer.v exists | Evidence: rtl/apb/apb_timer.v | 
+[PASS] FILE-rtl_apb_apb_gpio.v (INFO): File/dir rtl/apb/apb_gpio.v exists | Evidence: rtl/apb/apb_gpio.v | 
+[PASS] FILE-rtl_cdc_axil_cdc_bridge.v (INFO): File/dir rtl/cdc/axil_cdc_bridge.v exists | Evidence: rtl/cdc/axil_cdc_bridge.v | 
+[PASS] FILE-rtl_cdc_slow_regs.v (INFO): File/dir rtl/cdc/slow_regs.v exists | Evidence: rtl/cdc/slow_regs.v | 
+[PASS] FILE-rtl_amba_fabric_top.v (INFO): File/dir rtl/amba_fabric_top.v exists | Evidence: rtl/amba_fabric_top.v | 
+[PASS] FILE-tb_unit (INFO): File/dir tb/unit exists | Evidence: tb/unit | 
+[PASS] FILE-tb_pyuvm (INFO): File/dir tb/pyuvm exists | Evidence: tb/pyuvm | 
+[PASS] FILE-tb_pyuvm_agents (INFO): File/dir tb/pyuvm/agents exists | Evidence: tb/pyuvm/agents | 
+[PASS] FILE-tb_pyuvm_env (INFO): File/dir tb/pyuvm/env exists | Evidence: tb/pyuvm/env | 
+[PASS] FILE-tb_pyuvm_sequences (INFO): File/dir tb/pyuvm/sequences exists | Evidence: tb/pyuvm/sequences | 
+[PASS] FILE-tb_pyuvm_tests (INFO): File/dir tb/pyuvm/tests exists | Evidence: tb/pyuvm/tests | 
+[PASS] FILE-tb_models (INFO): File/dir tb/models exists | Evidence: tb/models | 
+[PASS] FILE-formal (INFO): File/dir formal exists | Evidence: formal | 
+[PASS] FILE-mutation_run_mutants.py (INFO): File/dir mutation/run_mutants.py exists | Evidence: mutation/run_mutants.py | 
+[PASS] FILE-synth_synth.ys (INFO): File/dir synth/synth.ys exists | Evidence: synth/synth.ys | 
+[PASS] FILE-synth_amba_fabric.sdc (INFO): File/dir synth/amba_fabric.sdc exists | Evidence: synth/amba_fabric.sdc | 
+[PASS] FILE-synth_sta.tcl (INFO): File/dir synth/sta.tcl exists | Evidence: synth/sta.tcl | 
+[PASS] FILE-scripts_merge_cov.py (INFO): File/dir scripts/merge_cov.py exists | Evidence: scripts/merge_cov.py | 
+[PASS] FILE-scripts_run_all_formal.sh (INFO): File/dir scripts/run_all_formal.sh exists | Evidence: scripts/run_all_formal.sh | 
+[PASS] FILE-Makefile (INFO): File/dir Makefile exists | Evidence: Makefile | 
+[PASS] FILE-requirements.txt (INFO): File/dir requirements.txt exists | Evidence: requirements.txt | 
+[PASS] FILE-.github_workflows_ci.yml (INFO): File/dir .github/workflows/ci.yml exists | Evidence: .github/workflows/ci.yml | 
+[PASS] REPO-LAYOUT-ALL (INFO): All files and folders in Section 15 layout exist | Evidence: All 38 checked paths exist | 
+
+--- Checking RTL Modules and Ports against docs/interfaces.md and Section 7 ---
+[PASS] MOD-rst_sync (INFO): Module rst_sync defined with correct ports | Evidence: rtl/common/rst_sync.v | 
+[PASS] MOD-sync_fifo (INFO): Module sync_fifo defined with correct ports | Evidence: rtl/common/sync_fifo.v | 
+[PASS] MOD-async_fifo (INFO): Module async_fifo defined with correct ports | Evidence: rtl/common/async_fifo.v | 
+[PASS] MOD-rr_arbiter (INFO): Module rr_arbiter defined with correct ports | Evidence: rtl/common/rr_arbiter.v | 
+[PASS] MOD-axil_decoder (INFO): Module axil_decoder defined with correct ports | Evidence: rtl/axil/axil_decoder.v | 
+[PASS] MOD-axil_default_slave (INFO): Module axil_default_slave defined with correct ports | Evidence: rtl/axil/axil_default_slave.v | 
+[PASS] MOD-axil_ram (INFO): Module axil_ram defined with correct ports | Evidence: rtl/axil/axil_ram.v | 
+[PASS] MOD-axil_csr (INFO): Module axil_csr defined with correct ports | Evidence: rtl/axil/axil_csr.v | 
+[PASS] MOD-axil_xbar (INFO): Module axil_xbar defined with correct ports | Evidence: rtl/axil/axil_xbar.v | 
+[PASS] MOD-axil2apb_bridge (INFO): Module axil2apb_bridge defined with correct ports | Evidence: rtl/apb/axil2apb_bridge.v | 
+[PASS] MOD-apb_decoder (INFO): Module apb_decoder defined with correct ports | Evidence: rtl/apb/apb_decoder.v | 
+[PASS] MOD-apb_uart (INFO): Module apb_uart defined with correct ports | Evidence: rtl/apb/apb_uart.v | 
+[PASS] MOD-apb_timer (INFO): Module apb_timer defined with correct ports | Evidence: rtl/apb/apb_timer.v | 
+[PASS] MOD-apb_gpio (INFO): Module apb_gpio defined with correct ports | Evidence: rtl/apb/apb_gpio.v | 
+[PASS] MOD-axil_cdc_bridge (INFO): Module axil_cdc_bridge defined with correct ports | Evidence: rtl/cdc/axil_cdc_bridge.v | 
+[PASS] MOD-slow_regs (INFO): Module slow_regs defined with correct ports | Evidence: rtl/cdc/slow_regs.v | 
+[PASS] MOD-amba_fabric_top (INFO): Module amba_fabric_top defined with correct ports | Evidence: rtl/amba_fabric_top.v | 
+
+--- Checking RTL Address Map against Spec Section 5.3 ---
+[PASS] MAP-4000_0000 (INFO): Address map in axil_decoder.v: S0 APB Base 0x4000_0000 | Evidence: rtl/axil/axil_decoder.v: matched 4000_0000 | 
+[PASS] MAP-5000_0000 (INFO): Address map in axil_decoder.v: S1 RAM Base 0x5000_0000 | Evidence: rtl/axil/axil_decoder.v: matched 5000_0000 | 
+[PASS] MAP-6000_0000 (INFO): Address map in axil_decoder.v: S2 CSR Base 0x6000_0000 | Evidence: rtl/axil/axil_decoder.v: matched 6000_0000 | 
+[PASS] MAP-7000_0000 (INFO): Address map in axil_decoder.v: S3 CDC Base 0x7000_0000 | Evidence: rtl/axil/axil_decoder.v: matched 7000_0000 | 
+[PASS] MAP-APB-PERIPH (INFO): apb_decoder decodes UART, TIMER, GPIO | Evidence: rtl/apb/apb_decoder.v | 
+
+--- Checking Register Tables against Spec Section 7 ---
+[PASS] REG-CSR-a3ba[_]?0001 (INFO): CSR ID reset 0xA3BA0001 | Evidence: rtl/axil/axil_csr.v | 
+[PASS] REG-CSR-0001[_]?0000 (INFO): CSR VERSION reset 0x00010000 | Evidence: rtl/axil/axil_csr.v | 
+[PASS] REG-CSR-reg_scratch (INFO): CSR SCRATCH register | Evidence: rtl/axil/axil_csr.v | 
+[PASS] REG-CSR-reg_scratch2 (INFO): CSR SCRATCH2 register | Evidence: rtl/axil/axil_csr.v | 
+[PASS] REG-CSR-reg_irq_mask (INFO): CSR IRQ_MASK register | Evidence: rtl/axil/axil_csr.v | 
+[PASS] REG-CSR-reg_w1c_test (INFO): CSR W1C_TEST register | Evidence: rtl/axil/axil_csr.v | 
+[PASS] REG-SLOW-ID-VAL (INFO): SLOW_ID reset 0x510E0001 | Evidence: rtl/cdc/slow_regs.v | 
+[PASS] REG-UART-reg_ctrl (INFO): UART field/FIFO reg_ctrl | Evidence: rtl/apb/apb_uart.v | 
+[PASS] REG-UART-reg_bauddiv (INFO): UART field/FIFO reg_bauddiv | Evidence: rtl/apb/apb_uart.v | 
+[PASS] REG-UART-reg_frame_err (INFO): UART field/FIFO reg_frame_err | Evidence: rtl/apb/apb_uart.v | 
+[PASS] REG-UART-reg_rx_ovf (INFO): UART field/FIFO reg_rx_ovf | Evidence: rtl/apb/apb_uart.v | 
+[PASS] REG-UART-reg_tx_ovf (INFO): UART field/FIFO reg_tx_ovf | Evidence: rtl/apb/apb_uart.v | 
+[PASS] REG-UART-tx_fifo (INFO): UART field/FIFO tx_fifo | Evidence: rtl/apb/apb_uart.v | 
+[PASS] REG-UART-rx_fifo (INFO): UART field/FIFO rx_fifo | Evidence: rtl/apb/apb_uart.v | 
+[PASS] REG-TMR-reg_ctrl (INFO): Timer field reg_ctrl | Evidence: rtl/apb/apb_timer.v | 
+[PASS] REG-TMR-reg_load (INFO): Timer field reg_load | Evidence: rtl/apb/apb_timer.v | 
+[PASS] REG-TMR-reg_value (INFO): Timer field reg_value | Evidence: rtl/apb/apb_timer.v | 
+[PASS] REG-TMR-reg_timeout (INFO): Timer field reg_timeout | Evidence: rtl/apb/apb_timer.v | 
+[PASS] REG-GPIO-gpio_dir (INFO): GPIO field gpio_dir | Evidence: rtl/apb/apb_gpio.v | 
+[PASS] REG-GPIO-gpio_o (INFO): GPIO field gpio_o | Evidence: rtl/apb/apb_gpio.v | 
+[PASS] REG-GPIO-sync_gpio_q2 (INFO): GPIO field sync_gpio_q2 | Evidence: rtl/apb/apb_gpio.v | 
+[PASS] REG-GPIO-reg_irq_en (INFO): GPIO field reg_irq_en | Evidence: rtl/apb/apb_gpio.v | 
+[PASS] REG-GPIO-reg_irq_status (INFO): GPIO field reg_irq_status | Evidence: rtl/apb/apb_gpio.v | 
+
+--- Checking Makefile Targets from Section 15 ---
+[PASS] MAKE-lint (INFO): Makefile target 'lint' exists and is defined | Evidence: Makefile target: lint | 
+[PASS] MAKE-unit (INFO): Makefile target 'unit' exists and is defined | Evidence: Makefile target: unit | 
+[PASS] MAKE-regress (INFO): Makefile target 'regress' exists and is defined | Evidence: Makefile target: regress | 
+[PASS] MAKE-regress-verilator (INFO): Makefile target 'regress-verilator' exists and is defined | Evidence: Makefile target: regress-verilator | 
+[PASS] MAKE-cov-report (INFO): Makefile target 'cov-report' exists and is defined | Evidence: Makefile target: cov-report | 
+[PASS] MAKE-formal (INFO): Makefile target 'formal' exists and is defined | Evidence: Makefile target: formal | 
+[PASS] MAKE-mutation (INFO): Makefile target 'mutation' exists and is defined | Evidence: Makefile target: mutation | 
+[PASS] MAKE-mutation-sample (INFO): Makefile target 'mutation-sample' exists and is defined | Evidence: Makefile target: mutation-sample | 
+[PASS] MAKE-synth (INFO): Makefile target 'synth' exists and is defined | Evidence: Makefile target: synth | 
+[PASS] MAKE-sta (INFO): Makefile target 'sta' exists and is defined | Evidence: Makefile target: sta | 
+[PASS] MAKE-clean (INFO): Makefile target 'clean' exists and is defined | Evidence: Makefile target: clean | 
+
+--- Checking requirements.txt, .gitignore, git history ---
+[PASS] REPO-REQ-PINNED (INFO): requirements.txt has pinned versions | Evidence: requirements.txt: all packages pinned with == | 
+[PASS] REPO-GITIGNORE (INFO): .gitignore excludes build artifacts, .venv, VCDs | Evidence: .gitignore | 
+[PASS] GIT-PHASE-TAGS (INFO): All phase tags phase-0-done to phase-7-done exist | Evidence: Tags: ['phase-0-done', 'phase-1-done', 'phase-2-done', 'phase-3-done', 'phase-4-done', 'phase-5-done', 'phase-6-done', 'phase-7-done'] | 
+[PASS] GIT-NO-LARGE-BINARIES (INFO): No large binaries (>1MB) committed in git history | Evidence: git log check clean | 
+[PASS] GIT-NO-DELETED-TESTS (INFO): No unexplained commits deleting tests/checks | Evidence: git log inspection clean | 
+
+Static Structure Audit Completed: 101 PASS, 0 FAIL across 101 checks.

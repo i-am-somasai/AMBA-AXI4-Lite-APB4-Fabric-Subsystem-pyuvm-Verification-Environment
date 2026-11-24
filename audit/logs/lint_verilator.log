@@ -1,0 +1,72 @@
+--- Verilating rtl/common/rst_sync.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.032 MB sources in 3 modules, into 0.018 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.006 s (elab=0.000, cvt=0.003, bld=0.000); cpu 0.006 s on 1 threads; allocated 20.105 MB
+--- Verilating rtl/common/sync_fifo.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.035 MB sources in 3 modules, into 0.027 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.007 s (elab=0.001, cvt=0.003, bld=0.000); cpu 0.007 s on 1 threads; allocated 20.391 MB
+--- Verilating rtl/common/async_fifo.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.036 MB sources in 3 modules, into 0.032 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.008 s (elab=0.001, cvt=0.003, bld=0.000); cpu 0.008 s on 1 threads; allocated 20.555 MB
+--- Verilating rtl/common/rr_arbiter.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.035 MB sources in 3 modules, into 0.028 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.008 s (elab=0.001, cvt=0.004, bld=0.000); cpu 0.008 s on 1 threads; allocated 20.547 MB
+--- Verilating rtl/axil/axil_decoder.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.033 MB sources in 3 modules, into 0.015 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.006 s (elab=0.000, cvt=0.002, bld=0.000); cpu 0.006 s on 1 threads; allocated 20.348 MB
+--- Verilating rtl/axil/axil_default_slave.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.036 MB sources in 3 modules, into 0.032 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.008 s (elab=0.001, cvt=0.004, bld=0.000); cpu 0.008 s on 1 threads; allocated 20.219 MB
+--- Verilating rtl/axil/axil_ram.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.039 MB sources in 3 modules, into 0.041 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.010 s (elab=0.001, cvt=0.004, bld=0.000); cpu 0.010 s on 1 threads; allocated 20.664 MB
+--- Verilating rtl/axil/axil_csr.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.041 MB sources in 3 modules, into 0.053 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.011 s (elab=0.001, cvt=0.005, bld=0.000); cpu 0.011 s on 1 threads; allocated 20.816 MB
+--- Verilating rtl/axil/axil_xbar.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.063 MB sources in 5 modules, into 0.310 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.047 s (elab=0.008, cvt=0.028, bld=0.000); cpu 0.047 s on 1 threads; allocated 23.871 MB
+--- Verilating rtl/apb/axil2apb_bridge.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.040 MB sources in 3 modules, into 0.048 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.010 s (elab=0.001, cvt=0.005, bld=0.000); cpu 0.010 s on 1 threads; allocated 20.500 MB
+--- Verilating rtl/apb/apb_decoder.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.034 MB sources in 3 modules, into 0.033 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.007 s (elab=0.001, cvt=0.003, bld=0.000); cpu 0.007 s on 1 threads; allocated 20.504 MB
+--- Verilating rtl/apb/apb_uart.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.049 MB sources in 4 modules, into 0.075 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.016 s (elab=0.002, cvt=0.007, bld=0.000); cpu 0.016 s on 1 threads; allocated 21.277 MB
+--- Verilating rtl/apb/apb_timer.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.036 MB sources in 3 modules, into 0.028 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.008 s (elab=0.001, cvt=0.003, bld=0.000); cpu 0.008 s on 1 threads; allocated 20.457 MB
+--- Verilating rtl/apb/apb_gpio.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.036 MB sources in 3 modules, into 0.030 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.008 s (elab=0.001, cvt=0.004, bld=0.000); cpu 0.008 s on 1 threads; allocated 20.539 MB
+--- Verilating rtl/cdc/slow_regs.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.037 MB sources in 3 modules, into 0.027 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.008 s (elab=0.001, cvt=0.003, bld=0.000); cpu 0.008 s on 1 threads; allocated 20.406 MB
+--- Verilating rtl/cdc/axil_cdc_bridge.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.051 MB sources in 5 modules, into 0.073 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.016 s (elab=0.002, cvt=0.007, bld=0.000); cpu 0.016 s on 1 threads; allocated 21.328 MB
+--- Verilating rtl/amba_fabric_top.v ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.151 MB sources in 18 modules, into 0.490 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.135 s (elab=0.029, cvt=0.080, bld=0.000); cpu 0.135 s on 1 threads; allocated 27.402 MB
+--- Verilating Top Level (amba_fabric_top) ---
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 1.149 MB sources in 19 modules, into 0.506 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.127 s (elab=0.025, cvt=0.076, bld=0.000); cpu 0.127 s on 1 threads; allocated 27.676 MB

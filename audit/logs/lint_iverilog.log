@@ -1,0 +1,18 @@
+--- Icarus compiling rtl/common/rst_sync.v ---
+--- Icarus compiling rtl/common/sync_fifo.v ---
+--- Icarus compiling rtl/common/async_fifo.v ---
+--- Icarus compiling rtl/common/rr_arbiter.v ---
+--- Icarus compiling rtl/axil/axil_decoder.v ---
+--- Icarus compiling rtl/axil/axil_default_slave.v ---
+--- Icarus compiling rtl/axil/axil_ram.v ---
+--- Icarus compiling rtl/axil/axil_csr.v ---
+--- Icarus compiling rtl/axil/axil_xbar.v ---
+--- Icarus compiling rtl/apb/axil2apb_bridge.v ---
+--- Icarus compiling rtl/apb/apb_decoder.v ---
+--- Icarus compiling rtl/apb/apb_uart.v ---
+--- Icarus compiling rtl/apb/apb_timer.v ---
+--- Icarus compiling rtl/apb/apb_gpio.v ---
+--- Icarus compiling rtl/cdc/slow_regs.v ---
+--- Icarus compiling rtl/cdc/axil_cdc_bridge.v ---
+--- Icarus compiling rtl/amba_fabric_top.v ---
+--- Icarus compiling Top Level ---

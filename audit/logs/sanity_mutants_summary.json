@@ -1,0 +1,57 @@
+{
+  "MUTANT-01": {
+    "id": "MUTANT-01",
+    "name": "rr_arbiter priority rotation broken",
+    "module": "rr_arbiter",
+    "test": "test_rr_arbiter",
+    "status": "KILLED (CAUGHT)",
+    "caught": true,
+    "catch_reason": "111.00ns WARNING  cocotb.regression                  test_rr_arbiter.test_rr_arbiter_fairness_and_lock failed",
+    "log": "/home/somasai/amba-fabric/audit/logs/sanity_mutant-01.log",
+    "elapsed_s": 5.09
+  },
+  "MUTANT-02": {
+    "id": "MUTANT-02",
+    "name": "axil_ram dropped WSTRB[0]",
+    "module": "axil_ram",
+    "test": "test_axil_ram",
+    "status": "KILLED (CAUGHT)",
+    "caught": true,
+    "catch_reason": "70.00ns WARNING  cocotb.regression                  test_axil_ram.test_axil_ram_operations failed",
+    "log": "/home/somasai/amba-fabric/audit/logs/sanity_mutant-02.log",
+    "elapsed_s": 5.16
+  },
+  "MUTANT-03": {
+    "id": "MUTANT-03",
+    "name": "async_fifo binary pointer across CDC",
+    "module": "async_fifo",
+    "test": "test_async_fifo",
+    "status": "KILLED (CAUGHT)",
+    "caught": true,
+    "catch_reason": "181.00ns WARNING  cocotb.regression                  test_async_fifo.test_async_fifo_dual_clock failed",
+    "log": "/home/somasai/amba-fabric/audit/logs/sanity_mutant-03.log",
+    "elapsed_s": 5.09
+  },
+  "MUTANT-04": {
+    "id": "MUTANT-04",
+    "name": "axil2apb_bridge PSLVERR masked to OKAY",
+    "module": "axil2apb_bridge",
+    "test": "test_axil2apb_bridge",
+    "status": "KILLED (CAUGHT)",
+    "caught": true,
+    "catch_reason": "1320.00ns WARNING  cocotb.regression                  test_axil2apb_bridge.test_br03_pslverr_propagation failed",
+    "log": "/home/somasai/amba-fabric/audit/logs/sanity_mutant-04.log",
+    "elapsed_s": 5.27
+  },
+  "MUTANT-05": {
+    "id": "MUTANT-05",
+    "name": "apb_timer off-by-one expiry (LOAD instead of LOAD+1)",
+    "module": "apb_timer",
+    "test": "test_apb_timer",
+    "status": "KILLED (CAUGHT)",
+    "caught": true,
+    "catch_reason": "210.00ns WARNING  cocotb.regression                  test_apb_timer.test_tm01_oneshot_countdown failed",
+    "log": "/home/somasai/amba-fabric/audit/logs/sanity_mutant-05.log",
+    "elapsed_s": 5.22
+  }
+}

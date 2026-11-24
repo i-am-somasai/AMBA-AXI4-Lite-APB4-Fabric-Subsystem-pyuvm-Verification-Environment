@@ -1,0 +1,25 @@
+rm -f results.xml
+"make" -f /home/somasai/amba-fabric/tb/block/Makefile.single results.xml
+make[1]: Entering directory '/home/somasai/amba-fabric/audit/probes'
+/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_probe_registers COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/audit/sim_build_probes_test_probe_registers/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795514022
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_probe_registers.test_probe_registers_and_access (1/1)
+                                                            Probe all register reset values and access types per Spec Section 7.
+  2310.00ns INFO     cocotb.amba_fabric_top             Probe test_probe_registers_and_access PASSED!
+  2410.00ns INFO     cocotb.regression                  test_probe_registers.test_probe_registers_and_access passed
+  2410.00ns INFO     cocotb.regression                  **************************************************************************************************************
+                                                        ** TEST                                                  STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************************************
+                                                        ** test_probe_registers.test_probe_registers_and_access   PASS        2410.00           0.03      81484.81  **
+                                                        **************************************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                                       2410.00           0.03      69688.68  **
+                                                        **************************************************************************************************************
+make[1]: Leaving directory '/home/somasai/amba-fabric/audit/probes'

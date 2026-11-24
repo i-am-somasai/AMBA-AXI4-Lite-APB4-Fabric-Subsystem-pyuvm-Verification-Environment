@@ -1,0 +1,8 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1795513613" />
+    <testcase name="test_probe_address_decode" classname="test_probe_addr_decode" file="/home/somasai/amba-fabric/audit/probes/test_probe_addr_decode.py" lineno="32" time="0.06227564811706543" sim_time_ns="6450.0" ratio_time="103571.78439757583">
+      <failure error_type="TimeoutError" error_msg="AXI Write handshake timed out on addr=0x80000000" />
+    </testcase>
+  </testsuite>
+</testsuites>
