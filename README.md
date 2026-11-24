@@ -5,7 +5,7 @@
 [![Toolchain](https://img.shields.io/badge/Toolchain-OSS%20CAD%20Suite-brightgreen.svg)](https://github.com/YosysHQ/oss-cad-suite-build)
 [![Technology](https://img.shields.io/badge/PDK-SKY130%20HD-orange.svg)](https://github.com/google/skywater-pdk)
 [![Verification](https://img.shields.io/badge/Methodology-pyuvm%20%28UVM%20in%20Python%29-blueviolet.svg)](https://github.com/pyuvm/pyuvm)
-[![Functional Coverage](https://img.shields.io/badge/Functional%20Coverage-100.00%25-success.svg)](docs/logs/func_cov.log)
+[![Functional Coverage](https://img.shields.io/badge/Functional%20Coverage-83.88%25-blue.svg)](docs/logs/func_cov.log)
 [![Formal Proofs](https://img.shields.io/badge/Formal%20Proofs-10%2F10%20PASS-success.svg)](docs/logs/formal_suite.log)
 
 > **Methodology Note (Honest Labelling):** This verification environment is implemented using **pyuvm (UVM methodology in Python)** running on top of **cocotb**, **Icarus Verilog**, and **Verilator**, paired with **SymbiYosys (SBY)** formal property proofs and **Yosys** mutation testing. It adheres strictly to the UVM architecture (sequencers, drivers, monitors, agents, environments, reference models, and scoreboards), but is authored in Python/pyuvm rather than SystemVerilog class-based UVM.
@@ -28,7 +28,7 @@ This project implements a complete, synthesizable system-on-chip interconnect fa
   - Translates AXI4-Lite single-beat read/write transactions into APB4 `SETUP` $\rightarrow$ `ACCESS` phase transfers.
   - Supports configurable slave wait states (`PREADY`), byte strobes (`PSTRB`), protection pass-through (`PPROT`), and error mapping (`PSLVERR` $\rightarrow$ `SLVERR`).
 - **APB4 Peripheral Subsystem:**
-  - **APB UART (`apb_uart`):** 8N1 full-duplex UART with 16-entry TX/RX synchronous FIFOs, programmable baud rate divisor, loopback mode, framing error detection, and RX interrupt generation.
+  - **APB UART (`apb_uart`):** 8N1 full-duplex UART with 8-entry TX/RX synchronous FIFOs, programmable baud rate divisor, loopback mode, framing error detection, and RX interrupt generation.
   - **APB Timer (`apb_timer`):** 32-bit decrementing timer supporting one-shot and periodic reload modes, deterministic timeout interrupts, and W1C status clear.
   - **APB GPIO (`apb_gpio`):** 16-bit general-purpose I/O with 2-FF input synchronizers, programmable direction, and rising-edge interrupt detection.
 - **Clock Domain Crossing (CDC) Subsystem:**
@@ -61,8 +61,8 @@ flowchart TD
             BRG["AXI2APB Bridge (axil2apb_bridge)\n(0x4000_0000)"]
             ADEC["APB Decoder"]
             UART["APB UART\n(0x4000_0000)"]
-            TMR["APB Timer\n(0x4000_0100)"]
-            GPIO["APB GPIO\n(0x4000_0200)"]
+            TMR["APB Timer\n(0x4000_1000)"]
+            GPIO["APB GPIO\n(0x4000_2000)"]
         end
 
         subgraph CDC_SUBSYS["CDC Subsystem"]
@@ -104,8 +104,8 @@ flowchart TD
 |---|---|---|---|---|---|
 | **S0** | **APB4 Subsystem** | `0x4000_0000` | `0x4000_0000 - 0x4FFF_FFFF` | `clk_sys` | APB bridge and peripheral multiplexer |
 | | *APB UART* | `0x4000_0000` | `0x4000_0000 - 0x4000_0010` | `clk_sys` | TX/RX data, status, baud divisor, loopback |
-| | *APB Timer* | `0x4000_0100` | `0x4000_0100 - 0x4000_010C` | `clk_sys` | 32-bit counter, load value, control/status |
-| | *APB GPIO* | `0x4000_0200` | `0x4000_0200 - 0x4000_0210` | `clk_sys` | Direction, output, input, interrupt enable |
+| | *APB Timer* | `0x4000_1000` | `0x4000_1000 - 0x4000_100C` | `clk_sys` | 32-bit counter, load value, control/status |
+| | *APB GPIO* | `0x4000_2000` | `0x4000_2000 - 0x4000_2010` | `clk_sys` | Direction, output, input, interrupt enable |
 | **S1** | **Scratchpad RAM** | `0x5000_0000` | `0x5000_0000 - 0x5000_03FF` | `clk_sys` | 1 KB byte-addressable scratchpad memory |
 | **S2** | **System CSR** | `0x6000_0000` | `0x6000_0000 - 0x6000_0020` | `clk_sys` | Identification, scratchpads, IRQ aggregation |
 | **S3** | **CDC Slow Regs** | `0x7000_0000` | `0x7000_0000 - 0x7000_000C` | `clk_slow` | Asynchronous CDC bridge to slow registers |
@@ -122,15 +122,15 @@ Every number reported below is derived from an actual execution of open-source E
 | Metric | Measured Value | Spec Reference | Log Reference / Tool |
 |---|---|---|---|
 | **RTL Modules / Lines of RTL** | **17 modules / 3,238 lines** | Section 17 | `find rtl/ -name "*.v" \| xargs wc -l` |
-| **Total Testcases (Directed / Random)** | **48 testcases (100% PASS)** across L0, L1, L2 | Section 9 | [`docs/logs/phase3_gate.log`](docs/logs/phase3_gate.log), [`phase4_gate.log`](docs/logs/phase4_gate.log) |
+| **Total Testcases (Directed / Random)** | **40 / 40 Spec Tests PASS (54 executable testcases total across L0, L1, L2)** | Section 9 | [`docs/test_map.csv`](docs/test_map.csv), [`docs/vplan.md`](docs/vplan.md) |
 | **Random Transactions Executed** | **50,000 transactions** (5 seeds × 10,000 txns, 0 mismatches) | Section 9.1 (XB-13) | [`docs/logs/xb13_stress.log`](docs/logs/xb13_stress.log) |
 | **Regression Seeds Passed** | **5 / 5 seeds passed** (Seeds: 42, 123, 777, 2024, 9999) | Section 9.1 (XB-13) | [`docs/logs/xb13_stress.log`](docs/logs/xb13_stress.log) |
-| **Functional Coverage (cocotb-coverage)** | **100.00% (280 / 280 bins hit, 0 holes, 0 waivers)** | Section 10 | [`docs/logs/func_cov.log`](docs/logs/func_cov.log) |
+| **Functional Coverage (cocotb-coverage)** | **83.88% (229 / 273 bins hit, zero synthetic calls, 6 unreachable bins waived)** | Section 10 | [`docs/logs/func_cov.log`](docs/logs/func_cov.log) |
 | **Code Coverage (Verilator 5.055)** | **Line: 87.8%, Toggle: 75.1%, Branch: 86.9%, Expr: 92.9%, FSM: 100%** | Section 10 | [`docs/logs/code_cov_summary.txt`](docs/logs/code_cov_summary.txt) |
 | **Formal Properties Proven / BMC (SymbiYosys)** | **10 / 10 modules verified (4 proven via k-induction, 6 BMC, 81 cover traces reached, 0 fails)** | Section 11 | [`docs/logs/formal_suite.log`](docs/logs/formal_suite.log) |
 | **CDC Clock Ratios & Phases Swept** | **2.5:1 ratio (100 MHz : 40 MHz), multiclock SMT BMC, 3 ratio bins** | Section 9.1 (CD-01) | [`formal/async_fifo.sby`](formal/async_fifo.sby), [`docs/logs/func_cov.log`](docs/logs/func_cov.log) |
 | **Mutants Evaluated / Killed / Score** | **20 mutants, 13 killed (Score: 65.00%, raised from 45.00%)** | Section 12 | [`docs/logs/mutation_summary.log`](docs/logs/mutation_summary.log) |
-| **Bugs Found & Resolved** | **21 real bugs diagnosed, fixed, and verified** | Section 6 | [`docs/bugs.md`](docs/bugs.md) |
+| **Bugs Found & Resolved** | **22 real bugs diagnosed, fixed, and verified (including BUG-022 AXI crossbar WREADY gating fix)** | Section 6 | [`docs/bugs.md`](docs/bugs.md) |
 | **Crossbar Added Latency (Cycles)** | **0 cycles added latency** (proven in XB-06 parallel transfers) | Section 7.2 (≤1 cycle) | [`docs/img/contention.png`](docs/img/contention.png), `test_axil_xbar.py` |
 | **Synthesis (SKY130 HD): Cells / Flops / Area**| **9,376 cells / 3,623 flops / 137,867.23 µm² (~0.138 mm²)** | Section 13 | [`docs/logs/synth.log`](docs/logs/synth.log), [`synth/synth.ys`](synth/synth.ys) |
 | **STA (OpenSTA): WNS / TNS @ 100 MHz** | **WNS: -2.25 ns, TNS: -9,097.77 ns** (under 2.0 ns external I/O delay) | Section 13 | [`docs/logs/sta.log`](docs/logs/sta.log), [`synth/amba_fabric.sdc`](synth/amba_fabric.sdc) |
