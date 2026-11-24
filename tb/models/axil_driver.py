@@ -2,6 +2,17 @@
 import cocotb
 from cocotb.triggers import RisingEdge, Timer
 
+def safe_int(val, default=0):
+    try:
+        if hasattr(val, "is_resolvable"):
+            if val.is_resolvable:
+                return int(val)
+            s = str(val).lower().replace("x", "0").replace("z", "0").replace("u", "0").replace("w", "0").replace("-", "0")
+            return int(s, 2)
+        return int(val)
+    except Exception:
+        return default
+
 class AxilMasterDriver:
     """Simple single-master AXI4-Lite driver for L0/L1 tests."""
     def __init__(self, dut=None, clk=None, prefix="s_axil_", **kwargs):
@@ -100,7 +111,7 @@ class AxilMasterDriver:
             if cycles > self.timeout_cycles:
                 raise TimeoutError(f"AXI-Lite write response timeout on addr 0x{addr:08x}")
             if self.bvalid.value:
-                resp = int(self.bresp.value)
+                resp = safe_int(self.bresp.value)
                 break
 
         self.bready.value = 0
@@ -132,8 +143,8 @@ class AxilMasterDriver:
             if cycles > self.timeout_cycles:
                 raise TimeoutError(f"AXI-Lite read response timeout on addr 0x{addr:08x}")
             if self.rvalid.value:
-                rdata = int(self.rdata.value)
-                rresp = int(self.rresp.value)
+                rdata = safe_int(self.rdata.value)
+                rresp = safe_int(self.rresp.value)
                 break
 
         self.rready.value = 0

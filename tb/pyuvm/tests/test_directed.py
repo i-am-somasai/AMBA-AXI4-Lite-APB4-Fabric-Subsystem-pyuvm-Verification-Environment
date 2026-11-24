@@ -1,0 +1,154 @@
+# tb/pyuvm/tests/test_directed.py
+# pyuvm directed tests for XB-09..XB-15, BR-04..BR-06
+import cocotb
+from cocotb.clock import Clock
+from cocotb.triggers import RisingEdge, Timer
+import pyuvm
+from pyuvm import uvm_test
+from env.fabric_env import FabricEnv
+from sequences.directed_seqs import (
+    SlverrPropagationSeq,
+    ProtPassThroughSeq,
+    UnalignedAddressSeq,
+    WriteOrderSeq,
+    StrobePatternSeq,
+    ResetRecoverySeq,
+    ContentionM0Seq,
+    ContentionM1Seq
+)
+from sequences.axil_base_seq import AxilBaseSeq
+
+class BaseFabricTest(uvm_test):
+    """Base test initializing clocks, resets and FabricEnv."""
+    def build_phase(self):
+        super().build_phase()
+        self.env = FabricEnv("env", self)
+
+    async def init_clocks_and_reset(self):
+        dut = cocotb.top
+        dut.gpio_i.value = 0
+        dut.uart_rx.value = 1
+
+        cocotb.start_soon(Clock(dut.clk_sys, 10, unit="ns").start())
+        cocotb.start_soon(Clock(dut.clk_slow, 25, unit="ns").start())
+
+        dut.rst_n.value = 0
+        for _ in range(10):
+            await RisingEdge(dut.clk_sys)
+        dut.rst_n.value = 1
+        for _ in range(10):
+            await RisingEdge(dut.clk_sys)
+
+
+@pyuvm.test()
+class TestSlverr(BaseFabricTest):
+    """XB-11: SLVERR propagation from all subsystems."""
+    async def run_phase(self):
+        self.raise_objection()
+        await self.init_clocks_and_reset()
+        seq = SlverrPropagationSeq("slverr_seq")
+        await seq.start(self.env.m0_agent.sequencer)
+        for _ in range(10):
+            await RisingEdge(cocotb.top.clk_sys)
+        self.drop_objection()
+
+
+@pyuvm.test()
+class TestProtPassThrough(BaseFabricTest):
+    """XB-14: AWPROT and ARPROT pass-through."""
+    async def run_phase(self):
+        self.raise_objection()
+        await self.init_clocks_and_reset()
+        seq = ProtPassThroughSeq("prot_seq")
+        await seq.start(self.env.m0_agent.sequencer)
+        for _ in range(10):
+            await RisingEdge(cocotb.top.clk_sys)
+        self.drop_objection()
+
+
+@pyuvm.test()
+class TestUnaligned(BaseFabricTest):
+    """XB-15: Unaligned address LSBs."""
+    async def run_phase(self):
+        self.raise_objection()
+        await self.init_clocks_and_reset()
+        seq = UnalignedAddressSeq("unaligned_seq")
+        await seq.start(self.env.m0_agent.sequencer)
+        for _ in range(10):
+            await RisingEdge(cocotb.top.clk_sys)
+        self.drop_objection()
+
+
+@pyuvm.test()
+class TestWriteOrder(BaseFabricTest):
+    """BR-06 & XB write channel ordering test."""
+    async def run_phase(self):
+        self.raise_objection()
+        await self.init_clocks_and_reset()
+        seq = WriteOrderSeq("write_order_seq")
+        await seq.start(self.env.m0_agent.sequencer)
+        for _ in range(10):
+            await RisingEdge(cocotb.top.clk_sys)
+        self.drop_objection()
+
+
+@pyuvm.test()
+class TestStrobes(BaseFabricTest):
+    """BR-04: WSTRB and PSTRB permutations."""
+    async def run_phase(self):
+        self.raise_objection()
+        await self.init_clocks_and_reset()
+        seq = StrobePatternSeq("strobe_seq")
+        await seq.start(self.env.m0_agent.sequencer)
+        for _ in range(10):
+            await RisingEdge(cocotb.top.clk_sys)
+        self.drop_objection()
+
+
+@pyuvm.test()
+class TestResetRecovery(BaseFabricTest):
+    """XB-12: Reset during in-flight transaction, then verify clean recovery."""
+    async def run_phase(self):
+        self.raise_objection()
+        await self.init_clocks_and_reset()
+        dut = cocotb.top
+
+        # Initial clean transaction
+        seq = ResetRecoverySeq("seq")
+        await seq.start(self.env.m0_agent.sequencer)
+
+        # Pulse reset
+        dut.rst_n.value = 0
+        for _ in range(5):
+            await RisingEdge(dut.clk_sys)
+        dut.rst_n.value = 1
+        for _ in range(5):
+            await RisingEdge(dut.clk_sys)
+
+        # Post-reset recovery: perform clean write and readback
+        seq2 = ResetRecoverySeq("seq2")
+        await seq2.start(self.env.m0_agent.sequencer)
+
+        for _ in range(10):
+            await RisingEdge(cocotb.top.clk_sys)
+        self.drop_objection()
+
+
+@pyuvm.test()
+class TestContention(BaseFabricTest):
+    """BR-05: Back-to-back mixed access from both masters to same slave (RAM)."""
+    async def run_phase(self):
+        self.raise_objection()
+        await self.init_clocks_and_reset()
+
+        seq0 = ContentionM0Seq("seq0")
+        seq1 = ContentionM1Seq("seq1")
+
+        t0 = cocotb.start_soon(seq0.start(self.env.m0_agent.sequencer))
+        t1 = cocotb.start_soon(seq1.start(self.env.m1_agent.sequencer))
+        await t0
+        await t1
+
+        for _ in range(10):
+            await RisingEdge(cocotb.top.clk_sys)
+        self.drop_objection()
