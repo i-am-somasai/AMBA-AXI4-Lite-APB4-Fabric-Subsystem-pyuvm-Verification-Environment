@@ -12,6 +12,9 @@ obj_dir/
 __pycache__/
 .pytest_cache/
 results*.xml
+!tb/unit/results*.xml
+!tb/block/results*.xml
+!tb/pyuvm/results*.xml
 dump.vcd
 
 # Python virtual environment

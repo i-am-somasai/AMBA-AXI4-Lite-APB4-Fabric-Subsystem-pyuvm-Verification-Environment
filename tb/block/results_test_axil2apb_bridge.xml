@@ -1,0 +1,11 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1795541100" />
+    <testcase name="test_br01_single_rw_zero_wait" classname="test_axil2apb_bridge" file="/home/somasai/amba-fabric/tb/block/test_axil2apb_bridge.py" lineno="39" time="0.01991868019104004" sim_time_ns="1140.0" ratio_time="57232.707642587826" />
+    <testcase name="test_br02_wait_states" classname="test_axil2apb_bridge" file="/home/somasai/amba-fabric/tb/block/test_axil2apb_bridge.py" lineno="118" time="0.0051763057708740234" sim_time_ns="500.0" ratio_time="96593.98461609322" />
+    <testcase name="test_br03_pslverr_propagation" classname="test_axil2apb_bridge" file="/home/somasai/amba-fabric/tb/block/test_axil2apb_bridge.py" lineno="158" time="0.0016820430755615234" sim_time_ns="160.0" ratio_time="95122.415308292" />
+    <testcase name="test_br04_pstrb_patterns" classname="test_axil2apb_bridge" file="/home/somasai/amba-fabric/tb/block/test_axil2apb_bridge.py" lineno="195" time="0.006202220916748047" sim_time_ns="540.0000000000002" ratio_time="87065.58622280315" />
+    <testcase name="test_br05_back_to_back_mixed_rw" classname="test_axil2apb_bridge" file="/home/somasai/amba-fabric/tb/block/test_axil2apb_bridge.py" lineno="242" time="0.01366281509399414" sim_time_ns="1360.0" ratio_time="99540.24779255227" />
+    <testcase name="test_br06_delayed_w_no_early_psel" classname="test_axil2apb_bridge" file="/home/somasai/amba-fabric/tb/block/test_axil2apb_bridge.py" lineno="322" time="0.002410888671875" sim_time_ns="260.0" ratio_time="107844.0506329114" />
+  </testsuite>
+</testsuites>

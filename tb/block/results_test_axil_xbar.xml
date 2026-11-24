@@ -1,0 +1,15 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1795541103" />
+    <testcase name="test_xb01_single_rw_each_master_to_each_slave" classname="test_axil_xbar" file="/home/somasai/amba-fabric/tb/block/test_axil_xbar.py" lineno="144" time="0.026644229888916016" sim_time_ns="520.0" ratio_time="19516.42070977325" />
+    <testcase name="test_xb02_ram_data_integrity" classname="test_axil_xbar" file="/home/somasai/amba-fabric/tb/block/test_axil_xbar.py" lineno="179" time="0.014608383178710938" sim_time_ns="400.0" ratio_time="27381.538059798928" />
+    <testcase name="test_xb03_wstrb_patterns" classname="test_axil_xbar" file="/home/somasai/amba-fabric/tb/block/test_axil_xbar.py" lineno="204" time="0.05410313606262207" sim_time_ns="1480.0" ratio_time="27355.16104439793" />
+    <testcase name="test_xb04_unmapped_decerr" classname="test_axil_xbar" file="/home/somasai/amba-fabric/tb/block/test_axil_xbar.py" lineno="238" time="0.010834693908691406" sim_time_ns="280.0" ratio_time="25842.90819470117" />
+    <testcase name="test_xb05_contention_same_slave" classname="test_axil_xbar" file="/home/somasai/amba-fabric/tb/block/test_axil_xbar.py" lineno="267" time="0.006382942199707031" sim_time_ns="160.0" ratio_time="25066.810100104587" />
+    <testcase name="test_xb06_parallel_different_slaves" classname="test_axil_xbar" file="/home/somasai/amba-fabric/tb/block/test_axil_xbar.py" lineno="301" time="0.003246307373046875" sim_time_ns="70.0" ratio_time="21562.961222091657" />
+    <testcase name="test_xb07_arbitration_fairness" classname="test_axil_xbar" file="/home/somasai/amba-fabric/tb/block/test_axil_xbar.py" lineno="331" time="0.02780914306640625" sim_time_ns="640.0" ratio_time="23014.013717421123" />
+    <testcase name="test_xb08_write_orderings" classname="test_axil_xbar" file="/home/somasai/amba-fabric/tb/block/test_axil_xbar.py" lineno="353" time="0.009677886962890625" sim_time_ns="260.0" ratio_time="26865.368545526213" />
+    <testcase name="test_xb09_random_ready_backpressure" classname="test_axil_xbar" file="/home/somasai/amba-fabric/tb/block/test_axil_xbar.py" lineno="376" time="5.540366172790527" sim_time_ns="180610.0" ratio_time="32598.92836812838" />
+    <testcase name="test_xb10_delayed_bready_rready_stability" classname="test_axil_xbar" file="/home/somasai/amba-fabric/tb/block/test_axil_xbar.py" lineno="423" time="0.04217386245727539" sim_time_ns="1300.0" ratio_time="30824.779241336422" />
+  </testsuite>
+</testsuites>

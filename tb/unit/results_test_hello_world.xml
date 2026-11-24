@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1795541077" />
+    <testcase name="test_hello_world" classname="test_hello_world" file="/home/somasai/amba-fabric/tb/unit/test_hello_world.py" lineno="42" time="0.027324438095092773" sim_time_ns="81.0" ratio_time="2964.379348556371" />
+  </testsuite>
+</testsuites>

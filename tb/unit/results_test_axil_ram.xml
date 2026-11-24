@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1795541095" />
+    <testcase name="test_axil_ram_operations" classname="test_axil_ram" file="/home/somasai/amba-fabric/tb/unit/test_axil_ram.py" lineno="7" time="0.28327131271362305" sim_time_ns="31250.0" ratio_time="110318.26590782459" />
+  </testsuite>
+</testsuites>
