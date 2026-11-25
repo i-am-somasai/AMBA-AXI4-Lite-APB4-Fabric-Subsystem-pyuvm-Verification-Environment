@@ -169,3 +169,75 @@ Tracks closure of the **16 MAJOR** findings (and targeted fidelity / documentati
   - Cloned committed tree (`git clone --local . build/r3_5_clean_clone`) and ran the entire `.github/workflows/ci.yml` sequence:
     `./scripts/check_no_synthetic_cov.sh && python3 scripts/check_bug_refs.py && python3 scripts/check_docs_consistency.py && make lint && make unit SIM=icarus && make block SIM=icarus && make regress SIM=icarus SEEDS=1 && python3 mutation/sanity/run_sanity.py && make formal && make mutation-sample`
   - Every step exited `0` (`CLEAN_CLONE_CI_PASS=YES`; `17/17` sanity killed; `10/10` formal PASS; `21/24 = 87.50%` sampled mutation, `0` timeouts, `0` build errors; zero personal `/home/<user>/` paths in tracked files).
+
+---
+
+### Task R3-6 — Hostile Self-Audit, Regression Verification & Verdict (`ALL R3-1..R3-5 GATES`)
+
+#### Pre-Task Acceptance Checks (Written Before Execution)
+1. **Regression & Hygiene Checks on Current `HEAD`:**
+   - `./scripts/check_no_synthetic_cov.sh` -> zero `sample_*` calls outside monitors/collectors (`EXIT 0`).
+   - `SEED=42 make -C tb/pyuvm -j2 SIM=icarus test_directed` -> `test_xb15_unaligned_address` verifies `0x6000_0001` behaves as word-aligned per AXI4-Lite Rule 6 (`EXIT 0`).
+   - `make unit SIM=icarus && make block SIM=icarus && make sanity && make lint` -> all unit/block XMLs PASS, `17/17` sanity killed (`SMUT-17` at assertion line), zero doc diffs/stale strings/broken links, Verilator lint clean (`EXIT 0`).
+   - `git grep -n "/home/<user>/"` (checking `git grep` for actual local usernames) -> `0` matches; `git ls-files` -> `0` generated build/XML/VCD/VVP/`.dat` files; `git diff --stat remediation-r2 -- rtl/` -> empty (`0` RTL edits).
+2. **Hostile Self-Audit & Computed Verdict:**
+   - Re-verify every one of the 16 `MAJOR` IDs and remaining `MINOR` rows from `audit_input/audit_results.csv` with file path, line numbers, command, and log evidence.
+   - List every row that is still not `PASS` honestly, compute the verdict by rule (`any BLOCKER or MAJOR -> NOT READY; only MINOR -> READY WITH MINOR ISSUES; none -> READY`), record out-of-scope observations under **Observations**, and commit `fix(R3-06): ...` with final `make lint` passing.
+
+#### Measured Results & Evidence
+- **Status:** `DONE`
+
+#### Hostile Self-Audit of All 16 Audit-3 `MAJOR` IDs & Regression Checks
+
+| Audit ID / Check | Prior Status | Re-Audit Status | Evidence (`file:line`), Command & Verified Observation |
+|---|---|---|---|
+| **GP-02** | `PARTIAL (MAJOR)` | **PASS** | `tb/block/test_apb_gpio.py:50-152`, `make -C tb/block test_apb_gpio SIM=icarus`: checks `+1`/`+2` on `0->1` (`0xBEEF`), `1->0` (`0x0000`), and `+1`/`+2`/`+3` (`0`/`0xCAFE`/`0`) on 1-cycle pulse + `sync_gpio_q2` flop timing (`3/3 PASS`). |
+| **SANITY-10** | `FAIL (MAJOR)` | **PASS** | `mutation/sanity/run_sanity.py` (`SMUT-17`), `make sanity` (`docs/logs/sanity.log`): `17/17 KILLED, 0 SURVIVED, 0 INVALID`; `SMUT-17` killed at `tb/block/test_apb_gpio.py:97` (`assertion failed`). |
+| **FORMAL-BRIDGE** | `PARTIAL (MAJOR)` | **PASS** | `formal/axil2apb_bridge.sby:1-14`, `formal/axil2apb_bridge_props.v:89-97,331-343`, `make formal` (`docs/logs/formal_suite.log`): closed unbounded via `PDR (prove, abc pdr)` in `3s` with `10` covers (`0` RTL edits). |
+| **FORMAL-WORDING** | `FAIL (MAJOR)` | **PASS** | `README.md:133,160-177`, `docs/results.md:60-74`, `docs/vplan.md:155-171`, `docs/mutation_report.md:24-28`, `docs/limitations.md:1-20`: exact `k-induction (prove)`, `PDR (prove, abc pdr)`, `BMC depth N`, `bounded-equivalent (depth 10)` (`0` bounded cases labeled proven). |
+| **MUT-EQUIV-CLAIM** | `PARTIAL (MAJOR)` | **PASS** | `mutation/check_equiv.py`, `docs/logs/mutation_equiv.log`, `docs/mutation_report.md:48-69`: `14` unbounded `equiv_induct` / SBY `prove` + `3` dead-signal `SIGNAL_PROOF` (`axil_default_slave._unused_inputs`), **`0` bounded depth-10**, `4` residual. |
+| **METRIC-09** | `PARTIAL (MAJOR)` | **PASS** | `docs/metrics.json`, `docs/results.md:22,115-126`, `docs/logs/mutation.log`: Baseline `165/240 (68.75%)` -> Final `219/240 (91.25% raw)`, `0` tmo/bld_err, Conservative Adj `98.21% (219/223)`, Incl Bounded `98.21% (219/223)`. |
+| **DOC-README-ADDR** | `FAIL (MAJOR)` | **PASS** | `README.md:104-119`, `rtl/axil/axil_decoder.v:6-13`, `scripts/check_docs_consistency.py:39-54`: `S0` rendered as `0x4000_0000 - 0x4000_FFFF (64 KB)` directly from `axil_decoder.v`; consistency check fails on mismatch (`EXIT 0`). |
+| **DOD-08** | `PARTIAL (MAJOR)` | **PASS** | `README.md`, `docs/results.md`, `docs/vplan.md`, `docs/bugs.md`, `docs/img/*.png`: `python3 scripts/check_docs_consistency.py` -> `0 diffs, 0 stale strings, 0 broken links` (`EXIT 0`). |
+| **V-07** | `PARTIAL (MAJOR)` | **PARTIAL (`MAJOR`*)** | `docs/logs/formal_suite.log`, `docs/limitations.md:9-20`: `10/10` PASS (`84` covers, `152s`), `axil2apb_bridge` upgraded to `PDR (prove)`, while `axil_xbar`, `axil_cdc_bridge`, `async_fifo`, `axil_ram`, `apb_uart` remain bounded `BMC depth 20..30`. |
+| **FORMAL-XBAR** | `PARTIAL (MAJOR)` | **PARTIAL (`MAJOR`*)** | `formal/axil_xbar.sby:1`, `docs/limitations.md:15`: `abc pdr` timed out >300s (`PRV=135`) and `smtbmc` failed induction step 0 without hierarchical access to frozen RTL internals; retained `BMC depth 20` (`31` covers, `43s`). |
+| **FORMAL-CDC** | `PARTIAL (MAJOR)` | **PARTIAL (`MAJOR`*)** | `formal/axil_cdc_bridge.sby:1`, `docs/limitations.md:13`: `multiclock on` (`async2sync`) verified via bounded **`BMC depth 30`** (`5` covers, `82s`), not unbounded `prove`. |
+| **DOD-04** | `PARTIAL (MAJOR)` | **PARTIAL (`MAJOR`*)** | `docs/spec.md:834-842`, `docs/logs/formal_suite.log`, `docs/limitations.md`: all 10 `.sby` suites pass (`84` covers), but 5 suites remain bounded `BMC depth 20..30`. |
+| **V-10 / CI-REMOTE / METRIC-14 / DOD-07** | `NOT_RUN (MAJOR)` | **PARTIAL (`MINOR`)** | `docs/logs/ci_remote_verified.json`, `docs/logs/clean_clone_r3.log`: GitHub Actions run `45665895644` (`Success`, `4m 37s`, artifact `29,664` bytes) verified green on pushed `release-prep` commit `4bd08534f3a7ebb5f99c3322843b2703eab7ac96`; subsequent doc-only commits (`47f25a2` and R3-6) remain local `[ahead]` of `origin/release-prep`. |
+| **Reg: `sample_*`** | - | **PASS** | `./scripts/check_no_synthetic_cov.sh` (`EXIT 0`): `Zero synthetic coverage sampling calls found outside monitor/collector files.` |
+| **Reg: `0x6000_0001` Rule 6** | - | **PASS** | `SEED=42 make -C tb/pyuvm -j2 SIM=icarus test_directed` (`test_xb15_unaligned_address PASS`) + `make sanity` `[SMUT-11]` KILLED at `tb/pyuvm/sequences/directed_seqs.py:89`. |
+| **Reg: No personal paths / tracked gen / RTL freeze** | - | **PASS** | `git grep -n "/home/<user>/"` (`0` hits for local username), `git ls-files` (`0` tracked build/XML/VCD/VVP/`.dat` files), `git diff --stat remediation-r2 -- rtl/` (`0` files changed in R3). |
+
+*\*Note on severity classification:* Under Audit-3's strict spec checklist (`V-07`, `FORMAL-XBAR`, `FORMAL-CDC`, `DOD-04` graded `MAJOR` whenever core `P0` blocks run `BMC depth N` instead of unbounded `prove`), those 4 rows remain `PARTIAL (MAJOR)`. If documented bounded-BMC limits in [`docs/limitations.md`](limitations.md) are accepted as `MINOR` architectural scope rather than `MAJOR` gaps, then 0 `MAJOR` remain.
+
+#### Complete List of Remaining Non-`PASS` Rows (Honest Accounting)
+- **`PARTIAL` (`MAJOR` under Audit-3 unbounded-prove rule):** `V-07`, `FORMAL-XBAR`, `FORMAL-CDC`, `DOD-04`.
+- **`PARTIAL` / `NOT_FOUND` (`MINOR`):** `V-10`, `CI-REMOTE`, `METRIC-14`, `DOD-07` (doc-only commits ahead of `4bd0853` green run), `F-02` (`DEC-007` inline arbiter in `axil_xbar`), `V-01` (`DEC-005` cocotb responders in `tb/models/`), `LAYOUT-PORTS` (`DEC-014`/`DEC-015`), `BR-05` (`docs/vplan.md` cites L1 single-master test; L2 dual-master at `test_top02_dual_master_apb_rw`), `DOD-01` (due to `BR-05` ref note), `FORMAL-ASYNC-FIFO` (`BMC depth 25`), `FORMAL-CSR` (`prv+bmc` `DEC-006`), `FORMAL-RAM` (`BMC depth 20`), `FORMAL-UART` (`BMC depth 25`), `LINT-ICARUS` (`axil_xbar.v` `@*` warnings in `docs/limitations.md`), `DOC-MUT-TRIAGE` (consolidated into `docs/mutation_report.md` in `52bf157`).
+
+#### Computed Verdict
+- **Computed Verdict (Strict Rule: any `BLOCKER` or `MAJOR` -> `NOT READY`; only `MINOR` -> `READY WITH MINOR ISSUES`; none -> `READY`):**
+  - `BLOCKER`: **0**
+  - `MAJOR` (under strict Audit-3 unbounded-prove rule on `V-07`, `FORMAL-XBAR`, `FORMAL-CDC`, `DOD-04`): **4** -> **`NOT READY`**
+  - *(Conditional note: If documented `BMC depth N` architectural bounds in [`docs/limitations.md`](limitations.md) are accepted as `MINOR` scope rather than `MAJOR`, remaining count is `0 BLOCKER`, `0 MAJOR`, `19 MINOR` -> `READY WITH MINOR ISSUES`.)*
+
+---
+
+### Observations (Out of Scope per Precision Protocol Scope Lock)
+1. Legacy R1 archive line [`docs/FIX_REPORT.md:144`](FIX_REPORT.md#L144) retains the historical phrase `"28 proven equivalent"`; all R2/R3 reports, `README.md`, `docs/mutation_report.md`, `docs/results.md`, and `docs/vplan.md` use exact unbounded vs bounded wording.
+2. `BR-05` in [`docs/vplan.md`](vplan.md) links only L1 single-master `test_br05_back_to_back_mixed_rw`, while dual-master APB mixed R/W runs in `tb/block/test_amba_fabric_top.py` (`test_top02_dual_master_apb_rw`).
+3. Recording green run `45665895644` (`4bd0853`) in `docs/logs/ci_remote_verified.json` (`47f25a2`) and committing this R3-6 self-audit leave local `release-prep` 2 doc-only commits ahead of `origin/release-prep`; pushing `release-prep` aligns remote CI SHA with final `HEAD` if desired.
+4. `git diff --stat main -- rtl/` shows 5 RTL files modified in prior R1/R2 remediation commits on `remediation-r2`, whereas `git diff --stat remediation-r2 -- rtl/` confirms `0` RTL edits across `R3-1`..`R3-6`.
+
+---
+
+### Final Summary Table (`R3-1` .. `R3-6`)
+
+| Task | Gate | Evidence File Path | Status |
+|---|---|---|---|
+| **R3-1** | `17/17` sanity mutants killed (`SMUT-17` assertion at `test_apb_gpio.py:97`); `GP-02` (`+1/+2/+3` incl. pulse return to 0), `UA-01`, `TM-02`, `BR-02`, `XB-02/03` + 20 fresh Icarus seeds `721..740` PASS | [`docs/logs/sanity.log`](logs/sanity.log), [`docs/logs/r3_1_regress_20seeds.log`](logs/r3_1_regress_20seeds.log), [`docs/FIX_REPORT_R3.md`](FIX_REPORT_R3.md) | **DONE** |
+| **R3-2** | Frozen 240-mutant suite `219/240 (91.25% raw)`, `0` tmo/bld_err, `17` unbounded/dead (`0` bounded d=10), `98.21% (219/223)` conservative & bounded-incl adj | [`docs/logs/mutation.log`](logs/mutation.log), [`docs/logs/mutation_equiv.log`](logs/mutation_equiv.log), [`docs/mutation_report.md`](mutation_report.md) | **DONE** |
+| **R3-3** | `axil2apb_bridge` closed via `PDR (prove, abc pdr)`; `axil_xbar`/`axil_cdc_bridge`/etc. bounds & exact wording across `README`/`results`/`vplan`/`limitations.md` | [`docs/logs/formal_suite.log`](logs/formal_suite.log), [`docs/limitations.md`](limitations.md), [`docs/results.md`](results.md) | **DONE** |
+| **R3-4** | `README` map synced/enforced vs `axil_decoder.v`; leaf-bin waivers `303/36/267`; `DEC-014`/`DEC-015`; `SEEDS` quoting + 2x clean `make cov-report` byte-identical (`92.4%` line, `267/267` func) | [`docs/metrics.json`](metrics.json), [`docs/logs/code_cov_summary.txt`](logs/code_cov_summary.txt), [`docs/coverage_waivers.md`](coverage_waivers.md), [`docs/decisions.md`](decisions.md) | **DONE** |
+| **R3-5** | Clean-clone full CI reproduction (`CLEAN_CLONE_CI_PASS=YES`), pushed `release-prep` (`4bd08534f3a7ebb5f99c3322843b2703eab7ac96`) green Actions run `45665895644` (`4m 37s`), Node.js 20 warning noted | [`docs/logs/clean_clone_r3.log`](logs/clean_clone_r3.log), [`docs/logs/ci_remote_verified.json`](logs/ci_remote_verified.json), [`docs/limitations.md`](limitations.md) | **DONE** |
+| **R3-6** | Final unit/block/`test_directed`/sanity (`17/17`)/`make lint` verified on `HEAD`, all 16 MAJORs + regression checks self-audited honestly, verdict computed (`NOT READY` under strict unbounded-prove rule) | [`docs/FIX_REPORT_R3.md`](FIX_REPORT_R3.md), [`docs/logs/sanity.log`](logs/sanity.log) | **DONE** |
+
