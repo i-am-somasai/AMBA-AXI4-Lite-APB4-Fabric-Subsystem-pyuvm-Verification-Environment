@@ -1,8 +1,13 @@
-# Single DUT runner for cocotb
+# Single DUT runner for cocotb (unit)
 SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
-SIM_BUILD ?= sim_build_$(TOPLEVEL)
-COCOTB_RESULTS_FILE ?= results_$(MODULE).xml
+PROJ_DIR ?= $(abspath ../..)
+BUILD_DIR ?= $(PROJ_DIR)/build
+SIM_BUILD ?= $(BUILD_DIR)/sim_build/unit_$(TOPLEVEL)
+COCOTB_RESULTS_FILE ?= $(BUILD_DIR)/results/unit/results_$(MODULE).xml
+
+$(shell mkdir -p $(dir $(SIM_BUILD)) $(dir $(COCOTB_RESULTS_FILE)) $(BUILD_DIR)/tmp)
+export TMPDIR := $(BUILD_DIR)/tmp
 
 # Include standard cocotb Makefile
 include $(shell cocotb-config --makefiles)/Makefile.sim

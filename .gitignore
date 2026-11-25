@@ -12,9 +12,6 @@ obj_dir/
 __pycache__/
 .pytest_cache/
 results*.xml
-!tb/unit/results*.xml
-!tb/block/results*.xml
-!tb/pyuvm/results*.xml
 dump.vcd
 
 # Python virtual environment
@@ -46,5 +43,7 @@ mutation/results/
 *.swp
 *~
 
-# Re-audit input folder (kept outside git)
+# Re-audit input folder and leftover audit scratch (kept outside git)
 audit_input/
+audit/
+docs/logs/*.dat

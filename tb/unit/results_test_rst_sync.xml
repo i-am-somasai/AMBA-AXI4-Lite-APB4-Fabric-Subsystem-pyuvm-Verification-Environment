@@ -1,6 +1,0 @@
-<testsuites name="results">
-  <testsuite name="all" package="all">
-    <property name="random_seed" value="1795541079" />
-    <testcase name="test_rst_sync_basic" classname="test_rst_sync" file="/home/somasai/amba-fabric/tb/unit/test_rst_sync.py" lineno="6" time="0.000978231430053711" sim_time_ns="56.0" ratio_time="57246.16719473556" />
-  </testsuite>
-</testsuites>

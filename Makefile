@@ -3,6 +3,9 @@
 
 SHELL := /bin/bash
 PROJ_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+BUILD_DIR ?= $(PROJ_DIR)/build
+export BUILD_DIR
+export TMPDIR := $(BUILD_DIR)/tmp
 
 # Toolchain paths
 OSS_CAD_SUITE ?= $(HOME)/oss-cad-suite
@@ -12,10 +15,10 @@ SKY130_LIB    ?= $(HOME)/.volare/volare/sky130/versions/0fe599b2afb6708d28154310
 # Environment setup wrapper
 ENV_CMD := source $(PROJ_DIR)/scripts/env.sh
 
-# Simulation parameters
+# Simulation parameters (G2: max 2 parallel Verilator compiles, 4 for Icarus)
 SIM ?= icarus
 SEEDS ?= 20
-MAX_JOBS ?= 4
+MAX_JOBS ?= $(if $(filter verilator,$(SIM)),2,4)
 
 # RTL Source directories
 RTL_DIRS := $(PROJ_DIR)/rtl/common $(PROJ_DIR)/rtl/axil $(PROJ_DIR)/rtl/apb $(PROJ_DIR)/rtl/cdc $(PROJ_DIR)/rtl
@@ -143,7 +146,9 @@ sta:
 
 # Clean build artifacts
 clean:
-	@rm -rf tb/unit/sim_build tb/unit/__pycache__ tb/unit/results.xml tb/unit/*.vcd
-	@rm -rf tb/pyuvm/sim_build tb/pyuvm/__pycache__ tb/pyuvm/results.xml tb/pyuvm/*.vcd
-	@rm -rf sim_build obj_dir __pycache__ results.xml dump.vcd *.log
+	@rm -rf $(BUILD_DIR)
+	@rm -rf tb/unit/sim_build* tb/unit/__pycache__ tb/unit/results*.xml tb/unit/*.vcd
+	@rm -rf tb/block/sim_build* tb/block/__pycache__ tb/block/results*.xml tb/block/*.vcd
+	@rm -rf tb/pyuvm/sim_build* tb/pyuvm/__pycache__ tb/pyuvm/results*.xml tb/pyuvm/*.vcd
+	@rm -rf sim_build* obj_dir __pycache__ results*.xml dump.vcd *.log
 	@echo "Clean completed."

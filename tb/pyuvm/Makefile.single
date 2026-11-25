@@ -1,9 +1,13 @@
 # Single test runner for pyuvm testbenches
 SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
-SIM_BUILD ?= sim_build_$(TOPLEVEL)
 PROJ_DIR ?= $(abspath ../..)
-COCOTB_RESULTS_FILE ?= results_$(MODULE).xml
+BUILD_DIR ?= $(PROJ_DIR)/build
+SIM_BUILD ?= $(BUILD_DIR)/sim_build/pyuvm_$(TOPLEVEL)
+COCOTB_RESULTS_FILE ?= $(BUILD_DIR)/results/pyuvm/results_$(MODULE).xml
+
+$(shell mkdir -p $(dir $(SIM_BUILD)) $(dir $(COCOTB_RESULTS_FILE)) $(BUILD_DIR)/tmp)
+export TMPDIR := $(BUILD_DIR)/tmp
 
 ifeq ($(SIM),icarus)
 COMPILE_ARGS += -g2012 -DCOCOTB_SIM

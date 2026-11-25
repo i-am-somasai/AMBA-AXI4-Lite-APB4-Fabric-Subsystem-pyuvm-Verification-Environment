@@ -1,6 +1,0 @@
-<testsuites name="results">
-  <testsuite name="all" package="all">
-    <property name="random_seed" value="1795539902" />
-    <testcase name="test_xb13_stress" classname="test_stress" file="/home/somasai/oss-cad-suite/lib/python3.11/site-packages/pyuvm/_extension_classes.py" lineno="13" time="13.383593320846558" sim_time_ns="391710.0" ratio_time="29267.924585683915" />
-  </testsuite>
-</testsuites>

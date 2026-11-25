@@ -1,6 +1,7 @@
 # Top-level block test runner for L1 block tests and top-level integration
 SIM ?= icarus
 PROJ_DIR ?= $(abspath ../..)
+BUILD_DIR ?= $(PROJ_DIR)/build
 
 BLOCK_TESTS = test_axil2apb_bridge \
               test_axil_xbar \
@@ -92,4 +93,4 @@ test_amba_fabric_top:
 		SIM=$(SIM)
 
 clean:
-	rm -rf sim_build* results*.xml results.xml dump.vcd *.vcd __pycache__
+	rm -rf sim_build* $(BUILD_DIR)/sim_build/block_* $(BUILD_DIR)/results/block results*.xml results.xml dump.vcd *.vcd __pycache__

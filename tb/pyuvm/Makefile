@@ -1,6 +1,7 @@
 # Top-level pyuvm test runner for Phase 4 verification
 SIM ?= icarus
 PROJ_DIR ?= $(abspath ../..)
+BUILD_DIR ?= $(PROJ_DIR)/build
 SEED ?= 42
 NUM_TRANS_PER_MASTER ?= 5000
 SEEDS ?= 20
@@ -47,8 +48,8 @@ test_directed:
 	$(MAKE) -f $(PROJ_DIR)/tb/pyuvm/Makefile.single \
 		TOPLEVEL=amba_fabric_top \
 		MODULE=test_directed \
-		SIM_BUILD=sim_build_directed \
-		COCOTB_RESULTS_FILE=results_test_directed.xml \
+		SIM_BUILD=$(BUILD_DIR)/sim_build/pyuvm_directed \
+		COCOTB_RESULTS_FILE=$(BUILD_DIR)/results/pyuvm/results_test_directed.xml \
 		VERILOG_SOURCES="$(ALL_RTL_SOURCES)" \
 		SIM=$(SIM)
 	@echo "--- Running CDC sweeps across clock ratios and phases ---"
@@ -57,8 +58,8 @@ test_directed:
 		TOPLEVEL=amba_fabric_top \
 		MODULE=test_directed \
 		TESTCASE=TestCoverageClosure \
-		SIM_BUILD=sim_build_cdc_10_3 \
-		COCOTB_RESULTS_FILE=results_test_cdc_10_3.xml \
+		SIM_BUILD=$(BUILD_DIR)/sim_build/pyuvm_cdc_10_3 \
+		COCOTB_RESULTS_FILE=$(BUILD_DIR)/results/pyuvm/results_test_cdc_10_3.xml \
 		VERILOG_SOURCES="$(ALL_RTL_SOURCES)" \
 		SIM=$(SIM)
 	CLK_SLOW_PERIOD_NS=6.0 CLK_SLOW_PHASE_NS=1.2 SEED=60 \
@@ -66,8 +67,8 @@ test_directed:
 		TOPLEVEL=amba_fabric_top \
 		MODULE=test_directed \
 		TESTCASE=TestCoverageClosure \
-		SIM_BUILD=sim_build_cdc_6_0 \
-		COCOTB_RESULTS_FILE=results_test_cdc_6_0.xml \
+		SIM_BUILD=$(BUILD_DIR)/sim_build/pyuvm_cdc_6_0 \
+		COCOTB_RESULTS_FILE=$(BUILD_DIR)/results/pyuvm/results_test_cdc_6_0.xml \
 		VERILOG_SOURCES="$(ALL_RTL_SOURCES)" \
 		SIM=$(SIM)
 
@@ -77,8 +78,8 @@ test_stress:
 	$(MAKE) -f $(PROJ_DIR)/tb/pyuvm/Makefile.single \
 		TOPLEVEL=amba_fabric_top \
 		MODULE=test_stress \
-		SIM_BUILD=sim_build_stress_$(SEED) \
-		COCOTB_RESULTS_FILE=results_test_stress_$(SEED).xml \
+		SIM_BUILD=$(BUILD_DIR)/sim_build/pyuvm_stress_$(SEED) \
+		COCOTB_RESULTS_FILE=$(BUILD_DIR)/results/pyuvm/results_test_stress_$(SEED).xml \
 		VERILOG_SOURCES="$(ALL_RTL_SOURCES)" \
 		SIM=$(SIM)
 
@@ -91,10 +92,10 @@ $(addprefix stress_seed_, $(SEED_LIST)): stress_seed_%: | test_directed
 	$(MAKE) -f $(PROJ_DIR)/tb/pyuvm/Makefile.single \
 		TOPLEVEL=amba_fabric_top \
 		MODULE=test_stress \
-		SIM_BUILD=sim_build_stress_$* \
-		COCOTB_RESULTS_FILE=results_test_stress_$*.xml \
+		SIM_BUILD=$(BUILD_DIR)/sim_build/pyuvm_stress_$* \
+		COCOTB_RESULTS_FILE=$(BUILD_DIR)/results/pyuvm/results_test_stress_$*.xml \
 		VERILOG_SOURCES="$(ALL_RTL_SOURCES)" \
 		SIM=$(SIM)
 
 clean:
-	rm -rf sim_build* results*.xml dump.vcd *.vcd __pycache__
+	rm -rf sim_build* $(BUILD_DIR)/sim_build/pyuvm_* $(BUILD_DIR)/results/pyuvm results*.xml dump.vcd *.vcd __pycache__

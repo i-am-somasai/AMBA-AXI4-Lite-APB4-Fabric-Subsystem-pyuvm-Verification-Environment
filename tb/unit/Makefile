@@ -1,6 +1,7 @@
 # Top-level unit test runner for all L0 unit tests
 SIM ?= icarus
 PROJ_DIR ?= $(abspath ../..)
+BUILD_DIR ?= $(PROJ_DIR)/build
 
 UNIT_TESTS = test_hello_world \
              test_rst_sync \
@@ -92,4 +93,4 @@ test_axil_csr:
 		SIM=$(SIM)
 
 clean:
-	rm -rf sim_build* results*.xml results.xml dump.vcd *.vcd __pycache__
+	rm -rf sim_build* $(BUILD_DIR)/sim_build/unit_* $(BUILD_DIR)/results/unit results*.xml results.xml dump.vcd *.vcd __pycache__

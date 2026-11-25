@@ -1,8 +1,0 @@
-<testsuites name="results">
-  <testsuite name="all" package="all">
-    <property name="random_seed" value="1795541122" />
-    <testcase name="test_top01_register_map_connectivity" classname="test_amba_fabric_top" file="/home/somasai/amba-fabric/tb/block/test_amba_fabric_top.py" lineno="34" time="0.0581202507019043" sim_time_ns="4770.0" ratio_time="82071.22203352285" />
-    <testcase name="test_top02_irq_aggregation_to_pin" classname="test_amba_fabric_top" file="/home/somasai/amba-fabric/tb/block/test_amba_fabric_top.py" lineno="218" time="0.03380751609802246" sim_time_ns="2710.0" ratio_time="80159.6897016199" />
-    <testcase name="test_cd05_dual_master_slow_regs" classname="test_amba_fabric_top" file="/home/somasai/amba-fabric/tb/block/test_amba_fabric_top.py" lineno="331" time="0.22158193588256836" sim_time_ns="22590.0" ratio_time="101948.74374584401" />
-  </testsuite>
-</testsuites>
