@@ -220,6 +220,19 @@ def parse_code_coverage():
     return out
 
 
+def _formal_sby_info(module_name):
+    sby_path = PROJ_DIR / "formal" / f"{module_name}.sby"
+    engine = "smtbmc boolector"
+    multiclock = False
+    if sby_path.exists():
+        txt = sby_path.read_text(encoding="utf-8")
+        if "abc pdr" in txt:
+            engine = "abc pdr"
+        if "multiclock on" in txt:
+            multiclock = True
+    return engine, multiclock
+
+
 def parse_formal():
     p = PROJ_DIR / "docs" / "logs" / "formal_suite.log"
     txt = p.read_text(encoding="utf-8")
@@ -230,10 +243,24 @@ def parse_formal():
             line.strip(),
         )
         if m:
+            mod = m.group(1)
+            mode = m.group(2)
+            depth = int(m.group(3))
+            engine, multiclock = _formal_sby_info(mod)
+            if mode == "prove":
+                method_label = "PDR (prove, abc pdr)" if engine == "abc pdr" else "k-induction (prove)"
+            elif mode == "prv+bmc":
+                method_label = f"k-induction (prove) + BMC depth {depth}"
+            else:
+                mc_note = ", multiclock" if multiclock else ""
+                method_label = f"BMC depth {depth}{mc_note}"
             rows.append({
-                "module": m.group(1),
-                "mode": m.group(2),
-                "depth": int(m.group(3)),
+                "module": mod,
+                "mode": mode,
+                "depth": depth,
+                "engine": engine,
+                "multiclock": multiclock,
+                "method_label": method_label,
                 "result": m.group(4),
                 "covers": int(m.group(5)),
                 "runtime_s": int(m.group(6)),

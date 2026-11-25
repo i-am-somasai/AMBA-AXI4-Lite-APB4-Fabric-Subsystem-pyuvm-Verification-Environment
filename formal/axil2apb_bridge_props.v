@@ -86,12 +86,14 @@ module axil2apb_bridge_props #(
         .m_apb_pslverr  (m_apb_pslverr)
     );
 
-    // Shared AXI4-Lite Protocol Checker
+    // Shared AXI4-Lite Protocol Checker (1-bit causality enforced directly below so
+    // unbounded prove avoids 8-bit wrapping counter wraparound in axil_props)
     axil_props #(
         .ADDR_WIDTH(ADDR_WIDTH),
         .DATA_WIDTH(DATA_WIDTH),
         .STRB_WIDTH(STRB_WIDTH),
-        .IS_SLAVE(1)
+        .IS_SLAVE(1),
+        .CHECK_CAUSALITY(0)
     ) u_axil_props (
         .clk     (clk),
         .rst_n   (rst_n),
@@ -324,6 +326,21 @@ module axil2apb_bridge_props #(
             // Concurrent read & write arrival reachability
             cover (s_axil_awvalid && s_axil_wvalid && s_axil_arvalid);
             cover (f_wr_live_active && s_axil_arvalid);
+        end
+    end
+
+    // -------------------------------------------------------------
+    // 1-bit Single-Outstanding Causality (Equivalent to axil_props
+    // SINGLE_OUTSTANDING=1 without 8-bit wrapping counters for prove)
+    // -------------------------------------------------------------
+    always @(posedge clk) begin
+        if (rst_n) begin
+            if (f_aw_seen)        assume (!s_axil_awvalid);
+            if (f_w_seen)         assume (!s_axil_wvalid);
+            if (f_rd_live_active) assume (!s_axil_arvalid);
+
+            if (!f_aw_seen || !f_w_seen) assert (!s_axil_bvalid);
+            if (!f_rd_live_active)       assert (!s_axil_rvalid);
         end
     end
 

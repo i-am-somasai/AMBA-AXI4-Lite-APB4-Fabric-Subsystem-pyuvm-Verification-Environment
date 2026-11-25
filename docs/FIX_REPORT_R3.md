@@ -70,3 +70,33 @@ Tracks closure of the **16 MAJOR** findings (and targeted fidelity / documentati
 - **Regenerated Reports & Gates:**
   - `python3 mutation/gen_mutation_report.py && python3 scripts/gen_metrics.py && python3 scripts/gen_docs.py && make lint`: EXIT `0`; `grep -rn -i "proven equivalent" README.md docs/` matches `README.md:173` (unbounded-proven/structurally dead only, `0` bounded) and historical `docs/FIX_REPORT.md:144`.
   - `make unit SIM=icarus && make block SIM=icarus && make -C tb/pyuvm -j2 SIM=icarus SEEDS=1 regress && make sanity`: all PASS (`EXIT=0`, `40/40` spec tests PASS, `17/17` sanity mutants KILLED).
+
+---
+
+### Task R3-3 — Formal `prove` Attempts on Bridge & Crossbar, and Honest Mode Reporting (`V-07`, `FORMAL-XBAR`, `FORMAL-BRIDGE`, `FORMAL-CDC`, `DOD-04`, `FORMAL-WORDING`)
+
+#### Pre-Task Acceptance Checks (Written Before Execution)
+1. **`k-induction (prove)` attempt on `axil2apb_bridge` then `axil_xbar`:**
+   - Place any inductive strengthening invariants strictly in `formal/axil2apb_bridge_props.v` and `formal/axil_xbar_props.v` (zero RTL edits); never add behaviour-hiding assumptions (document any assumption with reason).
+   - Run `(cd formal && sby -f axil2apb_bridge.sby)` and `(cd formal && sby -f axil_xbar.sby)` (time-boxed <= 30 min each). If induction closes (`DONE (PASS)`), retain `prove`; otherwise retain bounded `bmc` and document why in `docs/limitations.md`. `axil_cdc_bridge` (multiclock) stays `bmc`.
+2. **Formal suite regression & honest mode table:**
+   - Commands: `make formal | tee docs/logs/formal_suite.log`, `python3 scripts/gen_metrics.py`, `python3 scripts/gen_docs.py`, `make lint`
+   - Expected: `10/10` formal suites PASS (`EXIT=0`), `docs/limitations.md` exists documenting all remaining bounded suites (reason + depth), and `README.md` + `docs/results.md` + `docs/vplan.md` state for every suite exact `k-induction (prove)` or `BMC depth N` directly from the run log.
+3. **Full verification check:**
+   - Commands: `make unit SIM=icarus`, `make block SIM=icarus`, `make sanity`, `make lint`
+   - Expected: Zero regressions (`EXIT=0`).
+
+#### Measured Results & Evidence
+- **Status:** `DONE`
+- **No RTL Edits:** Zero files under `rtl/` were modified (`git diff --name-only rtl/` empty).
+- **`axil2apb_bridge` Upgraded to Unbounded `PDR (prove)` (`abc pdr`):**
+  - Updated [`formal/axil2apb_bridge_props.v`](../formal/axil2apb_bridge_props.v) (`CHECK_CAUSALITY(0)` on `u_axil_props` plus 1-bit single-outstanding request/response causality via `f_aw_seen`, `f_w_seen`, and `f_rd_live_active`, eliminating `8`-bit wrapping-counter wraparound in unbounded proof) and [`formal/axil2apb_bridge.sby`](../formal/axil2apb_bridge.sby) (`prove: abc pdr`, `cover: smtbmc boolector`).
+  - Result: `axil2apb_bridge` **DONE (`PASS`, `3s`, `10` cover traces)** via unbounded `PDR (prove)`.
+- **`axil_xbar` Bounded Rationale (`BMC depth 20`):**
+  - Tested both `abc pdr` (timed out on repeated anytime passes after > 300s at `PRV=135` across 2-master × 5-target state + 5-bit liveness timers) and `smtbmc boolector` k-induction (basecase depth 20 passed, induction step 0 failed on slave write stability without hierarchical access to frozen RTL internals `dut.aw_done`/`dut.w_done`/`dut.ar_done`). Retained [`formal/axil_xbar.sby`](../formal/axil_xbar.sby) at `BMC depth 20` and documented every bounded suite in [`docs/limitations.md`](limitations.md).
+- **Honest Formal Reporting (`docs/logs/formal_suite.log` -> `docs/metrics.json` -> `README.md`, `docs/results.md`, `docs/vplan.md`):**
+  - Updated [`scripts/gen_metrics.py`](../scripts/gen_metrics.py) (`_formal_sby_info` / `method_label`) and [`scripts/doc_blocks.py`](../scripts/doc_blocks.py) so every suite reports exact `k-induction (prove)`, `PDR (prove, abc pdr)`, `k-induction (prove) + BMC depth 20`, or `BMC depth N` (`10/10 PASS`: `apb_timer` `k-induction (prove)`, `rr_arbiter` `k-induction (prove)`, `sync_fifo` `k-induction (prove)`, `axil2apb_bridge` `PDR (prove, abc pdr)`, `axil_csr` `k-induction (prove) + BMC depth 20`, `apb_uart` `BMC depth 25`, `async_fifo` `BMC depth 25, multiclock`, `axil_cdc_bridge` `BMC depth 30, multiclock`, `axil_ram` `BMC depth 20`, `axil_xbar` `BMC depth 20`; `84` covers in `152s`).
+- **Verification Gates (`EXIT 0`):**
+  - `make formal` -> `Formal suite PASSED (10/10 modules clean)` (`docs/logs/formal_suite.log`).
+  - `python3 scripts/gen_metrics.py && python3 scripts/gen_docs.py && make lint` -> `0` diffs, `0` stale strings, `0` broken links, Verilator lint clean.
+  - `make unit SIM=icarus && make block SIM=icarus && make sanity && make lint` -> all unit/block tests PASS, `17/17 KILLED` sanity gate (`docs/logs/sanity.log`), lint clean.

@@ -557,12 +557,15 @@
     "passed_suites": 10,
     "failed_suites": 0,
     "total_covers": 84,
-    "total_runtime_s": 150,
+    "total_runtime_s": 152,
     "suites": [
       {
         "module": "apb_timer",
         "mode": "prove",
         "depth": 20,
+        "engine": "smtbmc boolector",
+        "multiclock": false,
+        "method_label": "k-induction (prove)",
         "result": "PASS",
         "covers": 4,
         "runtime_s": 1
@@ -571,6 +574,9 @@
         "module": "apb_uart",
         "mode": "bmc",
         "depth": 25,
+        "engine": "smtbmc boolector",
+        "multiclock": false,
+        "method_label": "BMC depth 25",
         "result": "PASS",
         "covers": 9,
         "runtime_s": 5
@@ -579,30 +585,42 @@
         "module": "async_fifo",
         "mode": "bmc",
         "depth": 25,
+        "engine": "smtbmc boolector",
+        "multiclock": true,
+        "method_label": "BMC depth 25, multiclock",
         "result": "PASS",
         "covers": 4,
         "runtime_s": 8
       },
       {
         "module": "axil2apb_bridge",
-        "mode": "bmc",
+        "mode": "prove",
         "depth": 25,
+        "engine": "abc pdr",
+        "multiclock": false,
+        "method_label": "PDR (prove, abc pdr)",
         "result": "PASS",
         "covers": 10,
-        "runtime_s": 6
+        "runtime_s": 3
       },
       {
         "module": "axil_cdc_bridge",
         "mode": "bmc",
         "depth": 30,
+        "engine": "smtbmc boolector",
+        "multiclock": true,
+        "method_label": "BMC depth 30, multiclock",
         "result": "PASS",
         "covers": 5,
-        "runtime_s": 78
+        "runtime_s": 82
       },
       {
         "module": "axil_csr",
         "mode": "prv+bmc",
         "depth": 20,
+        "engine": "smtbmc boolector",
+        "multiclock": false,
+        "method_label": "k-induction (prove) + BMC depth 20",
         "result": "PASS",
         "covers": 5,
         "runtime_s": 3
@@ -611,6 +629,9 @@
         "module": "axil_ram",
         "mode": "bmc",
         "depth": 20,
+        "engine": "smtbmc boolector",
+        "multiclock": false,
+        "method_label": "BMC depth 20",
         "result": "PASS",
         "covers": 5,
         "runtime_s": 3
@@ -619,14 +640,20 @@
         "module": "axil_xbar",
         "mode": "bmc",
         "depth": 20,
+        "engine": "smtbmc boolector",
+        "multiclock": false,
+        "method_label": "BMC depth 20",
         "result": "PASS",
         "covers": 31,
-        "runtime_s": 42
+        "runtime_s": 43
       },
       {
         "module": "rr_arbiter",
         "mode": "prove",
         "depth": 20,
+        "engine": "smtbmc boolector",
+        "multiclock": false,
+        "method_label": "k-induction (prove)",
         "result": "PASS",
         "covers": 3,
         "runtime_s": 1
@@ -635,6 +662,9 @@
         "module": "sync_fifo",
         "mode": "prove",
         "depth": 20,
+        "engine": "smtbmc boolector",
+        "multiclock": false,
+        "method_label": "k-induction (prove)",
         "result": "PASS",
         "covers": 8,
         "runtime_s": 3

@@ -130,7 +130,7 @@ Every number reported below is derived from an actual execution of open-source E
 | **Random Transactions Executed** | **200,000 transactions** (20 Verilator seeds `1..20` × 10,000 txns, 0 mismatches; plus 20 Icarus seeds `601..620` = 200,000 txns) | Section 9.1 (XB-13) | [`docs/logs/phase_c_cov_report.log`](docs/logs/phase_c_cov_report.log), [`docs/logs/regression_20seeds.log`](docs/logs/regression_20seeds.log) |
 | **Functional Coverage (cocotb-coverage)** | **100.00% (267/267 reachable bins)** across 24 merged YAMLs; 36 waived illegal/contradictory bins | Section 10 | [`docs/logs/func_cov.log`](docs/logs/func_cov.log), [`docs/coverage_waivers.md`](docs/coverage_waivers.md) |
 | **Code Coverage (Verilator)** | **Line 92.0% (494/537) \| Branch 91.2% (499/547) \| Expr 93.8% (1036/1105) \| Toggle 74.8% (10616/14202) \| FSM State 100.0% (5/5)** | Section 10 | [`docs/logs/code_cov_summary.txt`](docs/logs/code_cov_summary.txt) |
-| **Formal Verification (SymbiYosys + Boolector)** | **10/10 suites PASS** (3 k-induction `prove`, 1 `prv+bmc`, 6 bounded `bmc`; 84 cover traces reached in 150s) | Section 11 | [`docs/logs/formal_suite.log`](docs/logs/formal_suite.log) |
+| **Formal Verification (SymbiYosys + Boolector / ABC)** | **10/10 suites PASS** (3 `k-induction (prove)`, 1 `PDR (prove)`, 1 `k-induction (prove) + BMC depth 20`, 5 `BMC depth 20..30`; 84 cover traces reached in 152s) | Section 11 | [`docs/logs/formal_suite.log`](docs/logs/formal_suite.log) |
 | **CDC Clock Ratios & Phases Swept** | **3 slow periods (25.0 ns, 10.3 ns, 6.0 ns) × 3 phases**; formal `async_fifo` BMC depth 25 & `axil_cdc_bridge` BMC depth 30 | Section 9.1 (CD-01) | [`formal/async_fifo.sby`](formal/async_fifo.sby), [`docs/logs/func_cov.log`](docs/logs/func_cov.log) |
 | **Mutation Testing (Yosys `mutate`)** | **Baseline 165/240 (68.75%) → Final 219/240 (91.25% raw)**, 0 timeouts, 0 build errors; **17 unbounded-proven/dead equivalent** (14 `equiv_induct`/SBY `prove` + 3 dead-signal), **0 bounded-equivalent (depth 10)**, **4 residual**; **Conservative Adj. 98.21% (219/223)**; Bounded-Incl. Adj. 98.21% (219/223) | Section 12 | [`docs/logs/mutation.log`](docs/logs/mutation.log), [`docs/mutation_report.md`](docs/mutation_report.md) |
 | **Bugs Found & Resolved** | **24 bugs (BUG-001–BUG-024)**: 15 RTL + 9 TB/formal/tooling | Section 6 | [`docs/bugs.md`](docs/bugs.md) |
@@ -157,11 +157,13 @@ The testbench is structured strictly according to UVM guidelines in Python via `
   - `addr_map.py`: Decode model verifying routing addresses independently from the RTL.
 - **`CoverageCollector`:** Samples 9 distinct functional covergroups defined in [`tb/pyuvm/func_cov/fabric_cov.py`](tb/pyuvm/func_cov/fabric_cov.py) on every transaction.
 
-### 5.2 Formal Verification (SymbiYosys + Boolector)
+### 5.2 Formal Verification (SymbiYosys + Boolector / ABC PDR)
 <!-- BEGIN:metrics:readme_formal_summary -->
-All **10 SymbiYosys formal suites PASS** (`0` failures, **84 cover traces** reached across 150s total runtime, [`docs/logs/formal_suite.log`](docs/logs/formal_suite.log)):
-- **Unbounded k-induction proofs (`prove`, depth 20):** `rr_arbiter` (`3` covers, including bounded fairness `f_wait_cnt < NUM_REQS`), `sync_fifo` (`8` covers, including `(* anyconst *)` magic-value data-ordering & integrity), and `apb_timer` (`4` covers), plus hybrid **`prv+bmc`** on `axil_csr` (`5` covers; `CHECK_CAUSALITY=1` in BMC, `0` in `prove` per `DEC-006`).
-- **Bounded model checking (`bmc`):** `apb_uart` (depth `25`, `9` covers), `async_fifo` (multiclock depth `25`, `4` covers), `axil2apb_bridge` (depth `25`, `10` covers), `axil_cdc_bridge` (depth `30`, `5` covers), `axil_ram` (depth `20`, `5` covers), and `axil_xbar` (depth `20`, `31` covers, including `wr_prio`/`rd_prio` bounded fairness).
+All **10 SymbiYosys formal suites PASS** (`0` failures, **84 cover traces** reached across 152s total runtime, [`docs/logs/formal_suite.log`](docs/logs/formal_suite.log)):
+- **Unbounded `k-induction (prove)` (`smtbmc boolector`):** `apb_timer` (`4` covers), `rr_arbiter` (`3` covers), `sync_fifo` (`8` covers).
+- **Unbounded `PDR (prove)` (`abc pdr`):** `axil2apb_bridge` (`10` covers) (1-bit causality enforced directly in `formal/axil2apb_bridge_props.v`).
+- **Hybrid (`prv+bmc`):** `axil_csr` (`k-induction (prove)` + `BMC depth 20`, `5` covers per `DEC-006`).
+- **Bounded model checking (`BMC depth N`):** `apb_uart` (`BMC depth 25`, `9` covers), `async_fifo` (`BMC depth 25`, multiclock, `4` covers), `axil_cdc_bridge` (`BMC depth 30`, multiclock, `5` covers), `axil_ram` (`BMC depth 20`, `5` covers), `axil_xbar` (`BMC depth 20`, `31` covers) (bounded rationales documented in [`docs/limitations.md`](docs/limitations.md)).
 - **Scope note (`DEC-007`):** `rr_arbiter` is a standalone formally verified and unit-tested library block and is not instantiated inside `axil_xbar` (which uses inline registered round-robin arbiters).
 <!-- END:metrics:readme_formal_summary -->
 
@@ -273,7 +275,7 @@ make sta
 - Designed and verified a **17-module (3,200 non-blank/non-comment lines)** AXI4-Lite `2×4` crossbar + APB4 peripheral subsystem (`UART`, `Timer`, `GPIO`), `RAM`, `CSR`, and Gray-pointer CDC bridge targeting dual clock domains (`100 MHz` / `41.67 MHz`).
 - Built a **pyuvm/cocotb** verification environment (**61 tests**, **40/40** Spec 9.1 tests passing, **98** XML testcases passing) running **200,000** Verilator stress transactions (20 seeds) plus **200,000** Icarus transactions (20 seeds) with **0 scoreboard mismatches**.
 - Closed honest functional coverage to **100.00% (267/267 reachable bins)** across 24 merged YAMLs (`36` waived bins documented) and measured Verilator code coverage of **92.0% line**, **91.2% branch**, and **93.8% expression**.
-- Proved **10/10** SymbiYosys formal suites (`3` unbounded k-induction `prove` + `1` `prv+bmc` + `6` bounded `bmc`, **84 cover traces**); improved frozen 240-mutant testing from **68.75% (165/240)** baseline to **91.25% raw (219/240)** and **98.21% conservative adjusted (219/223)** after unbounded `equiv_induct` / SBY `prove` equivalence checking (`0` bounded-equivalent depth 10).
+- Verified **10/10** SymbiYosys formal suites (3 `k-induction (prove)` + 1 `PDR (prove)` + 1 `k-induction (prove) + BMC depth 20` + 5 `BMC depth 20..30`, **84 cover traces**); improved frozen 240-mutant testing from **68.75% (165/240)** baseline to **91.25% raw (219/240)** and **98.21% conservative adjusted (219/223)** after unbounded `equiv_induct` / SBY `prove` equivalence checking (`0` bounded-equivalent depth 10).
 - Synthesized for SKY130 HD via Yosys (`RAM_DEPTH=64`: **9,237 cells**, **3,630 flops**, **138,086.19 µm²**) and ran reproducible OpenSTA sweeps (**WNS -18.60 ns** / **34.97 MHz** full netlist limited by unbuffered `rst_sys_n`; **62.89 MHz** core+I/O reference; `clk_slow` and hold met), logging **24 bugs** across RTL and verification.
 <!-- END:metrics:readme_resume_bullets -->
 

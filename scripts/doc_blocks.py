@@ -72,7 +72,9 @@ def render_all_blocks(m):
     cdc = m["cdc"]
     ci = m["ci"]
 
-    prove_cnt = sum(1 for r in fm["suites"] if r["mode"] == "prove")
+    prove_kind_cnt = sum(1 for r in fm["suites"] if r["mode"] == "prove" and r.get("engine") != "abc pdr")
+    prove_pdr_cnt = sum(1 for r in fm["suites"] if r["mode"] == "prove" and r.get("engine") == "abc pdr")
+    prove_cnt = prove_kind_cnt + prove_pdr_cnt
     bmc_cnt = sum(1 for r in fm["suites"] if r["mode"] == "bmc")
     hybrid_cnt = sum(1 for r in fm["suites"] if r["mode"] == "prv+bmc")
     ci_badge_color = "brightgreen" if ci["status"] == "PASS" else "yellow"
@@ -102,7 +104,7 @@ def render_all_blocks(m):
         f"| **Random Transactions Executed** | **{reg['verilator']['transactions']:,} transactions** ({reg['verilator']['seed_count']} Verilator seeds `1..20` × 10,000 txns, {reg['verilator']['mismatches']} mismatches; plus {reg['icarus']['seed_count']} Icarus seeds `601..620` = {reg['icarus']['transactions']:,} txns) | Section 9.1 (XB-13) | [`docs/logs/phase_c_cov_report.log`](docs/logs/phase_c_cov_report.log), [`docs/logs/regression_20seeds.log`](docs/logs/regression_20seeds.log) |",
         f"| **Functional Coverage (cocotb-coverage)** | **{fc['coverage_pct']:.2f}% ({fc['covered_bins']}/{fc['reachable_bins']} reachable bins)** across {fc['merged_yaml_files']} merged YAMLs; {fc['waived_bins']} waived illegal/contradictory bins | Section 10 | [`docs/logs/func_cov.log`](docs/logs/func_cov.log), [`docs/coverage_waivers.md`](docs/coverage_waivers.md) |",
         f"| **Code Coverage (Verilator)** | **Line {cc['line']['pct']:.1f}% ({cc['line']['hit']}/{cc['line']['total']}) \\| Branch {cc['branch']['pct']:.1f}% ({cc['branch']['hit']}/{cc['branch']['total']}) \\| Expr {cc['expr']['pct']:.1f}% ({cc['expr']['hit']}/{cc['expr']['total']}) \\| Toggle {cc['toggle']['pct']:.1f}% ({cc['toggle']['hit']}/{cc['toggle']['total']}) \\| FSM State {cc['fsm_state']['pct']:.1f}% ({cc['fsm_state']['hit']}/{cc['fsm_state']['total']})** | Section 10 | [`docs/logs/code_cov_summary.txt`](docs/logs/code_cov_summary.txt) |",
-        f"| **Formal Verification (SymbiYosys + Boolector)** | **{fm['passed_suites']}/{fm['total_suites']} suites PASS** ({prove_cnt} k-induction `prove`, {hybrid_cnt} `prv+bmc`, {bmc_cnt} bounded `bmc`; {fm['total_covers']} cover traces reached in {fm['total_runtime_s']}s) | Section 11 | [`docs/logs/formal_suite.log`](docs/logs/formal_suite.log) |",
+        f"| **Formal Verification (SymbiYosys + Boolector / ABC)** | **{fm['passed_suites']}/{fm['total_suites']} suites PASS** ({prove_kind_cnt} `k-induction (prove)`, {prove_pdr_cnt} `PDR (prove)`, {hybrid_cnt} `k-induction (prove) + BMC depth 20`, {bmc_cnt} `BMC depth 20..30`; {fm['total_covers']} cover traces reached in {fm['total_runtime_s']}s) | Section 11 | [`docs/logs/formal_suite.log`](docs/logs/formal_suite.log) |",
         f"| **CDC Clock Ratios & Phases Swept** | **{cdc['ratio_count']} slow periods ({', '.join(str(x) + ' ns' for x in cdc['slow_periods_ns'])}) × {cdc['phase_count']} phases**; formal `async_fifo` BMC depth {cdc['formal_async_fifo_depth']} & `axil_cdc_bridge` BMC depth {cdc['formal_cdc_bridge_depth']} | Section 9.1 (CD-01) | [`formal/async_fifo.sby`](formal/async_fifo.sby), [`docs/logs/func_cov.log`](docs/logs/func_cov.log) |",
         f"| **Mutation Testing (Yosys `mutate`)** | **Baseline {mut['baseline']['kill']}/{mut['generated']} ({mut['baseline']['score_pct']:.2f}%) → Final {mut['final']['kill']}/{mut['generated']} ({mut['final']['score_pct']:.2f}% raw)**, {mut['final']['tmo']} timeouts, {mut['final']['bld_err']} build errors; **{mut['equivalent_total']} unbounded-proven/dead equivalent** ({mut['equivalent_formal']} `equiv_induct`/SBY `prove` + {mut['equivalent_signal']} dead-signal), **{mut['equivalent_bounded_d10']} bounded-equivalent (depth 10)**, **{mut['residual_non_equiv']} residual**; **Conservative Adj. {mut['adjusted_score_pct']:.2f}% ({mut['final']['kill']}/{mut['adjusted_denominator']})**; Bounded-Incl. Adj. {mut['adjusted_bounded_score_pct']:.2f}% ({mut['final']['kill']}/{mut['adjusted_bounded_denominator']}) | Section 12 | [`docs/logs/mutation.log`](docs/logs/mutation.log), [`docs/mutation_report.md`](docs/mutation_report.md) |",
         f"| **Bugs Found & Resolved** | **{bugs['total']} bugs ({bugs['first_id']}–{bugs['last_id']})**: {bugs['rtl_bugs']} RTL + {bugs['tb_formal_tooling_bugs']} TB/formal/tooling | Section 6 | [`docs/bugs.md`](docs/bugs.md) |",
@@ -114,10 +116,19 @@ def render_all_blocks(m):
         "| **Out-of-Scope Items (`S-02/S-03`, `X-01/X-02`)** | **N/A (out of scope)**: gate-level sim (`S-02`), OpenLane GDSII (`S-03`), RISC-V CPU (`X-01`), multi-outstanding AXI4 (`X-02`) | Section 1.4 / 13.5 | [`docs/spec.md`](docs/spec.md) |",
     ])
 
+    prove_kind_list = [f"`{r['module']}` (`{r['covers']}` covers)" for r in fm["suites"] if r["mode"] == "prove" and r.get("engine") != "abc pdr"]
+    prove_pdr_list = [f"`{r['module']}` (`{r['covers']}` covers)" for r in fm["suites"] if r["mode"] == "prove" and r.get("engine") == "abc pdr"]
+    hybrid_list = [f"`{r['module']}` (`k-induction (prove)` + `BMC depth {r['depth']}`, `{r['covers']}` covers per `DEC-006`)" for r in fm["suites"] if r["mode"] == "prv+bmc"]
+    bmc_list = [
+        f"`{r['module']}` (`BMC depth {r['depth']}`{', multiclock' if r.get('multiclock') else ''}, `{r['covers']}` covers)"
+        for r in fm["suites"] if r["mode"] == "bmc"
+    ]
     readme_formal_summary = (
         f"All **{fm['total_suites']} SymbiYosys formal suites PASS** (`0` failures, **{fm['total_covers']} cover traces** reached across {fm['total_runtime_s']}s total runtime, [`docs/logs/formal_suite.log`](docs/logs/formal_suite.log)):\n"
-        f"- **Unbounded k-induction proofs (`prove`, depth 20):** `rr_arbiter` (`3` covers, including bounded fairness `f_wait_cnt < NUM_REQS`), `sync_fifo` (`8` covers, including `(* anyconst *)` magic-value data-ordering & integrity), and `apb_timer` (`4` covers), plus hybrid **`prv+bmc`** on `axil_csr` (`5` covers; `CHECK_CAUSALITY=1` in BMC, `0` in `prove` per `DEC-006`).\n"
-        f"- **Bounded model checking (`bmc`):** `apb_uart` (depth `25`, `9` covers), `async_fifo` (multiclock depth `25`, `4` covers), `axil2apb_bridge` (depth `25`, `10` covers), `axil_cdc_bridge` (depth `30`, `5` covers), `axil_ram` (depth `20`, `5` covers), and `axil_xbar` (depth `20`, `31` covers, including `wr_prio`/`rd_prio` bounded fairness).\n"
+        f"- **Unbounded `k-induction (prove)` (`smtbmc boolector`):** {', '.join(prove_kind_list)}.\n"
+        f"- **Unbounded `PDR (prove)` (`abc pdr`):** {', '.join(prove_pdr_list)} (1-bit causality enforced directly in `formal/axil2apb_bridge_props.v`).\n"
+        f"- **Hybrid (`prv+bmc`):** {', '.join(hybrid_list)}.\n"
+        f"- **Bounded model checking (`BMC depth N`):** {', '.join(bmc_list)} (bounded rationales documented in [`docs/limitations.md`](docs/limitations.md)).\n"
         f"- **Scope note (`DEC-007`):** `rr_arbiter` is a standalone formally verified and unit-tested library block and is not instantiated inside `axil_xbar` (which uses inline registered round-robin arbiters)."
     )
 
@@ -145,7 +156,7 @@ def render_all_blocks(m):
         f"- Designed and verified a **17-module ({rtl['total_lines']:,} non-blank/non-comment lines)** AXI4-Lite `2×4` crossbar + APB4 peripheral subsystem (`UART`, `Timer`, `GPIO`), `RAM`, `CSR`, and Gray-pointer CDC bridge targeting dual clock domains (`100 MHz` / `41.67 MHz`).\n"
         f"- Built a **pyuvm/cocotb** verification environment (**{tests['unique_defs_total']} tests**, **{tests['spec_tests_passed']}/{tests['spec_tests_total']}** Spec 9.1 tests passing, **{tests['xml_testcases_executed']}** XML testcases passing) running **{reg['verilator']['transactions']:,}** Verilator stress transactions ({reg['verilator']['seed_count']} seeds) plus **{reg['icarus']['transactions']:,}** Icarus transactions ({reg['icarus']['seed_count']} seeds) with **0 scoreboard mismatches**.\n"
         f"- Closed honest functional coverage to **{fc['coverage_pct']:.2f}% ({fc['covered_bins']}/{fc['reachable_bins']} reachable bins)** across {fc['merged_yaml_files']} merged YAMLs (`{fc['waived_bins']}` waived bins documented) and measured Verilator code coverage of **{cc['line']['pct']:.1f}% line**, **{cc['branch']['pct']:.1f}% branch**, and **{cc['expr']['pct']:.1f}% expression**.\n"
-        f"- Proved **{fm['passed_suites']}/{fm['total_suites']}** SymbiYosys formal suites (`{prove_cnt}` unbounded k-induction `prove` + `{hybrid_cnt}` `prv+bmc` + `{bmc_cnt}` bounded `bmc`, **{fm['total_covers']} cover traces**); improved frozen 240-mutant testing from **{mut['baseline']['score_pct']:.2f}% ({mut['baseline']['kill']}/{mut['generated']})** baseline to **{mut['final']['score_pct']:.2f}% raw ({mut['final']['kill']}/{mut['generated']})** and **{mut['adjusted_score_pct']:.2f}% conservative adjusted ({mut['final']['kill']}/{mut['adjusted_denominator']})** after unbounded `equiv_induct` / SBY `prove` equivalence checking (`{mut['equivalent_bounded_d10']}` bounded-equivalent depth 10).\n"
+        f"- Verified **{fm['passed_suites']}/{fm['total_suites']}** SymbiYosys formal suites ({prove_kind_cnt} `k-induction (prove)` + {prove_pdr_cnt} `PDR (prove)` + {hybrid_cnt} `k-induction (prove) + BMC depth 20` + {bmc_cnt} `BMC depth 20..30`, **{fm['total_covers']} cover traces**); improved frozen 240-mutant testing from **{mut['baseline']['score_pct']:.2f}% ({mut['baseline']['kill']}/{mut['generated']})** baseline to **{mut['final']['score_pct']:.2f}% raw ({mut['final']['kill']}/{mut['generated']})** and **{mut['adjusted_score_pct']:.2f}% conservative adjusted ({mut['final']['kill']}/{mut['adjusted_denominator']})** after unbounded `equiv_induct` / SBY `prove` equivalence checking (`{mut['equivalent_bounded_d10']}` bounded-equivalent depth 10).\n"
         f"- Synthesized for SKY130 HD via Yosys (`RAM_DEPTH={syn['ram_depth']}`: **{syn['total_cells']:,} cells**, **{syn['flops']:,} flops**, **{syn['chip_area_um2']:,} µm²**) and ran reproducible OpenSTA sweeps (**WNS {sta['full_wns_ns']:.2f} ns** / **{sta['full_fmax_mhz']:.2f} MHz** full netlist limited by unbuffered `rst_sys_n`; **{sta['datapath_io_fmax_mhz']:.2f} MHz** core+I/O reference; `clk_slow` and hold met), logging **{bugs['total']} bugs** across RTL and verification."
     )
 
@@ -163,7 +174,7 @@ def render_all_blocks(m):
         f"| Random Transactions Executed | **{reg['verilator']['transactions']:,}** (Verilator seeds `1..20`, {reg['verilator']['mismatches']} mismatches) + **{reg['icarus']['transactions']:,}** (Icarus seeds `601..620`, {reg['icarus']['mismatches']} mismatches) | Section 9.1 (XB-13) | [`docs/logs/phase_c_cov_report.log`](logs/phase_c_cov_report.log), [`docs/logs/regression_20seeds.log`](logs/regression_20seeds.log) |",
         f"| Functional Coverage | **{fc['coverage_pct']:.2f}% ({fc['covered_bins']}/{fc['reachable_bins']} reachable)**, {fc['waived_bins']} waived, {fc['merged_yaml_files']} merged YAMLs | Section 10 | [`docs/logs/func_cov.log`](logs/func_cov.log), [`docs/coverage_waivers.md`](coverage_waivers.md) |",
         f"| Code Coverage (Verilator) | **Line {cc['line']['pct']:.1f}% \\| Branch {cc['branch']['pct']:.1f}% \\| Expr {cc['expr']['pct']:.1f}% \\| Toggle {cc['toggle']['pct']:.1f}% \\| FSM State {cc['fsm_state']['pct']:.1f}%** | Section 10 | [`docs/logs/code_cov_summary.txt`](logs/code_cov_summary.txt) |",
-        f"| Formal Verification (SymbiYosys) | **{fm['passed_suites']}/{fm['total_suites']} suites PASS** ({prove_cnt} `prove`, {hybrid_cnt} `prv+bmc`, {bmc_cnt} `bmc`; {fm['total_covers']} covers) | Section 11 | [`docs/logs/formal_suite.log`](logs/formal_suite.log) |",
+        f"| Formal Verification (SymbiYosys) | **{fm['passed_suites']}/{fm['total_suites']} suites PASS** ({prove_kind_cnt} `k-induction (prove)`, {prove_pdr_cnt} `PDR (prove)`, {hybrid_cnt} `k-induction (prove) + BMC depth 20`, {bmc_cnt} `BMC depth 20..30`; {fm['total_covers']} covers) | Section 11 | [`docs/logs/formal_suite.log`](logs/formal_suite.log) |",
         f"| CDC Sweeps | **{cdc['ratio_count']} periods ({', '.join(str(x) + ' ns' for x in cdc['slow_periods_ns'])}) × {cdc['phase_count']} phases**; formal depth {cdc['formal_async_fifo_depth']} / {cdc['formal_cdc_bridge_depth']} | Section 9.1 (CD-01) | [`docs/logs/func_cov.log`](logs/func_cov.log) |",
         f"| Mutation Testing (240 Frozen Mutants) | **Baseline {mut['baseline']['kill']}/{mut['generated']} ({mut['baseline']['score_pct']:.2f}%) → Final {mut['final']['kill']}/{mut['generated']} ({mut['final']['score_pct']:.2f}% raw / {mut['adjusted_score_pct']:.2f}% conservative adj, {mut['adjusted_bounded_score_pct']:.2f}% bounded-incl)**; Sanity Gate: **{san['killed']}/{san['total']} KILLED** | Section 12 | [`docs/mutation_report.md`](mutation_report.md), [`docs/logs/sanity.log`](logs/sanity.log) |",
         f"| Bugs Logged & Reference-Verified | **{bugs['total']} (`{bugs['first_id']}`–`{bugs['last_id']}`)** | Section 6 | [`docs/bugs.md`](bugs.md) |",
@@ -179,9 +190,9 @@ def render_all_blocks(m):
     )
 
     results_formal_table = "\n".join(
-        ["| Module | Mode | Depth | Result | Covers Reached | Runtime |", "|---|---|---:|---|---:|---:|"]
+        ["| Module | Proof / Checking Method | Depth | Result | Covers Reached | Runtime |", "|---|---|---:|---|---:|---:|"]
         + [
-            f"| `{r['module']}` | `{r['mode']}` | {r['depth']} | **{r['result']}** | {r['covers']} | {r['runtime_s']}s |"
+            f"| `{r['module']}` | `{r.get('method_label', r['mode'])}` | {r['depth']} | **{r['result']}** | {r['covers']} | {r['runtime_s']}s |"
             for r in fm["suites"]
         ]
         + [f"| **TOTAL** | **{fm['total_suites']} suites** | - | **{fm['passed_suites']}/{fm['total_suites']} PASS** | **{fm['total_covers']}** | **{fm['total_runtime_s']}s** |"]
@@ -283,7 +294,7 @@ def render_all_blocks(m):
     )
 
     vplan_formal_matrix = (
-        f"Executed with `scripts/run_all_formal.sh` (SymbiYosys + Yosys + Boolector, [`docs/logs/formal_suite.log`](logs/formal_suite.log); `rr_arbiter` is standalone verified per `DEC-007`):\n\n"
+        f"Executed with `scripts/run_all_formal.sh` (SymbiYosys + Yosys + Boolector / ABC PDR, [`docs/logs/formal_suite.log`](logs/formal_suite.log); `rr_arbiter` is standalone verified per `DEC-007`; bounded suites explained in [`docs/limitations.md`](limitations.md)):\n\n"
         + results_formal_table
     )
 

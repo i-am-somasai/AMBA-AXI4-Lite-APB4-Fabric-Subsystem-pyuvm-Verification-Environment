@@ -153,21 +153,21 @@ All 9 covergroups defined in [`tb/pyuvm/func_cov/fabric_cov.py`](../tb/pyuvm/fun
 ## 5. Formal Verification Property Matrix
 
 <!-- BEGIN:metrics:vplan_formal_matrix -->
-Executed with `scripts/run_all_formal.sh` (SymbiYosys + Yosys + Boolector, [`docs/logs/formal_suite.log`](logs/formal_suite.log); `rr_arbiter` is standalone verified per `DEC-007`):
+Executed with `scripts/run_all_formal.sh` (SymbiYosys + Yosys + Boolector / ABC PDR, [`docs/logs/formal_suite.log`](logs/formal_suite.log); `rr_arbiter` is standalone verified per `DEC-007`; bounded suites explained in [`docs/limitations.md`](limitations.md)):
 
-| Module | Mode | Depth | Result | Covers Reached | Runtime |
+| Module | Proof / Checking Method | Depth | Result | Covers Reached | Runtime |
 |---|---|---:|---|---:|---:|
-| `apb_timer` | `prove` | 20 | **PASS** | 4 | 1s |
-| `apb_uart` | `bmc` | 25 | **PASS** | 9 | 5s |
-| `async_fifo` | `bmc` | 25 | **PASS** | 4 | 8s |
-| `axil2apb_bridge` | `bmc` | 25 | **PASS** | 10 | 6s |
-| `axil_cdc_bridge` | `bmc` | 30 | **PASS** | 5 | 78s |
-| `axil_csr` | `prv+bmc` | 20 | **PASS** | 5 | 3s |
-| `axil_ram` | `bmc` | 20 | **PASS** | 5 | 3s |
-| `axil_xbar` | `bmc` | 20 | **PASS** | 31 | 42s |
-| `rr_arbiter` | `prove` | 20 | **PASS** | 3 | 1s |
-| `sync_fifo` | `prove` | 20 | **PASS** | 8 | 3s |
-| **TOTAL** | **10 suites** | - | **10/10 PASS** | **84** | **150s** |
+| `apb_timer` | `k-induction (prove)` | 20 | **PASS** | 4 | 1s |
+| `apb_uart` | `BMC depth 25` | 25 | **PASS** | 9 | 5s |
+| `async_fifo` | `BMC depth 25, multiclock` | 25 | **PASS** | 4 | 8s |
+| `axil2apb_bridge` | `PDR (prove, abc pdr)` | 25 | **PASS** | 10 | 3s |
+| `axil_cdc_bridge` | `BMC depth 30, multiclock` | 30 | **PASS** | 5 | 82s |
+| `axil_csr` | `k-induction (prove) + BMC depth 20` | 20 | **PASS** | 5 | 3s |
+| `axil_ram` | `BMC depth 20` | 20 | **PASS** | 5 | 3s |
+| `axil_xbar` | `BMC depth 20` | 20 | **PASS** | 31 | 43s |
+| `rr_arbiter` | `k-induction (prove)` | 20 | **PASS** | 3 | 1s |
+| `sync_fifo` | `k-induction (prove)` | 20 | **PASS** | 8 | 3s |
+| **TOTAL** | **10 suites** | - | **10/10 PASS** | **84** | **152s** |
 <!-- END:metrics:vplan_formal_matrix -->
 
 ---

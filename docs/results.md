@@ -17,7 +17,7 @@ This document records **real, measured results** generated strictly from [`docs/
 | Random Transactions Executed | **200,000** (Verilator seeds `1..20`, 0 mismatches) + **200,000** (Icarus seeds `601..620`, 0 mismatches) | Section 9.1 (XB-13) | [`docs/logs/phase_c_cov_report.log`](logs/phase_c_cov_report.log), [`docs/logs/regression_20seeds.log`](logs/regression_20seeds.log) |
 | Functional Coverage | **100.00% (267/267 reachable)**, 36 waived, 24 merged YAMLs | Section 10 | [`docs/logs/func_cov.log`](logs/func_cov.log), [`docs/coverage_waivers.md`](coverage_waivers.md) |
 | Code Coverage (Verilator) | **Line 92.0% \| Branch 91.2% \| Expr 93.8% \| Toggle 74.8% \| FSM State 100.0%** | Section 10 | [`docs/logs/code_cov_summary.txt`](logs/code_cov_summary.txt) |
-| Formal Verification (SymbiYosys) | **10/10 suites PASS** (3 `prove`, 1 `prv+bmc`, 6 `bmc`; 84 covers) | Section 11 | [`docs/logs/formal_suite.log`](logs/formal_suite.log) |
+| Formal Verification (SymbiYosys) | **10/10 suites PASS** (3 `k-induction (prove)`, 1 `PDR (prove)`, 1 `k-induction (prove) + BMC depth 20`, 5 `BMC depth 20..30`; 84 covers) | Section 11 | [`docs/logs/formal_suite.log`](logs/formal_suite.log) |
 | CDC Sweeps | **3 periods (25.0 ns, 10.3 ns, 6.0 ns) × 3 phases**; formal depth 25 / 30 | Section 9.1 (CD-01) | [`docs/logs/func_cov.log`](logs/func_cov.log) |
 | Mutation Testing (240 Frozen Mutants) | **Baseline 165/240 (68.75%) → Final 219/240 (91.25% raw / 98.21% conservative adj, 98.21% bounded-incl)**; Sanity Gate: **17/17 KILLED** | Section 12 | [`docs/mutation_report.md`](mutation_report.md), [`docs/logs/sanity.log`](logs/sanity.log) |
 | Bugs Logged & Reference-Verified | **24 (`BUG-001`–`BUG-024`)** | Section 6 | [`docs/bugs.md`](bugs.md) |
@@ -55,22 +55,22 @@ This document records **real, measured results** generated strictly from [`docs/
 
 ---
 
-## 3. Formal Verification Matrix (SymbiYosys + Boolector)
+## 3. Formal Verification Matrix (SymbiYosys + Boolector / ABC PDR)
 
 <!-- BEGIN:metrics:results_formal_table -->
-| Module | Mode | Depth | Result | Covers Reached | Runtime |
+| Module | Proof / Checking Method | Depth | Result | Covers Reached | Runtime |
 |---|---|---:|---|---:|---:|
-| `apb_timer` | `prove` | 20 | **PASS** | 4 | 1s |
-| `apb_uart` | `bmc` | 25 | **PASS** | 9 | 5s |
-| `async_fifo` | `bmc` | 25 | **PASS** | 4 | 8s |
-| `axil2apb_bridge` | `bmc` | 25 | **PASS** | 10 | 6s |
-| `axil_cdc_bridge` | `bmc` | 30 | **PASS** | 5 | 78s |
-| `axil_csr` | `prv+bmc` | 20 | **PASS** | 5 | 3s |
-| `axil_ram` | `bmc` | 20 | **PASS** | 5 | 3s |
-| `axil_xbar` | `bmc` | 20 | **PASS** | 31 | 42s |
-| `rr_arbiter` | `prove` | 20 | **PASS** | 3 | 1s |
-| `sync_fifo` | `prove` | 20 | **PASS** | 8 | 3s |
-| **TOTAL** | **10 suites** | - | **10/10 PASS** | **84** | **150s** |
+| `apb_timer` | `k-induction (prove)` | 20 | **PASS** | 4 | 1s |
+| `apb_uart` | `BMC depth 25` | 25 | **PASS** | 9 | 5s |
+| `async_fifo` | `BMC depth 25, multiclock` | 25 | **PASS** | 4 | 8s |
+| `axil2apb_bridge` | `PDR (prove, abc pdr)` | 25 | **PASS** | 10 | 3s |
+| `axil_cdc_bridge` | `BMC depth 30, multiclock` | 30 | **PASS** | 5 | 82s |
+| `axil_csr` | `k-induction (prove) + BMC depth 20` | 20 | **PASS** | 5 | 3s |
+| `axil_ram` | `BMC depth 20` | 20 | **PASS** | 5 | 3s |
+| `axil_xbar` | `BMC depth 20` | 20 | **PASS** | 31 | 43s |
+| `rr_arbiter` | `k-induction (prove)` | 20 | **PASS** | 3 | 1s |
+| `sync_fifo` | `k-induction (prove)` | 20 | **PASS** | 8 | 3s |
+| **TOTAL** | **10 suites** | - | **10/10 PASS** | **84** | **152s** |
 <!-- END:metrics:results_formal_table -->
 
 ---

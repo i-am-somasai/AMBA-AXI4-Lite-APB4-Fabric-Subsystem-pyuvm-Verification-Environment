@@ -1,4 +1,4 @@
-=== Running 17-Mutant Sanity=== Running 17-Mutant Sanity Gate (SMUT-01..SMUT-17) ===
+=== Running 17-Mutant Sanity Gate (SMUT-01..SMUT-17) ===
 [SMUT-01] KILLED   | Inject arbiter priority swap in rr_arbiter.v | test_rr_arbiter.test_rr_arbiter_fairness_and_lock (tb/unit/test_rr_arbiter.py:34 in test_rr_arbiter_fairness_and_lock): assertion failed
 [SMUT-02] KILLED   | Inject dropped WSTRB[2] bit in axil_ram.v | test_axil_ram.* (tb/unit/test_axil_ram.py:34 in test_axil_ram_operations): AssertionError: Expected 0xDEADBEEF, got 0xde00beef
 [SMUT-03] KILLED   | Inject Gray-pointer encoding error in async_fifo.v | test_async_fifo.test_cd02_async_fifo_stream (tb/unit/test_async_fifo.py:175 in test_async_fifo_overflow_preserve): assertion failed
