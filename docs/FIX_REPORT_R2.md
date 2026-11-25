@@ -12,7 +12,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 | **Phase B** | Formal (`rr_arbiter_props.v`, bounded fairness, `sync_fifo` data ordering, bridge/xbar over-assumptions, CSR causality/Rule 6, exact wording) | `DONE` | [`docs/logs/phase_b_formal.log`](docs/logs/phase_b_formal.log) |
 | **Phase C** | Honest coverage (`CdcMonitor` edge measurement, stimulus for 44 holes, waivers, `make cov-report` fix & full re-measure) | `DONE` | [`docs/logs/func_cov.log`](docs/logs/func_cov.log) |
 | **Phase D** | Mutation (`run_mutants.py` process group kill, `axil_xbar` scope fix, CSR/bridge test gaps, 240-mutant run, script-generated report) | `DONE` | [`docs/mutation_report.md`](mutation_report.md) |
-| **Phase E** | Synthesis & STA (`synth/synth.ys`, portable reset false-path constraints, dynamic `fmax_sweep.py` parsing, clean measurements) | `TODO` | - |
+| **Phase E** | Synthesis & STA (`synth/synth.ys`, portable reset false-path constraints, dynamic `fmax_sweep.py` parsing, clean measurements) | `DONE` | [`docs/logs/phase_e_fmax_sweep.log`](logs/phase_e_fmax_sweep.log) |
 | **Phase F** | Data-driven docs (`scripts/gen_metrics.py`, `docs/metrics.json`, regenerate docs, `bugs.md` / `decisions.md` / `interfaces.md`, CI check scripts) | `TODO` | - |
 | **Phase G** | CI (`ci.yml` artifact/command alignment, fresh checkout check, remote GitHub Actions verification) | `TODO` | - |
 | **Final** | Clean-clone full re-measure & `remediation-r2-done` tag | `TODO` | - |
@@ -84,14 +84,14 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 ---
 
 ### Phase E: Synthesis and STA (`S-01`, `SYNTH-*`)
-- **Status:** `TODO`
-- **Files Changed:** Pending
-- **Commands Run:** Pending
-- **Log Paths:** Pending
+- **Status:** `DONE`
+- **Files Changed:** `synth/synth.ys`, `Makefile`, `scripts/env.sh`, `synth/sta.tcl`, `synth/fmax_sweep.py`, `docs/{decisions.md,audit_r2_tracking.csv,FIX_REPORT_R2.md}`
+- **Commands Run:** `rm -rf synth/results && make clean && make synth && make sta` (executed twice from clean to verify determinism), negative empty-query `sta.tcl` check, `grep` hardcoded/`/home/` check
+- **Log Paths:** [`docs/logs/phase_e_synth.log`](logs/phase_e_synth.log), [`docs/logs/phase_e_sta.log`](logs/phase_e_sta.log), [`docs/logs/phase_e_fmax_sweep.log`](logs/phase_e_fmax_sweep.log)
 - **Before / After Numbers:**
-  - Before: `synth/synth.ys` missing; `sta.tcl` & `fmax_sweep.py` hardcode stale cells (`_14798_`, `_14800_`); `fmax_sweep.py` prints hardcoded `81.63 MHz`; fresh OpenSTA yields WNS `-19.33 ns` (<62.5 MHz).
-  - After: Pending Phase E execution.
-- **Remaining Issues:** None yet.
+  - Before: `synth/synth.ys` missing from git; `sta.tcl` & `fmax_sweep.py` hardcoded stale cell IDs (`_14798_`, `_14800_`); `fmax_sweep.py` printed hardcoded `81.63 MHz` & `_12691_/DE` critical path text; fresh STA yielded `-19.33 ns`.
+  - After: `synth/synth.ys` committed & invoked via `Makefile` (`RAM_DEPTH=64` confirmed via `2,048` `u_ram.mem[0..63]` flops); **9,237 cells**, **3,630 sequential flops** (`1,140` `dfrtp_1` + `10` `dfstp_1` + `2,480` `edfxtp_1`), **138,086.19 um2** chip area (`74.78%` sequential). Constraint validation fails `sta.tcl` on any empty query (verified exit `1`); `rst_n` false-path targets only the 4 `rst_sync` cells while `rst_sys_n`/`rst_slow_n` recovery/removal remain TIMED (`DEC-011`). Full pre-layout netlist at `clk_sys=10.0 ns`: **WNS = -18.60 ns**, **TNS = -54046.39 ns** (`asynchronous` reset recovery on unbuffered fanout-958 `rst_sys_n`, slew `29.27 ns`, **Fmax = 34.97 MHz @ 28.60 ns**), `clk_sys` setup `-15.48 ns`, `clk_slow` setup `+16.64 ns` (`MET`), hold `+0.23 ns` (`MET`), `check_setup` `5` constant-`1'b1` unconstrained endpoints. Reference core datapath+IO (`rst_sync` Q isolated in STA only): **WNS = -5.89 ns**, **TNS = -16999.71 ns**, **Fmax = 62.89 MHz @ 15.90 ns** (`s1_axil_awaddr[15] -> _12228_/DE`, pure reg-to-reg `-4.15 ns`). Two clean builds produced byte-identical `sta.log`/`fmax_sweep.log` and identical `synth` stats; zero hardcoded cell/Fmax strings or `/home/` paths remain.
+- **Remaining Issues:** Target `100 MHz` is **VIOLATED** (`-18.60 ns` full netlist / `-5.89 ns` datapath+IO); unbuffered 958-load `rst_sys_n` recovery is a pre-layout limitation documented in `DEC-011` pending physical reset-tree buffering (OpenLane CTS/resizer, `S-03` out of scope).
 
 ---
 
@@ -138,7 +138,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `V-07` (MAJOR): CLOSED (`rr_arbiter_props` bound, `sync_fifo` magic data-order `prove` PASS, bridge/xbar over-assumptions removed, `axil_csr` `prv+bmc` PASS in `docs/logs/phase_b_formal.log`)
 - `V-09` (BLOCKER): CLOSED (`mutation/run_mutants.py` process-group kill & strict `axil_xbar` scope; 205/240 raw 85.42%, 205/219 adj 93.61% in `docs/mutation_report.md`)
 - `V-10` (MAJOR): OPEN (assigned to Phase G G)
-- `S-01` (BLOCKER): OPEN (assigned to Phase E E1-E4)
+- `S-01` (BLOCKER): CLOSED (`synth/synth.ys` committed, `9237` cells / `3630` flops / `138086.19 um2`, dynamic OpenSTA `-18.60 ns` recovery WNS / `34.97 MHz` full netlist & `-5.89 ns` / `62.89 MHz` datapath+IO ref)
 - `REG-UART-08` (MAJOR): CLOSED (`test_ua02_fifo_full_and_overflow_flags` asserts `STATUS[5]==1` & W1C in `docs/logs/phase_a_block.log`)
 - `AXIL-R6` (BLOCKER): CLOSED (`rtl/axil/axil_csr.v` decodes `[7:2]`, `axil_csr.sby` prove+bmc+cover PASS in `docs/logs/phase_a_formal_csr.log`)
 - `RTL-axil_xbar` (MAJOR): CLOSED (`DEC-007` logged in `docs/decisions.md` without modifying `docs/spec.md`)
@@ -170,11 +170,11 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `PROBE-02` (BLOCKER): CLOSED (`0x6000_0001..3` return `OKAY` + `0xA3BA0001` in `test_cs01_reset_values` & `test_xb15_unaligned_address`)
 - `SMUT-09` (BLOCKER): CLOSED (`mutation/sanity/run_sanity.py` kills `SMUT-09` at `tb/pyuvm/sequences/directed_seqs.py:54`)
 - `SMUT-10` (BLOCKER): CLOSED (`mutation/sanity/run_sanity.py` kills `SMUT-10` at `tb/block/test_axil_xbar.py:405`)
-- `SYNTH-YS` (BLOCKER): OPEN (assigned to Phase E E1)
-- `SYNTH-STA` (BLOCKER): OPEN (assigned to Phase E E2/E3)
-- `SYNTH-REPORT` (BLOCKER): OPEN (assigned to Phase E E4)
+- `SYNTH-YS` (BLOCKER): CLOSED (`synth/synth.ys` committed and invoked by `Makefile` `synth` target in `docs/logs/phase_e_synth.log`)
+- `SYNTH-STA` (BLOCKER): CLOSED (`sta.tcl` enforces non-empty queries, keeps `rst_sys_n`/`rst_slow_n` timed per E2, runs `check_setup`, dynamic `fmax_sweep.py` parsing in `docs/logs/phase_e_sta.log`)
+- `SYNTH-REPORT` (BLOCKER): CLOSED (dynamically parsed synthesis & STA metrics in `docs/logs/phase_e_{synth,sta,fmax_sweep}.log`; `100 MHz` violation stated honestly)
 - `CI-REMOTE` (MAJOR): OPEN (assigned to Phase G G)
-- `LAYOUT-SYNTH_YS` (BLOCKER): OPEN (assigned to Phase E E1)
+- `LAYOUT-SYNTH_YS` (BLOCKER): CLOSED (`synth/synth.ys` committed at Spec Sec 15 path)
 - `METRIC-01` (BLOCKER): OPEN (assigned to Phase F F1/F2)
 - `METRIC-02` (BLOCKER): OPEN (assigned to Phase F F1/F2)
 - `METRIC-05` (BLOCKER): OPEN (assigned to Phase F F1/F2)
@@ -190,7 +190,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `DOD-03` (BLOCKER): CLOSED (`make cov-report` exits 0; 267/267 100.00% real coverage + `DEC-009`/`DEC-010` waivers)
 - `DOD-04` (MAJOR): CLOSED (10/10 formal suites PASS in `docs/logs/phase_b_formal.log` with 0 undriven-wire warnings & no weakening assumptions)
 - `DOD-05` (BLOCKER): CLOSED (frozen `mutation/mutant_list_240.json` D3 baseline 165/240 -> D5 final 205/240 raw 85.42% / 93.61% adj via `docs/mutation_report.md`)
-- `DOD-06` (BLOCKER): OPEN (assigned to Phase E E1-E4)
+- `DOD-06` (BLOCKER): CLOSED (two clean `make synth && make sta` runs yielded byte-identical `sta.log`/`fmax_sweep.log` & identical `synth` stats)
 - `DOD-07` (MAJOR): OPEN (assigned to Phase G G)
 - `DOD-08` (BLOCKER): OPEN (assigned to Phase F F2/F3/F5)
 - `DOD-09` (BLOCKER): OPEN (assigned to Phase F F6)

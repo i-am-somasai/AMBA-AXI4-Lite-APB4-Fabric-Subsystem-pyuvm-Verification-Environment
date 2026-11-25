@@ -10,7 +10,7 @@ V-06,MAJOR,PARTIAL,Phase B,B/C1,Use rr_arbiter_props.v in rr_arbiter.sby; measur
 V-07,MAJOR,PARTIAL,Phase B,B,"Wire rr_arbiter_props, add sync_fifo data-order prop, remove over-assumptions, enable CSR causality",CLOSED,rr_arbiter_props bound; sync_fifo magic data-order prove PASS; bridge/xbar over-assumptions removed; axil_csr prv+bmc PASS (docs/logs/phase_b_formal.log)
 V-09,BLOCKER,FAIL,Phase D,D1-D5,"Fix process leak & xbar scope, run fixed 240-mutant list, generate report from log",CLOSED,mutation/run_mutants.py process-group kill & strict axil_xbar scope; 205/240 raw (85.42%, up from 165/240 68.75%), 205/219 adj (93.61%) in docs/mutation_report.md
 V-10,MAJOR,NOT_RUN,Phase G,G,Align CI artifacts/steps; obtain green remote GitHub Actions URL,OPEN,Target: Phase G (G)
-S-01,BLOCKER,FAIL,Phase E,E1-E4,Commit synth.ys; remove hardcoded cell names; dynamic fmax_sweep parsing,OPEN,Target: Phase E (E1-E4)
+S-01,BLOCKER,FAIL,Phase E,E1-E4,Commit synth.ys; remove hardcoded cell names; dynamic fmax_sweep parsing,CLOSED,synth/synth.ys committed (9237 cells / 3630 flops / 138086.19 um2); sta.tcl & fmax_sweep.py dynamically query nets & parse OpenSTA output (-18.60 ns recovery WNS / 34.97 MHz full netlist; -5.89 ns / 62.89 MHz datapath+IO ref)
 REG-UART-08,MAJOR,PARTIAL,Phase A,A3,Test RX_OVF (STATUS[5]) and W1C clear in UA-02,CLOSED,test_ua02_fifo_full_and_overflow_flags asserts STATUS[5]==1 then W1C==0 (docs/logs/phase_a_block.log)
 AXIL-R6,BLOCKER,FAIL,Phase A,A1,Decode [7:2] in axil_csr.v; add CSR Rule 6 test & formal property,CLOSED,rtl/axil/axil_csr.v decodes [7:2] & formal Rule 6 prove+bmc PASS (docs/logs/phase_a_formal_csr.log); SMUT-11 KILLED
 RTL-axil_xbar,MAJOR,PARTIAL,Phase A,A2,Log inline wr_prio/rd_prio arbiter deviation in docs/decisions.md,CLOSED,DEC-007 logged in docs/decisions.md without editing docs/spec.md
@@ -42,11 +42,11 @@ MUT-SPOT5,MAJOR,FAIL,Phase D,D3/D4,Add tests for CSR w_first/rresp/scratch bits 
 PROBE-02,BLOCKER,FAIL,Phase A,A1,Verify 0x6000_0001..3 return OKAY with ID value in test & probe,CLOSED,0x6000_0001..3 return OKAY & 0xA3BA0001 in test_cs01_reset_values & test_xb15_unaligned_address
 SMUT-09,BLOCKER,FAIL,Phase A,A4,Verify permanent sanity mutant SMUT-09 (m_apb_pprot=0) is KILLED,CLOSED,mutation/sanity/run_sanity.py kills SMUT-09 at tb/pyuvm/sequences/directed_seqs.py:54 (docs/logs/phase_a_sanity.log)
 SMUT-10,BLOCKER,FAIL,Phase A,A4,Verify permanent sanity mutant SMUT-10 (xbar wr_prio stuck) is KILLED,CLOSED,mutation/sanity/run_sanity.py kills SMUT-10 at tb/block/test_axil_xbar.py:405 (docs/logs/phase_a_sanity.log)
-SYNTH-YS,BLOCKER,FAIL,Phase E,E1,Commit synth/synth.ys invoked by Makefile,OPEN,Target: Phase E (E1)
-SYNTH-STA,BLOCKER,FAIL,Phase E,E2/E3,"Use port/rst_sync constraints, verify non-empty queries, dynamic OpenSTA parsing",OPEN,Target: Phase E (E2/E3)
-SYNTH-REPORT,BLOCKER,FAIL,Phase E,E4,Report freshly measured synthesis & STA numbers dynamically,OPEN,Target: Phase E (E4)
+SYNTH-YS,BLOCKER,FAIL,Phase E,E1,Commit synth/synth.ys invoked by Makefile,CLOSED,synth/synth.ys committed at Spec Sec 15 path and invoked by Makefile synth target (docs/logs/phase_e_synth.log)
+SYNTH-STA,BLOCKER,FAIL,Phase E,E2/E3,"Use port/rst_sync constraints, verify non-empty queries, dynamic OpenSTA parsing",CLOSED,sta.tcl verifies non-empty queries, keeps rst_sys_n/rst_slow_n timed per E2, runs check_setup (5 const-1 endpoints), and fmax_sweep.py parses all values dynamically
+SYNTH-REPORT,BLOCKER,FAIL,Phase E,E4,Report freshly measured synthesis & STA numbers dynamically,CLOSED,Fresh reproducible metrics in docs/logs/phase_e_{synth,sta,fmax_sweep}.log (9237 cells, 3630 flops, 138086.19 um2, full WNS=-18.60 ns / 34.97 MHz, datapath+IO ref -5.89 ns / 62.89 MHz)
 CI-REMOTE,MAJOR,NOT_RUN,Phase G,G,User pushes branch & provides green GitHub Actions run URL,OPEN,Target: Phase G (G)
-LAYOUT-SYNTH_YS,BLOCKER,NOT_FOUND,Phase E,E1,Commit synth/synth.ys at Spec Sec 15 path,OPEN,Target: Phase E (E1)
+LAYOUT-SYNTH_YS,BLOCKER,NOT_FOUND,Phase E,E1,Commit synth/synth.ys at Spec Sec 15 path,CLOSED,synth/synth.ys committed and tracked in git
 METRIC-01,BLOCKER,FAIL,Phase F,F1/F2,Count non-blank non-comment RTL lines via gen_metrics.py,OPEN,Target: Phase F (F1/F2)
 METRIC-02,BLOCKER,FAIL,Phase F,F1/F2,Count real XML testcases & 40/40 fidelity-verified spec tests via gen_metrics.py,OPEN,Target: Phase F (F1/F2)
 METRIC-05,BLOCKER,FAIL,Phase F,F1/F2,Populate real merged functional coverage from metrics.json,OPEN,Target: Phase F (F1/F2)
@@ -62,7 +62,7 @@ DOD-02,MAJOR,PARTIAL,Phase C,C4/Final,Document 20-seed Icarus + Verilator covera
 DOD-03,BLOCKER,FAIL,Phase C,C2-C4,Real stimulus coverage closure + waivers + working make cov-report,CLOSED,make cov-report exits 0 cleanly; 267/267 (100.00%) real monitor coverage + DEC-009/010 waivers in docs/coverage_waivers.md
 DOD-04,MAJOR,PARTIAL,Phase B,B,All formal suites clean without over-assumptions or orphaned checkers,CLOSED,10/10 formal suites PASS in docs/logs/phase_b_formal.log with 0 undriven-wire warnings & no weakening assumptions
 DOD-05,BLOCKER,FAIL,Phase D,D1-D5,Reproducible 240-mutant run & script-verified survivor triage report,CLOSED,Frozen mutation/mutant_list_240.json evaluated baseline (165/240) -> final (205/240 raw 85.42%, 93.61% adj) + Yosys miter log docs/logs/mutation_equiv.log & docs/mutation_report.md
-DOD-06,BLOCKER,FAIL,Phase E,E1-E4,Verify two clean make synth && make sta runs produce identical real results,OPEN,Target: Phase E (E1-E4)
+DOD-06,BLOCKER,FAIL,Phase E,E1-E4,Verify two clean make synth && make sta runs produce identical real results,CLOSED,Two clean make synth && make sta runs produced byte-identical sta.log & fmax_sweep.log and identical synth statistics (docs/logs/phase_e_*.log)
 DOD-07,MAJOR,NOT_RUN,Phase G,G,Verify green CI run & badge with recorded URL,OPEN,Target: Phase G (G)
 DOD-08,BLOCKER,FAIL,Phase F,F2/F3/F5,"Eliminate all doc contradictions, broken links; enforce check_docs_consistency.py",OPEN,Target: Phase F (F2/F3/F5)
 DOD-09,BLOCKER,FAIL,Phase F,F6,Regenerate README resume bullets solely from docs/metrics.json,OPEN,Target: Phase F (F6)

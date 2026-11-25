@@ -18,8 +18,11 @@ export SKY130_LIB="${SKY130_LIB:-$HOME/.volare/volare/sky130/versions/0fe599b2af
 
 # Build directory inside workspace (never use small /tmp tmpfs)
 export BUILD_DIR="${BUILD_DIR:-$PROJ_DIR/build}"
-mkdir -p "$BUILD_DIR/tmp" "$BUILD_DIR/results" "$BUILD_DIR/sim_build"
+mkdir -p "$BUILD_DIR/tmp" "$BUILD_DIR/results" "$BUILD_DIR/sim_build" "$PROJ_DIR/build"
 export TMPDIR="$BUILD_DIR/tmp"
+if [ -f "$SKY130_LIB" ]; then
+    ln -sf "$SKY130_LIB" "$PROJ_DIR/build/sky130_tt.lib"
+fi
 
 # Python path
 export PYTHONPATH="$PROJ_DIR:$PROJ_DIR/tb:$PROJ_DIR/tb/unit:$PROJ_DIR/tb/pyuvm:$PROJ_DIR/tb/models${PYTHONPATH:+:$PYTHONPATH}"

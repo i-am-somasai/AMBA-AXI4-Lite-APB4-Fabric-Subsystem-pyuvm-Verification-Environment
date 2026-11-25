@@ -1,0 +1,29 @@
+# Yosys Synthesis Script for AMBA-Fabric Top (SKY130 HD)
+# Spec Section 13.1
+
+read_verilog -sv \
+    rtl/common/rst_sync.v \
+    rtl/common/sync_fifo.v \
+    rtl/common/async_fifo.v \
+    rtl/common/rr_arbiter.v \
+    rtl/axil/axil_decoder.v \
+    rtl/axil/axil_default_slave.v \
+    rtl/axil/axil_xbar.v \
+    rtl/axil/axil_ram.v \
+    rtl/axil/axil_csr.v \
+    rtl/apb/axil2apb_bridge.v \
+    rtl/apb/apb_decoder.v \
+    rtl/apb/apb_uart.v \
+    rtl/apb/apb_timer.v \
+    rtl/apb/apb_gpio.v \
+    rtl/cdc/slow_regs.v \
+    rtl/cdc/axil_cdc_bridge.v \
+    rtl/amba_fabric_top.v
+
+hierarchy -top amba_fabric_top -chparam RAM_DEPTH 64
+synth -top amba_fabric_top -flatten
+dfflibmap -liberty build/sky130_tt.lib
+abc -liberty build/sky130_tt.lib -D 10000
+opt_clean -purge
+stat -liberty build/sky130_tt.lib
+write_verilog -noattr synth/results/amba_fabric_netlist.v

@@ -116,33 +116,20 @@ mutation-sample:
 		echo "Mutation testing runner will be populated in Phase 6."; \
 	fi
 
-# Yosys Synthesis for SKY130
+# Yosys Synthesis for SKY130 (Spec Section 13.1 via synth/synth.ys)
 synth:
-	@$(ENV_CMD) && echo "=== Running Yosys Synthesis for SKY130 ===" && \
-	mkdir -p synth/results && \
-	yosys -p "\
-		read_verilog -sv $(PROJ_DIR)/rtl/common/rst_sync.v $(PROJ_DIR)/rtl/common/sync_fifo.v $(PROJ_DIR)/rtl/common/async_fifo.v $(PROJ_DIR)/rtl/common/rr_arbiter.v \
-		$(PROJ_DIR)/rtl/axil/axil_decoder.v $(PROJ_DIR)/rtl/axil/axil_default_slave.v $(PROJ_DIR)/rtl/axil/axil_xbar.v $(PROJ_DIR)/rtl/axil/axil_ram.v $(PROJ_DIR)/rtl/axil/axil_csr.v \
-		$(PROJ_DIR)/rtl/apb/axil2apb_bridge.v $(PROJ_DIR)/rtl/apb/apb_decoder.v $(PROJ_DIR)/rtl/apb/apb_uart.v $(PROJ_DIR)/rtl/apb/apb_timer.v $(PROJ_DIR)/rtl/apb/apb_gpio.v \
-		$(PROJ_DIR)/rtl/cdc/slow_regs.v $(PROJ_DIR)/rtl/cdc/axil_cdc_bridge.v $(PROJ_DIR)/rtl/amba_fabric_top.v; \
-		hierarchy -top amba_fabric_top -chparam RAM_DEPTH 64; \
-		synth -top amba_fabric_top -flatten; \
-		dfflibmap -liberty $(SKY130_LIB); \
-		abc -liberty $(SKY130_LIB) -D 10000; \
-		opt_clean -purge; \
-		stat -liberty $(SKY130_LIB); \
-		write_verilog -noattr synth/results/amba_fabric_netlist.v" | tee synth/results/synth.log
+	@$(ENV_CMD) && set -o pipefail && echo "=== Running Yosys Synthesis for SKY130 ===" && \
+	test -f "$(SKY130_LIB)" && \
+	mkdir -p synth/results $(PROJ_DIR)/build && \
+	ln -sf "$(SKY130_LIB)" "$(PROJ_DIR)/build/sky130_tt.lib" && \
+	yosys -s $(PROJ_DIR)/synth/synth.ys | sed "s|$(PROJ_DIR)/||g; s|/home/[^/ ]*/||g" | tee synth/results/synth.log
 
-# OpenSTA Static Timing Analysis
+# OpenSTA Static Timing Analysis (Spec Section 13.3)
 sta:
-	@$(ENV_CMD) && echo "=== Running OpenSTA Timing Analysis ===" && \
+	@$(ENV_CMD) && set -o pipefail && echo "=== Running OpenSTA Timing Analysis ===" && \
 	mkdir -p synth/results && \
-	if [ -f "$(PROJ_DIR)/synth/sta.tcl" ]; then \
-		sta -exit $(PROJ_DIR)/synth/sta.tcl | tee synth/results/sta.log && \
-		python3 $(PROJ_DIR)/synth/fmax_sweep.py; \
-	else \
-		echo "STA script will be populated in Phase 6."; \
-	fi
+	sta -exit $(PROJ_DIR)/synth/sta.tcl | sed "s|$(PROJ_DIR)/||g; s|/home/[^/ ]*/||g" | tee synth/results/sta.log && \
+	python3 $(PROJ_DIR)/synth/fmax_sweep.py
 
 # Clean build artifacts
 clean:
