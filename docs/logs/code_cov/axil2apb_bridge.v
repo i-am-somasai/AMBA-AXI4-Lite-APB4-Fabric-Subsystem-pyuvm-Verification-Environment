@@ -39,7 +39,7 @@
         
             // APB4 Master Interface
 ~007436     output reg  [ADDR_WIDTH-1:0] m_apb_paddr,
-~007481     output reg  [2:0]            m_apb_pprot,
+ 007481     output reg  [2:0]            m_apb_pprot,
  030066     output reg                   m_apb_psel,
  030066     output reg                   m_apb_penable,
  007527     output reg                   m_apb_pwrite,
@@ -47,7 +47,7 @@
  005273     output reg  [STRB_WIDTH-1:0] m_apb_pstrb,
  030066     input  wire                  m_apb_pready,
 ~008155     input  wire [DATA_WIDTH-1:0] m_apb_prdata,
-~007437     input  wire                  m_apb_pslverr
+ 007437     input  wire                  m_apb_pslverr
         );
         
             localparam [2:0] ST_IDLE    = 3'b000,
@@ -60,9 +60,9 @@
         
  045151     reg [2:0]            state;
 ~007436     reg [ADDR_WIDTH-1:0] reg_addr;
-~007481     reg [2:0]            reg_prot;
+ 007481     reg [2:0]            reg_prot;
 ~003816     reg [DATA_WIDTH-1:0] reg_wdata;
-~003784     reg [STRB_WIDTH-1:0] reg_wstrb;
+ 003784     reg [STRB_WIDTH-1:0] reg_wstrb;
  007527     reg                  reg_is_write;
         
  935460     always @(posedge clk or negedge rst_n) begin
@@ -109,18 +109,18 @@
  010213                         s_axil_awready <= 1'b1;
  010213                         s_axil_wready  <= 1'b1;
  010213                         state          <= ST_SETUP;
-~004872                     end else if (s_axil_awvalid) begin
-~004872                         reg_addr       <= s_axil_awaddr;
-~004872                         reg_prot       <= s_axil_awprot;
-~004872                         reg_is_write   <= 1'b1;
-~004872                         s_axil_awready <= 1'b1;
-~004872                         state          <= ST_WAIT_W;
-%000002                     end else if (s_axil_wvalid) begin
-%000002                         reg_wdata      <= s_axil_wdata;
-%000002                         reg_wstrb      <= s_axil_wstrb;
-%000002                         reg_is_write   <= 1'b1;
-%000002                         s_axil_wready  <= 1'b1;
-%000002                         state          <= ST_WAIT_AW;
+ 004872                     end else if (s_axil_awvalid) begin
+ 004872                         reg_addr       <= s_axil_awaddr;
+ 004872                         reg_prot       <= s_axil_awprot;
+ 004872                         reg_is_write   <= 1'b1;
+ 004872                         s_axil_awready <= 1'b1;
+ 004872                         state          <= ST_WAIT_W;
+~000035                     end else if (s_axil_wvalid) begin
+~000035                         reg_wdata      <= s_axil_wdata;
+~000035                         reg_wstrb      <= s_axil_wstrb;
+~000035                         reg_is_write   <= 1'b1;
+~000035                         s_axil_wready  <= 1'b1;
+~000035                         state          <= ST_WAIT_AW;
  724541                     end else if (s_axil_arvalid) begin
  014981                         reg_addr       <= s_axil_araddr;
  014981                         reg_prot       <= s_axil_arprot;
@@ -131,20 +131,20 @@
                         end
         
  009744                 ST_WAIT_W: begin
-~004872                     if (s_axil_wvalid) begin
-~004872                         reg_wdata     <= s_axil_wdata;
-~004872                         reg_wstrb     <= s_axil_wstrb;
-~004872                         s_axil_wready <= 1'b1;
-~004872                         state         <= ST_SETUP;
+ 004872                     if (s_axil_wvalid) begin
+ 004872                         reg_wdata     <= s_axil_wdata;
+ 004872                         reg_wstrb     <= s_axil_wstrb;
+ 004872                         s_axil_wready <= 1'b1;
+ 004872                         state         <= ST_SETUP;
                             end
                         end
         
-%000004                 ST_WAIT_AW: begin
-%000002                     if (s_axil_awvalid) begin
-%000002                         reg_addr       <= s_axil_awaddr;
-%000002                         reg_prot       <= s_axil_awprot;
-%000002                         s_axil_awready <= 1'b1;
-%000002                         state          <= ST_SETUP;
+~000076                 ST_WAIT_AW: begin
+~000041                     if (s_axil_awvalid) begin
+~000035                         reg_addr       <= s_axil_awaddr;
+~000035                         reg_prot       <= s_axil_awprot;
+~000035                         s_axil_awready <= 1'b1;
+~000035                         state          <= ST_SETUP;
                             end
                         end
         
@@ -179,14 +179,14 @@
                         end
         
  040450                 ST_BRESP: begin
-~025365                     if (s_axil_bready) begin
+ 025365                     if (s_axil_bready) begin
  015085                         s_axil_bvalid <= 1'b0;
  015085                         state         <= ST_IDLE;
                             end
                         end
         
  040208                 ST_RRESP: begin
-~025227                     if (s_axil_rready) begin
+ 025227                     if (s_axil_rready) begin
  014981                         s_axil_rvalid <= 1'b0;
  014981                         state         <= ST_IDLE;
                             end

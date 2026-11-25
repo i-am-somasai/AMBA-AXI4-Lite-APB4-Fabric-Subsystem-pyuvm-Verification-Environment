@@ -5,19 +5,22 @@ Per project rules, every waiver must have a detailed architectural justification
 
 ---
 
-## Summary of Defined Covergroups & Waiver Status
+## Summary of Defined Covergroups & Waiver Status (Leaf-Bin Accounting)
+
+Counts below reflect **all leaf sub-metric bins** in `tb/pyuvm/func_cov/fabric_cov.py` (32 sub-metrics across 9 covergroups) matching `docs/results.md` and `docs/vplan.md`:
 
 | Covergroup | Description | Total Defined Bins | Waived / Ignored Bins | Reachable Target Bins | Justification Reference |
 |---|---|---|---|---|---|
-| `cg_txn` | Master × Target × Op × Resp | 60 | 24 (illegal DECERR/OKAY combinations) | 36 | Protocol legality (Section 5.3 & 6) |
-| `cg_wstrb` | WSTRB patterns × Target | 64 | 0 | 64 | Fully reachable |
-| `cg_order` | Write ordering × Target | 12 | 0 | 12 | Fully reachable |
-| `cg_backpressure` | Channel × Delay bucket | 20 | 0 | 20 | Fully reachable |
-| `cg_contention` | Contention type × Op combo | 9 | 3 (`one_idle` × op-pair combinations) | 6 | Definitional contradiction (`DEC-009`) |
-| `cg_apb` | Wait-state × Error × Op & Strobe classes | 24 | 3 (`byte`/`halfword`/`word` × `RD`) | 21 | APB4 spec Sec 2.1 (`PSTRB=0` on reads, `DEC-010`) |
-| `cg_cdc` | Clock ratio × Occupancy × Op | 18 | 6 (FIFO full occupancy) | 12 | Architectural constraint (single-outstanding bridge) |
-| `cg_uart` | Baud × FIFO state & Error types | 12 | 0 | 12 | Fully reachable |
-| `cg_reset` | Reset assertion during in-flight phases | 5 | 0 | 5 | Fully reachable |
+| `cg_txn` | 5 leaf sub-metrics (Master, Target, Op, Resp, Cross) | 72 | 24 (illegal DECERR/OKAY combinations) | 48 | Protocol legality (Section 5.3 & 6) |
+| `cg_wstrb` | 3 leaf sub-metrics (Pattern, Target, Cross) | 84 | 0 | 84 | Fully reachable |
+| `cg_order` | 3 leaf sub-metrics (Order, Target, Cross) | 19 | 0 | 19 | Fully reachable |
+| `cg_backpressure` | 3 leaf sub-metrics (Channel, Delay bucket, Cross) | 29 | 0 | 29 | Fully reachable |
+| `cg_contention` | 3 leaf sub-metrics (Type, Op pair, Cross) | 15 | 3 (`one_idle` × op-pair combinations) | 12 | Definitional contradiction (`DEC-009`) |
+| `cg_apb` | 6 leaf sub-metrics (Wait, Error, Op, PSTRB class, crosses) | 36 | 3 (`byte`/`halfword`/`word` × `RD`) | 33 | APB4 spec Sec 2.1 (`PSTRB=0` on reads, `DEC-010`) |
+| `cg_cdc` | 4 leaf sub-metrics (Ratio, Occupancy, Op, Cross) | 25 | 6 (FIFO full occupancy) | 19 | Architectural constraint (single-outstanding bridge) |
+| `cg_uart` | 4 leaf sub-metrics (Baud, TX FIFO, RX FIFO, Errors) | 18 | 0 | 18 | Fully reachable |
+| `cg_reset` | 1 leaf sub-metric (In-flight reset phases) | 5 | 0 | 5 | Fully reachable |
+| **TOTAL** | **32 leaf sub-metrics across 9 covergroups** | **303** | **36** | **267** | **100.00% reachable target (267/267)** |
 
 ---
 

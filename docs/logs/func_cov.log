@@ -5,7 +5,7 @@ Merged 24 coverage database file(s):
   - docs/logs/cov_TestCoverageClosure_seed_103.yaml [source=top_level, groups=all]
   - docs/logs/cov_TestCoverageClosure_seed_60.yaml [source=top_level, groups=all]
   - docs/logs/cov_bridge_block.yaml [source=block, groups=cg_apb]
-  - docs/logs/cov_test_directed_seed_0.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_directed_seed_42.yaml [source=top_level, groups=all]
   - docs/logs/cov_test_stress_seed_1.yaml [source=top_level, groups=all]
   - docs/logs/cov_test_stress_seed_10.yaml [source=top_level, groups=all]
   - docs/logs/cov_test_stress_seed_11.yaml [source=top_level, groups=all]

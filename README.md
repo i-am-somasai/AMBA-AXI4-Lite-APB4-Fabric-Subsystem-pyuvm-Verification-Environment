@@ -103,16 +103,18 @@ flowchart TD
 
 ## 3. Subsystem Memory Map
 
-| Slave Port | Peripheral / Block | Address Base | Address Range | Clock Domain | Description |
+<!-- BEGIN:metrics:readme_memory_map -->
+| Slave Port | Peripheral / Block | Address Base | Decoded Slot Range (Size) | Clock Domain | Description |
 |---|---|---|---|---|---|
-| **S0** | **APB4 Subsystem** | `0x4000_0000` | `0x4000_0000 - 0x4FFF_FFFF` | `clk_sys` | APB bridge and peripheral multiplexer |
-| | *APB UART* | `0x4000_0000` | `0x4000_0000 - 0x4000_0010` | `clk_sys` | TX/RX data, status, baud divisor, loopback |
-| | *APB Timer* | `0x4000_1000` | `0x4000_1000 - 0x4000_100C` | `clk_sys` | 32-bit counter, load value, control/status |
-| | *APB GPIO* | `0x4000_2000` | `0x4000_2000 - 0x4000_2010` | `clk_sys` | Direction, output, input, interrupt enable |
-| **S1** | **Scratchpad RAM** | `0x5000_0000` | `0x5000_0000 - 0x5000_03FF` | `clk_sys` | 1 KB byte-addressable scratchpad memory |
-| **S2** | **System CSR** | `0x6000_0000` | `0x6000_0000 - 0x6000_0020` | `clk_sys` | Identification, scratchpads, IRQ aggregation |
-| **S3** | **CDC Slow Regs** | `0x7000_0000` | `0x7000_0000 - 0x7000_000C` | `clk_slow` | Asynchronous CDC bridge to slow registers |
+| **S0** | **APB4 Subsystem** | `0x4000_0000` | `0x4000_0000 - 0x4000_FFFF` (64 KB) | `clk_sys` | APB bridge and peripheral multiplexer (`rtl/axil/axil_decoder.v`) |
+| | *APB UART* | `0x4000_0000` | `0x4000_0000 - 0x4000_0010` (`4 KB` sub-slot `0x4000_0000 - 0x4000_0FFF`) | `clk_sys` | TX/RX data, status, baud divisor, loopback |
+| | *APB Timer* | `0x4000_1000` | `0x4000_1000 - 0x4000_100C` (`4 KB` sub-slot `0x4000_1000 - 0x4000_1FFF`) | `clk_sys` | 32-bit counter, load value, control/status |
+| | *APB GPIO* | `0x4000_2000` | `0x4000_2000 - 0x4000_2010` (`4 KB` sub-slot `0x4000_2000 - 0x4000_2FFF`) | `clk_sys` | Direction, output, input, interrupt enable |
+| **S1** | **Scratchpad RAM** | `0x5000_0000` | `0x5000_0000 - 0x5000_0FFF` (4 KB slot; `0x5000_0000 - 0x5000_03FF` = `1 KB` RAM) | `clk_sys` | Byte-addressable scratchpad; offset `>= 0x400` returns `SLVERR` |
+| **S2** | **System CSR** | `0x6000_0000` | `0x6000_0000 - 0x6000_00FF` (256 B slot; `0x6000_0000 - 0x6000_0020` active regs) | `clk_sys` | Identification, scratchpads, IRQ aggregation |
+| **S3** | **CDC Slow Regs** | `0x7000_0000` | `0x7000_0000 - 0x7000_00FF` (256 B slot; `0x7000_0000 - 0x7000_000C` active regs) | `clk_slow` | Asynchronous CDC bridge to slow registers |
 | **Default** | **Error Slave** | *All Other* | Unmapped address space | `clk_sys` | Returns `DECERR` on unmapped access |
+<!-- END:metrics:readme_memory_map -->
 
 ---
 
@@ -126,10 +128,10 @@ Every number reported below is derived from an actual execution of open-source E
 | Metric | Measured Value | Spec Reference | Log Reference / Tool |
 |---|---|---|---|
 | **RTL Modules / Lines of RTL** | **17 modules / 3,200 lines** (non-blank, non-comment) | Section 17 | [`docs/metrics.json`](docs/metrics.json) |
-| **Test Definitions / XML Runs / Spec Map** | **61 Python tests / 98 XML runs (98 PASS, 0 FAIL) / 40/40 Spec IDs** | Section 9 | [`docs/test_map.csv`](docs/test_map.csv), [`docs/vplan.md`](docs/vplan.md) |
+| **Test Definitions / XML Runs / Spec Map** | **61 Python tests / 96 XML runs (96 PASS, 0 FAIL) / 40/40 Spec IDs** | Section 9 | [`docs/test_map.csv`](docs/test_map.csv), [`docs/vplan.md`](docs/vplan.md) |
 | **Random Transactions Executed** | **200,000 transactions** (20 Verilator seeds `1..20` × 10,000 txns, 0 mismatches; plus 20 Icarus seeds `601..620` = 200,000 txns) | Section 9.1 (XB-13) | [`docs/logs/phase_c_cov_report.log`](docs/logs/phase_c_cov_report.log), [`docs/logs/regression_20seeds.log`](docs/logs/regression_20seeds.log) |
 | **Functional Coverage (cocotb-coverage)** | **100.00% (267/267 reachable bins)** across 24 merged YAMLs; 36 waived illegal/contradictory bins | Section 10 | [`docs/logs/func_cov.log`](docs/logs/func_cov.log), [`docs/coverage_waivers.md`](docs/coverage_waivers.md) |
-| **Code Coverage (Verilator)** | **Line 92.0% (494/537) \| Branch 91.2% (499/547) \| Expr 93.8% (1036/1105) \| Toggle 74.8% (10616/14202) \| FSM State 100.0% (5/5)** | Section 10 | [`docs/logs/code_cov_summary.txt`](docs/logs/code_cov_summary.txt) |
+| **Code Coverage (Verilator)** | **Line 92.4% (496/537) \| Branch 91.6% (501/547) \| Expr 93.8% (1036/1105) \| Toggle 76.2% (10821/14202) \| FSM State 100.0% (5/5)** | Section 10 | [`docs/logs/code_cov_summary.txt`](docs/logs/code_cov_summary.txt) |
 | **Formal Verification (SymbiYosys + Boolector / ABC)** | **10/10 suites PASS** (3 `k-induction (prove)`, 1 `PDR (prove)`, 1 `k-induction (prove) + BMC depth 20`, 5 `BMC depth 20..30`; 84 cover traces reached in 152s) | Section 11 | [`docs/logs/formal_suite.log`](docs/logs/formal_suite.log) |
 | **CDC Clock Ratios & Phases Swept** | **3 slow periods (25.0 ns, 10.3 ns, 6.0 ns) × 3 phases**; formal `async_fifo` BMC depth 25 & `axil_cdc_bridge` BMC depth 30 | Section 9.1 (CD-01) | [`formal/async_fifo.sby`](formal/async_fifo.sby), [`docs/logs/func_cov.log`](docs/logs/func_cov.log) |
 | **Mutation Testing (Yosys `mutate`)** | **Baseline 165/240 (68.75%) → Final 219/240 (91.25% raw)**, 0 timeouts, 0 build errors; **17 unbounded-proven/dead equivalent** (14 `equiv_induct`/SBY `prove` + 3 dead-signal), **0 bounded-equivalent (depth 10)**, **4 residual**; **Conservative Adj. 98.21% (219/223)**; Bounded-Incl. Adj. 98.21% (219/223) | Section 12 | [`docs/logs/mutation.log`](docs/logs/mutation.log), [`docs/mutation_report.md`](docs/mutation_report.md) |
@@ -273,8 +275,8 @@ make sta
 **Title line:** *AMBA AXI4-Lite/APB Fabric with pyuvm Verification Environment | Verilog-2005 (SystemVerilog-compatible RTL), Python, cocotb, pyuvm, SymbiYosys, Yosys, OpenSTA*
 
 - Designed and verified a **17-module (3,200 non-blank/non-comment lines)** AXI4-Lite `2×4` crossbar + APB4 peripheral subsystem (`UART`, `Timer`, `GPIO`), `RAM`, `CSR`, and Gray-pointer CDC bridge targeting dual clock domains (`100 MHz` / `41.67 MHz`).
-- Built a **pyuvm/cocotb** verification environment (**61 tests**, **40/40** Spec 9.1 tests passing, **98** XML testcases passing) running **200,000** Verilator stress transactions (20 seeds) plus **200,000** Icarus transactions (20 seeds) with **0 scoreboard mismatches**.
-- Closed honest functional coverage to **100.00% (267/267 reachable bins)** across 24 merged YAMLs (`36` waived bins documented) and measured Verilator code coverage of **92.0% line**, **91.2% branch**, and **93.8% expression**.
+- Built a **pyuvm/cocotb** verification environment (**61 tests**, **40/40** Spec 9.1 tests passing, **96** XML testcases passing) running **200,000** Verilator stress transactions (20 seeds) plus **200,000** Icarus transactions (20 seeds) with **0 scoreboard mismatches**.
+- Closed honest functional coverage to **100.00% (267/267 reachable bins)** across 24 merged YAMLs (`36` waived bins documented) and measured Verilator code coverage of **92.4% line**, **91.6% branch**, and **93.8% expression**.
 - Verified **10/10** SymbiYosys formal suites (3 `k-induction (prove)` + 1 `PDR (prove)` + 1 `k-induction (prove) + BMC depth 20` + 5 `BMC depth 20..30`, **84 cover traces**); improved frozen 240-mutant testing from **68.75% (165/240)** baseline to **91.25% raw (219/240)** and **98.21% conservative adjusted (219/223)** after unbounded `equiv_induct` / SBY `prove` equivalence checking (`0` bounded-equivalent depth 10).
 - Synthesized for SKY130 HD via Yosys (`RAM_DEPTH=64`: **9,237 cells**, **3,630 flops**, **138,086.19 µm²**) and ran reproducible OpenSTA sweeps (**WNS -18.60 ns** / **34.97 MHz** full netlist limited by unbuffered `rst_sys_n`; **62.89 MHz** core+I/O reference; `clk_slow` and hold met), logging **24 bugs** across RTL and verification.
 <!-- END:metrics:readme_resume_bullets -->
@@ -309,10 +311,11 @@ amba-fabric/
 │   ├── unit/                      # L0 cocotb unit tests for all common and leaf blocks
 │   ├── block/                     # L1 block tests for crossbar, bridge, peripherals, and CDC
 │   ├── pyuvm/                     # L2 subsystem pyuvm verification environment
-│   │   ├── agents/                # axil_master, axil_slave, apb_responder, uart, gpio, clk_rst
-│   │   ├── env/                   # FabricEnv, FabricScoreboard, AxilProtocolMonitor
+│   │   ├── agents/                # axil_master_agent.py (`AxilMasterAgent` UVM agent)
+│   │   ├── env/                   # fabric_env.py (`FabricEnv`), fabric_scoreboard.py (`FabricScoreboard`)
+│   │   ├── monitors/              # fabric_monitors.py (`AxilProtocolMonitor`, `CoverageCollector`)
 │   │   ├── func_cov/              # cocotb-coverage covergroup definitions (fabric_cov.py)
-│   │   ├── sequences/             # Directed and constrained-random sequences
+│   │   ├── sequences/             # axil_base_seq.py, axil_seq_item.py, coverage_closure_seq.py, directed_seqs.py, fabric_stress_seq.py
 │   │   └── tests/                 # Directed (test_directed.py) and stress (test_stress.py) tests
 │   └── models/                    # Independent Python reference models (ram, reg, addr_map, driver)
 ├── formal/                        # SymbiYosys formal verification suites (*.sby, *_props.v)

@@ -9,6 +9,11 @@ COCOTB_RESULTS_FILE ?= $(BUILD_DIR)/results/pyuvm/results_$(MODULE).xml
 $(shell mkdir -p $(dir $(SIM_BUILD)) $(dir $(COCOTB_RESULTS_FILE)) $(BUILD_DIR)/tmp)
 export TMPDIR := $(BUILD_DIR)/tmp
 
+ifdef SEED
+export COCOTB_RANDOM_SEED := $(SEED)
+export RANDOM_SEED := $(SEED)
+endif
+
 ifeq ($(SIM),icarus)
 COMPILE_ARGS += -g2012 -DCOCOTB_SIM
 endif

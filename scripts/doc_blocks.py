@@ -59,6 +59,7 @@ SPEC_TESTS_DESC = {
 def render_all_blocks(m):
     """Return {doc_rel_path: {block_name: rendered_content}} from metrics dict m."""
     rtl = m["rtl"]
+    mmap = m["memory_map"]["slots"]
     tests = m["tests"]
     reg = m["random_regression"]
     fc = m["functional_coverage"]
@@ -83,6 +84,19 @@ def render_all_blocks(m):
     ci_run_md = f"[run `{ci['run_id']}`]({ci['run_url']})" if ci.get("run_url") else "[`.github/workflows/ci.yml`](.github/workflows/ci.yml)"
 
     # ---------------- README blocks ----------------
+    readme_memory_map = "\n".join([
+        "| Slave Port | Peripheral / Block | Address Base | Decoded Slot Range (Size) | Clock Domain | Description |",
+        "|---|---|---|---|---|---|",
+        f"| **S0** | **APB4 Subsystem** | `{mmap['S0']['base']}` | `{mmap['S0']['range']}` ({mmap['S0']['size_label']}) | `clk_sys` | APB bridge and peripheral multiplexer (`rtl/axil/axil_decoder.v`) |",
+        "| | *APB UART* | `0x4000_0000` | `0x4000_0000 - 0x4000_0010` (`4 KB` sub-slot `0x4000_0000 - 0x4000_0FFF`) | `clk_sys` | TX/RX data, status, baud divisor, loopback |",
+        "| | *APB Timer* | `0x4000_1000` | `0x4000_1000 - 0x4000_100C` (`4 KB` sub-slot `0x4000_1000 - 0x4000_1FFF`) | `clk_sys` | 32-bit counter, load value, control/status |",
+        "| | *APB GPIO* | `0x4000_2000` | `0x4000_2000 - 0x4000_2010` (`4 KB` sub-slot `0x4000_2000 - 0x4000_2FFF`) | `clk_sys` | Direction, output, input, interrupt enable |",
+        f"| **S1** | **Scratchpad RAM** | `{mmap['S1']['base']}` | `{mmap['S1']['range']}` ({mmap['S1']['size_label']} slot; `0x5000_0000 - 0x5000_03FF` = `1 KB` RAM) | `clk_sys` | Byte-addressable scratchpad; offset `>= 0x400` returns `SLVERR` |",
+        f"| **S2** | **System CSR** | `{mmap['S2']['base']}` | `{mmap['S2']['range']}` ({mmap['S2']['size_label']} slot; `0x6000_0000 - 0x6000_0020` active regs) | `clk_sys` | Identification, scratchpads, IRQ aggregation |",
+        f"| **S3** | **CDC Slow Regs** | `{mmap['S3']['base']}` | `{mmap['S3']['range']}` ({mmap['S3']['size_label']} slot; `0x7000_0000 - 0x7000_000C` active regs) | `clk_slow` | Asynchronous CDC bridge to slow registers |",
+        "| **Default** | **Error Slave** | *All Other* | Unmapped address space | `clk_sys` | Returns `DECERR` on unmapped access |",
+    ])
+
     readme_badges = (
         f"[![AMBA Fabric CI](https://github.com/i-am-somasai/AMBA-AXI4-Lite-APB4-Fabric-Subsystem-pyuvm-Verification-Environment/actions/workflows/ci.yml/badge.svg?branch=remediation-r2)]"
         f"(https://github.com/i-am-somasai/AMBA-AXI4-Lite-APB4-Fabric-Subsystem-pyuvm-Verification-Environment/actions/workflows/ci.yml)\n"
@@ -305,6 +319,7 @@ def render_all_blocks(m):
 
     return {
         "README.md": {
+            "readme_memory_map": readme_memory_map,
             "readme_badges": readme_badges,
             "readme_metrics_table": readme_metrics_table,
             "readme_formal_summary": readme_formal_summary,

@@ -22,4 +22,16 @@ Additionally, **`axil_csr`** runs hybrid **`prv+bmc`** (`k-induction (prove)` wi
 
 ## 2. Simulator & Synthesis Tool Notes
 
-*This section is populated during remediation tasks (simulator warnings and static timing constraints).*
+### 2.1 Icarus Verilog `@*` Array-Sensitivity Warnings in `rtl/axil/axil_xbar.v`
+
+When compiling `rtl/axil/axil_xbar.v` with `iverilog -g2012 -Wall`, Icarus emits non-fatal sensitivity warnings on the `always @(*)` combinational muxing blocks:
+- Lines `203`–`213` (`gen_slaves`): `warning: @* is sensitive to all 5 words in array 'tgt_awaddr'` / `tgt_awprot` / `tgt_awvalid` / `tgt_wdata` / `tgt_wstrb` / `tgt_wvalid` / `tgt_bready` / `tgt_araddr` / `tgt_arprot` / `tgt_arvalid` / `tgt_rready`.
+- Lines `370`–`377` and `494`–`513` (master write/read feedback): `@* is sensitive to all 5 words in array` (`wr_active`, `active_wr_owner`, `tgt_awready`, `tgt_wready`, `tgt_bvalid`, `tgt_bresp`, `rd_active`, `active_rd_owner`, `tgt_arready`, `tgt_rvalid`, `tgt_rdata`, `tgt_rresp`, `wr_owner`, `rd_owner`) and `all 2 words in array` (`m_aw_tgt`, `m_ar_tgt`).
+
+**Impact & Disposition:**
+- `rtl/axil/axil_xbar.v` is **intentionally left untouched** so frozen mutant line/cell hashes (`mutation/mutant_list_240.json`), `17/17` sanity mutants, SKY130 synthesis, and coverage databases remain valid.
+- The warnings are benign IEEE 1364-2001/1800 event-scheduling diagnostics from indexing unpacked arrays (`wire [...] arr [0:NUM_TARGETS-1]`) inside `always @(*)`. Verilator (`make lint`: `verilator --lint-only -Wall`) compiles cleanly with zero warnings, and Yosys synthesis elaborates the combinational multiplexers identically.
+
+### 2.2 Pre-Layout Reset Fanout in OpenSTA
+
+As recorded in [`docs/decisions.md`](decisions.md) (`DEC-011`) and [`docs/results.md`](results.md), pre-layout Yosys synthesis leaves synchronized reset net `rst_sys_n` unbuffered (`fanout=958`, `cap=3.46 pF`, `slew=29.27 ns`), causing `100 MHz` `clk_sys` reset recovery to report `VIOLATED` (`WNS = -18.60 ns` / `34.97 MHz` full netlist vs `62.89 MHz` datapath+I/O reference with `rst_sync` Q isolated in STA). Physical reset-tree buffering / CTS (`S-03` OpenLane) is out of scope.

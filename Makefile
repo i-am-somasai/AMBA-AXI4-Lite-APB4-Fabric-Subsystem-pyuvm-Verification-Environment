@@ -75,14 +75,14 @@ block:
 regress:
 	@$(ENV_CMD) && echo "=== Running pyuvm Regression (SIM=$(SIM), SEEDS=$(SEEDS)) ===" && \
 	if [ -f "$(PROJ_DIR)/tb/pyuvm/Makefile" ]; then \
-		$(MAKE) -C tb/pyuvm -j$(MAX_JOBS) SIM=$(SIM) SEEDS=$(SEEDS) regress; \
+		$(MAKE) -C tb/pyuvm -j$(MAX_JOBS) SIM=$(SIM) SEEDS="$(SEEDS)" regress; \
 	else \
 		echo "pyuvm testbench Makefile will be populated in Phase 2-4."; \
 	fi
 
 # pyuvm Regression on Verilator
 regress-verilator:
-	@$(MAKE) regress SIM=verilator SEEDS=$(SEEDS)
+	@$(MAKE) regress SIM=verilator SEEDS="$(SEEDS)"
 
 # Coverage collection and reporting
 cov-report:

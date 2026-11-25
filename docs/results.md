@@ -13,10 +13,10 @@ This document records **real, measured results** generated strictly from [`docs/
 | Metric | Measured Value | Spec Reference | Log / Source |
 |---|---|---|---|
 | RTL Modules / Non-Blank Non-Comment Lines | **17 modules / 3,200 lines** | Section 17 | [`docs/metrics.json`](metrics.json) |
-| Test Definitions / XML Runs / Spec Map | **61 defs / 98 XML runs (98 PASS, 0 FAIL) / 40/40 PASS** | Section 9 | [`docs/test_map.csv`](test_map.csv), [`docs/vplan.md`](vplan.md) |
+| Test Definitions / XML Runs / Spec Map | **61 defs / 96 XML runs (96 PASS, 0 FAIL) / 40/40 PASS** | Section 9 | [`docs/test_map.csv`](test_map.csv), [`docs/vplan.md`](vplan.md) |
 | Random Transactions Executed | **200,000** (Verilator seeds `1..20`, 0 mismatches) + **200,000** (Icarus seeds `601..620`, 0 mismatches) | Section 9.1 (XB-13) | [`docs/logs/phase_c_cov_report.log`](logs/phase_c_cov_report.log), [`docs/logs/regression_20seeds.log`](logs/regression_20seeds.log) |
 | Functional Coverage | **100.00% (267/267 reachable)**, 36 waived, 24 merged YAMLs | Section 10 | [`docs/logs/func_cov.log`](logs/func_cov.log), [`docs/coverage_waivers.md`](coverage_waivers.md) |
-| Code Coverage (Verilator) | **Line 92.0% \| Branch 91.2% \| Expr 93.8% \| Toggle 74.8% \| FSM State 100.0%** | Section 10 | [`docs/logs/code_cov_summary.txt`](logs/code_cov_summary.txt) |
+| Code Coverage (Verilator) | **Line 92.4% \| Branch 91.6% \| Expr 93.8% \| Toggle 76.2% \| FSM State 100.0%** | Section 10 | [`docs/logs/code_cov_summary.txt`](logs/code_cov_summary.txt) |
 | Formal Verification (SymbiYosys) | **10/10 suites PASS** (3 `k-induction (prove)`, 1 `PDR (prove)`, 1 `k-induction (prove) + BMC depth 20`, 5 `BMC depth 20..30`; 84 covers) | Section 11 | [`docs/logs/formal_suite.log`](logs/formal_suite.log) |
 | CDC Sweeps | **3 periods (25.0 ns, 10.3 ns, 6.0 ns) × 3 phases**; formal depth 25 / 30 | Section 9.1 (CD-01) | [`docs/logs/func_cov.log`](logs/func_cov.log) |
 | Mutation Testing (240 Frozen Mutants) | **Baseline 165/240 (68.75%) → Final 219/240 (91.25% raw / 98.21% conservative adj, 98.21% bounded-incl)**; Sanity Gate: **17/17 KILLED** | Section 12 | [`docs/mutation_report.md`](mutation_report.md), [`docs/logs/sanity.log`](logs/sanity.log) |
@@ -99,10 +99,10 @@ This document records **real, measured results** generated strictly from [`docs/
 <!-- BEGIN:metrics:results_code_cov_table -->
 | Verilator Code Coverage Metric | Covered Points | Total Points | Coverage % |
 |---|---:|---:|---:|
-| Line | 494 | 537 | **92.0%** |
-| Branch | 499 | 547 | **91.2%** |
+| Line | 496 | 537 | **92.4%** |
+| Branch | 501 | 547 | **91.6%** |
 | Expression | 1,036 | 1,105 | **93.8%** |
-| Toggle | 10,616 | 14,202 | **74.8%** |
+| Toggle | 10,821 | 14,202 | **76.2%** |
 | FSM State | 5 | 5 | **100.0%** |
 | FSM Arc | 1 | 4 | **25.0%** |
 <!-- END:metrics:results_code_cov_table -->

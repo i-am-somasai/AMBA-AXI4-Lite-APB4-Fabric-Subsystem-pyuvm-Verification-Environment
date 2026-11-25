@@ -511,6 +511,35 @@ def parse_sta():
     }
 
 
+def parse_memory_map():
+    """Parse authoritative AXI4-Lite slave base/mask parameters from rtl/axil/axil_decoder.v."""
+    dec_path = PROJ_DIR / "rtl" / "axil" / "axil_decoder.v"
+    txt = dec_path.read_text(encoding="utf-8")
+    slots = {}
+    for idx in range(4):
+        bm = re.search(rf"parameter\s+\[31:0\]\s+S{idx}_BASE\s*=\s*32'h([0-9A-Fa-f_]+)", txt)
+        mm = re.search(rf"parameter\s+\[31:0\]\s+S{idx}_MASK\s*=\s*32'h([0-9A-Fa-f_]+)", txt)
+        if not bm or not mm:
+            raise RuntimeError(f"Could not parse S{idx}_BASE/S{idx}_MASK from {dec_path}")
+        base = int(bm.group(1).replace("_", ""), 16)
+        mask = int(mm.group(1).replace("_", ""), 16)
+        end = base | (~mask & 0xFFFFFFFF)
+        size_bytes = (~mask & 0xFFFFFFFF) + 1
+        if size_bytes >= 1024:
+            size_str = f"{size_bytes // 1024} KB"
+        else:
+            size_str = f"{size_bytes} B"
+        slots[f"S{idx}"] = {
+            "base": f"0x{base >> 16:04X}_{base & 0xFFFF:04X}",
+            "end": f"0x{end >> 16:04X}_{end & 0xFFFF:04X}",
+            "mask": f"0x{mask >> 16:04X}_{mask & 0xFFFF:04X}",
+            "range": f"0x{base >> 16:04X}_{base & 0xFFFF:04X} - 0x{end >> 16:04X}_{end & 0xFFFF:04X}",
+            "size_bytes": size_bytes,
+            "size_label": size_str,
+        }
+    return {"source": dec_path.relative_to(PROJ_DIR).as_posix(), "slots": slots}
+
+
 def parse_ci_status():
     ci_path = PROJ_DIR / "docs" / "logs" / "ci_remote_verified.json"
     if ci_path.exists():
@@ -537,10 +566,12 @@ def main():
     synth = parse_synthesis()
     sta = parse_sta()
     ci = parse_ci_status()
+    mmap = parse_memory_map()
 
     metrics = {
         "schema_version": 1,
         "rtl": rtl,
+        "memory_map": mmap,
         "tests": {
             "unique_defs_total": test_defs["unique_defs_total"],
             "unique_defs_by_tier": test_defs["by_tier"],

@@ -8,6 +8,11 @@ COCOTB_RESULTS_FILE ?= $(BUILD_DIR)/results/block/results_$(MODULE).xml
 
 $(shell mkdir -p $(dir $(SIM_BUILD)) $(dir $(COCOTB_RESULTS_FILE)) $(BUILD_DIR)/tmp)
 export TMPDIR := $(BUILD_DIR)/tmp
+
+ifdef SEED
+export COCOTB_RANDOM_SEED := $(SEED)
+export RANDOM_SEED := $(SEED)
+endif
 export PYTHONPATH := $(PROJ_DIR):$(PROJ_DIR)/tb:$(PROJ_DIR)/tb/models:$(PROJ_DIR)/tb/pyuvm:$(PYTHONPATH)
 
 ifeq ($(SIM),icarus)

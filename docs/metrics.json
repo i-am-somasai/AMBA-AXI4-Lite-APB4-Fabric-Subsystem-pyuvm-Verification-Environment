@@ -92,6 +92,43 @@
       }
     ]
   },
+  "memory_map": {
+    "source": "rtl/axil/axil_decoder.v",
+    "slots": {
+      "S0": {
+        "base": "0x4000_0000",
+        "end": "0x4000_FFFF",
+        "mask": "0xFFFF_0000",
+        "range": "0x4000_0000 - 0x4000_FFFF",
+        "size_bytes": 65536,
+        "size_label": "64 KB"
+      },
+      "S1": {
+        "base": "0x5000_0000",
+        "end": "0x5000_0FFF",
+        "mask": "0xFFFF_F000",
+        "range": "0x5000_0000 - 0x5000_0FFF",
+        "size_bytes": 4096,
+        "size_label": "4 KB"
+      },
+      "S2": {
+        "base": "0x6000_0000",
+        "end": "0x6000_00FF",
+        "mask": "0xFFFF_FF00",
+        "range": "0x6000_0000 - 0x6000_00FF",
+        "size_bytes": 256,
+        "size_label": "256 B"
+      },
+      "S3": {
+        "base": "0x7000_0000",
+        "end": "0x7000_00FF",
+        "mask": "0xFFFF_FF00",
+        "range": "0x7000_0000 - 0x7000_00FF",
+        "size_bytes": 256,
+        "size_label": "256 B"
+      }
+    }
+  },
   "tests": {
     "unique_defs_total": 61,
     "unique_defs_by_tier": {
@@ -120,10 +157,10 @@
       "tb/unit/test_rst_sync.py": 1,
       "tb/unit/test_sync_fifo.py": 1
     },
-    "xml_testcases_executed": 98,
-    "xml_testcases_passed": 98,
+    "xml_testcases_executed": 96,
+    "xml_testcases_passed": 96,
     "xml_testcases_failed": 0,
-    "xml_file_count": 41,
+    "xml_file_count": 39,
     "spec_tests_total": 40,
     "spec_tests_passed": 40,
     "spec_tests_failed": 0,
@@ -472,44 +509,44 @@
     },
     "waiver_summary": {
       "cg_txn": {
-        "defined": 60,
+        "defined": 72,
         "waived": 24,
-        "reachable": 36
+        "reachable": 48
       },
       "cg_wstrb": {
-        "defined": 64,
+        "defined": 84,
         "waived": 0,
-        "reachable": 64
+        "reachable": 84
       },
       "cg_order": {
-        "defined": 12,
+        "defined": 19,
         "waived": 0,
-        "reachable": 12
+        "reachable": 19
       },
       "cg_backpressure": {
-        "defined": 20,
+        "defined": 29,
         "waived": 0,
-        "reachable": 20
+        "reachable": 29
       },
       "cg_contention": {
-        "defined": 9,
+        "defined": 15,
         "waived": 3,
-        "reachable": 6
+        "reachable": 12
       },
       "cg_apb": {
-        "defined": 24,
+        "defined": 36,
         "waived": 3,
-        "reachable": 21
+        "reachable": 33
       },
       "cg_cdc": {
-        "defined": 18,
+        "defined": 25,
         "waived": 6,
-        "reachable": 12
+        "reachable": 19
       },
       "cg_uart": {
-        "defined": 12,
+        "defined": 18,
         "waived": 0,
-        "reachable": 12
+        "reachable": 18
       },
       "cg_reset": {
         "defined": 5,
@@ -521,18 +558,18 @@
   "code_coverage": {
     "log": "docs/logs/code_cov_summary.txt",
     "line": {
-      "pct": 92.0,
-      "hit": 494,
+      "pct": 92.4,
+      "hit": 496,
       "total": 537
     },
     "toggle": {
-      "pct": 74.8,
-      "hit": 10616,
+      "pct": 76.2,
+      "hit": 10821,
       "total": 14202
     },
     "branch": {
-      "pct": 91.2,
-      "hit": 499,
+      "pct": 91.6,
+      "hit": 501,
       "total": 547
     },
     "expr": {

@@ -100,3 +100,43 @@ Tracks closure of the **16 MAJOR** findings (and targeted fidelity / documentati
   - `make formal` -> `Formal suite PASSED (10/10 modules clean)` (`docs/logs/formal_suite.log`).
   - `python3 scripts/gen_metrics.py && python3 scripts/gen_docs.py && make lint` -> `0` diffs, `0` stale strings, `0` broken links, Verilator lint clean.
   - `make unit SIM=icarus && make block SIM=icarus && make sanity && make lint` -> all unit/block tests PASS, `17/17 KILLED` sanity gate (`docs/logs/sanity.log`), lint clean.
+
+---
+
+### Task R3-4 — Decoder-Driven README Memory Map, Coverage Waivers Alignment, Decisions, Limitations & Deterministic Coverage (`DOC-README-ADDR`, `COV-WAIVERS-DOC`, `LINT-ICARUS`, `DOC-README-TREE`, `DOC-DECISIONS`, `CLONE-REGRESS`, `COV-CODE`, `DOD-08`)
+
+#### Pre-Task Acceptance Checks (Written Before Execution)
+1. **Decoder-driven `README.md` Memory Map (`DOC-README-ADDR`):**
+   - Generate `<!-- BEGIN:metrics:readme_memory_map -->` in `README.md` Section 3 from `rtl/axil/axil_decoder.v` (`S0` = `0x4000_0000 - 0x4000_FFFF`, `64 KB`; `S1` = `0x5000_0000 - 0x5000_0FFF`, `4 KB` slot / `1 KB` RAM; `S2` = `0x6000_0000 - 0x6000_00FF`, `256 B`; `S3` = `0x7000_0000 - 0x7000_00FF`, `256 B`) via `scripts/gen_metrics.py` + `scripts/doc_blocks.py`.
+   - Update `scripts/check_docs_consistency.py` to parse `rtl/axil/axil_decoder.v` directly and fail with non-zero exit if `README.md` disagrees with `axil_decoder.v`.
+   - Verification check: `python3 scripts/check_docs_consistency.py` exits `0`, and mutating a temporary copy / assertion check proves mismatch fails.
+2. **Repository tree, waivers table, `decisions.md`, and Icarus warnings (`DOC-README-TREE`, `COV-WAIVERS-DOC`, `DOC-DECISIONS`, `LINT-ICARUS`):**
+   - Update `README.md` Section 10 `tb/pyuvm/agents/` to list only `axil_master_agent.py` (matching disk).
+   - Update `docs/coverage_waivers.md` summary table to leaf-bin counts matching `docs/results.md` / `docs/vplan.md` (`303` defined pre-waiver, `36` waived, `267` reachable target).
+   - Append `DEC-014` (`axil_default_slave` & `axil_decoder` inside `axil_xbar` vs Spec Sec 7.6) and `DEC-015` (fixed top-level `NUM_MASTERS=2` and internal CDC `async_fifo` `DEPTH=4`) to `docs/decisions.md`.
+   - Leave `rtl/axil/axil_xbar.v` untouched (`git diff --name-only rtl/` empty) and document Icarus `iverilog -Wall` `@*` array-sensitivity warnings in `docs/limitations.md`.
+3. **Multi-seed `Makefile` quoting & deterministic `make cov-report` (`CLONE-REGRESS`, `COV-CODE`, `DOD-08`):**
+   - Quote `"$(SEEDS)"` in `Makefile` (`regress` and `regress-verilator`); fix deterministic `SEED`s for `test_directed` and `test_axil2apb_bridge` in `scripts/run_regression.sh`.
+   - Commands & Expected:
+     - `make regress SIM=icarus SEEDS="741 742"` -> `EXIT 0` (2 seeds complete cleanly; temp seed YAMLs cleaned so tracked `docs/logs/cov_*.yaml` stay exact).
+     - Run `make cov-report` **twice from clean** (`docs/logs/code_cov_summary.txt` diffed between Run 1 and Run 2 -> **byte-identical, 0 diff**), then run `python3 scripts/gen_metrics.py && python3 scripts/gen_docs.py && make lint` (`EXIT 0`).
+     - Verify `0` uncommitted RTL changes (`git diff --name-only rtl/` empty) and clean `git status` before committing `fix(R3-04): ...`.
+
+#### Measured Results & Evidence
+- **Status:** `DONE`
+- **No RTL Edits:** Zero files under `rtl/` were modified (`git diff --name-only rtl/` empty).
+- **Decoder-Driven `README.md` Memory Map (`DOC-README-ADDR`):**
+  - Added `parse_memory_map()` in [`scripts/gen_metrics.py`](../scripts/gen_metrics.py) parsing `S0_BASE`/`S0_MASK`..`S3_BASE`/`S3_MASK` directly from [`rtl/axil/axil_decoder.v`](../rtl/axil/axil_decoder.v) (`S0`: `0x4000_0000 - 0x4000_FFFF`, `64 KB`; `S1`: `0x5000_0000 - 0x5000_0FFF`, `4 KB` slot / `1 KB` RAM; `S2`: `0x6000_0000 - 0x6000_00FF`, `256 B`; `S3`: `0x7000_0000 - 0x7000_00FF`, `256 B`), rendered into `README.md` via [`scripts/doc_blocks.py`](../scripts/doc_blocks.py) (`<!-- BEGIN:metrics:readme_memory_map -->`).
+  - Added `verify_readme_matches_decoder()` and `0x4FFF_FFFF` forbidden-pattern check in [`scripts/check_docs_consistency.py`](../scripts/check_docs_consistency.py); negative test with `0x4FFF_FFFF` failed as expected (`NEGATIVE CHECK PASS`).
+- **Repository Tree, Coverage Waivers, Decisions & Icarus Warnings (`DOC-README-TREE`, `COV-WAIVERS-DOC`, `DOC-DECISIONS`, `LINT-ICARUS`):**
+  - Updated `README.md` Section 10 `tb/pyuvm/` tree so `agents/` lists only [`tb/pyuvm/agents/axil_master_agent.py`](../tb/pyuvm/agents/axil_master_agent.py) alongside actual `env/`, `monitors/`, `func_cov/`, `sequences/`, and `tests/` files.
+  - Updated [`docs/coverage_waivers.md`](coverage_waivers.md) summary table to leaf-bin accounting matching `docs/results.md` and `docs/vplan.md` (**303** defined pre-waiver, **36** waived, **267** reachable target across 32 leaf sub-metrics).
+  - Appended `DEC-014` (encapsulation of `axil_decoder` and `axil_default_slave` inside `axil_xbar` vs Spec Sec 7.6) and `DEC-015` (fixed `NUM_MASTERS=2`, `NUM_SLAVES=4`, `FIFO_DEPTH=4` on `amba_fabric_top` sub-instances) to [`docs/decisions.md`](decisions.md).
+  - Left [`rtl/axil/axil_xbar.v`](../rtl/axil/axil_xbar.v) untouched and documented `iverilog -g2012 -Wall` `@*` array-sensitivity warnings in [`docs/limitations.md`](limitations.md).
+- **Multi-Seed `Makefile` Quoting & Deterministic `make cov-report` (`CLONE-REGRESS`, `COV-CODE`, `DOD-08`):**
+  - Quoted `"$(SEEDS)"` in [`Makefile`](../Makefile) lines `78` and `85`; verified `make regress SIM=icarus SEEDS="741 742"` passes both seeds with zero scoreboard mismatches (temp seed YAMLs cleaned afterwards).
+  - Pinned `SEED`, `COCOTB_RANDOM_SEED`, and `RANDOM_SEED` propagation in [`tb/pyuvm/Makefile.single`](../tb/pyuvm/Makefile.single), [`tb/block/Makefile.single`](../tb/block/Makefile.single), and [`scripts/run_regression.sh`](../scripts/run_regression.sh) (`42` for `test_directed` & `test_axil2apb_bridge`, `${s}` for seeds `1..20`).
+  - Executed `make cov-report` **twice from clean** (`build/r3_4_cov/run1.log`, `build/r3_4_cov/run2.log`): `diff -u` on `code_cov_summary.txt` and `func_cov.log` reported **zero differences** (`CODE_COV_IDENTICAL=YES`, `FUNC_COV_IDENTICAL=YES`): Line **92.4% (496/537)**, Branch **91.6% (501/547)**, Expression **93.8% (1036/1105)**, Toggle **76.2% (10821/14202)**, FSM State **100.0% (5/5)**, FSM Arc **25.0% (1/4)**, Functional **100.00% (267/267)** across 24 merged YAMLs (`docs/logs/phase_c_cov_report.log`, `docs/logs/code_cov_summary.txt`, `docs/logs/func_cov.log`).
+- **Final Verification Gates (`EXIT 0`):**
+  - Stripped `/home/<user>/` paths from `docs/logs/r3_1_regress_20seeds.log` and `docs/logs/phase_c_cov_report.log`.
+  - `make unit SIM=icarus && make block SIM=icarus && make sanity && make lint`: all unit/block XMLs PASS, `17/17 KILLED` sanity gate (`docs/logs/sanity.log`), `README.md`/`docs/results.md`/`docs/vplan.md` regenerated cleanly from `docs/metrics.json` with zero consistency errors and clean Verilator lint.

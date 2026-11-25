@@ -29,13 +29,13 @@ mkdir -p "${COV_DAT_DIR}"
 # 2. Run Top-Level Directed Tests (XB-09..XB-15, CDC ratio sweeps 25ns / 10.3ns / 6.0ns)
 echo ">>> Step 1/4: Running pyuvm Directed & CDC Sweep Verification Suite..."
 rm -f "${PROJ_DIR}/tb/pyuvm/coverage.dat"
-make -C "${PROJ_DIR}/tb/pyuvm" -j2 test_directed SIM=verilator VERILATOR_COVERAGE=1
+SEED=42 COCOTB_RANDOM_SEED=42 RANDOM_SEED=42 make -C "${PROJ_DIR}/tb/pyuvm" -j2 test_directed SIM=verilator VERILATOR_COVERAGE=1
 cp "${PROJ_DIR}/tb/pyuvm/coverage.dat" "${COV_DAT_DIR}/coverage_directed.dat"
 
 # 3. Run Block-Level AXI4-Lite to APB4 Bridge Coverage Closure (cg_apb wait states & PSTRB=0)
 echo ">>> Step 2/4: Running Block-Level Bridge Tests (cg_apb wait states & PSTRB=0)..."
 rm -f "${PROJ_DIR}/tb/block/coverage.dat"
-make -C "${PROJ_DIR}/tb/block" -j2 test_axil2apb_bridge SIM=verilator VERILATOR_COVERAGE=1
+SEED=42 COCOTB_RANDOM_SEED=42 RANDOM_SEED=42 make -C "${PROJ_DIR}/tb/block" -j2 test_axil2apb_bridge SIM=verilator VERILATOR_COVERAGE=1
 cp "${PROJ_DIR}/tb/block/coverage.dat" "${COV_DAT_DIR}/coverage_bridge_block.dat"
 
 # 4. Run 20-Seed Stress Regression (XB-13: 20 seeds x 10,000 txns = 200,000 txns total)
@@ -46,7 +46,7 @@ echo ">>> Step 3/4: Running 20-Seed Stress Regression (${NUM_TRANS}*2 txns/seed)
 for s in ${SEEDS_STR}; do
     echo "    -> Running Seed ${s} ($((NUM_TRANS * 2)) concurrent transactions)..."
     rm -f "${PROJ_DIR}/tb/pyuvm/coverage.dat"
-    SEED=${s} NUM_TRANS_PER_MASTER=${NUM_TRANS} \
+    SEED=${s} COCOTB_RANDOM_SEED=${s} RANDOM_SEED=${s} NUM_TRANS_PER_MASTER=${NUM_TRANS} \
     make -C "${PROJ_DIR}/tb/pyuvm" -j2 test_stress \
         SIM=verilator VERILATOR_COVERAGE=1 \
         STRESS_SIM_BUILD="${BUILD_DIR}/sim_build/pyuvm_stress_cov" \

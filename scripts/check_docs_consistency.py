@@ -18,6 +18,7 @@ import re
 import sys
 from pathlib import Path
 from doc_blocks import PROJ_DIR, apply_blocks_to_text, render_all_blocks
+from gen_metrics import parse_memory_map
 
 FORBIDDEN_STALE_PATTERNS = [
     r"being re-measured",
@@ -29,7 +30,25 @@ FORBIDDEN_STALE_PATTERNS = [
     r"\b3,759\b",
     r"\b8/8 proven\b",
     r"exhaustively proven",
+    r"0x4FFF_FFFF",
 ]
+
+
+def verify_readme_matches_decoder(readme_text, expected_mmap):
+    """Fail if README.md Section 3 slot ranges disagree with rtl/axil/axil_decoder.v."""
+    errors = []
+    for slot, info in expected_mmap["slots"].items():
+        row_m = re.search(rf"^\|\s*\*\*{slot}\*\*\s*\|[^\n]*", readme_text, flags=re.M)
+        if not row_m:
+            errors.append(f"README.md: missing memory map row for {slot}")
+            continue
+        row = row_m.group(0)
+        if info["range"] not in row or f"({info['size_label']}" not in row:
+            errors.append(
+                f"README.md {slot} memory map row '{row}' disagrees with rtl/axil/axil_decoder.v "
+                f"(expected range '{info['range']}' and size '{info['size_label']}')"
+            )
+    return errors
 
 
 def main():
@@ -39,8 +58,12 @@ def main():
         sys.exit(1)
 
     metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
+    live_mmap = parse_memory_map()
     rendered = render_all_blocks(metrics)
     errors = []
+    if metrics.get("memory_map") != live_mmap:
+        errors.append("docs/metrics.json memory_map disagrees with rtl/axil/axil_decoder.v; re-run scripts/gen_metrics.py")
+    errors.extend(verify_readme_matches_decoder((PROJ_DIR / "README.md").read_text(encoding="utf-8"), live_mmap))
 
     # 1. Regenerate every metrics block and fail on any diff
     for rel_path, blocks in rendered.items():
