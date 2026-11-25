@@ -14,7 +14,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 | **Phase D** | Mutation (`run_mutants.py` process group kill, `axil_xbar` scope fix, CSR/bridge test gaps, 240-mutant run, script-generated report) | `DONE` | [`docs/mutation_report.md`](mutation_report.md) |
 | **Phase E** | Synthesis & STA (`synth/synth.ys`, portable reset false-path constraints, dynamic `fmax_sweep.py` parsing, clean measurements) | `DONE` | [`docs/logs/phase_e_fmax_sweep.log`](logs/phase_e_fmax_sweep.log) |
 | **Phase F** | Data-driven docs (`scripts/gen_metrics.py`, `docs/metrics.json`, regenerate docs, `bugs.md` / `decisions.md` / `interfaces.md`, CI check scripts) | `DONE` | [`docs/metrics.json`](metrics.json) |
-| **Phase G** | CI (`ci.yml` artifact/command alignment, fresh checkout check, remote GitHub Actions verification) | `TODO` | - |
+| **Phase G** | CI (`ci.yml` artifact/command alignment, fresh checkout check, remote GitHub Actions verification) | `PARTIAL` | [`docs/logs/phase_g_ci_local_check.log`](logs/phase_g_ci_local_check.log) (awaiting remote push) |
 | **Final** | Clean-clone full re-measure & `remediation-r2-done` tag | `TODO` | - |
 
 ---
@@ -108,14 +108,14 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 ---
 
 ### Phase G: CI & Final Clean-Clone Re-Measure (`CI-WORKFLOW`, `CI-REMOTE`, `V-10`)
-- **Status:** `TODO`
-- **Files Changed:** Pending
-- **Commands Run:** Pending
-- **Log Paths:** Pending
+- **Status:** `PARTIAL` (local workflow alignment & clean-clone CI dry run `PASS`; awaiting user push + green GitHub Actions URL)
+- **Files Changed:** `.github/workflows/ci.yml`, `Makefile`, `tb/{unit,block}/Makefile.single`, `mutation/run_mutants.py`, `README.md`, `docs/{FIX_REPORT_R2.md,logs/phase_g_ci_local_check.log}`
+- **Commands Run:** Fresh clean clone (`build/clean_clone_ci`) with `scripts/env.sh` removed and isolated `HOME`: `./scripts/check_no_synthetic_cov.sh`, `python3 scripts/check_bug_refs.py`, `python3 scripts/check_docs_consistency.py`, `make lint`, `make unit SIM=icarus`, `make block SIM=icarus`, `make regress SIM=icarus SEEDS=3`, `python3 mutation/sanity/run_sanity.py`, `make formal`, `make mutation-sample`
+- **Log Paths:** [`docs/logs/phase_g_ci_local_check.log`](logs/phase_g_ci_local_check.log)
 - **Before / After Numbers:**
-  - Before: `CI Status: PASS` unverified on GitHub; CI uploads unbuilt `docs/logs/` & `synth/results/`.
-  - After: Pending Phase G execution.
-- **Remaining Issues:** None yet.
+  - Before: `CI Status: PASS` unverified on GitHub; `.github/workflows/ci.yml` did not trigger on `remediation-*` branches and uploaded unbuilt `docs/logs/` & `synth/results/`; `tb/{unit,block}/Makefile.single` depended on `scripts/env.sh` `PYTHONPATH`.
+  - After: `.github/workflows/ci.yml` triggers on `[main, 'phase-*', 'remediation-*']`, pins `YosysHQ/setup-oss-cad-suite@v3` (`2026-11-22`) matching local `~/oss-cad-suite/VERSION` (`20261122`) and `requirements.txt`, adds `check_no_synthetic_cov.sh`, `check_bug_refs.py`, `check_docs_consistency.py`, `run_sanity.py`, and uploads only built artifacts (`build/results/` & `docs/logs/formal_suite.log`). All 10 CI steps passed in an isolated clean clone without `scripts/env.sh`. Local `CI Status` remains `NOT VERIFIED` pending user push.
+- **Remaining Issues:** `V-10`, `CI-REMOTE`, `METRIC-14`, `DOD-07` remain `OPEN` until `remediation-r2` is pushed to GitHub and a green GitHub Actions run URL is recorded in `docs/metrics.json` & docs.
 
 ---
 
