@@ -140,3 +140,28 @@ Tracks closure of the **16 MAJOR** findings (and targeted fidelity / documentati
 - **Final Verification Gates (`EXIT 0`):**
   - Stripped `/home/<user>/` paths from `docs/logs/r3_1_regress_20seeds.log` and `docs/logs/phase_c_cov_report.log`.
   - `make unit SIM=icarus && make block SIM=icarus && make sanity && make lint`: all unit/block XMLs PASS, `17/17 KILLED` sanity gate (`docs/logs/sanity.log`), `README.md`/`docs/results.md`/`docs/vplan.md` regenerated cleanly from `docs/metrics.json` with zero consistency errors and clean Verilator lint.
+
+---
+
+### Task R3-5 — CI Alignment, Clean-Clone Verification & Remote Actions Check (`V-10`, `CI-REMOTE`, `METRIC-14`, `DOD-07`)
+
+#### Pre-Task Acceptance Checks (Written Before Execution)
+1. **CI Workflow & Honest Pre-Push CI Status:**
+   - Update `.github/workflows/ci.yml` `on.push.branches` to include `'release-*'` so pushing `release-prep` triggers GitHub Actions.
+   - Update `docs/logs/ci_remote_verified.json` to `PENDING` (no stale `c46cc77` PASS claim for `release-prep`) and `scripts/doc_blocks.py` (`?branch=release-prep`, valid relative link in `docs/results.md`), then run `python3 scripts/gen_metrics.py && python3 scripts/gen_docs.py && make lint` -> `EXIT 0`.
+2. **Clean-Clone Reproduction (`build/r3_5_clean_clone`):**
+   - Clone tracked files (`git clone --local . build/r3_5_clean_clone`), source `scripts/env.sh`, and run the exact CI & README quick-start commands:
+     `make lint && make unit SIM=icarus && make block SIM=icarus && make regress SIM=icarus SEEDS=1 && make sanity && make formal && make mutation-sample`
+   - Plus `grep -rn "/home/" .` inside the clean clone (excluding generated/symlinked `.venv` or `build/`) -> **0 matches** in tracked files, and every CI step **PASS (`EXIT 0`)**.
+3. **Branch Push & Remote Actions Confirmation:**
+   - Commit `fix(R3-05): ...` cleanly, push `release-prep` to `origin` (or pause for user push if credentials are not configured in this sandbox), and confirm the Actions run is green with commit SHA matching `git rev-parse HEAD`.
+
+#### Measured Results & Evidence
+- **Status:** `PARTIAL` (all local clean-clone CI checks pass; awaiting remote GitHub Actions push/green URL & matching SHA confirmation)
+- **CI Workflow & Honest Remote Tracking:**
+  - Updated [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) `on.push.branches` to `[ main, 'phase-*', 'remediation-*', 'release-*' ]`.
+  - Updated [`docs/logs/ci_remote_verified.json`](logs/ci_remote_verified.json) from stale `c46cc77` PASS to `"status": "PENDING"` for `release-prep`, updated badge branch to `release-prep` in [`scripts/doc_blocks.py`](../scripts/doc_blocks.py), and regenerated `docs/metrics.json`, `README.md`, `docs/results.md`, and `docs/vplan.md`.
+- **Clean-Clone Full CI Reproduction ([`docs/logs/clean_clone_r3.log`](logs/clean_clone_r3.log)):**
+  - Cloned committed tree (`git clone --local . build/r3_5_clean_clone`) and ran the entire `.github/workflows/ci.yml` sequence:
+    `./scripts/check_no_synthetic_cov.sh && python3 scripts/check_bug_refs.py && python3 scripts/check_docs_consistency.py && make lint && make unit SIM=icarus && make block SIM=icarus && make regress SIM=icarus SEEDS=1 && python3 mutation/sanity/run_sanity.py && make formal && make mutation-sample`
+  - Every step exited `0` (`CLEAN_CLONE_CI_PASS=YES`; `17/17` sanity killed; `10/10` formal PASS; `21/24 = 87.50%` sampled mutation, `0` timeouts, `0` build errors; zero personal `/home/<user>/` paths in tracked files).

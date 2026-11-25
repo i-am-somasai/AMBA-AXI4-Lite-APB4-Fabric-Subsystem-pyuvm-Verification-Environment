@@ -993,13 +993,13 @@
     "reset_bottleneck_slew_ns": 29.27
   },
   "ci": {
-    "status": "PASS",
-    "run_id": 45602303543,
-    "branch": "remediation-r2",
-    "head_sha": "c46cc772acd0ff21b849354f853d08302ab6aef3",
-    "run_url": "https://github.com/i-am-somasai/AMBA-AXI4-Lite-APB4-Fabric-Subsystem-pyuvm-Verification-Environment/actions/runs/45602303543",
+    "status": "PENDING",
+    "run_id": null,
+    "branch": "release-prep",
+    "head_sha": null,
+    "run_url": null,
     "job": "Lint, Unit, Regression, Formal & Mutation",
-    "artifact": "verification-logs-and-reports (27329 bytes)",
-    "note": "Verified green GitHub Actions run 45602303543 on commit c46cc77 (lint, unit, block, 3-seed regress, 16 sanity mutants, 10/10 formal, sampled mutation, artifact upload)"
+    "artifact": null,
+    "note": "Pending push of release-prep and remote GitHub Actions verification"
   }
 }

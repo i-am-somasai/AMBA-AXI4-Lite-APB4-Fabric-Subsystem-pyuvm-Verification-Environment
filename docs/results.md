@@ -2,7 +2,7 @@
 
 <!-- BEGIN:metrics:results_status_banner -->
 This document records **real, measured results** generated strictly from [`docs/metrics.json`](metrics.json) (no hand-typed constants).
-**Status:** R2 Complete | **CI Status:** **PASS** ([run `45602303543`](https://github.com/i-am-somasai/AMBA-AXI4-Lite-APB4-Fabric-Subsystem-pyuvm-Verification-Environment/actions/runs/45602303543): Verified green GitHub Actions run 45602303543 on commit c46cc77 (lint, unit, block, 3-seed regress, 16 sanity mutants, 10/10 formal, sampled mutation, artifact upload)). Raw tool logs are archived under [`docs/logs/`](logs/).
+**Status:** R3 Release-Prep | **CI Status:** **PENDING** ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml): Pending push of release-prep and remote GitHub Actions verification). Raw tool logs are archived under [`docs/logs/`](logs/).
 <!-- END:metrics:results_status_banner -->
 
 ---
@@ -23,7 +23,7 @@ This document records **real, measured results** generated strictly from [`docs/
 | Bugs Logged & Reference-Verified | **24 (`BUG-001`–`BUG-024`)** | Section 6 | [`docs/bugs.md`](bugs.md) |
 | Synthesis (SKY130, `RAM_DEPTH=64`) | **9,237 cells / 3,630 flops (2,048 RAM) / 138,086.19 µm²** | Section 13 | [`docs/logs/synth.log`](logs/synth.log) |
 | STA (100 MHz Target, OpenSTA) | **VIOLATED: WNS -18.60 ns / TNS -54046.39 ns / 34.97 MHz** (`62.89 MHz` datapath+I/O ref; `clk_slow` & hold MET) | Section 13 | [`docs/logs/sta.log`](logs/sta.log), [`docs/logs/fmax_sweep.log`](logs/fmax_sweep.log) |
-| CI Status | **PASS** ([run `45602303543`](https://github.com/i-am-somasai/AMBA-AXI4-Lite-APB4-Fabric-Subsystem-pyuvm-Verification-Environment/actions/runs/45602303543)) | Section 14 | [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) |
+| CI Status | **PENDING** ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) | Section 14 | [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) |
 <!-- END:metrics:results_summary_table -->
 
 ---

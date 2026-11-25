@@ -2,7 +2,7 @@ name: AMBA Fabric CI
 
 on:
   push:
-    branches: [ main, 'phase-*', 'remediation-*' ]
+    branches: [ main, 'phase-*', 'remediation-*', 'release-*' ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
