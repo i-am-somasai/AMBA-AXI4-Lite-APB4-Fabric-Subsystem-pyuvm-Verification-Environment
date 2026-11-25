@@ -58,14 +58,14 @@ module axil_csr #(
 
     assign irq_o = |(reg_irq_status[2:0]);
 
-    // Latch channels
-    reg [7:0] awoffset_q;
+    // Latch channels (Rule 6: address bits [1:0] ignored -> decode word offset [7:2])
+    reg [5:0] awoffset_q;
     reg       aw_done;
     reg [DATA_WIDTH-1:0] wdata_q;
     reg [(DATA_WIDTH/8)-1:0] wstrb_q;
     reg       w_done;
 
-    wire [7:0] write_offset = (aw_done ? awoffset_q : s_axil_awaddr[7:0]);
+    wire [5:0] write_word = (aw_done ? awoffset_q : s_axil_awaddr[7:2]);
     wire [DATA_WIDTH-1:0] write_data = (w_done ? wdata_q : s_axil_wdata);
     wire [(DATA_WIDTH/8)-1:0] write_strb = (w_done ? wstrb_q : s_axil_wstrb);
 
@@ -78,7 +78,7 @@ module axil_csr #(
             s_axil_bresp   <= 2'b00;
             aw_done        <= 1'b0;
             w_done         <= 1'b0;
-            awoffset_q     <= 8'h00;
+            awoffset_q     <= 6'h00;
             wdata_q        <= {DATA_WIDTH{1'b0}};
             wstrb_q        <= {(DATA_WIDTH/8){1'b0}};
 
@@ -91,7 +91,7 @@ module axil_csr #(
             s_axil_wready  <= (!s_axil_bvalid || s_axil_bready) && !w_done;
 
             if (s_axil_awvalid && s_axil_awready) begin
-                awoffset_q <= s_axil_awaddr[7:0];
+                awoffset_q <= s_axil_awaddr[7:2];
                 aw_done    <= 1'b1;
             end
 
@@ -108,43 +108,43 @@ module axil_csr #(
                 aw_done       <= 1'b0;
                 w_done        <= 1'b0;
 
-                case (write_offset)
-                    8'h00: begin // ID: Read-Only, writes ignored with OKAY
+                case (write_word)
+                    6'h00: begin // 0x00 ID: Read-Only, writes ignored with OKAY
                         s_axil_bresp <= RESP_OKAY;
                     end
-                    8'h04: begin // VERSION: Read-Only, writes ignored with OKAY
+                    6'h01: begin // 0x04 VERSION: Read-Only, writes ignored with OKAY
                         s_axil_bresp <= RESP_OKAY;
                     end
-                    8'h08: begin // SCRATCH: Full-word RW
+                    6'h02: begin // 0x08 SCRATCH: Full-word RW
                         s_axil_bresp <= RESP_OKAY;
                         reg_scratch  <= write_data;
                     end
-                    8'h0C: begin // SCRATCH2: Byte-writable via WSTRB
+                    6'h03: begin // 0x0C SCRATCH2: Byte-writable via WSTRB
                         s_axil_bresp <= RESP_OKAY;
                         if (write_strb[0]) reg_scratch2[7:0]   <= write_data[7:0];
                         if (write_strb[1]) reg_scratch2[15:8]  <= write_data[15:8];
                         if (write_strb[2]) reg_scratch2[23:16] <= write_data[23:16];
                         if (write_strb[3]) reg_scratch2[31:24] <= write_data[31:24];
                     end
-                    8'h10: begin // IRQ_RAW: RO
+                    6'h04: begin // 0x10 IRQ_RAW: RO
                         s_axil_bresp <= RESP_OKAY;
                     end
-                    8'h14: begin // IRQ_MASK: RW
+                    6'h05: begin // 0x14 IRQ_MASK: RW
                         s_axil_bresp <= RESP_OKAY;
                         reg_irq_mask <= write_data[2:0];
                     end
-                    8'h18: begin // IRQ_STATUS: RO
+                    6'h06: begin // 0x18 IRQ_STATUS: RO
                         s_axil_bresp <= RESP_OKAY;
                     end
-                    8'h1C: begin // W1C_TEST: writing 1 clears bit
+                    6'h07: begin // 0x1C W1C_TEST: writing 1 clears bit
                         s_axil_bresp <= RESP_OKAY;
                         reg_w1c_test <= reg_w1c_test & ~write_data;
                     end
-                    8'h20: begin // W1C_SET: WO test hook, sets bit in W1C_TEST
+                    6'h08: begin // 0x20 W1C_SET: WO test hook, sets bit in W1C_TEST
                         s_axil_bresp <= RESP_OKAY;
                         reg_w1c_test <= reg_w1c_test | write_data;
                     end
-                    default: begin // Undefined offset -> SLVERR
+                    default: begin // Undefined word offset -> SLVERR
                         s_axil_bresp <= RESP_SLVERR;
                     end
                 endcase
@@ -155,7 +155,7 @@ module axil_csr #(
     end
 
     // --- Read Channel ---
-    wire [7:0] read_offset = s_axil_araddr[7:0];
+    wire [5:0] read_word = s_axil_araddr[7:2];
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
@@ -168,44 +168,44 @@ module axil_csr #(
 
             if (s_axil_arvalid && s_axil_arready) begin
                 s_axil_rvalid <= 1'b1;
-                case (read_offset)
-                    8'h00: begin
+                case (read_word)
+                    6'h00: begin // 0x00 ID
                         s_axil_rdata <= CONST_ID;
                         s_axil_rresp <= RESP_OKAY;
                     end
-                    8'h04: begin
+                    6'h01: begin // 0x04 VERSION
                         s_axil_rdata <= CONST_VERSION;
                         s_axil_rresp <= RESP_OKAY;
                     end
-                    8'h08: begin
+                    6'h02: begin // 0x08 SCRATCH
                         s_axil_rdata <= reg_scratch;
                         s_axil_rresp <= RESP_OKAY;
                     end
-                    8'h0C: begin
+                    6'h03: begin // 0x0C SCRATCH2
                         s_axil_rdata <= reg_scratch2;
                         s_axil_rresp <= RESP_OKAY;
                     end
-                    8'h10: begin
+                    6'h04: begin // 0x10 IRQ_RAW
                         s_axil_rdata <= reg_irq_raw;
                         s_axil_rresp <= RESP_OKAY;
                     end
-                    8'h14: begin
+                    6'h05: begin // 0x14 IRQ_MASK
                         s_axil_rdata <= {29'b0, reg_irq_mask};
                         s_axil_rresp <= RESP_OKAY;
                     end
-                    8'h18: begin
+                    6'h06: begin // 0x18 IRQ_STATUS
                         s_axil_rdata <= reg_irq_status;
                         s_axil_rresp <= RESP_OKAY;
                     end
-                    8'h1C: begin
+                    6'h07: begin // 0x1C W1C_TEST
                         s_axil_rdata <= reg_w1c_test;
                         s_axil_rresp <= RESP_OKAY;
                     end
-                    8'h20: begin // W1C_SET is WO, returns 0 on read
+                    6'h08: begin // 0x20 W1C_SET is WO, returns 0 on read
                         s_axil_rdata <= 32'h0;
                         s_axil_rresp <= RESP_OKAY;
                     end
-                    default: begin // Undefined offset -> SLVERR
+                    default: begin // Undefined word offset -> SLVERR
                         s_axil_rdata <= 32'h0;
                         s_axil_rresp <= RESP_SLVERR;
                     end
@@ -245,12 +245,28 @@ module axil_csr #(
 
     always @(posedge clk) begin
         if (rst_n) begin
-            // Constant identifiers
-            if (s_axil_rvalid && s_axil_rresp == RESP_OKAY) begin
-                if ($past(s_axil_arvalid && s_axil_arready && (read_offset == 8'h00)))
-                    assert (s_axil_rdata == CONST_ID);
-                if ($past(s_axil_arvalid && s_axil_arready && (read_offset == 8'h04)))
-                    assert (s_axil_rdata == CONST_VERSION);
+            // Constant identifiers & Rule 6 (address bits [1:0] ignored -> unaligned bytes resolve to word offset)
+            if ($past(rst_n) && $past(s_axil_arvalid && s_axil_arready)) begin
+                if ($past(read_word == 6'h00)) begin
+                    assert (s_axil_rvalid && s_axil_rresp == RESP_OKAY && s_axil_rdata == CONST_ID);
+                end else if ($past(read_word == 6'h01)) begin
+                    assert (s_axil_rvalid && s_axil_rresp == RESP_OKAY && s_axil_rdata == CONST_VERSION);
+                end else if ($past(read_word <= 6'h08)) begin
+                    assert (s_axil_rvalid && s_axil_rresp == RESP_OKAY);
+                end else begin
+                    assert (s_axil_rvalid && s_axil_rresp == RESP_SLVERR && s_axil_rdata == 32'h0);
+                end
+            end
+
+            // Write Rule 6 response check: word offsets 0..8 -> OKAY, undefined word offsets -> SLVERR
+            if ($past(rst_n) && $past((s_axil_awvalid && s_axil_awready || aw_done) &&
+                                      (s_axil_wvalid && s_axil_wready || w_done) &&
+                                      (!s_axil_bvalid || s_axil_bready))) begin
+                if ($past(write_word <= 6'h08)) begin
+                    assert (s_axil_bvalid && s_axil_bresp == RESP_OKAY);
+                end else begin
+                    assert (s_axil_bvalid && s_axil_bresp == RESP_SLVERR);
+                end
             end
 
             // IRQ aggregation
@@ -259,14 +275,19 @@ module axil_csr #(
         end
     end
 
-    // Shared Protocol Checker
+    // Shared Protocol Checker (`FORMAL_CAUSALITY` enabled in bounded BMC;
+    // disabled in unbounded k-induction because axil_props uses 8-bit wrapping counters)
     axil_props #(
         .ADDR_WIDTH(ADDR_WIDTH),
         .DATA_WIDTH(DATA_WIDTH),
         .STRB_WIDTH(DATA_WIDTH / 8),
         .IS_SLAVE(1),
         .SINGLE_OUTSTANDING(1),
+`ifdef FORMAL_CAUSALITY
+        .CHECK_CAUSALITY(1)
+`else
         .CHECK_CAUSALITY(0)
+`endif
     ) u_axil_props (
         .clk     (clk),
         .rst_n   (rst_n),

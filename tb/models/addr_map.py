@@ -25,12 +25,11 @@ class AddrMap:
         Returns: (slave_idx, target_name, is_mapped)
         """
         addr = addr & 0xFFFF_FFFF
-        base = addr & 0xF000_0000
-        offset = addr & 0x0FFF_FFFF
+        word_offset = addr & 0xFC
 
-        if base == 0x4000_0000:
-            # S0: APB Subsystem
-            apb_target = (offset >> 12) & 0xF
+        if (addr & 0xFFFF_0000) == 0x4000_0000:
+            # S0: APB Subsystem (64 KB)
+            apb_target = (addr >> 12) & 0xF
             if apb_target == 0:
                 return (AddrMap.SLAVE_APB, "UART", True)
             elif apb_target == 1:
@@ -40,23 +39,23 @@ class AddrMap:
             else:
                 return (AddrMap.SLAVE_APB, "APB_UNMAPPED", False)
 
-        elif base == 0x5000_0000:
-            # S1: RAM Subsystem (1 KB = 256 32-bit words, 0x000 to 0x3FC)
-            if offset < 0x400:
+        elif (addr & 0xFFFF_F000) == 0x5000_0000:
+            # S1: RAM Subsystem (4 KB window; 1 KB = 256 words backed, rest SLVERR)
+            if (addr & 0xFFF) < 0x400:
                 return (AddrMap.SLAVE_RAM, "RAM", True)
             else:
                 return (AddrMap.SLAVE_RAM, "RAM_OUT_OF_BOUNDS", False)
 
-        elif base == 0x6000_0000:
-            # S2: CSR Block (0x00 to 0x20 mapped)
-            if offset <= 0x20 and (offset % 4 == 0):
+        elif (addr & 0xFFFF_FF00) == 0x6000_0000:
+            # S2: CSR Block (256 B window; word offsets 0x00..0x20 mapped, [1:0] ignored)
+            if word_offset <= 0x20:
                 return (AddrMap.SLAVE_CSR, "CSR", True)
             else:
                 return (AddrMap.SLAVE_CSR, "CSR_UNMAPPED", False)
 
-        elif base == 0x7000_0000:
-            # S3: CDC Bridge (0x00 to 0x0C mapped)
-            if offset <= 0x0C and (offset % 4 == 0):
+        elif (addr & 0xFFFF_FF00) == 0x7000_0000:
+            # S3: CDC Bridge (256 B window; word offsets 0x00..0x0C mapped, [1:0] ignored)
+            if word_offset <= 0x0C:
                 return (AddrMap.SLAVE_CDC, "CDC", True)
             else:
                 return (AddrMap.SLAVE_CDC, "CDC_UNMAPPED", False)

@@ -18,6 +18,7 @@ class AxilDriver(uvm_driver):
         self.prefix = prefix
         self.ap = uvm_analysis_port("ap", self)
         self.raw_driver = None
+        self.in_flight_item = None
 
     def build_phase(self):
         super().build_phase()
@@ -25,10 +26,21 @@ class AxilDriver(uvm_driver):
         clk = dut.clk_sys
         self.raw_driver = AxilMasterDriver(dut, clk, prefix=self.prefix)
 
+    def flush_pending(self):
+        """Clear bus signals and return any interrupted in-flight write address on reset."""
+        if self.raw_driver is not None:
+            self.raw_driver.init_signals()
+        flushed_addr = None
+        if self.in_flight_item is not None and self.in_flight_item.is_write:
+            flushed_addr = self.in_flight_item.addr
+        self.in_flight_item = None
+        return flushed_addr
+
     async def run_phase(self):
         while True:
             item = await self.seq_item_port.get_next_item()
             item.master_id = self.master_id
+            self.in_flight_item = item
 
             if item.is_write:
                 resp = await self.raw_driver.write(
@@ -48,8 +60,10 @@ class AxilDriver(uvm_driver):
                 item.rdata = rdata
                 item.resp = resp
 
-            # Broadcast completed transaction to scoreboard
-            self.ap.write(item)
+            # Only broadcast if transaction was not flushed by an injected reset
+            if self.in_flight_item is item:
+                self.in_flight_item = None
+                self.ap.write(item)
             self.seq_item_port.item_done()
 
 

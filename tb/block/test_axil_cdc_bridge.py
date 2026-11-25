@@ -85,14 +85,15 @@ async def test_cd01_ratio_phase_sweep(dut):
 
 @cocotb.test()
 async def test_cd03_reset_recovery(dut):
-    """CD-03: Reset asserted in either domain at random times mid-transaction; assert clean recovery."""
+    """CD-03: Independent reset in clk_sys OR clk_slow mid-transaction; assert clean non-hanging recovery per DEC-008."""
     tb = CdcBridgeTestbench(dut)
     await tb.start_slow_clock(period=25.0, phase=0.0)
     await tb.reset()
 
-    # Part 1: Mid-transaction reset in clk_sys domain
-    dut._log.info("CD-03: Injecting mid-transaction reset in clk_sys domain...")
-    # Start write handshake
+    # ------------------------------------------------------------------
+    # Part 1: Mid-transaction reset in clk_sys domain ONLY (rst_slow_n stays 1)
+    # ------------------------------------------------------------------
+    dut._log.info("CD-03 Part 1: Injecting mid-transaction reset in clk_sys domain only...")
     dut.s_axil_awaddr.value = 0x04
     dut.s_axil_awvalid.value = 1
     dut.s_axil_wdata.value = 0xDEAD0001
@@ -100,59 +101,91 @@ async def test_cd03_reset_recovery(dut):
     dut.s_axil_wvalid.value = 1
     dut.s_axil_bready.value = 1
 
-    await RisingEdge(dut.clk_sys)
-    # Assert sys reset abruptly mid-flight
+    # Wait for AW+W acceptance into CDC bridge so request is in-flight
+    for _ in range(20):
+        await RisingEdge(dut.clk_sys)
+        if dut.s_axil_awready.value and dut.s_axil_wready.value:
+            break
+    dut.s_axil_awvalid.value = 0
+    dut.s_axil_wvalid.value = 0
+
+    # Assert sys reset ONLY (rst_slow_n remains deasserted = 1)
     dut.rst_sys_n.value = 0
     tb.axil.init_signals()
     for _ in range(5):
         await RisingEdge(dut.clk_sys)
+    assert int(dut.s_axil_bvalid.value) == 0, "bvalid must clear during rst_sys_n"
+    assert int(dut.s_axil_rvalid.value) == 0, "rvalid must clear during rst_sys_n"
+
     dut.rst_sys_n.value = 1
     for _ in range(8):
         await RisingEdge(dut.clk_sys)
 
-    # Post-reset recovery transaction
+    # Post-sys-reset recovery transaction
     bresp = await tb.axil.write(addr=0x04, data=0x11223344, strb=0xF)
     assert bresp == 0, f"Post-sys-reset write failed with bresp={bresp}"
     rdata, rresp = await tb.axil.read(addr=0x04)
     assert rresp == 0, f"Post-sys-reset read failed with rresp={rresp}"
     assert rdata == 0x11223344, f"Post-sys-reset data mismatch: expected 0x11223344, got {hex(rdata)}"
-    dut._log.info("CD-03: clk_sys domain reset recovery OK")
+    dut._log.info("CD-03 Part 1: clk_sys-only reset recovery OK")
 
-    # Part 2: Mid-transaction reset in clk_slow domain
-    dut._log.info("CD-03: Injecting mid-transaction reset in clk_slow domain...")
-    # Start read transaction
+    # ------------------------------------------------------------------
+    # Part 2: Mid-transaction reset in clk_slow domain ONLY (rst_sys_n stays 1)
+    # ------------------------------------------------------------------
+    dut._log.info("CD-03 Part 2: Injecting mid-transaction reset in clk_slow domain only...")
     dut.s_axil_araddr.value = 0x04
     dut.s_axil_arvalid.value = 1
     dut.s_axil_rready.value = 1
 
-    await RisingEdge(dut.clk_sys)
-    # Assert slow reset mid-flight
+    # Wait until AR handshake is accepted by CDC bridge (bridge enters ST_PUSH_REQ / ST_WAIT_RESP)
+    ar_accepted = False
+    for _ in range(20):
+        await RisingEdge(dut.clk_sys)
+        if dut.s_axil_arready.value:
+            ar_accepted = True
+            break
+    assert ar_accepted, "CD-03 Part 2: CDC bridge did not accept initial AR request"
+    dut.s_axil_arvalid.value = 0
+
+    # Assert rst_slow_n ONLY (do NOT pulse rst_sys_n!) while holding rready=0 so we
+    # catch s_axil_rvalid cleanly (whether it aborts immediately on sys clock or finishes)
+    dut.s_axil_rready.value = 0
     dut.rst_slow_n.value = 0
     for _ in range(5):
         await RisingEdge(dut.clk_slow)
     dut.rst_slow_n.value = 1
-    for _ in range(8):
-        await RisingEdge(dut.clk_slow)
-    # Drain any sys cycles and re-initialize
-    dut.rst_sys_n.value = 0
-    tb.axil.init_signals()
-    for _ in range(5):
-        await RisingEdge(dut.clk_sys)
-    dut.rst_sys_n.value = 1
-    for _ in range(8):
-        await RisingEdge(dut.clk_sys)
 
-    # Post-reset recovery transaction
+    # Wait for in-flight read transaction on clk_sys to present RVALID (SLVERR or OKAY, NEVER hang)
+    completed = False
+    inflight_rresp = None
+    for _ in range(60):
+        await RisingEdge(dut.clk_sys)
+        if dut.s_axil_rvalid.value:
+            inflight_rresp = int(dut.s_axil_rresp.value)
+            assert inflight_rresp in (0, 2), f"Unexpected RRESP on slow-reset abort: {inflight_rresp}"
+            dut.s_axil_rready.value = 1
+            await RisingEdge(dut.clk_sys)
+            dut.s_axil_rready.value = 0
+            completed = True
+            break
+    assert completed, "CD-03 Part 2: AXI master hung after clk_slow-only reset mid-transaction!"
+    for _ in range(6):
+        await RisingEdge(dut.clk_slow)
+
+    # Post-slow-reset recovery WITHOUT ever pulsing rst_sys_n
     bresp = await tb.axil.write(addr=0x04, data=0x55667788, strb=0xF)
     assert bresp == 0, f"Post-slow-reset write failed with bresp={bresp}"
     rdata, rresp = await tb.axil.read(addr=0x04)
     assert rresp == 0, f"Post-slow-reset read failed with rresp={rresp}"
     assert rdata == 0x55667788, f"Post-slow-reset data mismatch: expected 0x55667788, got {hex(rdata)}"
-    dut._log.info("CD-03: clk_slow domain reset recovery OK")
+
+    id_val, id_resp = await tb.axil.read(addr=0x00)
+    assert id_resp == 0 and id_val == 0x510E0001, f"Post-slow-reset SLOW_ID mismatch: {hex(id_val)}"
+    dut._log.info(f"CD-03 Part 2: clk_slow-only reset recovery OK (in-flight rresp={inflight_rresp})")
 
     tb.stop_clocks()
     await Timer(10, unit="ns")
-    dut._log.info("CD-03 PASSED: clean recovery in both domains")
+    dut._log.info("CD-03 PASSED: independent domain resets recover cleanly without hanging")
 
 
 @cocotb.test()

@@ -218,6 +218,24 @@ Per project rules, every bug must be reproduced deterministically, diagnosed to 
 - **Fix Applied:** In `rtl/axil/axil_xbar.v`, updated the `m_wready_grant` logic for all masters to check `(wr_locked[gt] ? (wr_owner[gt] == m) : (active_wr_owner[gt] == m && m_aw_tgt[m][gt]))`. When a write channel is locked to a slave, WREADY gating depends on the recorded owner, not the transient input `awaddr`.
 - **Regression Test:** `formal/axil_xbar.sby` (BMC depth 20), `tb/pyuvm/tests/test_xb09_backpressure_burst.py`
 
+### [BUG-023] AXI-Lite CSR Full Byte-Offset Decode Violating AXI4-Lite Rule 6 (`[1:0]` Ignored)
+- **Date Discovered:** 2026-11-25
+- **Target Component:** `rtl/axil/axil_csr.v` (and aligned `tb/models/reg_model.py`, `tb/models/addr_map.py`, `tb/models/ram_model.py`, `tb/models/peripheral_model.py`)
+- **Detection Method:** Audit Finding `AXIL-R6` / `PROBE-02` / `RTL-axil_csr`
+- **Symptom:** Accessing unaligned byte offsets inside mapped CSR addresses (e.g., `0x6000_0001` instead of `0x6000_0000`) returned `SLVERR` (`2'b10`) and `0` instead of returning `OKAY` (`2'b00`) and word `ID = 0xA3BA_0001`.
+- **Root Cause:** `rtl/axil/axil_csr.v` decoded the full 8-bit offset `s_axil_awaddr[7:0]` / `s_axil_araddr[7:0]` against word-aligned constants (`8'h00`, `8'h04`, ..., `8'h20`), treating `[1:0] != 2'b00` as unmapped addresses in violation of `docs/spec.md` Section 6 Rule 6.
+- **Fix Applied:** Changed `axil_csr.v` address decode to 6-bit word index `s_axil_awaddr[7:2]` / `s_axil_araddr[7:2]` (`6'h00..6'h08`), ignoring `[1:0]`, added Rule 6 assertions in `axil_csr.v` formal block, and aligned all Python reference models (`tb/models/`).
+- **Regression Test:** `test_cs01_reset_values`, `test_cs02_access_types_w1c`, `test_xb15_unaligned_address`
+
+### [BUG-024] AXI-Lite CDC Bridge Hang and FIFO Pointer Desynchronization on Independent Domain Reset
+- **Date Discovered:** 2026-11-25
+- **Target Component:** `rtl/cdc/axil_cdc_bridge.v`
+- **Detection Method:** Remediation R2 analysis of `CD-03` (`audit_input/AUDIT_REPORT.md`)
+- **Symptom:** Asserting `rst_slow_n` independently while an AXI4-Lite transaction is in flight on `clk_sys` (`ST_WAIT_RESP`) caused `slow_regs` and `u_resp_fifo` to reset while `clk_sys` FSM waited forever on `resp_empty`, permanently hanging the AXI master. Similarly, independent `rst_sys_n` or `rst_slow_n` resets desynchronized `async_fifo` read/write pointers across domains.
+- **Root Cause:** `u_req_fifo`, `u_resp_fifo`, and `u_slow_regs` used uncoordinated domain resets (`rst_sys_n`, `rst_slow_n`), and `axil_cdc_bridge` had no reset notification into the `clk_sys` FSM to abort an in-flight `ST_WAIT_RESP` wait.
+- **Fix Applied:** Added cross-domain reset synchronizers (`both_rst_n = rst_sys_n & rst_slow_n` -> `fifo_rst_sys_n`, `fifo_rst_slow_n`) for both FIFOs and `u_slow_regs`, gated `ST_IDLE` acceptance on `fifo_rst_sys_n`, and added `slow_rst_aborted` handling in `axil_cdc_bridge.v` so in-flight AXI transactions complete cleanly with `SLVERR` (`2'b10`) without hanging.
+- **Regression Test:** `test_cd03_reset_recovery`
+
 
 
 

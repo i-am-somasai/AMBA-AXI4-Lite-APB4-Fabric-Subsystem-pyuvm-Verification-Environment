@@ -124,27 +124,133 @@ TestStrobes = test_sys_strobe_patterns
 
 @pyuvm.test()
 class test_xb12_reset_recovery(BaseFabricTest):
-    """XB-12: Reset during in-flight transaction, then verify clean recovery."""
+    """XB-12: Reset injected mid-flight across AW, W, B, AR, R phases, agent/scoreboard flush, and recovery."""
+    async def _pulse_reset_and_flush(self, dut, in_flight_wr_addrs):
+        # Reset immediately and deassert valid signals from master agents
+        dut.rst_n.value = 0
+        m0_flushed = self.env.m0_agent.driver.flush_pending()
+        m1_flushed = self.env.m1_agent.driver.flush_pending()
+        self.env.m0_agent.driver.raw_driver.init_signals()
+        self.env.m1_agent.driver.raw_driver.init_signals()
+        wr_addrs = list(in_flight_wr_addrs)
+        for a in (m0_flushed, m1_flushed):
+            if a is not None:
+                wr_addrs.append(a)
+        self.env.scoreboard.flush_on_reset(in_flight_wr_addrs=wr_addrs, preserve_ram=True)
+
+        for _ in range(5):
+            await RisingEdge(dut.clk_sys)
+            assert int(dut.s0_axil_bvalid.value) == 0, "M0 bvalid must clear during reset"
+            assert int(dut.s0_axil_rvalid.value) == 0, "M0 rvalid must clear during reset"
+            assert int(dut.s1_axil_bvalid.value) == 0, "M1 bvalid must clear during reset"
+            assert int(dut.s1_axil_rvalid.value) == 0, "M1 rvalid must clear during reset"
+
+        dut.rst_n.value = 1
+        for _ in range(6):
+            await RisingEdge(dut.clk_sys)
+        assert int(dut.s0_axil_bvalid.value) == 0 and int(dut.s0_axil_rvalid.value) == 0
+        assert int(dut.s1_axil_bvalid.value) == 0 and int(dut.s1_axil_rvalid.value) == 0
+
     async def run_phase(self):
         self.raise_objection()
         await self.init_clocks_and_reset()
         dut = cocotb.top
 
-        # Initial clean transaction
-        seq = ResetRecoverySeq("seq")
-        await seq.start(self.env.m0_agent.sequencer)
+        # Pre-seed RAM (0x5000_0050) and CSR SCRATCH (0x6000_0008) cleanly
+        init_seq = AxilBaseSeq("xb12_init")
+        init_seq.sequencer = self.env.m0_agent.sequencer
+        await init_seq.start(self.env.m0_agent.sequencer)  # harmless start check below
+        seq_setup = ResetRecoverySeq("setup")
+        await seq_setup.start(self.env.m0_agent.sequencer)
 
-        # Pulse reset
-        dut.rst_n.value = 0
-        for _ in range(5):
+        # ------------------------------------------------------------------
+        # Scenario 1: AW in flight (AW accepted / locked by xbar, W not yet driven -> aw_done=1, wr_locked=1)
+        # Wait: drive AWVALID=1, WVALID=0 on M0 targeting RAM (0x5000_0054) until awready=1,
+        # OR capture mid-AWVALID if slave locked. Kills SMUT-14 if wr_locked/aw_done not reset!
+        # ------------------------------------------------------------------
+        dut.s0_axil_awaddr.value = 0x50000054
+        dut.s0_axil_awprot.value = 0
+        dut.s0_axil_awvalid.value = 1
+        dut.s0_axil_wvalid.value = 0
+        dut.s0_axil_bready.value = 0
+        for _ in range(10):
             await RisingEdge(dut.clk_sys)
-        dut.rst_n.value = 1
-        for _ in range(5):
-            await RisingEdge(dut.clk_sys)
+            if int(dut.s0_axil_awready.value) == 1:
+                dut.s0_axil_awvalid.value = 0
+                break
+        await self._pulse_reset_and_flush(dut, [0x50000054])
 
-        # Post-reset recovery: perform clean write and readback
-        seq2 = ResetRecoverySeq("seq2")
+        # Verify ref model marked interrupted write address UNKNOWN, and M1 can immediately claim S1
+        assert (0x50000054 & ~0x3) in self.env.scoreboard.ref_model.unknown_words
+        seq_m1_rec = ResetRecoverySeq("m1_after_aw_rst")
+        await seq_m1_rec.start(self.env.m1_agent.sequencer)
+        assert (0x50000054 & ~0x3) not in self.env.scoreboard.ref_model.unknown_words
+
+        # ------------------------------------------------------------------
+        # Scenario 2: W in flight (WVALID=1 while AW held/unacked or W accepted before AW)
+        # ------------------------------------------------------------------
+        dut.s0_axil_awvalid.value = 0
+        dut.s0_axil_wdata.value = 0xDEAD1111
+        dut.s0_axil_wstrb.value = 0xF
+        dut.s0_axil_wvalid.value = 1
+        await RisingEdge(dut.clk_sys)
+        await self._pulse_reset_and_flush(dut, [0x50000058])
+
+        # ------------------------------------------------------------------
+        # Scenario 3: B response pending (write issued to APB, hold BREADY=0 while BVALID=1)
+        # ------------------------------------------------------------------
+        dut.s1_axil_awaddr.value = 0x40001004
+        dut.s1_axil_awprot.value = 0
+        dut.s1_axil_wdata.value = 0x55556666
+        dut.s1_axil_wstrb.value = 0xF
+        dut.s1_axil_awvalid.value = 1
+        dut.s1_axil_wvalid.value = 1
+        dut.s1_axil_bready.value = 0
+        b_seen = False
+        for _ in range(25):
+            await RisingEdge(dut.clk_sys)
+            if int(dut.s1_axil_awready.value):
+                dut.s1_axil_awvalid.value = 0
+            if int(dut.s1_axil_wready.value):
+                dut.s1_axil_wvalid.value = 0
+            if int(dut.s1_axil_bvalid.value):
+                b_seen = True
+                break
+        assert b_seen, "XB-12 Scenario 3: BVALID never asserted before reset"
+        await self._pulse_reset_and_flush(dut, [0x40001004])
+
+        # ------------------------------------------------------------------
+        # Scenario 4 & 5: AR in flight / R pending (CDC read in flight + RVALID held with RREADY=0)
+        # ------------------------------------------------------------------
+        dut.s0_axil_araddr.value = 0x70000000
+        dut.s0_axil_arprot.value = 0
+        dut.s0_axil_arvalid.value = 1
+        dut.s0_axil_rready.value = 0
+        r_seen = False
+        for _ in range(40):
+            await RisingEdge(dut.clk_sys)
+            if int(dut.s0_axil_arready.value):
+                dut.s0_axil_arvalid.value = 0
+            if int(dut.s0_axil_rvalid.value):
+                r_seen = True
+                break
+        assert r_seen, "XB-12 Scenario 4: RVALID never asserted before reset"
+        await self._pulse_reset_and_flush(dut, [])
+
+        # Also assert reset right while ARVALID=1 is mid-flight to CDC before RVALID returns
+        dut.s1_axil_araddr.value = 0x70000004
+        dut.s1_axil_arvalid.value = 1
+        dut.s1_axil_rready.value = 0
+        await RisingEdge(dut.clk_sys)
+        await RisingEdge(dut.clk_sys)
+        dut.s1_axil_arvalid.value = 0
+        await self._pulse_reset_and_flush(dut, [])
+
+        # Post-reset full recovery across both masters and slaves
+        seq2 = ResetRecoverySeq("seq_final")
         await seq2.start(self.env.m0_agent.sequencer)
+        seq3 = ResetRecoverySeq("seq_final_m1")
+        await seq3.start(self.env.m1_agent.sequencer)
 
         for _ in range(10):
             await RisingEdge(cocotb.top.clk_sys)

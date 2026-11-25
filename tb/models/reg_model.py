@@ -17,8 +17,9 @@ class CsrModel:
         self.w1c_test = 0
 
     def write(self, addr, data, strb=0xF):
-        offset = addr & 0xFF
-        if offset % 4 != 0 or offset > 0x20:
+        # Rule 6: address bits [1:0] ignored -> decode word-aligned offset
+        offset = addr & 0xFC
+        if offset > 0x20:
             return AddrMap.RESP_SLVERR
 
         if offset == 0x00:
@@ -62,8 +63,9 @@ class CsrModel:
             return AddrMap.RESP_SLVERR
 
     def read(self, addr):
-        offset = addr & 0xFF
-        if offset % 4 != 0 or offset > 0x20:
+        # Rule 6: address bits [1:0] ignored -> decode word-aligned offset
+        offset = addr & 0xFC
+        if offset > 0x20:
             return 0, AddrMap.RESP_SLVERR
 
         if offset == 0x00:
@@ -102,8 +104,9 @@ class SlowRegsModel:
         self.counter_estimate = 0
 
     def write(self, addr, data, strb=0xF):
-        offset = addr & 0xFF
-        if offset > 0x0C or offset % 4 != 0:
+        # Rule 6: address bits [1:0] ignored -> decode word-aligned offset
+        offset = addr & 0xFC
+        if offset > 0x0C:
             return AddrMap.RESP_SLVERR
 
         if offset == 0x00:
@@ -125,8 +128,9 @@ class SlowRegsModel:
             return AddrMap.RESP_SLVERR
 
     def read(self, addr):
-        offset = addr & 0xFF
-        if offset > 0x0C or offset % 4 != 0:
+        # Rule 6: address bits [1:0] ignored -> decode word-aligned offset
+        offset = addr & 0xFC
+        if offset > 0x0C:
             return 0, AddrMap.RESP_SLVERR
 
         if offset == 0x00:

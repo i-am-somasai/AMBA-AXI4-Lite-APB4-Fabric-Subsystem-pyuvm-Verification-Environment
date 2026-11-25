@@ -115,6 +115,7 @@ module async_fifo #(
     always @(posedge wclk) f_w_past_valid <= 1'b1;
     always @(posedge rclk) f_r_past_valid <= 1'b1;
 
+`ifndef NO_INTERNAL_FIFO_COVERS
     always @(*) begin
         if (!f_w_past_valid) assume (!wrst_n);
         else assume (wrst_n);
@@ -122,6 +123,7 @@ module async_fifo #(
         if (!f_r_past_valid) assume (!rrst_n);
         else assume (rrst_n);
     end
+`endif
 
     // Protocol assumptions: never write when full, never read when empty
     always @(posedge wclk) begin

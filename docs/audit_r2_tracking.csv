@@ -1,9 +1,9 @@
 Audit_ID,Severity,Audit_Status,Target_Phase,Task,Planned_Action,R2_Status,R2_Evidence
-F-02,BLOCKER,FAIL,Phase A,A2/A3,Log inline arbiter in decisions.md; rewrite XB-07 with assertions; add SMUT-10,OPEN,Target: Phase A (A2/A3)
-F-05,BLOCKER,FAIL,Phase A,A1,Fix axil_csr.v to decode word offset [7:2]; test 0x6000_0001,OPEN,Target: Phase A (A1)
-F-06,MAJOR,PARTIAL,Phase A,A3,Observe APB PPROT in XB-14; add dual-master BR-05 test; kill SMUT-09/SMUT-16,OPEN,Target: Phase A (A3)
-F-08,MAJOR,PARTIAL,Phase A,A3,Add RX_OVF test to UA-02; kill SMUT-12,OPEN,Target: Phase A (A3)
-V-02,MAJOR,PARTIAL,Phase A,A1/A3,Align tb/models/ [1:0] decode rule; check PPROT in scoreboard/monitors,OPEN,Target: Phase A (A1/A3)
+F-02,BLOCKER,FAIL,Phase A,A2/A3,Log inline arbiter in decisions.md; rewrite XB-07 with assertions; add SMUT-10,CLOSED,DEC-007 logged in docs/decisions.md; test_xb07_arbitration_fairness (WR+RD diff<=1) PASS & SMUT-10 KILLED (docs/logs/phase_a_sanity.log)
+F-05,BLOCKER,FAIL,Phase A,A1,Fix axil_csr.v to decode word offset [7:2]; test 0x6000_0001,CLOSED,rtl/axil/axil_csr.v decodes [7:2]; 0x6000_0001..3 return OKAY+0xA3BA0001 in test_cs01_reset_values & test_xb15_unaligned_address (BUG-023)
+F-06,MAJOR,PARTIAL,Phase A,A3,Observe APB PPROT in XB-14; add dual-master BR-05 test; kill SMUT-09/SMUT-16,CLOSED,test_xb14_prot_passthrough & test_br01 check APB PPROT (0..7); test_br05_dual_master_apb_mixed_rw added; SMUT-09 & SMUT-16 KILLED
+F-08,MAJOR,PARTIAL,Phase A,A3,Add RX_OVF test to UA-02; kill SMUT-12,CLOSED,test_ua02_fifo_full_and_overflow_flags drives 9th RX byte and verifies RX_OVF=1 & W1C=0; SMUT-12 KILLED
+V-02,MAJOR,PARTIAL,Phase A,A1/A3,Align tb/models/ [1:0] decode rule; check PPROT in scoreboard/monitors,CLOSED,tb/models/{addr_map,reg_model,ram_model,peripheral_model}.py aligned to Rule 6; XB-14/BR-01 assert APB PPROT
 V-04,BLOCKER,FAIL,Phase C,C2/C4,Close real coverage holes via real stimulus & valid waivers; update metrics,OPEN,Target: Phase C (C2/C4)
 V-05,MAJOR,PARTIAL,Phase C,C3,"Fix make cov-report to build in build/, clean incrementally, and exit 0 cleanly",OPEN,Target: Phase C (C3)
 V-06,MAJOR,PARTIAL,Phase B,B/C1,Use rr_arbiter_props.v in rr_arbiter.sby; measure clk_slow period on pins in CdcMonitor,OPEN,Target: Phase B (B/C1)
@@ -11,15 +11,15 @@ V-07,MAJOR,PARTIAL,Phase B,B,"Wire rr_arbiter_props, add sync_fifo data-order pr
 V-09,BLOCKER,FAIL,Phase D,D1-D5,"Fix process leak & xbar scope, run fixed 240-mutant list, generate report from log",OPEN,Target: Phase D (D1-D5)
 V-10,MAJOR,NOT_RUN,Phase G,G,Align CI artifacts/steps; obtain green remote GitHub Actions URL,OPEN,Target: Phase G (G)
 S-01,BLOCKER,FAIL,Phase E,E1-E4,Commit synth.ys; remove hardcoded cell names; dynamic fmax_sweep parsing,OPEN,Target: Phase E (E1-E4)
-REG-UART-08,MAJOR,PARTIAL,Phase A,A3,Test RX_OVF (STATUS[5]) and W1C clear in UA-02,OPEN,Target: Phase A (A3)
-AXIL-R6,BLOCKER,FAIL,Phase A,A1,Decode [7:2] in axil_csr.v; add CSR Rule 6 test & formal property,OPEN,Target: Phase A (A1)
-RTL-axil_xbar,MAJOR,PARTIAL,Phase A,A2,Log inline wr_prio/rd_prio arbiter deviation in docs/decisions.md,OPEN,Target: Phase A (A2)
-RTL-axil_csr,BLOCKER,FAIL,Phase A,A1,Decode [7:2] in axil_csr.v; enable CHECK_CAUSALITY or log decision,OPEN,Target: Phase A (A1)
-XB-07,BLOCKER,FAIL,Phase A,A3,Continuous requests on AW/AR; assert completed-count diff <= 1 on W & R,OPEN,Target: Phase A (A3)
-XB-12,BLOCKER,FAIL,Phase A,A3,Assert rst_n while AW/W/B/AR/R in flight; flush SB/agents; follow-up OK,OPEN,Target: Phase A (A3)
-XB-14,BLOCKER,FAIL,Phase A,A3,Observe APB PPROT on bridge/top and assert equality across all 8 prot values,OPEN,Target: Phase A (A3)
-XB-15,BLOCKER,FAIL,Phase A,A3,"Test unaligned +1/+2/+3 across RAM, CSR, APB UART/Timer/GPIO, slow_regs",OPEN,Target: Phase A (A3)
-UA-02,MAJOR,PARTIAL,Phase A,A3,"Fill 8-entry RX FIFO, drive 9th byte, assert RX_OVF set & W1C clear",OPEN,Target: Phase A (A3)
+REG-UART-08,MAJOR,PARTIAL,Phase A,A3,Test RX_OVF (STATUS[5]) and W1C clear in UA-02,CLOSED,test_ua02_fifo_full_and_overflow_flags asserts STATUS[5]==1 then W1C==0 (docs/logs/phase_a_block.log)
+AXIL-R6,BLOCKER,FAIL,Phase A,A1,Decode [7:2] in axil_csr.v; add CSR Rule 6 test & formal property,CLOSED,rtl/axil/axil_csr.v decodes [7:2] & formal Rule 6 prove+bmc PASS (docs/logs/phase_a_formal_csr.log); SMUT-11 KILLED
+RTL-axil_xbar,MAJOR,PARTIAL,Phase A,A2,Log inline wr_prio/rd_prio arbiter deviation in docs/decisions.md,CLOSED,DEC-007 logged in docs/decisions.md without editing docs/spec.md
+RTL-axil_csr,BLOCKER,FAIL,Phase A,A1,Decode [7:2] in axil_csr.v; enable CHECK_CAUSALITY or log decision,CLOSED,rtl/axil/axil_csr.v decodes [7:2]; axil_csr.sby runs bmc CHECK_CAUSALITY=1 + prove CHECK_CAUSALITY=0 per DEC-006
+XB-07,BLOCKER,FAIL,Phase A,A3,Continuous requests on AW/AR; assert completed-count diff <= 1 on W & R,CLOSED,tb/block/test_axil_xbar.py rewritten with continuous AW/AR & WR+RD diff<=1 assertions; SMUT-10 KILLED
+XB-12,BLOCKER,FAIL,Phase A,A3,Assert rst_n while AW/W/B/AR/R in flight; flush SB/agents; follow-up OK,CLOSED,tb/pyuvm/tests/test_directed.py resets mid-AW/W/B/AR/R with agent/scoreboard UNKNOWN flush; SMUT-14 KILLED
+XB-14,BLOCKER,FAIL,Phase A,A3,Observe APB PPROT on bridge/top and assert equality across all 8 prot values,CLOSED,tb/pyuvm/sequences/directed_seqs.py & test_br01 observe apb_pprot/m_apb_pprot for prot 0..7; SMUT-09 KILLED
+XB-15,BLOCKER,FAIL,Phase A,A3,"Test unaligned +1/+2/+3 across RAM, CSR, APB UART/Timer/GPIO, slow_regs",CLOSED,tb/pyuvm/sequences/directed_seqs.py verifies +1/+2/+3 across RAM/CSR/APB/CDC; SMUT-11 KILLED
+UA-02,MAJOR,PARTIAL,Phase A,A3,"Fill 8-entry RX FIFO, drive 9th byte, assert RX_OVF set & W1C clear",CLOSED,tb/block/test_apb_uart.py checks RX_OVF set on 9th byte & W1C clear; SMUT-12 KILLED
 COV-cg_order,MAJOR,PARTIAL,Phase C,C2,Drive w_first skew across all 4 targets in directed and stress sequences,OPEN,Target: Phase C (C2)
 COV-cg_backpressure,MAJOR,PARTIAL,Phase C,C2,"Drive random BREADY/RREADY delays (buckets 1, 2-4, 5-16) in master agents",OPEN,Target: Phase C (C2)
 COV-cg_apb,MAJOR,PARTIAL,Phase C,C2,Attach ApbBusMonitor + collector in bridge block test (wait states & read PSTRB=0),OPEN,Target: Phase C (C2)
@@ -39,9 +39,9 @@ FORMAL-WORDING,MAJOR,FAIL,Phase B,B,Replace imprecise 'exhaustively proven'/'pro
 MUT-SCRIPT,MAJOR,PARTIAL,Phase D,D1,Use start_new_session=True + os.killpg on timeout; fix axil_xbar scope,OPEN,Target: Phase D (D1)
 MUT-TRIAGE,BLOCKER,FAIL,Phase D,D4,Script-generate docs/mutation_report.md from log; remove duplicate triage md,OPEN,Target: Phase D (D4)
 MUT-SPOT5,MAJOR,FAIL,Phase D,D3/D4,Add tests for CSR w_first/rresp/scratch bits & bridge arprot/read PSTRB=0,OPEN,Target: Phase D (D3/D4)
-PROBE-02,BLOCKER,FAIL,Phase A,A1,Verify 0x6000_0001..3 return OKAY with ID value in test & probe,OPEN,Target: Phase A (A1)
-SMUT-09,BLOCKER,FAIL,Phase A,A4,Verify permanent sanity mutant SMUT-09 (m_apb_pprot=0) is KILLED,OPEN,Target: Phase A (A4)
-SMUT-10,BLOCKER,FAIL,Phase A,A4,Verify permanent sanity mutant SMUT-10 (xbar wr_prio stuck) is KILLED,OPEN,Target: Phase A (A4)
+PROBE-02,BLOCKER,FAIL,Phase A,A1,Verify 0x6000_0001..3 return OKAY with ID value in test & probe,CLOSED,0x6000_0001..3 return OKAY & 0xA3BA0001 in test_cs01_reset_values & test_xb15_unaligned_address
+SMUT-09,BLOCKER,FAIL,Phase A,A4,Verify permanent sanity mutant SMUT-09 (m_apb_pprot=0) is KILLED,CLOSED,mutation/sanity/run_sanity.py kills SMUT-09 at tb/pyuvm/sequences/directed_seqs.py:54 (docs/logs/phase_a_sanity.log)
+SMUT-10,BLOCKER,FAIL,Phase A,A4,Verify permanent sanity mutant SMUT-10 (xbar wr_prio stuck) is KILLED,CLOSED,mutation/sanity/run_sanity.py kills SMUT-10 at tb/block/test_axil_xbar.py:405 (docs/logs/phase_a_sanity.log)
 SYNTH-YS,BLOCKER,FAIL,Phase E,E1,Commit synth/synth.ys invoked by Makefile,OPEN,Target: Phase E (E1)
 SYNTH-STA,BLOCKER,FAIL,Phase E,E2/E3,"Use port/rst_sync constraints, verify non-empty queries, dynamic OpenSTA parsing",OPEN,Target: Phase E (E2/E3)
 SYNTH-REPORT,BLOCKER,FAIL,Phase E,E4,Report freshly measured synthesis & STA numbers dynamically,OPEN,Target: Phase E (E4)
@@ -57,7 +57,7 @@ METRIC-10,MAJOR,FAIL,Phase F,F1/F3,Count bugs.md entries consistently via gen_me
 METRIC-12,BLOCKER,FAIL,Phase F,F1/F2,Populate real Yosys synthesis cell/flop/area from metrics.json,OPEN,Target: Phase F (F1/F2)
 METRIC-13,BLOCKER,FAIL,Phase F,F1/F2,Populate real OpenSTA WNS/TNS/Fmax from metrics.json,OPEN,Target: Phase F (F1/F2)
 METRIC-14,MAJOR,NOT_RUN,Phase G,G,Mark CI Status NOT VERIFIED until remote green run URL is recorded,OPEN,Target: Phase G (G)
-DOD-01,BLOCKER,FAIL,Phase A,A1-A4,"Fix Rule 6 RTL bug, failing-capable P0 tests, and kill 16/16 sanity mutants",OPEN,Target: Phase A (A1-A4)
+DOD-01,BLOCKER,FAIL,Phase A,A1-A4,"Fix Rule 6 RTL bug, failing-capable P0 tests, and kill 16/16 sanity mutants",CLOSED,16/16 sanity mutants KILLED; lint/unit/block/formal_csr/formal_cdc/20-seed regress (601..620) PASS (docs/logs/phase_a_*.log)
 DOD-02,MAJOR,PARTIAL,Phase C,C4/Final,Document 20-seed Icarus + Verilator coverage/regression verification accurately,OPEN,Target: Phase C (C4/Final)
 DOD-03,BLOCKER,FAIL,Phase C,C2-C4,Real stimulus coverage closure + waivers + working make cov-report,OPEN,Target: Phase C (C2-C4)
 DOD-04,MAJOR,PARTIAL,Phase B,B,All formal suites clean without over-assumptions or orphaned checkers,OPEN,Target: Phase B (B)

@@ -16,7 +16,7 @@ class ApbUartModel:
         self.tx_ovf = 0
 
     def write(self, offset, data):
-        reg = offset & 0xFF
+        reg = offset & 0xFC
         if reg == 0x00:
             # TXDATA: pushes to TX FIFO
             byte_val = data & 0xFF
@@ -41,7 +41,7 @@ class ApbUartModel:
             return AddrMap.RESP_OKAY # Undefined peripheral register writes ignored
 
     def read(self, offset):
-        reg = offset & 0xFF
+        reg = offset & 0xFC
         if reg == 0x00:
             return 0, AddrMap.RESP_OKAY
         elif reg == 0x04:
@@ -68,7 +68,7 @@ class ApbTimerModel:
         self.timeout = 0
 
     def write(self, offset, data):
-        reg = offset & 0xFF
+        reg = offset & 0xFC
         if reg == 0x00:
             self.ctrl = data & 0x7
             return AddrMap.RESP_OKAY
@@ -84,7 +84,7 @@ class ApbTimerModel:
             return AddrMap.RESP_OKAY
 
     def read(self, offset):
-        reg = offset & 0xFF
+        reg = offset & 0xFC
         if reg == 0x00:
             # CTRL is dynamic because bit 0 (EN) is automatically cleared on timeout
             return None, AddrMap.RESP_OKAY
@@ -109,7 +109,7 @@ class ApbGpioModel:
         self.irq_status = 0
 
     def write(self, offset, data):
-        reg = offset & 0xFF
+        reg = offset & 0xFC
         if reg == 0x00:
             self.dir = data & 0xFFFF
             return AddrMap.RESP_OKAY
@@ -128,7 +128,7 @@ class ApbGpioModel:
             return AddrMap.RESP_OKAY
 
     def read(self, offset):
-        reg = offset & 0xFF
+        reg = offset & 0xFC
         if reg == 0x00:
             return self.dir, AddrMap.RESP_OKAY
         elif reg == 0x04:

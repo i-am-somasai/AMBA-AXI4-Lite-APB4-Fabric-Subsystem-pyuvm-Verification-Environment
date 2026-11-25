@@ -99,15 +99,30 @@ async def test_br01_single_rw_zero_wait(dut):
         assert r_resp == 0
         assert r_val == apb_slave.memory.get(offset, 0)
 
-    # Protection bit pass-through checks (AWPROT/ARPROT -> PPROT)
-    for prot in [0b001, 0b010, 0b100, 0b111]:
+    # Protection bit pass-through checks (AWPROT/ARPROT -> PPROT for all 8 values 0..7)
+    observed_pprot = []
+    async def monitor_apb_pprot():
+        while True:
+            await RisingEdge(dut.clk)
+            if int(dut.m_apb_psel.value) == 1 and int(dut.m_apb_penable.value) == 0:
+                observed_pprot.append((int(dut.m_apb_pwrite.value), int(dut.m_apb_pprot.value)))
+
+    pprot_task = cocotb.start_soon(monitor_apb_pprot())
+    for prot in range(8):
         paddr = 0x40000040 + (prot * 4)
         pdata = 0x55AA0000 + prot
         w_resp = await driver.write(addr=paddr, data=pdata, strb=0xF, prot=prot)
         assert w_resp == 0
+        assert observed_pprot and observed_pprot[-1] == (1, prot), (
+            f"BR-01 AWPROT->PPROT mismatch: expected (1, {prot}), observed {observed_pprot[-1] if observed_pprot else None}"
+        )
         r_val, r_resp = await driver.read(addr=paddr, prot=prot)
         assert r_resp == 0
         assert r_val == pdata
+        assert observed_pprot and observed_pprot[-1] == (0, prot), (
+            f"BR-01 ARPROT->PPROT mismatch: expected (0, {prot}), observed {observed_pprot[-1] if observed_pprot else None}"
+        )
+    pprot_task.cancel()
 
     monitor.stop()
     apb_slave.stop()

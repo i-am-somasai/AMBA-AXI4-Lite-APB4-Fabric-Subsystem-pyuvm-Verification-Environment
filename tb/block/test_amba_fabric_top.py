@@ -364,3 +364,41 @@ async def test_cd05_dual_master_slow_regs(dut):
     dut._log.info("CD-05 PASSED: 20 rounds of dual-master interleaved CDC access succeeded with 0 errors")
     await RisingEdge(dut.clk_sys)
     await Timer(10, unit="ns")
+
+
+@cocotb.test()
+async def test_br05_dual_master_apb_mixed_rw(dut):
+    """BR-05: Concurrent dual-master mixed R/W transfers to APB peripherals via crossbar + bridge."""
+    tb = FabricTopTestbench(dut)
+    await tb.reset()
+
+    # Initialize APB targets cleanly before concurrent phase
+    assert await tb.m0.write(0x40001000, 0x0) == 0        # Disable Timer
+    assert await tb.m0.write(0x40001004, 0x0000_0100) == 0  # Timer LOAD
+    assert await tb.m1.write(0x40002000, 0xFFFF) == 0     # GPIO DIR all output
+    assert await tb.m1.write(0x40002004, 0x0000) == 0     # GPIO OUT
+
+    for rnd in range(20):
+        t_val = 0x1000 + rnd * 17
+        g_val = (0xA500 + rnd) & 0xFFFF
+
+        # M0 writes Timer LOAD while M1 simultaneously writes GPIO OUT
+        t0_w = cocotb.start_soon(tb.m0.write(0x40001004, t_val))
+        t1_w = cocotb.start_soon(tb.m1.write(0x40002004, g_val))
+        assert await t0_w == 0, f"BR-05 round {rnd} M0 APB write failed"
+        assert await t1_w == 0, f"BR-05 round {rnd} M1 APB write failed"
+
+        # M0 reads Timer LOAD while M1 simultaneously reads GPIO OUT (interleaved with M0/M1 swap on odd rounds)
+        t0_r = cocotb.start_soon(tb.m0.read(0x40001004 if (rnd % 2 == 0) else 0x40002004))
+        t1_r = cocotb.start_soon(tb.m1.read(0x40002004 if (rnd % 2 == 0) else 0x40001004))
+        d0, r0 = await t0_r
+        d1, r1 = await t1_r
+        assert r0 == 0 and r1 == 0, f"BR-05 round {rnd} read resp error: r0={r0}, r1={r1}"
+        if rnd % 2 == 0:
+            assert d0 == t_val and d1 == g_val, f"BR-05 round {rnd} data mismatch: {hex(d0)}, {hex(d1)}"
+        else:
+            assert d0 == g_val and d1 == t_val, f"BR-05 round {rnd} swap data mismatch: {hex(d0)}, {hex(d1)}"
+
+    dut._log.info("BR-05 PASSED: 20 rounds of concurrent dual-master mixed R/W over APB bridge")
+    await RisingEdge(dut.clk_sys)
+    await Timer(10, unit="ns")

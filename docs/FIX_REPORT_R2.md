@@ -8,7 +8,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 
 | Phase | Scope & Audit IDs | Status | Commits |
 |---|---|---|---|
-| **Phase A** | RTL Rule 6 fix (`axil_csr`), models, crossbar decision, 8 test rewrites (`XB-07/12/14/15`, `UA-02`, `XB-03`, `BR-05`, `CD-03`), 10 sanity mutants | `TODO` | - |
+| **Phase A** | RTL Rule 6 fix (`axil_csr`), CDC reset fix, models, decisions (`DEC-006..008`), 8 test rewrites (`XB-03/07/12/14/15`, `UA-02`, `BR-05`, `CD-03`), 16 sanity mutants | `DONE` | `fix(R2-A)` (this commit) |
 | **Phase B** | Formal (`rr_arbiter_props.v`, bounded fairness, `sync_fifo` data ordering, bridge/xbar over-assumptions, CSR causality/Rule 6, exact wording) | `TODO` | - |
 | **Phase C** | Honest coverage (`CdcMonitor` edge measurement, stimulus for 44 holes, waivers, `make cov-report` fix & full re-measure) | `TODO` | - |
 | **Phase D** | Mutation (`run_mutants.py` process group kill, `axil_xbar` scope fix, CSR/bridge test gaps, 240-mutant run, script-generated report) | `TODO` | - |
@@ -21,15 +21,29 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 
 ## Detailed Remediation Log
 
-### Phase A: RTL Fix and Tests That Can Fail (`AXIL-R6`, `RTL-axil_csr`, `PROBE-02`, `XB-07`, `XB-12`, `XB-14`, `XB-15`, `UA-02`, `XB-03`, `BR-05`, `CD-03`, `SMUT-01..10`)
-- **Status:** `TODO`
-- **Files Changed:** Pending
-- **Commands Run:** Pending
-- **Log Paths:** Pending
+### Phase A: RTL Fix and Tests That Can Fail (`AXIL-R6`, `RTL-axil_csr`, `PROBE-02`, `XB-07`, `XB-12`, `XB-14`, `XB-15`, `UA-02`, `XB-03`, `BR-05`, `CD-03`, `SMUT-01..16`)
+- **Status:** `DONE`
+- **Files Changed:** `rtl/axil/axil_csr.v`, `rtl/cdc/axil_cdc_bridge.v`, `rtl/common/async_fifo.v`, `formal/axil_csr.sby`, `tb/models/{addr_map,reg_model,ram_model,peripheral_model,fabric_ref_model}.py`, `tb/unit/test_axil_csr.py`, `tb/block/{test_axil_xbar,test_apb_uart,test_axil2apb_bridge,test_axil_cdc_bridge,test_amba_fabric_top}.py`, `tb/pyuvm/{agents/axil_master_agent.py,env/fabric_scoreboard.py,sequences/directed_seqs.py,tests/test_directed.py}`, `mutation/sanity/run_sanity.py`, `scripts/run_sanity.sh`, `docs/{bugs.md,decisions.md,audit_r2_tracking.csv,FIX_REPORT_R2.md}`
+- **Commands Run:**
+  - `make lint` -> CLEAN
+  - `(cd formal && sby -f axil_csr.sby)` -> prove/bmc/cover PASS
+  - `(cd formal && sby -f axil_cdc_bridge.sby)` -> bmc/cover PASS
+  - `make unit SIM=icarus` -> PASS
+  - `make -C tb/block all SIM=icarus` -> PASS (including `XB-03`, `XB-07`, `UA-02`, `BR-05`, `CD-03`)
+  - `bash scripts/run_sanity.sh` -> **16/16 KILLED, 0 SURVIVED, 0 INVALID**
+  - `make -C tb/pyuvm -j4 SIM=icarus SEEDS="$(seq 601 620)" regress` -> PASS (all 20 seeds `601..620` + directed/CDC sweeps)
+- **Log Paths:**
+  - `docs/logs/phase_a_lint.log`
+  - `docs/logs/phase_a_formal_csr.log`
+  - `docs/logs/phase_a_formal_cdc.log`
+  - `docs/logs/phase_a_unit.log`
+  - `docs/logs/phase_a_block.log`
+  - `docs/logs/phase_a_sanity.log`
+  - `docs/logs/phase_a_regress_20seeds.log`
 - **Before / After Numbers:**
-  - Before: `0x6000_0001` returns `SLVERR` (`AXIL-R6` FAIL); `XB-07` 0 assertions; `XB-12` idle reset; `XB-14` ignores APB `PPROT`; `XB-15` RAM-only; `UA-02` misses `RX_OVF`; `SMUT-09` & `SMUT-10` escape (8/10 killed).
-  - After: Pending Phase A execution.
-- **Remaining Issues:** None yet.
+  - Before: `0x6000_0001` returns `SLVERR` (`AXIL-R6` FAIL); `XB-07` 0 assertions; `XB-12` idle reset; `XB-14` ignores APB `PPROT`; `XB-15` RAM-only; `UA-02` misses `RX_OVF`; `CD-03` resets both domains & hangs without sys reset; `SMUT-09` & `SMUT-10` escape (8/10 killed).
+  - After: `0x6000_0001..3` return `OKAY` + `0xA3BA_0001`; CSR formal `prove`+`bmc`(`CHECK_CAUSALITY=1`)+`cover` PASS; `BUG-023` & `BUG-024` logged; `DEC-006..008` logged; all 8 tests rewritten with direct assertions; **16/16 sanity mutants KILLED**; 20 fresh seeds (`601..620`) PASS.
+- **Remaining Issues:** None for Phase A.
 
 ---
 
@@ -113,11 +127,11 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 
 ## Audit Row Closure Register (70 BLOCKER & MAJOR Rows)
 
-- `F-02` (BLOCKER): OPEN (assigned to Phase A A2/A3)
-- `F-05` (BLOCKER): OPEN (assigned to Phase A A1)
-- `F-06` (MAJOR): OPEN (assigned to Phase A A3)
-- `F-08` (MAJOR): OPEN (assigned to Phase A A3)
-- `V-02` (MAJOR): OPEN (assigned to Phase A A1/A3)
+- `F-02` (BLOCKER): CLOSED (`DEC-007` logged; `test_xb07_arbitration_fairness` WR+RD assertions; `SMUT-10` KILLED in `docs/logs/phase_a_sanity.log`)
+- `F-05` (BLOCKER): CLOSED (`rtl/axil/axil_csr.v` decodes `[7:2]`; `BUG-023` logged; `0x6000_0001..3` verified in `docs/logs/phase_a_unit.log`)
+- `F-06` (MAJOR): CLOSED (`test_xb14_prot_passthrough` & `test_br01` assert `PPROT`; `test_br05_dual_master_apb_mixed_rw` added; `SMUT-09`/`SMUT-16` KILLED)
+- `F-08` (MAJOR): CLOSED (`test_ua02_fifo_full_and_overflow_flags` verifies `RX_OVF` & W1C; `SMUT-12` KILLED)
+- `V-02` (MAJOR): CLOSED (`tb/models/` aligned to `[1:0]` ignore Rule 6; APB `PPROT` checked in `XB-14` & `BR-01`)
 - `V-04` (BLOCKER): OPEN (assigned to Phase C C2/C4)
 - `V-05` (MAJOR): OPEN (assigned to Phase C C3)
 - `V-06` (MAJOR): OPEN (assigned to Phase B B/C1)
@@ -125,15 +139,15 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `V-09` (BLOCKER): OPEN (assigned to Phase D D1-D5)
 - `V-10` (MAJOR): OPEN (assigned to Phase G G)
 - `S-01` (BLOCKER): OPEN (assigned to Phase E E1-E4)
-- `REG-UART-08` (MAJOR): OPEN (assigned to Phase A A3)
-- `AXIL-R6` (BLOCKER): OPEN (assigned to Phase A A1)
-- `RTL-axil_xbar` (MAJOR): OPEN (assigned to Phase A A2)
-- `RTL-axil_csr` (BLOCKER): OPEN (assigned to Phase A A1)
-- `XB-07` (BLOCKER): OPEN (assigned to Phase A A3)
-- `XB-12` (BLOCKER): OPEN (assigned to Phase A A3)
-- `XB-14` (BLOCKER): OPEN (assigned to Phase A A3)
-- `XB-15` (BLOCKER): OPEN (assigned to Phase A A3)
-- `UA-02` (MAJOR): OPEN (assigned to Phase A A3)
+- `REG-UART-08` (MAJOR): CLOSED (`test_ua02_fifo_full_and_overflow_flags` asserts `STATUS[5]==1` & W1C in `docs/logs/phase_a_block.log`)
+- `AXIL-R6` (BLOCKER): CLOSED (`rtl/axil/axil_csr.v` decodes `[7:2]`, `axil_csr.sby` prove+bmc+cover PASS in `docs/logs/phase_a_formal_csr.log`)
+- `RTL-axil_xbar` (MAJOR): CLOSED (`DEC-007` logged in `docs/decisions.md` without modifying `docs/spec.md`)
+- `RTL-axil_csr` (BLOCKER): CLOSED (`rtl/axil/axil_csr.v` Rule 6 fixed; `DEC-006` documents `bmc` `CHECK_CAUSALITY=1` / `prove` `0`)
+- `XB-07` (BLOCKER): CLOSED (`tb/block/test_axil_xbar.py` continuous AW/AR WR+RD diff<=1 assertions; `SMUT-10` KILLED)
+- `XB-12` (BLOCKER): CLOSED (`tb/pyuvm/tests/test_directed.py` resets mid-AW/W/B/AR/R, flushes SB/agents UNKNOWN; `SMUT-14` KILLED)
+- `XB-14` (BLOCKER): CLOSED (`ProtPassThroughSeq` & `test_br01` assert physical `apb_pprot`/`m_apb_pprot` 0..7; `SMUT-09` KILLED)
+- `XB-15` (BLOCKER): CLOSED (`UnalignedAddressSeq` checks `+1/+2/+3` across RAM/CSR/APB/CDC; `SMUT-11` KILLED)
+- `UA-02` (MAJOR): CLOSED (`test_ua02_fifo_full_and_overflow_flags` verifies `RX_OVF` & W1C; `SMUT-12` KILLED)
 - `COV-cg_order` (MAJOR): OPEN (assigned to Phase C C2)
 - `COV-cg_backpressure` (MAJOR): OPEN (assigned to Phase C C2)
 - `COV-cg_apb` (MAJOR): OPEN (assigned to Phase C C2)
@@ -153,9 +167,9 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `MUT-SCRIPT` (MAJOR): OPEN (assigned to Phase D D1)
 - `MUT-TRIAGE` (BLOCKER): OPEN (assigned to Phase D D4)
 - `MUT-SPOT5` (MAJOR): OPEN (assigned to Phase D D3/D4)
-- `PROBE-02` (BLOCKER): OPEN (assigned to Phase A A1)
-- `SMUT-09` (BLOCKER): OPEN (assigned to Phase A A4)
-- `SMUT-10` (BLOCKER): OPEN (assigned to Phase A A4)
+- `PROBE-02` (BLOCKER): CLOSED (`0x6000_0001..3` return `OKAY` + `0xA3BA0001` in `test_cs01_reset_values` & `test_xb15_unaligned_address`)
+- `SMUT-09` (BLOCKER): CLOSED (`mutation/sanity/run_sanity.py` kills `SMUT-09` at `tb/pyuvm/sequences/directed_seqs.py:54`)
+- `SMUT-10` (BLOCKER): CLOSED (`mutation/sanity/run_sanity.py` kills `SMUT-10` at `tb/block/test_axil_xbar.py:405`)
 - `SYNTH-YS` (BLOCKER): OPEN (assigned to Phase E E1)
 - `SYNTH-STA` (BLOCKER): OPEN (assigned to Phase E E2/E3)
 - `SYNTH-REPORT` (BLOCKER): OPEN (assigned to Phase E E4)
@@ -171,7 +185,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `METRIC-12` (BLOCKER): OPEN (assigned to Phase F F1/F2)
 - `METRIC-13` (BLOCKER): OPEN (assigned to Phase F F1/F2)
 - `METRIC-14` (MAJOR): OPEN (assigned to Phase G G)
-- `DOD-01` (BLOCKER): OPEN (assigned to Phase A A1-A4)
+- `DOD-01` (BLOCKER): CLOSED (Phase A gate verified: 16/16 sanity mutants KILLED, Rule 6 fixed, 8 tests rewritten, 20 fresh seeds PASS)
 - `DOD-02` (MAJOR): OPEN (assigned to Phase C C4/Final)
 - `DOD-03` (BLOCKER): OPEN (assigned to Phase C C2-C4)
 - `DOD-04` (MAJOR): OPEN (assigned to Phase B B)

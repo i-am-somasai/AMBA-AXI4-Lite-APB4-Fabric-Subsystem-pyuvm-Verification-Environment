@@ -101,11 +101,30 @@ async def test_ua02_fifo_full_and_overflow_flags(dut):
         await RisingEdge(dut.clk)
 
     assert (status & 0x04) != 0, f"RX_FULL not set: {hex(status)}"
+    assert ((status >> 5) & 1) == 0, f"RX_OVF unexpectedly set before overflow: {hex(status)}"
 
-    # Read all 8 bytes back and verify data sequence
+    # Transmit a 9th byte via loopback while RX FIFO is FULL -> must trigger RX_OVF (STATUS[5])
+    await tb.apb.write(addr=0x00, data=0xEE)
+    for _ in range(500):
+        status, _ = await tb.apb.read(addr=0x08)
+        if ((status & 0x02) != 0) and ((status & 0x80) == 0):  # TX_EMPTY and not TX_BUSY
+            break
+        await RisingEdge(dut.clk)
+    for _ in range(25):
+        await RisingEdge(dut.clk)
+
+    status, _ = await tb.apb.read(addr=0x08)
+    assert ((status >> 5) & 1) == 1, f"RX_OVF (STATUS[5]) not set when 9th byte received while RX_FULL: {hex(status)}"
+
+    # Read all 8 original bytes back and verify overflowed byte did not corrupt FIFO
     for i in range(8):
         rdata, _ = await tb.apb.read(addr=0x04)
         assert (rdata & 0xFF) == (0x10 + i), f"Byte {i} mismatch: got {hex(rdata)}"
+
+    # Clear RX_OVF via W1C write to STATUS[5]
+    await tb.apb.write(addr=0x08, data=(1 << 5))
+    status, _ = await tb.apb.read(addr=0x08)
+    assert ((status >> 5) & 1) == 0, f"RX_OVF (STATUS[5]) did not clear via W1C: {hex(status)}"
 
     # After reading 8 bytes, RX_EMPTY should be set again
     status, _ = await tb.apb.read(addr=0x08)

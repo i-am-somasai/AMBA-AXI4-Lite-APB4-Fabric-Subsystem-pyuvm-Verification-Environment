@@ -39,6 +39,12 @@ class FabricScoreboard(uvm_scoreboard):
         self.m0_sub = FabricMasterSubscriber("m0_sub", self, master_id=0)
         self.m1_sub = FabricMasterSubscriber("m1_sub", self, master_id=1)
 
+    def flush_on_reset(self, in_flight_wr_addrs=(), preserve_ram=True):
+        """Flush scoreboard pending state on reset; mark in-flight write targets UNKNOWN."""
+        self.ref_model.reset(preserve_ram=preserve_ram)
+        for addr in in_flight_wr_addrs:
+            self.ref_model.mark_write_unknown(addr)
+
     def check_transaction(self, item):
         """Validates a single completed transaction against the reference model."""
         self.total_transactions += 1

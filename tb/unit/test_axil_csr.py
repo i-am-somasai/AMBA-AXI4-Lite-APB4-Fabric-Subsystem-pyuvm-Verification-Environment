@@ -34,6 +34,13 @@ async def test_cs01_reset_values(dut):
     rdata, rresp = await driver.read(0x6000_0000) # ID
     assert rresp == RESP_OKAY and rdata == 0xA3BA0001, f"ID check failed: {rdata:#x}"
 
+    # Rule 6 check: unaligned LSBs [1:0] ignored on read
+    for unaligned_off in (1, 2, 3):
+        rdata, rresp = await driver.read(0x6000_0000 + unaligned_off)
+        assert rresp == RESP_OKAY and rdata == 0xA3BA0001, (
+            f"Rule 6 unaligned ID read failed at +{unaligned_off}: resp={rresp}, data={rdata:#x}"
+        )
+
     rdata, rresp = await driver.read(0x6000_0004) # VERSION
     assert rresp == RESP_OKAY and rdata == 0x00010000, f"VERSION check failed: {rdata:#x}"
 
@@ -129,6 +136,12 @@ async def test_cs02_access_types_w1c(dut):
         rdata, rresp = await driver.read(0x6000_0000 + unmapped_offset)
         assert rresp == RESP_SLVERR, f"Expected SLVERR on offset {unmapped_offset:#x} read, got {rresp:#b}"
         assert rdata == 0
+
+    # Rule 6 write check: unaligned write to SCRATCH+1 updates word 0x6000_0008 with OKAY
+    resp = await driver.write(0x6000_0009, 0xCAFE5A5A, strb=0xF)
+    assert resp == RESP_OKAY, f"Rule 6 unaligned write to 0x6000_0009 failed: resp={resp:#b}"
+    rdata, rresp = await driver.read(0x6000_0008)
+    assert rresp == RESP_OKAY and rdata == 0xCAFE5A5A, f"Rule 6 readback mismatch: {rdata:#x}"
 
     await RisingEdge(dut.clk)
     await Timer(10, unit="ns")

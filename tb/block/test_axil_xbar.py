@@ -203,32 +203,41 @@ async def test_xb02_ram_data_integrity(dut):
 
 @cocotb.test()
 async def test_xb03_wstrb_patterns(dut):
-    """XB-03: All 16 WSTRB patterns on RAM (S1). Verify only strobed bytes change."""
+    """XB-03: All 16 WSTRB patterns on RAM (S1) and CSR SCRATCH2 region (S2)."""
     tb = XbarTestbench(dut)
     await tb.reset()
 
-    base = 0x50000100
-    for strb in range(16):
-        addr = base + strb * 4
-        # Initialize memory word with 0x00000000
-        await tb.m0.write(addr=addr, data=0x00000000, strb=0xF)
+    targets = [
+        ("RAM_S1", 0x50000100, False),
+        ("CSR_S2", 0x6000000C, True),
+    ]
+    for label, base_or_addr, single_addr in targets:
+        for strb in range(16):
+            addr = base_or_addr if single_addr else (base_or_addr + strb * 4)
+            # Initialize word with 0xA5A55A5A so strb=0 and partial clears are proven
+            await tb.m0.write(addr=addr, data=0xA5A55A5A, strb=0xF)
 
-        # Write pattern with tested strb
-        write_val = 0xA1B2C3D4
-        await tb.m0.write(addr=addr, data=write_val, strb=strb)
+            # Write pattern with tested strb
+            write_val = 0x1234C3D4 ^ (strb * 0x01010101)
+            bresp = await tb.m0.write(addr=addr, data=write_val, strb=strb)
+            assert bresp == 0, f"{label} write failed for strb {hex(strb)}: bresp={bresp}"
 
-        # Read back
-        rdata, rresp = await tb.m0.read(addr=addr)
-        assert rresp == 0, f"Read failed for strb {hex(strb)}"
+            # Read back
+            rdata, rresp = await tb.m0.read(addr=addr)
+            assert rresp == 0, f"{label} read failed for strb {hex(strb)}: rresp={rresp}"
 
-        # Compute expected
-        expected = 0
-        for b in range(4):
-            if (strb >> b) & 1:
+            # Compute expected byte-merged value against initial 0xA5A55A5A
+            expected = 0
+            for b in range(4):
                 mask = 0xFF << (8 * b)
-                expected |= (write_val & mask)
+                if (strb >> b) & 1:
+                    expected |= (write_val & mask)
+                else:
+                    expected |= (0xA5A55A5A & mask)
 
-        assert rdata == expected, f"WSTRB {hex(strb)} mismatch: expected {hex(expected)}, got {hex(rdata)}"
+            assert rdata == expected, (
+                f"{label} WSTRB {hex(strb)} mismatch: expected {hex(expected)}, got {hex(rdata)}"
+            )
 
     tb.stop_all()
     await RisingEdge(dut.clk)
@@ -330,21 +339,165 @@ async def test_xb06_parallel_different_slaves(dut):
 
 @cocotb.test()
 async def test_xb07_arbitration_fairness(dut):
-    """XB-07: Arbitration fairness under sustained contention (grant difference <= 1)."""
+    """XB-07: Arbitration fairness under continuous contention (diff <= 1 for WR and RD)."""
     tb = XbarTestbench(dut)
     await tb.reset()
 
-    # Run 10 rounds of simultaneous requests to S1
-    m0_first = 0
-    m1_first = 0
+    window_txns = 100
+    max_cycles = 4000
 
-    for round_idx in range(10):
-        t0 = cocotb.start_soon(tb.m0.write(addr=0x50000050, data=0x1000 + round_idx))
-        t1 = cocotb.start_soon(tb.m1.write(addr=0x50000054, data=0x2000 + round_idx))
+    # ------------------------------------------------------------------
+    # 1. Continuous back-to-back WRITE contention on S1 (0x5000_0050/54)
+    # Masters re-assert AWVALID/WVALID on the same cycle as B handshake.
+    # ------------------------------------------------------------------
+    wr_done = [0, 0]
+    m_wr_state = [
+        {"aw_hs": False, "w_hs": False, "addr": 0x50000050},
+        {"aw_hs": False, "w_hs": False, "addr": 0x50000054},
+    ]
 
-        await t0
-        await t1
+    dut.m0_awaddr.value = m_wr_state[0]["addr"]
+    dut.m0_awprot.value = 0
+    dut.m0_wdata.value = 0x1000
+    dut.m0_wstrb.value = 0xF
+    dut.m0_awvalid.value = 1
+    dut.m0_wvalid.value = 1
+    dut.m0_bready.value = 1
 
+    dut.m1_awaddr.value = m_wr_state[1]["addr"]
+    dut.m1_awprot.value = 0
+    dut.m1_wdata.value = 0x2000
+    dut.m1_wstrb.value = 0xF
+    dut.m1_awvalid.value = 1
+    dut.m1_wvalid.value = 1
+    dut.m1_bready.value = 1
+
+    for _ in range(max_cycles):
+        await RisingEdge(dut.clk)
+        ports = [
+            (dut.m0_awvalid, dut.m0_awready, dut.m0_wvalid, dut.m0_wready,
+             dut.m0_bvalid, dut.m0_bready, dut.m0_bresp, dut.m0_wdata, 0),
+            (dut.m1_awvalid, dut.m1_awready, dut.m1_wvalid, dut.m1_wready,
+             dut.m1_bvalid, dut.m1_bready, dut.m1_bresp, dut.m1_wdata, 1),
+        ]
+        completed_this_cycle = False
+        for awv, awr, wv, wr, bv, br, bresp_sig, wdata_sig, idx in ports:
+            st = m_wr_state[idx]
+            if int(awv.value) == 1 and int(awr.value) == 1:
+                st["aw_hs"] = True
+                awv.value = 0
+            if int(wv.value) == 1 and int(wr.value) == 1:
+                st["w_hs"] = True
+                wv.value = 0
+            if int(bv.value) == 1 and int(br.value) == 1:
+                assert int(bresp_sig.value) == 0, f"XB-07 M{idx} write failed with bresp={int(bresp_sig.value)}"
+                wr_done[idx] += 1
+                completed_this_cycle = True
+                st["aw_hs"] = False
+                st["w_hs"] = False
+                if (wr_done[0] + wr_done[1]) < window_txns:
+                    wdata_sig.value = ((idx + 1) << 12) + wr_done[idx]
+                    awv.value = 1
+                    wv.value = 1
+
+        if completed_this_cycle:
+            diff = abs(wr_done[0] - wr_done[1])
+            assert diff <= 1, (
+                f"XB-07 WRITE arbitration unfair mid-window at total={wr_done[0] + wr_done[1]}: "
+                f"M0={wr_done[0]}, M1={wr_done[1]} (diff={diff} > 1)"
+            )
+            if (wr_done[0] + wr_done[1]) >= window_txns:
+                break
+
+    # Drain any still-asserted AWVALID/WVALID/BVALID without ever dropping VALID before READY
+    for _ in range(30):
+        m0_idle = (int(dut.m0_awvalid.value) == 0 and int(dut.m0_wvalid.value) == 0 and int(dut.m0_bvalid.value) == 0)
+        m1_idle = (int(dut.m1_awvalid.value) == 0 and int(dut.m1_wvalid.value) == 0 and int(dut.m1_bvalid.value) == 0)
+        if m0_idle and m1_idle:
+            break
+        await RisingEdge(dut.clk)
+        for awv, awr, wv, wr, bv, br in [
+            (dut.m0_awvalid, dut.m0_awready, dut.m0_wvalid, dut.m0_wready, dut.m0_bvalid, dut.m0_bready),
+            (dut.m1_awvalid, dut.m1_awready, dut.m1_wvalid, dut.m1_wready, dut.m1_bvalid, dut.m1_bready),
+        ]:
+            if int(awv.value) == 1 and int(awr.value) == 1:
+                awv.value = 0
+            if int(wv.value) == 1 and int(wr.value) == 1:
+                wv.value = 0
+    dut.m0_bready.value = 0
+    dut.m1_bready.value = 0
+
+    assert (wr_done[0] + wr_done[1]) >= window_txns, (
+        f"XB-07 WRITE window timed out: M0={wr_done[0]}, M1={wr_done[1]}"
+    )
+    assert abs(wr_done[0] - wr_done[1]) <= 1, (
+        f"XB-07 WRITE final count difference > 1: M0={wr_done[0]}, M1={wr_done[1]}"
+    )
+
+    # ------------------------------------------------------------------
+    # 2. Continuous back-to-back READ contention on S1 (0x5000_0050/54)
+    # Masters re-assert ARVALID on the same cycle as R handshake.
+    # ------------------------------------------------------------------
+    rd_done = [0, 0]
+    dut.m0_araddr.value = 0x50000050
+    dut.m0_arprot.value = 0
+    dut.m0_arvalid.value = 1
+    dut.m0_rready.value = 1
+
+    dut.m1_araddr.value = 0x50000054
+    dut.m1_arprot.value = 0
+    dut.m1_arvalid.value = 1
+    dut.m1_rready.value = 1
+
+    for _ in range(max_cycles):
+        await RisingEdge(dut.clk)
+        ports_rd = [
+            (dut.m0_arvalid, dut.m0_arready, dut.m0_rvalid, dut.m0_rready, dut.m0_rresp, 0),
+            (dut.m1_arvalid, dut.m1_arready, dut.m1_rvalid, dut.m1_rready, dut.m1_rresp, 1),
+        ]
+        completed_this_cycle = False
+        for arv, arr, rv, rr, rresp_sig, idx in ports_rd:
+            if int(arv.value) == 1 and int(arr.value) == 1:
+                arv.value = 0
+            if int(rv.value) == 1 and int(rr.value) == 1:
+                assert int(rresp_sig.value) == 0, f"XB-07 M{idx} read failed with rresp={int(rresp_sig.value)}"
+                rd_done[idx] += 1
+                completed_this_cycle = True
+                if (rd_done[0] + rd_done[1]) < window_txns:
+                    arv.value = 1
+
+        if completed_this_cycle:
+            diff = abs(rd_done[0] - rd_done[1])
+            assert diff <= 1, (
+                f"XB-07 READ arbitration unfair mid-window at total={rd_done[0] + rd_done[1]}: "
+                f"M0={rd_done[0]}, M1={rd_done[1]} (diff={diff} > 1)"
+            )
+            if (rd_done[0] + rd_done[1]) >= window_txns:
+                break
+
+    # Drain any still-asserted ARVALID/RVALID without ever dropping ARVALID before ARREADY
+    for _ in range(30):
+        m0_idle = (int(dut.m0_arvalid.value) == 0 and int(dut.m0_rvalid.value) == 0)
+        m1_idle = (int(dut.m1_arvalid.value) == 0 and int(dut.m1_rvalid.value) == 0)
+        if m0_idle and m1_idle:
+            break
+        await RisingEdge(dut.clk)
+        for arv, arr in [(dut.m0_arvalid, dut.m0_arready), (dut.m1_arvalid, dut.m1_arready)]:
+            if int(arv.value) == 1 and int(arr.value) == 1:
+                arv.value = 0
+    dut.m0_rready.value = 0
+    dut.m1_rready.value = 0
+
+    assert (rd_done[0] + rd_done[1]) >= window_txns, (
+        f"XB-07 READ window timed out: M0={rd_done[0]}, M1={rd_done[1]}"
+    )
+    assert abs(rd_done[0] - rd_done[1]) <= 1, (
+        f"XB-07 READ final count difference > 1: M0={rd_done[0]}, M1={rd_done[1]}"
+    )
+
+    dut._log.info(
+        f"XB-07 PASSED: WR M0={wr_done[0]}/M1={wr_done[1]}, RD M0={rd_done[0]}/M1={rd_done[1]}"
+    )
     tb.stop_all()
     await RisingEdge(dut.clk)
     await Timer(10, unit="ns")

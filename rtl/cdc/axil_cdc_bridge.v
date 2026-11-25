@@ -67,18 +67,68 @@ module axil_cdc_bridge #(
     wire [RESP_WIDTH-1:0] resp_wdata;
     wire                 resp_full;
 
+    // -------------------------------------------------------------
+    // Cross-Domain Reset Synchronizers (kept on pure reset nets to
+    // avoid mixed sync/async reset usage)
+    // -------------------------------------------------------------
+    wire both_rst_n = rst_sys_n & rst_slow_n;
+
+    reg fifo_rst_sys_q1;
+    reg fifo_rst_sys_q2;
+    always @(posedge clk_sys or negedge both_rst_n) begin
+        if (!both_rst_n) begin
+            fifo_rst_sys_q1 <= 1'b0;
+            fifo_rst_sys_q2 <= 1'b0;
+        end else begin
+            fifo_rst_sys_q1 <= 1'b1;
+            fifo_rst_sys_q2 <= fifo_rst_sys_q1;
+        end
+    end
+    wire fifo_rst_sys_n = fifo_rst_sys_q2;
+
+    reg slow_rst_seen_q1;
+    reg slow_rst_seen_q2;
+    always @(posedge clk_sys or negedge rst_slow_n) begin
+        if (!rst_slow_n) begin
+            slow_rst_seen_q1 <= 1'b0;
+            slow_rst_seen_q2 <= 1'b0;
+        end else begin
+            slow_rst_seen_q1 <= 1'b1;
+            slow_rst_seen_q2 <= slow_rst_seen_q1;
+        end
+    end
+    wire slow_rst_seen_n = slow_rst_seen_q2;
+
+    reg fifo_rst_slow_q1;
+    reg fifo_rst_slow_q2;
+    always @(posedge clk_slow or negedge both_rst_n) begin
+        if (!both_rst_n) begin
+            fifo_rst_slow_q1 <= 1'b0;
+            fifo_rst_slow_q2 <= 1'b0;
+        end else begin
+            fifo_rst_slow_q1 <= 1'b1;
+            fifo_rst_slow_q2 <= fifo_rst_slow_q1;
+        end
+    end
+    wire fifo_rst_slow_n = fifo_rst_slow_q2;
+
+    // Gate FIFO control pulses when either reset is active so an async slow reset
+    // cannot assert rempty while a previously-registered req_push/resp_pop is high
+    wire fifo_req_push = req_push && slow_rst_seen_n;
+    wire fifo_resp_pop = resp_pop && slow_rst_seen_n;
+
     // Request FIFO: clk_sys -> clk_slow
     async_fifo #(
         .WIDTH(REQ_WIDTH),
         .DEPTH(FIFO_DEPTH)
     ) u_req_fifo (
         .wclk   (clk_sys),
-        .wrst_n (rst_sys_n),
-        .winc   (req_push),
+        .wrst_n (fifo_rst_sys_n),
+        .winc   (fifo_req_push),
         .wdata  (req_wdata),
         .wfull  (req_full),
         .rclk   (clk_slow),
-        .rrst_n (rst_slow_n),
+        .rrst_n (fifo_rst_slow_n),
         .rinc   (req_pop),
         .rdata  (req_rdata),
         .rempty (req_empty)
@@ -90,13 +140,13 @@ module axil_cdc_bridge #(
         .DEPTH(FIFO_DEPTH)
     ) u_resp_fifo (
         .wclk   (clk_slow),
-        .wrst_n (rst_slow_n),
+        .wrst_n (fifo_rst_slow_n),
         .winc   (resp_push),
         .wdata  (resp_wdata),
         .wfull  (resp_full),
         .rclk   (clk_sys),
-        .rrst_n (rst_sys_n),
-        .rinc   (resp_pop),
+        .rrst_n (fifo_rst_sys_n),
+        .rinc   (fifo_resp_pop),
         .rdata  (resp_rdata),
         .rempty (resp_empty)
     );
@@ -104,7 +154,7 @@ module axil_cdc_bridge #(
     // Instantiate slow_regs in clk_slow domain
     slow_regs u_slow_regs (
         .clk_slow   (clk_slow),
-        .rst_slow_n (rst_slow_n),
+        .rst_slow_n (fifo_rst_slow_n),
         .req_empty  (req_empty),
         .req_pop    (req_pop),
         .req_data   (req_rdata),
@@ -129,62 +179,72 @@ module axil_cdc_bridge #(
     reg [7:0]            reg_addr;
     reg [DATA_WIDTH-1:0] reg_wdata;
     reg [STRB_WIDTH-1:0] reg_wstrb;
+    reg                  slow_rst_aborted;
 
     always @(posedge clk_sys or negedge rst_sys_n) begin
         if (!rst_sys_n) begin
-            state          <= ST_IDLE;
-            s_axil_awready <= 1'b0;
-            s_axil_wready  <= 1'b0;
-            s_axil_arready <= 1'b0;
-            s_axil_bvalid  <= 1'b0;
-            s_axil_bresp   <= 2'b00;
-            s_axil_rvalid  <= 1'b0;
-            s_axil_rdata   <= {DATA_WIDTH{1'b0}};
-            s_axil_rresp   <= 2'b00;
-            req_push       <= 1'b0;
-            req_wdata      <= {REQ_WIDTH{1'b0}};
-            resp_pop       <= 1'b0;
-            reg_is_write   <= 1'b0;
-            reg_addr       <= 8'd0;
-            reg_wdata      <= {DATA_WIDTH{1'b0}};
-            reg_wstrb      <= {STRB_WIDTH{1'b0}};
+            state            <= ST_IDLE;
+            s_axil_awready   <= 1'b0;
+            s_axil_wready    <= 1'b0;
+            s_axil_arready   <= 1'b0;
+            s_axil_bvalid    <= 1'b0;
+            s_axil_bresp     <= 2'b00;
+            s_axil_rvalid    <= 1'b0;
+            s_axil_rdata     <= {DATA_WIDTH{1'b0}};
+            s_axil_rresp     <= 2'b00;
+            req_push         <= 1'b0;
+            req_wdata        <= {REQ_WIDTH{1'b0}};
+            resp_pop         <= 1'b0;
+            reg_is_write     <= 1'b0;
+            reg_addr         <= 8'd0;
+            reg_wdata        <= {DATA_WIDTH{1'b0}};
+            reg_wstrb        <= {STRB_WIDTH{1'b0}};
+            slow_rst_aborted <= 1'b0;
         end else begin
             req_push <= 1'b0;
             resp_pop <= 1'b0;
 
+            if (!slow_rst_seen_n && (state == ST_WAIT_W || state == ST_WAIT_AW || state == ST_PUSH_REQ || state == ST_WAIT_RESP)) begin
+                slow_rst_aborted <= 1'b1;
+            end
+
             case (state)
                 ST_IDLE: begin
-                    s_axil_awready <= 1'b0;
-                    s_axil_wready  <= 1'b0;
-                    s_axil_arready <= 1'b0;
+                    s_axil_awready   <= 1'b0;
+                    s_axil_wready    <= 1'b0;
+                    s_axil_arready   <= 1'b0;
+                    slow_rst_aborted <= 1'b0;
 
-                    // Prioritize read if pending
-                    if (s_axil_arvalid && !req_full) begin
-                        s_axil_arready <= 1'b1;
-                        reg_is_write   <= 1'b0;
-                        reg_addr       <= s_axil_araddr[7:0];
-                        reg_wdata      <= {DATA_WIDTH{1'b0}};
-                        reg_wstrb      <= {STRB_WIDTH{1'b0}};
-                        state          <= ST_PUSH_REQ;
-                    end else if (s_axil_awvalid && s_axil_wvalid && !req_full) begin
-                        s_axil_awready <= 1'b1;
-                        s_axil_wready  <= 1'b1;
-                        reg_is_write   <= 1'b1;
-                        reg_addr       <= s_axil_awaddr[7:0];
-                        reg_wdata      <= s_axil_wdata;
-                        reg_wstrb      <= s_axil_wstrb;
-                        state          <= ST_PUSH_REQ;
-                    end else if (s_axil_awvalid && !req_full) begin
-                        s_axil_awready <= 1'b1;
-                        reg_is_write   <= 1'b1;
-                        reg_addr       <= s_axil_awaddr[7:0];
-                        state          <= ST_WAIT_W;
-                    end else if (s_axil_wvalid && !req_full) begin
-                        s_axil_wready  <= 1'b1;
-                        reg_is_write   <= 1'b1;
-                        reg_wdata      <= s_axil_wdata;
-                        reg_wstrb      <= s_axil_wstrb;
-                        state          <= ST_WAIT_AW;
+                    // Wait until slow domain reset synchronizer releases before accepting new transactions
+                    if (slow_rst_seen_n) begin
+                        // Prioritize read if pending
+                        if (s_axil_arvalid && !req_full) begin
+                            s_axil_arready <= 1'b1;
+                            reg_is_write   <= 1'b0;
+                            reg_addr       <= s_axil_araddr[7:0];
+                            reg_wdata      <= {DATA_WIDTH{1'b0}};
+                            reg_wstrb      <= {STRB_WIDTH{1'b0}};
+                            state          <= ST_PUSH_REQ;
+                        end else if (s_axil_awvalid && s_axil_wvalid && !req_full) begin
+                            s_axil_awready <= 1'b1;
+                            s_axil_wready  <= 1'b1;
+                            reg_is_write   <= 1'b1;
+                            reg_addr       <= s_axil_awaddr[7:0];
+                            reg_wdata      <= s_axil_wdata;
+                            reg_wstrb      <= s_axil_wstrb;
+                            state          <= ST_PUSH_REQ;
+                        end else if (s_axil_awvalid && !req_full) begin
+                            s_axil_awready <= 1'b1;
+                            reg_is_write   <= 1'b1;
+                            reg_addr       <= s_axil_awaddr[7:0];
+                            state          <= ST_WAIT_W;
+                        end else if (s_axil_wvalid && !req_full) begin
+                            s_axil_wready  <= 1'b1;
+                            reg_is_write   <= 1'b1;
+                            reg_wdata      <= s_axil_wdata;
+                            reg_wstrb      <= s_axil_wstrb;
+                            state          <= ST_WAIT_AW;
+                        end
                     end
                 end
 
@@ -212,7 +272,19 @@ module axil_cdc_bridge #(
                     s_axil_wready  <= 1'b0;
                     s_axil_arready <= 1'b0;
 
-                    if (!req_full) begin
+                    if (slow_rst_aborted || !slow_rst_seen_n) begin
+                        // Complete accepted AXI request with SLVERR if slow domain reset occurred
+                        if (reg_is_write) begin
+                            s_axil_bvalid <= 1'b1;
+                            s_axil_bresp  <= 2'b10;
+                            state         <= ST_BRESP;
+                        end else begin
+                            s_axil_rvalid <= 1'b1;
+                            s_axil_rdata  <= {DATA_WIDTH{1'b0}};
+                            s_axil_rresp  <= 2'b10;
+                            state         <= ST_RRESP;
+                        end
+                    end else if (!req_full) begin
                         req_push  <= 1'b1;
                         req_wdata <= {reg_is_write, reg_addr, reg_wdata, reg_wstrb};
                         state     <= ST_WAIT_RESP;
@@ -222,7 +294,19 @@ module axil_cdc_bridge #(
                 ST_WAIT_RESP: begin
                     req_push <= 1'b0;
 
-                    if (!resp_empty) begin
+                    if (slow_rst_aborted || !slow_rst_seen_n) begin
+                        // Abort slow-domain wait cleanly with SLVERR so master never hangs
+                        if (reg_is_write) begin
+                            s_axil_bvalid <= 1'b1;
+                            s_axil_bresp  <= 2'b10;
+                            state         <= ST_BRESP;
+                        end else begin
+                            s_axil_rvalid <= 1'b1;
+                            s_axil_rdata  <= {DATA_WIDTH{1'b0}};
+                            s_axil_rresp  <= 2'b10;
+                            state         <= ST_RRESP;
+                        end
+                    end else if (!resp_empty) begin
                         resp_pop <= 1'b1;
                         if (reg_is_write) begin
                             s_axil_bvalid <= 1'b1;
@@ -296,17 +380,24 @@ module axil_cdc_bridge #(
     always @(posedge clk_sys) f_sys_past <= 1'b1;
     always @(posedge clk_slow) f_slow_past <= 1'b1;
 
+    always @(*) begin
+        if (!f_sys_past)  assume (!rst_sys_n);
+        else              assume (rst_sys_n);
+        if (!f_slow_past) assume (!rst_slow_n);
+        else              assume (rst_slow_n);
+    end
+
     // FIFO Handshake Safety (clk_sys domain)
     always @(posedge clk_sys) begin
-        if (rst_sys_n && f_sys_past) begin
-            assert (!(req_push && req_full));
-            assert (!(resp_pop && resp_empty));
+        if (rst_sys_n && slow_rst_seen_n && f_sys_past) begin
+            assert (!(fifo_req_push && req_full));
+            assert (!(fifo_resp_pop && resp_empty));
         end
     end
 
     // FIFO Handshake Safety (clk_slow domain)
     always @(posedge clk_slow) begin
-        if (rst_slow_n && f_slow_past) begin
+        if (rst_slow_n && rst_sys_n && f_slow_past) begin
             assert (!(req_pop && req_empty));
             assert (!(resp_push && resp_full));
         end
@@ -324,19 +415,30 @@ module axil_cdc_bridge #(
         end
     end
 
-    // Data integrity on SLOW_ID (offset 0x00) read
+    // Data integrity on SLOW_ID (offset 0x00..0x03) read & slow-reset abort check
     reg [7:0] f_saved_araddr;
+    reg       f_read_aborted;
     always @(posedge clk_sys) begin
         if (!rst_sys_n) begin
             f_saved_araddr <= 8'd0;
-        end else if (s_axil_arvalid && s_axil_arready) begin
-            f_saved_araddr <= s_axil_araddr[7:0];
+            f_read_aborted <= 1'b0;
+        end else begin
+            if (s_axil_arvalid && s_axil_arready) begin
+                f_saved_araddr <= s_axil_araddr[7:0];
+                f_read_aborted <= 1'b0;
+            end
+            if (!reg_is_write && (state == ST_PUSH_REQ || state == ST_WAIT_RESP) &&
+                (slow_rst_aborted || !slow_rst_seen_n)) begin
+                f_read_aborted <= 1'b1;
+            end
         end
     end
 
     always @(posedge clk_sys) begin
         if (rst_sys_n && f_sys_past) begin
-            if (s_axil_rvalid && (f_saved_araddr == 8'h00)) begin
+            if (s_axil_rvalid && f_read_aborted) begin
+                assert (s_axil_rresp == 2'b10);
+            end else if (s_axil_rvalid && (f_saved_araddr[7:2] == 6'h00)) begin
                 assert (s_axil_rdata == 32'h510E_0001);
                 assert (s_axil_rresp == 2'b00);
             end

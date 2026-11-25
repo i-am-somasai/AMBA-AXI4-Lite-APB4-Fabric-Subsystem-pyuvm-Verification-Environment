@@ -14,11 +14,12 @@ class RamModel:
 
     def write(self, addr, data, strb=0xF):
         offset = addr & 0x0FFF_FFFF
-        if offset + 4 > self.size_bytes or offset < 0:
+        word_idx = offset >> 2
+        if word_idx >= self.depth_words or offset < 0:
             return AddrMap.RESP_SLVERR
 
         # Word-aligned byte offset
-        word_addr = (offset >> 2) << 2
+        word_addr = word_idx << 2
         for i in range(4):
             if (strb >> i) & 1:
                 byte_val = (data >> (i * 8)) & 0xFF
@@ -28,10 +29,11 @@ class RamModel:
 
     def read(self, addr):
         offset = addr & 0x0FFF_FFFF
-        if offset + 4 > self.size_bytes or offset < 0:
+        word_idx = offset >> 2
+        if word_idx >= self.depth_words or offset < 0:
             return 0, AddrMap.RESP_SLVERR
 
-        word_addr = (offset >> 2) << 2
+        word_addr = word_idx << 2
         rdata = 0
         for i in range(4):
             rdata |= (self.mem[word_addr + i] << (i * 8))
