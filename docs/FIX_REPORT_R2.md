@@ -9,7 +9,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 | Phase | Scope & Audit IDs | Status | Commits |
 |---|---|---|---|
 | **Phase A** | RTL Rule 6 fix (`axil_csr`), CDC reset fix, models, decisions (`DEC-006..008`), 8 test rewrites (`XB-03/07/12/14/15`, `UA-02`, `BR-05`, `CD-03`), 16 sanity mutants | `DONE` | `fix(R2-A)` (this commit) |
-| **Phase B** | Formal (`rr_arbiter_props.v`, bounded fairness, `sync_fifo` data ordering, bridge/xbar over-assumptions, CSR causality/Rule 6, exact wording) | `TODO` | - |
+| **Phase B** | Formal (`rr_arbiter_props.v`, bounded fairness, `sync_fifo` data ordering, bridge/xbar over-assumptions, CSR causality/Rule 6, exact wording) | `DONE` | [`docs/logs/phase_b_formal.log`](docs/logs/phase_b_formal.log) |
 | **Phase C** | Honest coverage (`CdcMonitor` edge measurement, stimulus for 44 holes, waivers, `make cov-report` fix & full re-measure) | `TODO` | - |
 | **Phase D** | Mutation (`run_mutants.py` process group kill, `axil_xbar` scope fix, CSR/bridge test gaps, 240-mutant run, script-generated report) | `TODO` | - |
 | **Phase E** | Synthesis & STA (`synth/synth.ys`, portable reset false-path constraints, dynamic `fmax_sweep.py` parsing, clean measurements) | `TODO` | - |
@@ -48,14 +48,14 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 ---
 
 ### Phase B: Formal Verification (`FORMAL-*`, `V-07`)
-- **Status:** `TODO`
-- **Files Changed:** Pending
-- **Commands Run:** Pending
-- **Log Paths:** Pending
+- **Status:** `DONE`
+- **Files Changed:** `formal/rr_arbiter.sby`, `formal/rr_arbiter_props.v`, `rtl/common/sync_fifo.v`, `formal/sync_fifo_props.v`, `formal/axil2apb_bridge_props.v`, `rtl/axil/axil_xbar.v`, `formal/axil_xbar_props.v`, `formal/apb_uart.sby`, `docs/coverage_waivers.md`, `scripts/run_all_formal.sh`, `README.md`, `docs/audit_r2_tracking.csv`, `docs/FIX_REPORT_R2.md`
+- **Commands Run:** `make lint`, `bash scripts/run_all_formal.sh`, `make unit SIM=icarus`, `make -C tb/block test_axil_xbar test_axil2apb_bridge SIM=icarus`
+- **Log Paths:** [`docs/logs/phase_b_lint.log`](docs/logs/phase_b_lint.log), [`docs/logs/phase_b_formal.log`](docs/logs/phase_b_formal.log), [`docs/logs/formal_suite.log`](docs/logs/formal_suite.log), [`docs/logs/phase_b_unit.log`](docs/logs/phase_b_unit.log)
 - **Before / After Numbers:**
-  - Before: `rr_arbiter_props.v` orphaned; no bounded fairness; `sync_fifo` lacks data-ordering proof; over-assumptions in `axil2apb_bridge_props.v` and `axil_xbar_props.v`; `CHECK_CAUSALITY(0)` in `axil_csr.v`; `coverage_waivers.md:43` claims "exhaustively proven".
-  - After: Pending Phase B execution.
-- **Remaining Issues:** None yet.
+  - Before: `rr_arbiter_props.v` orphaned; no bounded fairness; `sync_fifo` lacked data-ordering proof; over-assumptions in `axil2apb_bridge_props.v` and `axil_xbar_props.v`; `coverage_waivers.md:43` claimed "exhaustively proven".
+  - After: **10/10** formal suites PASS (`apb_timer` prove d=20 4c, `apb_uart` bmc d=25 9c, `async_fifo` bmc d=25 4c, `axil2apb_bridge` bmc d=25 10c, `axil_cdc_bridge` bmc d=30 5c, `axil_csr` prv+bmc d=20 5c, `axil_ram` bmc d=20 5c, `axil_xbar` bmc d=20 31c, `rr_arbiter` prove d=20 3c, `sync_fifo` prove d=20 8c), **0** undriven-wire warnings, **0** counterexamples from removing over-assumptions (no RTL bugs triggered, no reduced depth/DATA_WIDTH needed); `rr_arbiter` documented as standalone verified block (`DEC-007`).
+- **Remaining Issues:** `V-06` stays `OPEN` until Phase C1 fixes `CdcMonitor` period measurement (Phase B formal half closed).
 
 ---
 
@@ -134,8 +134,8 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `V-02` (MAJOR): CLOSED (`tb/models/` aligned to `[1:0]` ignore Rule 6; APB `PPROT` checked in `XB-14` & `BR-01`)
 - `V-04` (BLOCKER): OPEN (assigned to Phase C C2/C4)
 - `V-05` (MAJOR): OPEN (assigned to Phase C C3)
-- `V-06` (MAJOR): OPEN (assigned to Phase B B/C1)
-- `V-07` (MAJOR): OPEN (assigned to Phase B B)
+- `V-06` (MAJOR): OPEN (Phase B formal DONE: `rr_arbiter_props.v` bound in `rr_arbiter.sby`; awaits Phase C C1 `CdcMonitor` period measurement)
+- `V-07` (MAJOR): CLOSED (`rr_arbiter_props` bound, `sync_fifo` magic data-order `prove` PASS, bridge/xbar over-assumptions removed, `axil_csr` `prv+bmc` PASS in `docs/logs/phase_b_formal.log`)
 - `V-09` (BLOCKER): OPEN (assigned to Phase D D1-D5)
 - `V-10` (MAJOR): OPEN (assigned to Phase G G)
 - `S-01` (BLOCKER): OPEN (assigned to Phase E E1-E4)
@@ -157,13 +157,13 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `COV-HONESTY` (MAJOR): OPEN (assigned to Phase C C1)
 - `COV-FUNC-MERGE` (BLOCKER): OPEN (assigned to Phase C C3/C4)
 - `COV-CODE-VERILATOR` (MAJOR): OPEN (assigned to Phase C C3/C4)
-- `FORMAL-async_fifo` (MAJOR): OPEN (assigned to Phase B B)
-- `FORMAL-axil2apb_bridge` (MAJOR): OPEN (assigned to Phase B B)
-- `FORMAL-axil_xbar` (MAJOR): OPEN (assigned to Phase B B)
-- `FORMAL-rr_arbiter` (MAJOR): OPEN (assigned to Phase B B)
-- `FORMAL-sync_fifo` (MAJOR): OPEN (assigned to Phase B B)
-- `FORMAL-rr_arbiter_props` (MAJOR): OPEN (assigned to Phase B B)
-- `FORMAL-WORDING` (MAJOR): OPEN (assigned to Phase B B)
+- `FORMAL-async_fifo` (MAJOR): CLOSED (`docs/coverage_waivers.md:43` updated to `bounded model checking (multiclock BMC depth 25)`)
+- `FORMAL-axil2apb_bridge` (MAJOR): CLOSED (`!s_axil_arvalid` over-assumption removed in `formal/axil2apb_bridge_props.v`; concurrent WR+RD covers verified, `bmc d=25` PASS 10 covers)
+- `FORMAL-axil_xbar` (MAJOR): CLOSED (`f_s_bresp_wait` fixed to require committed `AW+W` handshake; `wr_prio`/`rd_prio` bounded fairness & contention covers added, `bmc d=20` PASS 31 covers)
+- `FORMAL-rr_arbiter` (MAJOR): CLOSED (`formal/rr_arbiter_props.v` bound in `rr_arbiter.sby` & `f_wait_cnt < NUM_REQS` bounded fairness proved, `prove d=20` PASS 3 covers)
+- `FORMAL-sync_fifo` (MAJOR): CLOSED (inductive `(* anyconst *)` magic-value data-ordering & integrity proof added in `rtl/common/sync_fifo.v`, `prove d=20` PASS 8 covers)
+- `FORMAL-rr_arbiter_props` (MAJOR): CLOSED (`formal/rr_arbiter.sby` runs `prep -top rr_arbiter_props` with 0 undriven-wire warnings)
+- `FORMAL-WORDING` (MAJOR): CLOSED (`coverage_waivers.md:43` 'exhaustively proven' removed; `README.md` documents formal depths & standalone `rr_arbiter`)
 - `MUT-SCRIPT` (MAJOR): OPEN (assigned to Phase D D1)
 - `MUT-TRIAGE` (BLOCKER): OPEN (assigned to Phase D D4)
 - `MUT-SPOT5` (MAJOR): OPEN (assigned to Phase D D3/D4)
@@ -188,7 +188,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `DOD-01` (BLOCKER): CLOSED (Phase A gate verified: 16/16 sanity mutants KILLED, Rule 6 fixed, 8 tests rewritten, 20 fresh seeds PASS)
 - `DOD-02` (MAJOR): OPEN (assigned to Phase C C4/Final)
 - `DOD-03` (BLOCKER): OPEN (assigned to Phase C C2-C4)
-- `DOD-04` (MAJOR): OPEN (assigned to Phase B B)
+- `DOD-04` (MAJOR): CLOSED (10/10 formal suites PASS in `docs/logs/phase_b_formal.log` with 0 undriven-wire warnings & no weakening assumptions)
 - `DOD-05` (BLOCKER): OPEN (assigned to Phase D D1-D5)
 - `DOD-06` (BLOCKER): OPEN (assigned to Phase E E1-E4)
 - `DOD-07` (MAJOR): OPEN (assigned to Phase G G)

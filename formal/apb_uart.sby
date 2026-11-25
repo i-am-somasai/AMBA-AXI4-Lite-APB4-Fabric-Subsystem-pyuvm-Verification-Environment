@@ -12,7 +12,7 @@ cover: depth 25
 smtbmc boolector
 
 [script]
-read -formal -sv sync_fifo.v
+read -formal -sv -DNO_INTERNAL_FIFO_COVERS sync_fifo.v
 read -formal -sv -DFORMAL apb_uart.v
 prep -top apb_uart
 

@@ -11,10 +11,10 @@ if [ -f "${PROJ_DIR}/scripts/env.sh" ]; then
     source "${PROJ_DIR}/scripts/env.sh"
 fi
 
-mkdir -p "$(dirname "${LOG_FILE}")"
+mkdir -p "$(dirname "${LOG_FILE}")" "${BUILD_DIR:-${PROJ_DIR}/build}/tmp"
 
-# Create a temporary file to collect results
-RUN_LOG=$(mktemp)
+# Keep scratch files in BUILD_DIR (never /tmp)
+RUN_LOG="${BUILD_DIR:-${PROJ_DIR}/build}/tmp/formal_suite_run.log"
 exec > >(tee "${RUN_LOG}") 2>&1
 
 echo "=========================================================================================="
@@ -26,7 +26,8 @@ FAILED=0
 TOTAL=0
 
 # Temporary file to store per-module summary data
-SUMMARY_DATA=$(mktemp)
+SUMMARY_DATA="${BUILD_DIR:-${PROJ_DIR}/build}/tmp/formal_summary.dat"
+rm -f "${SUMMARY_DATA}"
 
 for sby_file in $(find "${FORMAL_DIR}" -maxdepth 1 -name "*.sby" | sort); do
     base_name=$(basename "${sby_file}" .sby)
@@ -39,8 +40,12 @@ for sby_file in $(find "${FORMAL_DIR}" -maxdepth 1 -name "*.sby" | sort); do
     sby_rc=$?
     set -e
     
-    # Determine mode and depth
-    if grep -q "mode prove" "${sby_file}"; then
+    # Determine mode and depth (handle suites with both prove and bmc tasks, e.g., axil_csr)
+    if grep -q "mode prove" "${sby_file}" && grep -q "mode bmc" "${sby_file}"; then
+        mode="prv+bmc"
+        depth=$(grep "depth" "${sby_file}" | head -n 1 | awk '{print $NF}')
+        main_task="${base_name}_prove"
+    elif grep -q "mode prove" "${sby_file}"; then
         mode="prove"
         depth=$(grep "depth" "${sby_file}" | head -n 1 | awk '{print $NF}')
         main_task="${base_name}_prove"

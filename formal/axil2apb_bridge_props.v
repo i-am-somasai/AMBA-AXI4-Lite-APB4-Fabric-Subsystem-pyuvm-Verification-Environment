@@ -129,7 +129,7 @@ module axil2apb_bridge_props #(
             assume (!rst_n);
     end
 
-    // Master assumptions (AXI4-Lite handshake rules)
+    // Master assumptions (AXI4-Lite handshake rules; simultaneous WR+RD allowed)
     always @(posedge clk) begin
         if (f_past_valid && $past(rst_n) && rst_n) begin
             if ($past(s_axil_awvalid) && !$past(s_axil_awready)) begin
@@ -150,11 +150,7 @@ module axil2apb_bridge_props #(
         end
     end
 
-    // Do not issue simultaneous read and write (bridge handles write or read sequentially)
-    always @(*) begin
-        if (s_axil_awvalid || s_axil_wvalid)
-            assume (!s_axil_arvalid);
-    end
+    // Simultaneous AW/W and AR requests intentionally left unconstrained to verify WR/RD arbitration
 
     // -------------------------------------------------------------
     // Formal Invariants and Assertions
@@ -325,6 +321,9 @@ module axil2apb_bridge_props #(
             cover (s_axil_bvalid && s_axil_bresp == 2'b10);
             // PSLVERR on read returning SLVERR
             cover (s_axil_rvalid && s_axil_rresp == 2'b10);
+            // Concurrent read & write arrival reachability
+            cover (s_axil_awvalid && s_axil_wvalid && s_axil_arvalid);
+            cover (f_wr_live_active && s_axil_arvalid);
         end
     end
 

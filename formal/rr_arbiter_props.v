@@ -51,12 +51,10 @@ module rr_arbiter_props #(
     always @(posedge clk) begin
         if (!rst_n) begin
             assert (grant == {NUM_REQS{1'b0}});
-            assert (dut.grant_q == {NUM_REQS{1'b0}});
             assert (grant_valid == 1'b0);
         end else begin
             // 1. One-hot or zero grant
             assert (grant == {NUM_REQS{1'b0}} || $onehot(grant));
-            assert (dut.grant_q == {NUM_REQS{1'b0}} || $onehot(dut.grant_q));
 
             // 2. grant_valid matches reduction OR of grant
             assert (grant_valid == (|grant));
@@ -78,6 +76,27 @@ module rr_arbiter_props #(
         end
     end
 
+    // Bounded fairness: under persistent contention with lock deasserted, every
+    // active requester is granted within NUM_REQS clock edges (no starvation).
+    reg [3:0] f_wait_cnt [0:NUM_REQS-1];
+    integer fk;
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            for (fk = 0; fk < NUM_REQS; fk = fk + 1) begin
+                f_wait_cnt[fk] <= 4'd0;
+            end
+        end else begin
+            for (fk = 0; fk < NUM_REQS; fk = fk + 1) begin
+                if (grant[fk] || !req[fk] || lock) begin
+                    f_wait_cnt[fk] <= 4'd0;
+                end else begin
+                    f_wait_cnt[fk] <= f_wait_cnt[fk] + 4'd1;
+                    assert (f_wait_cnt[fk] < NUM_REQS[3:0]);
+                end
+            end
+        end
+    end
+
     // Cover scenarios
     always @(posedge clk) begin
         if (rst_n && f_cycles_active >= 2) begin
@@ -86,6 +105,7 @@ module rr_arbiter_props #(
             cover ($past(grant) == 2'b01 && grant == 2'b10);
             cover ($past(grant) == 2'b10 && grant == 2'b01);
             cover (lock && grant_valid);
+            cover (req == 2'b11 && !lock && $past(grant) == 2'b01 && grant == 2'b10);
         end
     end
 

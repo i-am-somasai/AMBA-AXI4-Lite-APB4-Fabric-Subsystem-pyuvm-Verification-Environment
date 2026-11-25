@@ -62,6 +62,18 @@ module axil_xbar #(
     input  wire [NUM_SLAVES*2-1:0]             m_axil_rresp,
     input  wire [NUM_SLAVES-1:0]               m_axil_rvalid,
     output reg  [NUM_SLAVES-1:0]               m_axil_rready
+`ifdef FORMAL
+    ,output wire [NUM_SLAVES:0]                f_wr_prio_o,
+    output wire [NUM_SLAVES:0]                 f_rd_prio_o,
+    output wire [NUM_SLAVES:0]                 f_wr_locked_o,
+    output wire [NUM_SLAVES:0]                 f_wr_owner_o,
+    output wire [NUM_SLAVES:0]                 f_rd_locked_o,
+    output wire [NUM_SLAVES:0]                 f_rd_owner_o,
+    output wire [NUM_SLAVES:0]                 f_wr_req0_o,
+    output wire [NUM_SLAVES:0]                 f_wr_req1_o,
+    output wire [NUM_SLAVES:0]                 f_rd_req0_o,
+    output wire [NUM_SLAVES:0]                 f_rd_req1_o
+`endif
 );
 
     localparam NUM_TARGETS = NUM_SLAVES + 1; // 4 external slaves + 1 default slave
@@ -502,5 +514,23 @@ module axil_xbar #(
             end
         end
     end
+
+`ifdef FORMAL
+    assign f_wr_prio_o   = wr_prio;
+    assign f_rd_prio_o   = rd_prio;
+    assign f_wr_locked_o = wr_locked;
+    assign f_rd_locked_o = rd_locked;
+    genvar fg;
+    generate
+        for (fg = 0; fg < NUM_TARGETS; fg = fg + 1) begin : gen_f_obs
+            assign f_wr_owner_o[fg] = wr_owner[fg];
+            assign f_rd_owner_o[fg] = rd_owner[fg];
+            assign f_wr_req0_o[fg]  = wr_req[fg][0];
+            assign f_wr_req1_o[fg]  = wr_req[fg][1];
+            assign f_rd_req0_o[fg]  = rd_req[fg][0];
+            assign f_rd_req1_o[fg]  = rd_req[fg][1];
+        end
+    endgenerate
+`endif
 
 endmodule

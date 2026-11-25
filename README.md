@@ -153,7 +153,7 @@ The testbench is structured strictly according to UVM guidelines in Python via `
 - **`CoverageCollector`:** Samples 9 distinct functional covergroups defined in [`tb/pyuvm/func_cov/fabric_cov.py`](tb/pyuvm/func_cov/fabric_cov.py) on every transaction.
 
 ### 5.2 Formal Verification (SymbiYosys + Boolector)
-Formal properties, modes, depths, and cover traces are currently **being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md))** (Phase B adds bounded fairness in `axil_xbar`/`rr_arbiter`, `sync_fifo` data ordering, and removes over-assumptions).
+Formal properties, modes, depths, and cover traces are currently **being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md))** (Phase B adds bounded fairness in `axil_xbar`/`rr_arbiter`, `sync_fifo` data ordering, and removes over-assumptions; note that `rr_arbiter` is a standalone formally verified block not instantiated inside `axil_xbar`, per `DEC-007`).
 
 ### 5.3 Mutation Testing & Survivor Triage (Yosys Native)
 Mutation runs and survivor triage are currently **being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md))** (Phase D fixes process-group cleanup, `axil_xbar` module scope, and script-generated triage).

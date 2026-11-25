@@ -111,7 +111,7 @@ module sync_fifo_props #(
         end
     end
 
-    // Cover statements
+    // Cover statements (magic-value ordering & integrity proven in sync_fifo.v under `ifdef FORMAL)
     always @(posedge clk) begin
         if (rst_n) begin
             cover (empty);

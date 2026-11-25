@@ -12,8 +12,10 @@ cover: depth 20
 smtbmc boolector
 
 [script]
-read -formal -DFORMAL rr_arbiter.v
-prep -top rr_arbiter
+read -formal -sv -DFORMAL rr_arbiter.v
+read -formal -sv -DFORMAL rr_arbiter_props.v
+prep -top rr_arbiter_props
 
 [files]
 ../rtl/common/rr_arbiter.v
+rr_arbiter_props.v

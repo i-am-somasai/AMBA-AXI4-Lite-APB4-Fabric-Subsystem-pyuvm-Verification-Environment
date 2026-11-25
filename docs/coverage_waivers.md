@@ -40,7 +40,7 @@ Per project rules, every waiver must have a detailed architectural justification
   - Because no subsequent request can be accepted while a request is in flight, the maximum concurrent entries in `u_req_fifo` and `u_rsp_fifo` is exactly **1**.
   - With `DEPTH=4`, the async FIFO occupancy under normal bridge operation alternates strictly between `empty` (0 entries) and `partial` (1 entry). Occupancy `full` (4 entries) is physically impossible to reach in this architecture.
 - **Alternative Verification Evidence:**
-  - The asynchronous FIFO full boundary condition (`wfull == 1`), push-when-full drop, and Gray-pointer synchronization under full conditions are exhaustively proven via formal verification in `formal/async_fifo.sby` and unit-tested in `tb/unit/test_async_fifo.py`.
+  - The asynchronous FIFO full boundary condition (`wfull == 1`), push-when-full drop, and Gray-pointer synchronization under full conditions are verified via bounded model checking (multiclock BMC depth 25) in `formal/async_fifo.sby` and unit-tested in `tb/unit/test_async_fifo.py`.
 
 ---
 
