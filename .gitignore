@@ -45,3 +45,6 @@ mutation/results/
 .vscode/
 *.swp
 *~
+
+# Re-audit input folder (kept outside git)
+audit_input/
