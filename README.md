@@ -1,12 +1,15 @@
 # AMBA AXI4-Lite / APB4 Fabric Subsystem & pyuvm Verification Environment
 
+<!-- BEGIN:metrics:readme_badges -->
 [![AMBA Fabric CI](https://github.com/i-am-somasai/AMBA-AXI4-Lite-APB4-Fabric-Subsystem-pyuvm-Verification-Environment/actions/workflows/ci.yml/badge.svg)](https://github.com/i-am-somasai/AMBA-AXI4-Lite-APB4-Fabric-Subsystem-pyuvm-Verification-Environment/actions/workflows/ci.yml)
+[![CI Verification](https://img.shields.io/badge/CI%20Remote-NOT%20VERIFIED-yellow.svg)](.github/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Toolchain](https://img.shields.io/badge/Toolchain-OSS%20CAD%20Suite-brightgreen.svg)](https://github.com/YosysHQ/oss-cad-suite-build)
 [![Technology](https://img.shields.io/badge/PDK-SKY130%20HD-orange.svg)](https://github.com/google/skywater-pdk)
 [![Verification](https://img.shields.io/badge/Methodology-pyuvm%20%28UVM%20in%20Python%29-blueviolet.svg)](https://github.com/pyuvm/pyuvm)
-[![Functional Coverage](https://img.shields.io/badge/Functional%20Coverage-re--measuring-yellow.svg)](docs/FIX_REPORT_R2.md)
-[![Formal Proofs](https://img.shields.io/badge/Formal%20Proofs-re--measuring-yellow.svg)](docs/FIX_REPORT_R2.md)
+[![Functional Coverage](https://img.shields.io/badge/Functional%20Coverage-267%2F267%20%28100.00%25%29-brightgreen.svg)](docs/logs/func_cov.log)
+[![Formal Proofs](https://img.shields.io/badge/Formal%20Suites-10%2F10%20PASS-brightgreen.svg)](docs/logs/formal_suite.log)
+<!-- END:metrics:readme_badges -->
 
 > **Methodology Note (Honest Labelling):** This verification environment is implemented using **pyuvm (UVM methodology in Python)** running on top of **cocotb**, **Icarus Verilog**, and **Verilator**, paired with **SymbiYosys (SBY)** formal property proofs and **Yosys** mutation testing. It adheres strictly to the UVM architecture (sequencers, drivers, monitors, agents, environments, reference models, and scoreboards), but is authored in Python/pyuvm rather than SystemVerilog class-based UVM.
 
@@ -18,7 +21,7 @@ This project implements a complete, synthesizable system-on-chip interconnect fa
 
 - **2×4 AXI4-Lite Crossbar Interconnect (`axil_xbar`):**
   - Connects 2 independent AXI-Lite bus masters to 4 functional slaves plus an unmapped address space trap.
-  - Per-slave round-robin arbiters (`rr_arbiter`) with **transaction lock** to prevent interleaving during multi-channel transfers.
+  - Per-slave inline registered round-robin arbiters (`wr_prio`/`rd_prio`; standalone `rr_arbiter` also verified) with **transaction lock** to prevent interleaving during multi-channel transfers.
   - Non-blocking concurrent transfers: simultaneous accesses to distinct slaves complete in parallel with **0 added serialization cycles**.
   - Default error termination slave (`axil_default_slave`) returning `DECERR` on unmapped transactions without bus hang.
 - **AXI4-Lite Peripheral & Memory Slaves:**
@@ -119,23 +122,25 @@ Every number reported below is derived from an actual execution of open-source E
 
 ### 4.1 Master Deliverables & Metrics Table (Spec Section 17)
 
+<!-- BEGIN:metrics:readme_metrics_table -->
 | Metric | Measured Value | Spec Reference | Log Reference / Tool |
 |---|---|---|---|
-| **RTL Modules / Lines of RTL** | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 17 | `scripts/gen_metrics.py` (Phase F) |
-| **Total Testcases (Directed / Random)** | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 9 | [`docs/test_map.csv`](docs/test_map.csv), [`docs/vplan.md`](docs/vplan.md) |
-| **Random Transactions Executed** | **200,000 transactions** (20 seeds × 10,000 txns, 0 mismatches — re-verified after Phase A) | Section 9.1 (XB-13) | [`docs/logs/regression_20seeds.log`](docs/logs/regression_20seeds.log) |
-| **Regression Seeds Passed** | **20 / 20 seeds passed** (being re-run after Phase A RTL changes; see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 9.1 (XB-13) | [`docs/logs/regression_20seeds.log`](docs/logs/regression_20seeds.log) |
-| **Functional Coverage (cocotb-coverage)** | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 10 | [`docs/logs/func_cov.log`](docs/logs/func_cov.log) |
-| **Code Coverage (Verilator 5.055)** | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 10 | [`docs/logs/code_cov_summary.txt`](docs/logs/code_cov_summary.txt) |
-| **Formal Properties / BMC / k-induction (SymbiYosys)** | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 11 | [`docs/logs/formal_suite.log`](docs/logs/formal_suite.log) |
-| **CDC Clock Ratios & Phases Swept** | **3 slow ratios (25.0 ns, 10.3 ns, 6.0 ns) × 3 phases** (re-measured in Phase C) | Section 9.1 (CD-01) | [`formal/async_fifo.sby`](formal/async_fifo.sby), [`docs/logs/func_cov.log`](docs/logs/func_cov.log) |
-| **Mutants Evaluated / Killed / Score** | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 12 | [`docs/logs/mutation.log`](docs/logs/mutation.log), [`docs/mutation_report.md`](docs/mutation_report.md) |
-| **Bugs Found & Resolved** | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 6 | [`docs/bugs.md`](docs/bugs.md) |
-| **Crossbar Added Latency (Cycles)** | **0 cycles added latency** (verified via XB-06 parallel transfer cycle check) | Section 7.2 (≤1 cycle) | [`docs/img/contention.png`](docs/img/contention.png), `test_axil_xbar.py` |
-| **Synthesis (SKY130 HD): Cells / Flops / Area**| being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 13 | [`docs/logs/synth.log`](docs/logs/synth.log) |
-| **STA (OpenSTA): WNS / TNS @ 100 MHz** | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 13 | [`docs/logs/sta.log`](docs/logs/sta.log), [`synth/amba_fabric.sdc`](synth/amba_fabric.sdc) |
-| **STA (OpenSTA): Achieved $F_{\max}$** | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 13 | [`docs/logs/fmax_sweep.log`](docs/logs/fmax_sweep.log) |
-| **Continuous Integration Status** | **NOT VERIFIED** on GitHub remote (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 14 | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) |
+| **RTL Modules / Lines of RTL** | **17 modules / 3,200 lines** (non-blank, non-comment) | Section 17 | [`docs/metrics.json`](docs/metrics.json) |
+| **Test Definitions / XML Runs / Spec Map** | **61 Python tests / 77 XML runs (77 PASS, 0 FAIL) / 40/40 Spec IDs** | Section 9 | [`docs/test_map.csv`](docs/test_map.csv), [`docs/vplan.md`](docs/vplan.md) |
+| **Random Transactions Executed** | **200,000 transactions** (20 Verilator seeds `1..20` × 10,000 txns, 0 mismatches; plus 20 Icarus seeds `601..620` = 200,000 txns) | Section 9.1 (XB-13) | [`docs/logs/phase_c_cov_report.log`](docs/logs/phase_c_cov_report.log), [`docs/logs/regression_20seeds.log`](docs/logs/regression_20seeds.log) |
+| **Functional Coverage (cocotb-coverage)** | **100.00% (267/267 reachable bins)** across 24 merged YAMLs; 36 waived illegal/contradictory bins | Section 10 | [`docs/logs/func_cov.log`](docs/logs/func_cov.log), [`docs/coverage_waivers.md`](docs/coverage_waivers.md) |
+| **Code Coverage (Verilator)** | **Line 92.0% (494/537) \| Branch 91.2% (499/547) \| Expr 93.8% (1036/1105) \| Toggle 74.8% (10616/14202) \| FSM State 100.0% (5/5)** | Section 10 | [`docs/logs/code_cov_summary.txt`](docs/logs/code_cov_summary.txt) |
+| **Formal Verification (SymbiYosys + Boolector)** | **10/10 suites PASS** (3 k-induction `prove`, 1 `prv+bmc`, 6 bounded `bmc`; 84 cover traces reached in 150s) | Section 11 | [`docs/logs/formal_suite.log`](docs/logs/formal_suite.log) |
+| **CDC Clock Ratios & Phases Swept** | **3 slow periods (25.0 ns, 10.3 ns, 6.0 ns) × 3 phases**; formal `async_fifo` BMC depth 25 & `axil_cdc_bridge` BMC depth 30 | Section 9.1 (CD-01) | [`formal/async_fifo.sby`](formal/async_fifo.sby), [`docs/logs/func_cov.log`](docs/logs/func_cov.log) |
+| **Mutation Testing (Yosys `mutate`)** | **Baseline 165/240 (68.75%) → Final 205/240 (85.42% raw)**, 0 timeouts, 0 build errors; **21 equivalent** (18 miter + 3 signal), **14 residual**, **93.61% (205/219) adjusted** | Section 12 | [`docs/logs/mutation.log`](docs/logs/mutation.log), [`docs/mutation_report.md`](docs/mutation_report.md) |
+| **Bugs Found & Resolved** | **24 bugs (BUG-001–BUG-024)**: 15 RTL + 9 TB/formal/tooling | Section 6 | [`docs/bugs.md`](docs/bugs.md) |
+| **Crossbar Added Latency (Cycles)** | **0 cycles added latency** (verified via XB-06 parallel transfer check) | Section 7.2 | [`docs/img/contention.png`](docs/img/contention.png), [`tb/block/test_axil_xbar.py`](tb/block/test_axil_xbar.py) |
+| **Synthesis (SKY130 HD, `RAM_DEPTH=64`)** | **9,237 cells / 3,630 flops** (2,048 RAM flops) / **138,086.19 µm²** (74.78% sequential) | Section 13 | [`synth/synth.ys`](synth/synth.ys), [`docs/logs/synth.log`](docs/logs/synth.log) |
+| **STA (OpenSTA): Target 100 MHz (10.0 ns)** | **VIOLATED: WNS -18.60 ns / TNS -54046.39 ns** (full timed netlist; pre-layout unbuffered `rst_sys_n`, fanout 958, slew 29.27 ns); **`clk_slow` MET (+16.64 ns)**, **Hold MET (+0.23 ns)**; datapath+I/O ref WNS -5.89 ns | Section 13 | [`docs/logs/sta.log`](docs/logs/sta.log), [`synth/amba_fabric.sdc`](synth/amba_fabric.sdc) |
+| **STA (OpenSTA): Achieved $F_{\max}$** | **34.97 MHz (28.60 ns)** full pre-layout netlist; **62.89 MHz (15.90 ns)** datapath+I/O reference (`rst_sync` Q isolated in STA only) | Section 13 | [`docs/logs/fmax_sweep.log`](docs/logs/fmax_sweep.log) |
+| **Continuous Integration Status** | **NOT VERIFIED** (Pending Phase G GitHub Actions push and remote verification) | Section 14 | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) |
+| **Out-of-Scope Items (`S-02/S-03`, `X-01/X-02`)** | **N/A (out of scope)**: gate-level sim (`S-02`), OpenLane GDSII (`S-03`), RISC-V CPU (`X-01`), multi-outstanding AXI4 (`X-02`) | Section 1.4 / 13.5 | [`docs/spec.md`](docs/spec.md) |
+<!-- END:metrics:readme_metrics_table -->
 
 ---
 
@@ -153,19 +158,36 @@ The testbench is structured strictly according to UVM guidelines in Python via `
 - **`CoverageCollector`:** Samples 9 distinct functional covergroups defined in [`tb/pyuvm/func_cov/fabric_cov.py`](tb/pyuvm/func_cov/fabric_cov.py) on every transaction.
 
 ### 5.2 Formal Verification (SymbiYosys + Boolector)
-Formal properties, modes, depths, and cover traces are currently **being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md))** (Phase B adds bounded fairness in `axil_xbar`/`rr_arbiter`, `sync_fifo` data ordering, and removes over-assumptions; note that `rr_arbiter` is a standalone formally verified block not instantiated inside `axil_xbar`, per `DEC-007`).
+<!-- BEGIN:metrics:readme_formal_summary -->
+All **10 SymbiYosys formal suites PASS** (`0` failures, **84 cover traces** reached across 150s total runtime, [`docs/logs/formal_suite.log`](docs/logs/formal_suite.log)):
+- **Unbounded k-induction proofs (`prove`, depth 20):** `rr_arbiter` (`3` covers, including bounded fairness `f_wait_cnt < NUM_REQS`), `sync_fifo` (`8` covers, including `(* anyconst *)` magic-value data-ordering & integrity), and `apb_timer` (`4` covers), plus hybrid **`prv+bmc`** on `axil_csr` (`5` covers; `CHECK_CAUSALITY=1` in BMC, `0` in `prove` per `DEC-006`).
+- **Bounded model checking (`bmc`):** `apb_uart` (depth `25`, `9` covers), `async_fifo` (multiclock depth `25`, `4` covers), `axil2apb_bridge` (depth `25`, `10` covers), `axil_cdc_bridge` (depth `30`, `5` covers), `axil_ram` (depth `20`, `5` covers), and `axil_xbar` (depth `20`, `31` covers, including `wr_prio`/`rd_prio` bounded fairness).
+- **Scope note (`DEC-007`):** `rr_arbiter` is a standalone formally verified and unit-tested library block and is not instantiated inside `axil_xbar` (which uses inline registered round-robin arbiters).
+<!-- END:metrics:readme_formal_summary -->
 
 ### 5.3 Mutation Testing & Survivor Triage (Yosys Native)
-Mutation runs and survivor triage are currently **being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md))** (Phase D fixes process-group cleanup, `axil_xbar` module scope, and script-generated triage).
+<!-- BEGIN:metrics:readme_mutation_summary -->
+Evaluated on a frozen deterministic 240-mutant suite (`30` mutants per module across `8` RTL modules, seed `42`, [`mutation/mutant_list_240.json`](mutation/mutant_list_240.json)) using isolated process-group execution (`mutation/run_mutants.py`) and strict `$paramod*axil_xbar` module scoping ([`docs/mutation_report.md`](docs/mutation_report.md)):
+- **D3 Baseline (before gap tests):** `165/240` killed (**`68.75%` raw**), `64` survived, `11` timeouts, `0` build errors.
+- **D5 Final (same 240-mutant list):** **`205/240` killed (`85.42%` raw)**, **`0` timeouts**, **`0` build errors**.
+- **Formal Equivalence & Adjusted Score:** Of `35` survivors, **`21` are proven equivalent** (`18` by Yosys `equiv_induct` / Boolector depth-10 miters in [`docs/logs/mutation_equiv.log`](docs/logs/mutation_equiv.log) + `3` signal-level proofs on `axil_default_slave._unused_inputs`), leaving **`14` residual non-equivalent survivors** and **`93.61%` (`205/219`) adjusted mutation score**.
+<!-- END:metrics:readme_mutation_summary -->
 
 ### 5.4 Synthesis and STA (SKY130 High Density)
-Synthesis cell counts, area, OpenSTA WNS/TNS, and $F_{\max}$ sweep are currently **being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md))** (Phase E commits `synth/synth.ys` and replaces stale netlist cell constraints with portable port/hierarchy constraints).
+<!-- BEGIN:metrics:readme_synth_sta_summary -->
+Synthesized for SKY130 HD (`tt_025C_1v80`, `RAM_DEPTH=64` = `2,048` RAM flops) using Yosys [`synth/synth.ys`](synth/synth.ys) and analyzed with OpenSTA [`synth/sta.tcl`](synth/sta.tcl) and [`synth/fmax_sweep.py`](synth/fmax_sweep.py):
+- **Area & Cells:** **`9,237` cells**, **`3,630` flip-flops** (`1,140` `dfrtp_1` + `10` `dfstp_1` + `2,480` `edfxtp_1`), **`138,086.19 µm²`** (`74.78%` sequential; [`docs/logs/synth.log`](docs/logs/synth.log)).
+- **CDC / Gray-Pointer STA Constraints (Spec Section 13.2):** [`synth/amba_fabric.sdc`](synth/amba_fabric.sdc) declares `clk_sys` (`10.0 ns` / `100 MHz`) and `clk_slow` (`24.0 ns` / `41.67 MHz`) in `set_clock_groups -asynchronous`, avoiding brittle cell-level `set_max_delay` paths across the Cummings Gray-pointer synchronizer chains (`sync_w2r_q1/q2`, `sync_r2w_q1/q2`), while relying on single-bit Gray-code transitions verified by formal multiclock BMC. External `rst_n` false-pathing targets **only** `rst_n -> rst_sync`; `rst_sys_n`/`rst_slow_n` recovery & removal paths stay timed (`DEC-011`).
+- **100 MHz Target (`10.0 ns`) Result — `VIOLATED`:** Full pre-layout netlist **WNS = `-18.60 ns`**, **TNS = `-54046.39 ns`**, achieved $F_{\max}$ = **`34.97 MHz` (`28.60 ns`)** because pre-layout synthesis leaves `rst_sys_n` unbuffered (`fanout=958`, `cap=3.46 pF`, `slew=29.27 ns`). Secondary clock `clk_slow` (`41.67 MHz`) **MET** with **`+16.64 ns`** slack, and hold **MET** (`+0.23 ns`). Isolating `rst_sync` Q in STA as a pre-CTS core+I/O reference yields datapath+I/O **WNS = `-5.89 ns`** (**`62.89 MHz`** at `15.90 ns`; pure reg-to-reg slack `-4.15 ns`), with physical CTS/reset-tree closure (`S-03` OpenLane) out of scope.
+<!-- END:metrics:readme_synth_sta_summary -->
 
 ---
 
 ## 6. Key Bugs Found & Resolved Showcase
 
-Bug counts and root-cause showcase are **being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md))** and verified against [`docs/bugs.md`](docs/bugs.md). Three representative examples:
+<!-- BEGIN:metrics:readme_bugs_summary -->
+All **24 discovered bugs (`BUG-001`–`BUG-024`)** (15 RTL defects + 9 testbench/formal/tooling defects) are documented with root cause and verified regression references in [`docs/bugs.md`](docs/bugs.md) (enforced by [`scripts/check_bug_refs.py`](scripts/check_bug_refs.py)). Three representative fixes:
+<!-- END:metrics:readme_bugs_summary -->
 
 1. **`BUG-005` — APB Bridge Premature Access Completion on Zero Wait States:**
    - *Detection Method:* Directed Test `BR-01` & Waveform Inspection.
@@ -189,7 +211,7 @@ Waveform capture showing sustained contention on Slave 1 (RAM) where Master 0 an
 
 ![Contention Waveform](docs/img/contention.png)
 
-*Note: VCD waveform capture link and generation tracked in [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md).*
+*Waveform plot rendered via [`scripts/render_waveform.py`](scripts/render_waveform.py) from simulation trace (`*.vcd` artifacts are gitignored).*
 
 ---
 
@@ -244,9 +266,15 @@ make sta
 
 ## 9. Resume Bullets (Measured Numbers)
 
-**Title line:** *AMBA AXI4-Lite/APB Fabric with pyuvm Verification Environment | Verilog-2005 (SystemVerilog-compatible), Python, cocotb, pyuvm, SymbiYosys, Yosys, OpenSTA*
+<!-- BEGIN:metrics:readme_resume_bullets -->
+**Title line:** *AMBA AXI4-Lite/APB Fabric with pyuvm Verification Environment | Verilog-2005 (SystemVerilog-compatible RTL), Python, cocotb, pyuvm, SymbiYosys, Yosys, OpenSTA*
 
-- Resume metrics are currently **being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md))** and will be generated strictly from `docs/metrics.json` in Phase F.
+- Designed and verified a **17-module (3,200 non-blank/non-comment lines)** AXI4-Lite `2×4` crossbar + APB4 peripheral subsystem (`UART`, `Timer`, `GPIO`), `RAM`, `CSR`, and Gray-pointer CDC bridge targeting dual clock domains (`100 MHz` / `41.67 MHz`).
+- Built a **pyuvm/cocotb** verification environment (**61 tests**, **40/40** Spec 9.1 tests passing, **77** XML testcases passing) running **200,000** Verilator stress transactions (20 seeds) plus **200,000** Icarus transactions (20 seeds) with **0 scoreboard mismatches**.
+- Closed honest functional coverage to **100.00% (267/267 reachable bins)** across 24 merged YAMLs (`36` waived bins documented) and measured Verilator code coverage of **92.0% line**, **91.2% branch**, and **93.8% expression**.
+- Proved **10/10** SymbiYosys formal suites (`3` unbounded k-induction `prove` + `1` `prv+bmc` + `6` bounded `bmc`, **84 cover traces**); improved frozen 240-mutant testing from **68.75% (165/240)** baseline to **85.42% raw (205/240)** and **93.61% adjusted (205/219)** after Yosys/Boolector equivalence checking.
+- Synthesized for SKY130 HD via Yosys (`RAM_DEPTH=64`: **9,237 cells**, **3,630 flops**, **138,086.19 µm²**) and ran reproducible OpenSTA sweeps (**WNS -18.60 ns** / **34.97 MHz** full netlist limited by unbuffered `rst_sys_n`; **62.89 MHz** core+I/O reference; `clk_slow` and hold met), logging **24 bugs** across RTL and verification.
+<!-- END:metrics:readme_resume_bullets -->
 
 ---
 
@@ -263,7 +291,7 @@ amba-fabric/
 │   ├── interfaces.md              # Frozen architectural interface contract
 │   ├── vplan.md                   # Verification plan: feature -> test -> coverage -> check mapping
 │   ├── results.md                 # Real, measured verification, coverage, formal, and PPA metrics
-│   ├── bugs.md                    # Bug tracking log (being re-measured (see docs/FIX_REPORT_R2.md))
+│   ├── bugs.md                    # Bug tracking log (`BUG-001`..`BUG-024`)
 │   ├── checkpoint.md              # Phase-by-phase iteration checkpoint log
 │   ├── decisions.md               # Architectural decision record
 │   ├── logs/                      # Raw log archives (formal, coverage, synthesis, sta, mutation)

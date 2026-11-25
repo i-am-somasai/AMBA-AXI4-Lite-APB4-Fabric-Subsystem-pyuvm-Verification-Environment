@@ -1,45 +1,73 @@
 ================================================================================
-OpenSTA Timing Analysis and Fmax Sweep Report
-Timestamp: 2026-11-24 12:44:41
-Standard Cell Library: SKY130 HD (sky130_fd_sc_hd__tt_025C_1v80)
-Target Clock: clk_sys @ 100.0 MHz (10.0 ns), clk_slow @ 41.67 MHz (24.0 ns)
+OpenSTA Timing Analysis and Fmax Sweep Report (Dynamic Parsed Output)
+Standard Cell Library: sky130_tt.lib
+Target Clock: clk_sys @ 100.00 MHz (10.00 ns), clk_slow @ 41.67 MHz (24.00 ns)
+Constraint Scope: false_path ONLY on async port rst_n -> rst_sync flops (recovery/removal TIMED)
 ================================================================================
 
-1. Target Timing (100 MHz / 10.0 ns)
-   - Target WNS: -2.25 ns
-   - Target TNS: -9097.77 ns
-   - Status: VIOLATED (Critical path delay ~12.25 ns including 2.0 ns I/O delay)
+1. Target Timing at 100.00 MHz (clk_sys = 10.00 ns, Full Pre-Layout Netlist)
+   - Overall WNS: -18.60 ns (asynchronous / max)
+   - Overall TNS: -54046.39 ns
+   - Overall Status: VIOLATED
+   - clk_sys Group Setup Slack (at 10.00 ns): -15.48 ns
+   - clk_slow Group Setup Slack (at 24.00 ns): 16.64 ns (MET)
+   - Hold Worst Slack (min): 0.23 ns (MET)
+   - Unconstrained Endpoints (check_setup): 5 (_14505_/D, _14507_/D, _14696_/D, _14698_/D, _14701_/D)
 
-2. Frequency Sweep Table (clk_sys):
-Period (ns)  | Freq (MHz)   | WNS (ns)   | Timing Status
--------------------------------------------------------
-16.00        | 62.50        |   0.00     | MET         
-15.00        | 66.67        |   0.00     | MET         
-14.00        | 71.43        |   0.00     | MET         
-13.00        | 76.92        |   0.00     | MET         
-12.50        | 80.00        |   0.00     | MET         
-12.25        | 81.63        |   0.00     | MET         
-12.00        | 83.33        |  -0.25     | VIOLATED    
-11.75        | 85.11        |  -0.50     | VIOLATED    
-11.50        | 86.96        |  -0.75     | VIOLATED    
-11.00        | 90.91        |  -1.25     | VIOLATED    
-10.50        | 95.24        |  -1.75     | VIOLATED    
-10.00        | 100.00       |  -2.25     | VIOLATED    
-9.50         | 105.26       |  -2.75     | VIOLATED    
-9.00         | 111.11       |  -3.25     | VIOLATED    
-8.50         | 117.65       |  -3.75     | VIOLATED    
--------------------------------------------------------
+2. Full-Design Frequency Sweep (Recovery/Removal Timed, Pre-Layout Unbuffered Reset Tree):
+Period (ns)  | Freq (MHz)   | WNS (ns)   | TNS (ns)     | Status    
+--------------------------------------------------------------------
+35.00        | 28.57        | 0.00       | 0.00         | MET       
+32.00        | 31.25        | 0.00       | 0.00         | MET       
+30.00        | 33.33        | 0.00       | 0.00         | MET       
+29.00        | 34.48        | 0.00       | 0.00         | MET       
+28.75        | 34.78        | 0.00       | 0.00         | MET       
+28.60        | 34.97        | 0.00       | 0.00         | MET       
+28.50        | 35.09        | -0.10      | -92.64       | VIOLATED  
+26.00        | 38.46        | -2.60      | -2445.12     | VIOLATED  
+24.00        | 41.67        | -4.60      | -5361.92     | VIOLATED  
+20.00        | 50.00        | -8.60      | -17388.71    | VIOLATED  
+16.00        | 62.50        | -12.60     | -29892.11    | VIOLATED  
+14.00        | 71.43        | -14.60     | -36145.09    | VIOLATED  
+12.00        | 83.33        | -16.60     | -43535.84    | VIOLATED  
+10.00        | 100.00       | -18.60     | -54046.39    | VIOLATED  
+--------------------------------------------------------------------
+   - Achieved Full-Netlist Fmax: 34.97 MHz (Period = 28.60 ns)
 
-3. Maximum Operating Frequency (Fmax):
-   - Achieved Fmax: 81.63 MHz (Period = 12.25 ns)
+3. Datapath + I/O Reference Sweep (rst_sync Q isolated in STA only, Pre-CTS Estimate):
+   - clk_sys Datapath+IO WNS @ 10.00 ns: -5.89 ns, TNS: -16999.71 ns
+Period (ns)  | Freq (MHz)   | WNS (ns)   | TNS (ns)     | Status    
+--------------------------------------------------------------------
+20.00        | 50.00        | 0.00       | 0.00         | MET       
+18.00        | 55.56        | 0.00       | 0.00         | MET       
+16.50        | 60.61        | 0.00       | 0.00         | MET       
+16.00        | 62.50        | 0.00       | 0.00         | MET       
+15.90        | 62.89        | 0.00       | 0.00         | MET       
+15.80        | 63.29        | -0.09      | -33.89       | VIOLATED  
+15.00        | 66.67        | -0.89      | -1396.01     | VIOLATED  
+14.00        | 71.43        | -1.89      | -3409.03     | VIOLATED  
+13.00        | 76.92        | -2.89      | -5482.16     | VIOLATED  
+12.00        | 83.33        | -3.89      | -8643.83     | VIOLATED  
+10.00        | 100.00       | -5.89      | -16999.71    | VIOLATED  
+--------------------------------------------------------------------
+   - Achieved Core+IO Reference Fmax (excluding unbuffered reset net): 62.89 MHz (Period = 15.90 ns)
 
-4. Critical Path Analysis:
-   - Startpoint: s1_axil_awaddr[22] (input port clocked by clk_sys)
-   - Endpoint: _12691_/DE (RAM cell data-enable clocked by clk_sys)
-   - Path Delay Breakdown:
-     * Input external delay: 2.00 ns
-     * Address decoder & crossbar route: ~5.8 ns (gates _05704_ through _06548_)
-     * RAM write-enable decoding multiplexer: ~3.99 ns (_09892_ through _10106_)
-     * Setup time: 0.46 ns
-     * Total required period: ~12.25 ns (Fmax = 81.63 MHz with full 2.0 ns I/O constraint)
-   - Note: Core register-to-register paths meet timing at 95.1 MHz (10.51 ns delay).
+4. Dynamically Parsed Critical Paths at 10.00 ns:
+   [Full Netlist Worst Path - Pre-Layout Unbuffered Reset Limitation]
+   - Startpoint: _14506_ (rising edge-triggered flip-flop clocked by clk_sys)
+   - Endpoint:   _11073_ (recovery check against rising-edge clock clk_sys)
+   - Group/Type: asynchronous / max
+   - Arrival / Required / Slack: 20.90 ns / 2.31 ns / -18.60 ns (VIOLATED)
+   - Peak Net:   rst_sys_n (fanout=958, cap=3.46 pF, slew=29.27 ns)
+
+   [Datapath + I/O Critical Path (rst_sync Q isolated)]
+   - Startpoint: s1_axil_awaddr[15] (input port clocked by clk_sys)
+   - Endpoint:   _12228_ (rising edge-triggered flip-flop clocked by clk_sys)
+   - Arrival / Required / Slack: 15.42 ns / 9.53 ns / -5.89 ns (VIOLATED)
+   - Peak Net:   _02100_ (fanout=75, cap=0.17 pF, slew=1.93 ns)
+
+   [Pure Register-to-Register Critical Path (clk_sys, excluding I/O and rst_sync)]
+   - Startpoint: _11153_ (rising edge-triggered flip-flop clocked by clk_sys)
+   - Endpoint:   _12228_ (rising edge-triggered flip-flop clocked by clk_sys)
+   - Arrival / Required / Slack: 13.68 ns / 9.53 ns / -4.15 ns (VIOLATED)
+   - Peak Net:   _02100_ (fanout=75, cap=0.17 pF, slew=1.93 ns)

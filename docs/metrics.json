@@ -1,0 +1,915 @@
+{
+  "schema_version": 1,
+  "rtl": {
+    "module_count": 17,
+    "total_lines": 3200,
+    "line_rule": "non-blank, non-comment lines across rtl/**/*.v",
+    "modules": [
+      {
+        "module": "amba_fabric_top",
+        "file": "rtl/amba_fabric_top.v",
+        "lines": 365
+      },
+      {
+        "module": "apb_decoder",
+        "file": "rtl/apb/apb_decoder.v",
+        "lines": 56
+      },
+      {
+        "module": "apb_gpio",
+        "file": "rtl/apb/apb_gpio.v",
+        "lines": 89
+      },
+      {
+        "module": "apb_timer",
+        "file": "rtl/apb/apb_timer.v",
+        "lines": 155
+      },
+      {
+        "module": "apb_uart",
+        "file": "rtl/apb/apb_uart.v",
+        "lines": 450
+      },
+      {
+        "module": "axil2apb_bridge",
+        "file": "rtl/apb/axil2apb_bridge.v",
+        "lines": 171
+      },
+      {
+        "module": "axil_csr",
+        "file": "rtl/axil/axil_csr.v",
+        "lines": 278
+      },
+      {
+        "module": "axil_decoder",
+        "file": "rtl/axil/axil_decoder.v",
+        "lines": 31
+      },
+      {
+        "module": "axil_default_slave",
+        "file": "rtl/axil/axil_default_slave.v",
+        "lines": 78
+      },
+      {
+        "module": "axil_ram",
+        "file": "rtl/axil/axil_ram.v",
+        "lines": 204
+      },
+      {
+        "module": "axil_xbar",
+        "file": "rtl/axil/axil_xbar.v",
+        "lines": 424
+      },
+      {
+        "module": "axil_cdc_bridge",
+        "file": "rtl/cdc/axil_cdc_bridge.v",
+        "lines": 383
+      },
+      {
+        "module": "slow_regs",
+        "file": "rtl/cdc/slow_regs.v",
+        "lines": 107
+      },
+      {
+        "module": "async_fifo",
+        "file": "rtl/common/async_fifo.v",
+        "lines": 151
+      },
+      {
+        "module": "rr_arbiter",
+        "file": "rtl/common/rr_arbiter.v",
+        "lines": 102
+      },
+      {
+        "module": "rst_sync",
+        "file": "rtl/common/rst_sync.v",
+        "lines": 19
+      },
+      {
+        "module": "sync_fifo",
+        "file": "rtl/common/sync_fifo.v",
+        "lines": 137
+      }
+    ]
+  },
+  "tests": {
+    "unique_defs_total": 61,
+    "unique_defs_by_tier": {
+      "unit": 14,
+      "block": 38,
+      "pyuvm_directed": 8,
+      "pyuvm_stress": 1
+    },
+    "unique_defs_by_file": {
+      "tb/block/test_amba_fabric_top.py": 4,
+      "tb/block/test_apb_gpio.py": 3,
+      "tb/block/test_apb_timer.py": 3,
+      "tb/block/test_apb_uart.py": 5,
+      "tb/block/test_axil2apb_bridge.py": 8,
+      "tb/block/test_axil_cdc_bridge.py": 4,
+      "tb/block/test_axil_xbar.py": 11,
+      "tb/pyuvm/tests/test_directed.py": 8,
+      "tb/pyuvm/tests/test_stress.py": 1,
+      "tb/unit/test_async_fifo.py": 3,
+      "tb/unit/test_axil_csr.py": 4,
+      "tb/unit/test_axil_decoder.py": 1,
+      "tb/unit/test_axil_default_slave.py": 1,
+      "tb/unit/test_axil_ram.py": 1,
+      "tb/unit/test_hello_world.py": 1,
+      "tb/unit/test_rr_arbiter.py": 1,
+      "tb/unit/test_rst_sync.py": 1,
+      "tb/unit/test_sync_fifo.py": 1
+    },
+    "xml_testcases_executed": 77,
+    "xml_testcases_passed": 77,
+    "xml_testcases_failed": 0,
+    "xml_file_count": 20,
+    "spec_tests_total": 40,
+    "spec_tests_passed": 40,
+    "spec_tests_failed": 0,
+    "spec_tests_missing": 0
+  },
+  "random_regression": {
+    "verilator": {
+      "log": "docs/logs/phase_c_cov_report.log",
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "seed_count": 20,
+      "completed": 20,
+      "transactions": 200000,
+      "mismatches": 0
+    },
+    "icarus": {
+      "log": "docs/logs/phase_a_regress_20seeds.log",
+      "seeds": [
+        604,
+        603,
+        602,
+        601,
+        605,
+        606,
+        607,
+        608,
+        609,
+        610,
+        611,
+        612,
+        613,
+        614,
+        615,
+        616,
+        617,
+        618,
+        619,
+        620
+      ],
+      "seed_count": 20,
+      "completed": 20,
+      "transactions": 200000,
+      "mismatches": 0
+    }
+  },
+  "cdc": {
+    "slow_periods_ns": [
+      25.0,
+      10.3,
+      6.0
+    ],
+    "slow_phases_ns": [
+      0.0,
+      2.5,
+      1.2
+    ],
+    "ratio_count": 3,
+    "phase_count": 3,
+    "formal_async_fifo_depth": 25,
+    "formal_cdc_bridge_depth": 30
+  },
+  "functional_coverage": {
+    "log": "docs/logs/func_cov.log",
+    "merged_yaml_files": 24,
+    "reachable_bins": 267,
+    "covered_bins": 267,
+    "coverage_pct": 100.0,
+    "waived_bins": 36,
+    "defined_pre_waiver_bins": 303,
+    "groups": {
+      "cg_apb": {
+        "bins": 33,
+        "covered": 33,
+        "submetrics": [
+          {
+            "name": "cg_apb.err",
+            "bins": 2,
+            "covered": 2,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_apb.op",
+            "bins": 2,
+            "covered": 2,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_apb.strb_class",
+            "bins": 4,
+            "covered": 4,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_apb.strb_cross",
+            "bins": 5,
+            "covered": 5,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_apb.wait",
+            "bins": 4,
+            "covered": 4,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_apb.wait_cross",
+            "bins": 16,
+            "covered": 16,
+            "pct": 100.0
+          }
+        ],
+        "pct": 100.0
+      },
+      "cg_backpressure": {
+        "bins": 29,
+        "covered": 29,
+        "submetrics": [
+          {
+            "name": "cg_backpressure.bucket",
+            "bins": 4,
+            "covered": 4,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_backpressure.channel",
+            "bins": 5,
+            "covered": 5,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_backpressure.cross",
+            "bins": 20,
+            "covered": 20,
+            "pct": 100.0
+          }
+        ],
+        "pct": 100.0
+      },
+      "cg_cdc": {
+        "bins": 19,
+        "covered": 19,
+        "submetrics": [
+          {
+            "name": "cg_cdc.cross",
+            "bins": 12,
+            "covered": 12,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_cdc.occupancy",
+            "bins": 2,
+            "covered": 2,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_cdc.op",
+            "bins": 2,
+            "covered": 2,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_cdc.ratio",
+            "bins": 3,
+            "covered": 3,
+            "pct": 100.0
+          }
+        ],
+        "pct": 100.0
+      },
+      "cg_contention": {
+        "bins": 12,
+        "covered": 12,
+        "submetrics": [
+          {
+            "name": "cg_contention.combo",
+            "bins": 3,
+            "covered": 3,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_contention.cross",
+            "bins": 6,
+            "covered": 6,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_contention.type",
+            "bins": 3,
+            "covered": 3,
+            "pct": 100.0
+          }
+        ],
+        "pct": 100.0
+      },
+      "cg_order": {
+        "bins": 19,
+        "covered": 19,
+        "submetrics": [
+          {
+            "name": "cg_order.cross",
+            "bins": 12,
+            "covered": 12,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_order.order",
+            "bins": 3,
+            "covered": 3,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_order.target",
+            "bins": 4,
+            "covered": 4,
+            "pct": 100.0
+          }
+        ],
+        "pct": 100.0
+      },
+      "cg_reset": {
+        "bins": 5,
+        "covered": 5,
+        "submetrics": [
+          {
+            "name": "cg_reset.phase",
+            "bins": 5,
+            "covered": 5,
+            "pct": 100.0
+          }
+        ],
+        "pct": 100.0
+      },
+      "cg_txn": {
+        "bins": 48,
+        "covered": 48,
+        "submetrics": [
+          {
+            "name": "cg_txn.cross",
+            "bins": 36,
+            "covered": 36,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_txn.master",
+            "bins": 2,
+            "covered": 2,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_txn.op",
+            "bins": 2,
+            "covered": 2,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_txn.resp",
+            "bins": 3,
+            "covered": 3,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_txn.target",
+            "bins": 5,
+            "covered": 5,
+            "pct": 100.0
+          }
+        ],
+        "pct": 100.0
+      },
+      "cg_uart": {
+        "bins": 18,
+        "covered": 18,
+        "submetrics": [
+          {
+            "name": "cg_uart.baud",
+            "bins": 3,
+            "covered": 3,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_uart.cross",
+            "bins": 9,
+            "covered": 9,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_uart.err",
+            "bins": 3,
+            "covered": 3,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_uart.fifo",
+            "bins": 3,
+            "covered": 3,
+            "pct": 100.0
+          }
+        ],
+        "pct": 100.0
+      },
+      "cg_wstrb": {
+        "bins": 84,
+        "covered": 84,
+        "submetrics": [
+          {
+            "name": "cg_wstrb.cross",
+            "bins": 64,
+            "covered": 64,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_wstrb.strb",
+            "bins": 16,
+            "covered": 16,
+            "pct": 100.0
+          },
+          {
+            "name": "cg_wstrb.target",
+            "bins": 4,
+            "covered": 4,
+            "pct": 100.0
+          }
+        ],
+        "pct": 100.0
+      }
+    },
+    "waiver_summary": {
+      "cg_txn": {
+        "defined": 60,
+        "waived": 24,
+        "reachable": 36
+      },
+      "cg_wstrb": {
+        "defined": 64,
+        "waived": 0,
+        "reachable": 64
+      },
+      "cg_order": {
+        "defined": 12,
+        "waived": 0,
+        "reachable": 12
+      },
+      "cg_backpressure": {
+        "defined": 20,
+        "waived": 0,
+        "reachable": 20
+      },
+      "cg_contention": {
+        "defined": 9,
+        "waived": 3,
+        "reachable": 6
+      },
+      "cg_apb": {
+        "defined": 24,
+        "waived": 3,
+        "reachable": 21
+      },
+      "cg_cdc": {
+        "defined": 18,
+        "waived": 6,
+        "reachable": 12
+      },
+      "cg_uart": {
+        "defined": 12,
+        "waived": 0,
+        "reachable": 12
+      },
+      "cg_reset": {
+        "defined": 5,
+        "waived": 0,
+        "reachable": 5
+      }
+    }
+  },
+  "code_coverage": {
+    "log": "docs/logs/code_cov_summary.txt",
+    "line": {
+      "pct": 92.0,
+      "hit": 494,
+      "total": 537
+    },
+    "toggle": {
+      "pct": 74.8,
+      "hit": 10616,
+      "total": 14202
+    },
+    "branch": {
+      "pct": 91.2,
+      "hit": 499,
+      "total": 547
+    },
+    "expr": {
+      "pct": 93.8,
+      "hit": 1036,
+      "total": 1105
+    },
+    "fsm_state": {
+      "pct": 100.0,
+      "hit": 5,
+      "total": 5
+    },
+    "fsm_arc": {
+      "pct": 25.0,
+      "hit": 1,
+      "total": 4
+    }
+  },
+  "formal": {
+    "log": "docs/logs/formal_suite.log",
+    "total_suites": 10,
+    "passed_suites": 10,
+    "failed_suites": 0,
+    "total_covers": 84,
+    "total_runtime_s": 150,
+    "suites": [
+      {
+        "module": "apb_timer",
+        "mode": "prove",
+        "depth": 20,
+        "result": "PASS",
+        "covers": 4,
+        "runtime_s": 1
+      },
+      {
+        "module": "apb_uart",
+        "mode": "bmc",
+        "depth": 25,
+        "result": "PASS",
+        "covers": 9,
+        "runtime_s": 5
+      },
+      {
+        "module": "async_fifo",
+        "mode": "bmc",
+        "depth": 25,
+        "result": "PASS",
+        "covers": 4,
+        "runtime_s": 8
+      },
+      {
+        "module": "axil2apb_bridge",
+        "mode": "bmc",
+        "depth": 25,
+        "result": "PASS",
+        "covers": 10,
+        "runtime_s": 6
+      },
+      {
+        "module": "axil_cdc_bridge",
+        "mode": "bmc",
+        "depth": 30,
+        "result": "PASS",
+        "covers": 5,
+        "runtime_s": 78
+      },
+      {
+        "module": "axil_csr",
+        "mode": "prv+bmc",
+        "depth": 20,
+        "result": "PASS",
+        "covers": 5,
+        "runtime_s": 3
+      },
+      {
+        "module": "axil_ram",
+        "mode": "bmc",
+        "depth": 20,
+        "result": "PASS",
+        "covers": 5,
+        "runtime_s": 3
+      },
+      {
+        "module": "axil_xbar",
+        "mode": "bmc",
+        "depth": 20,
+        "result": "PASS",
+        "covers": 31,
+        "runtime_s": 42
+      },
+      {
+        "module": "rr_arbiter",
+        "mode": "prove",
+        "depth": 20,
+        "result": "PASS",
+        "covers": 3,
+        "runtime_s": 1
+      },
+      {
+        "module": "sync_fifo",
+        "mode": "prove",
+        "depth": 20,
+        "result": "PASS",
+        "covers": 8,
+        "runtime_s": 3
+      }
+    ]
+  },
+  "mutation": {
+    "baseline_log": "docs/logs/mutation_baseline.log",
+    "final_log": "docs/logs/mutation.log",
+    "equiv_log": "docs/logs/mutation_equiv.log",
+    "report_doc": "docs/mutation_report.md",
+    "generated": 240,
+    "baseline": {
+      "gen": 240,
+      "valid": 240,
+      "kill": 165,
+      "surv": 64,
+      "tmo": 11,
+      "bld_err": 0,
+      "score_pct": 68.75
+    },
+    "final": {
+      "gen": 240,
+      "valid": 240,
+      "kill": 205,
+      "surv": 35,
+      "tmo": 0,
+      "bld_err": 0,
+      "score_pct": 85.42
+    },
+    "equivalent_total": 21,
+    "equivalent_formal": 18,
+    "equivalent_signal": 3,
+    "residual_non_equiv": 14,
+    "adjusted_denominator": 219,
+    "adjusted_score_pct": 93.61,
+    "modules": {
+      "rr_arbiter": {
+        "baseline": {
+          "gen": 30,
+          "valid": 30,
+          "kill": 19,
+          "surv": 11,
+          "tmo": 0,
+          "bld_err": 0,
+          "score_pct": 63.33
+        },
+        "final": {
+          "gen": 30,
+          "valid": 30,
+          "kill": 22,
+          "surv": 8,
+          "tmo": 0,
+          "bld_err": 0,
+          "score_pct": 73.33
+        },
+        "equiv": 6,
+        "adj_score_pct": 91.67,
+        "adj_den": 24
+      },
+      "sync_fifo": {
+        "baseline": {
+          "gen": 30,
+          "valid": 30,
+          "kill": 25,
+          "surv": 5,
+          "tmo": 0,
+          "bld_err": 0,
+          "score_pct": 83.33
+        },
+        "final": {
+          "gen": 30,
+          "valid": 30,
+          "kill": 28,
+          "surv": 2,
+          "tmo": 0,
+          "bld_err": 0,
+          "score_pct": 93.33
+        },
+        "equiv": 2,
+        "adj_score_pct": 100.0,
+        "adj_den": 28
+      },
+      "async_fifo": {
+        "baseline": {
+          "gen": 30,
+          "valid": 30,
+          "kill": 18,
+          "surv": 1,
+          "tmo": 11,
+          "bld_err": 0,
+          "score_pct": 60.0
+        },
+        "final": {
+          "gen": 30,
+          "valid": 30,
+          "kill": 30,
+          "surv": 0,
+          "tmo": 0,
+          "bld_err": 0,
+          "score_pct": 100.0
+        },
+        "equiv": 0,
+        "adj_score_pct": 100.0,
+        "adj_den": 30
+      },
+      "axil_decoder": {
+        "baseline": {
+          "gen": 30,
+          "valid": 30,
+          "kill": 26,
+          "surv": 4,
+          "tmo": 0,
+          "bld_err": 0,
+          "score_pct": 86.67
+        },
+        "final": {
+          "gen": 30,
+          "valid": 30,
+          "kill": 27,
+          "surv": 3,
+          "tmo": 0,
+          "bld_err": 0,
+          "score_pct": 90.0
+        },
+        "equiv": 3,
+        "adj_score_pct": 100.0,
+        "adj_den": 27
+      },
+      "axil_ram": {
+        "baseline": {
+          "gen": 30,
+          "valid": 30,
+          "kill": 17,
+          "surv": 13,
+          "tmo": 0,
+          "bld_err": 0,
+          "score_pct": 56.67
+        },
+        "final": {
+          "gen": 30,
+          "valid": 30,
+          "kill": 24,
+          "surv": 6,
+          "tmo": 0,
+          "bld_err": 0,
+          "score_pct": 80.0
+        },
+        "equiv": 0,
+        "adj_score_pct": 80.0,
+        "adj_den": 30
+      },
+      "axil_csr": {
+        "baseline": {
+          "gen": 30,
+          "valid": 30,
+          "kill": 15,
+          "surv": 15,
+          "tmo": 0,
+          "bld_err": 0,
+          "score_pct": 50.0
+        },
+        "final": {
+          "gen": 30,
+          "valid": 30,
+          "kill": 25,
+          "surv": 5,
+          "tmo": 0,
+          "bld_err": 0,
+          "score_pct": 83.33
+        },
+        "equiv": 4,
+        "adj_score_pct": 96.15,
+        "adj_den": 26
+      },
+      "axil2apb_bridge": {
+        "baseline": {
+          "gen": 30,
+          "valid": 30,
+          "kill": 23,
+          "surv": 7,
+          "tmo": 0,
+          "bld_err": 0,
+          "score_pct": 76.67
+        },
+        "final": {
+          "gen": 30,
+          "valid": 30,
+          "kill": 26,
+          "surv": 4,
+          "tmo": 0,
+          "bld_err": 0,
+          "score_pct": 86.67
+        },
+        "equiv": 3,
+        "adj_score_pct": 96.3,
+        "adj_den": 27
+      },
+      "axil_xbar": {
+        "baseline": {
+          "gen": 30,
+          "valid": 30,
+          "kill": 22,
+          "surv": 8,
+          "tmo": 0,
+          "bld_err": 0,
+          "score_pct": 73.33
+        },
+        "final": {
+          "gen": 30,
+          "valid": 30,
+          "kill": 23,
+          "surv": 7,
+          "tmo": 0,
+          "bld_err": 0,
+          "score_pct": 76.67
+        },
+        "equiv": 3,
+        "adj_score_pct": 85.19,
+        "adj_den": 27
+      }
+    }
+  },
+  "bugs": {
+    "doc": "docs/bugs.md",
+    "total": 24,
+    "rtl_bugs": 15,
+    "tb_formal_tooling_bugs": 9,
+    "first_id": "BUG-001",
+    "last_id": "BUG-024"
+  },
+  "synthesis": {
+    "log": "docs/logs/phase_e_synth.log",
+    "total_cells": 9237,
+    "flops": 3630,
+    "flop_breakdown": {
+      "dfrtp_1": 1140,
+      "dfstp_1": 10,
+      "edfxtp_1": 2480
+    },
+    "ram_depth": 64,
+    "ram_flops": 2048,
+    "chip_area_um2": 138086.19,
+    "sequential_area_um2": 103261.54,
+    "sequential_area_pct": 74.78
+  },
+  "sta": {
+    "sta_log": "docs/logs/phase_e_sta.log",
+    "fmax_sweep_log": "docs/logs/phase_e_fmax_sweep.log",
+    "target_clk_sys_mhz": 100.0,
+    "target_clk_sys_ns": 10.0,
+    "target_clk_slow_mhz": 41.67,
+    "target_clk_slow_ns": 24.0,
+    "full_wns_ns": -18.6,
+    "full_tns_ns": -54046.39,
+    "full_status": "VIOLATED",
+    "clk_sys_setup_slack_ns": -15.48,
+    "clk_slow_setup_slack_ns": 16.64,
+    "hold_worst_slack_ns": 0.23,
+    "unconstrained_endpoints": 5,
+    "full_fmax_mhz": 34.97,
+    "full_fmax_period_ns": 28.6,
+    "datapath_io_wns_ns": -5.89,
+    "datapath_io_tns_ns": -16999.71,
+    "datapath_io_fmax_mhz": 62.89,
+    "datapath_io_fmax_period_ns": 15.9,
+    "pure_reg2reg_slack_ns": -4.15,
+    "reset_bottleneck_net": "rst_sys_n",
+    "reset_bottleneck_fanout": 958,
+    "reset_bottleneck_cap_pf": 3.46,
+    "reset_bottleneck_slew_ns": 29.27
+  },
+  "ci": {
+    "status": "NOT VERIFIED",
+    "run_url": null,
+    "note": "Pending Phase G GitHub Actions push and remote verification"
+  }
+}

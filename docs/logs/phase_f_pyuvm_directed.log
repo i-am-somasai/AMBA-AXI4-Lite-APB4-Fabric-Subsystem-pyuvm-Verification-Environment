@@ -1,0 +1,163 @@
+make: Entering directory './tb/pyuvm'
+--- Running pyuvm directed tests (XB-09..XB-15, BR-04..BR-06) ---
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_directed \
+	SIM_BUILD=./build/sim_build/pyuvm_directed \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_directed.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=icarus
+make[1]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_directed.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_directed.xml
+make[2]: Entering directory './tb/pyuvm'
+mkdir -p ./build/sim_build/pyuvm_directed
+oss-cad-suite/bin/iverilog -o ./build/sim_build/pyuvm_directed/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f ./build/sim_build/pyuvm_directed/cmds.f  ./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_directed.xml
+COCOTB_TEST_MODULES=test_directed COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/pyuvm_directed/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795602413
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_directed.test_xb11_slverr_propagation (1/8)
+                                                            XB-11: SLVERR propagation from all subsystems.
+   920.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=8 Writes=4 Reads=4 Mismatches=0 ---
+   920.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+   920.00ns INFO     cocotb.regression                  test_directed.test_xb11_slverr_propagation passed
+   920.00ns INFO     cocotb.regression                  running test_directed.test_xb14_prot_passthrough (2/8)
+                                                            XB-14: AWPROT and ARPROT pass-through.
+  2020.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=16 Writes=8 Reads=8 Mismatches=0 ---
+  2020.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  2020.00ns INFO     cocotb.regression                  test_directed.test_xb14_prot_passthrough passed
+  2020.00ns INFO     cocotb.regression                  running test_directed.test_xb15_unaligned_address (3/8)
+                                                            XB-15: Unaligned address LSBs.
+  4370.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=25 Writes=5 Reads=20 Mismatches=0 ---
+  4370.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  4370.00ns INFO     cocotb.regression                  test_directed.test_xb15_unaligned_address passed
+  4370.00ns INFO     cocotb.regression                  running test_directed.test_sys_write_ordering (4/8)
+                                                            System-level write channel ordering test (AW first, W first, simultaneous).
+  4820.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=6 Writes=3 Reads=3 Mismatches=0 ---
+  4820.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  4820.00ns INFO     cocotb.regression                  test_directed.test_sys_write_ordering passed
+  4820.00ns INFO     cocotb.regression                  running test_directed.test_sys_strobe_patterns (5/8)
+                                                            System-level WSTRB patterns on RAM and CSR.
+  7040.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=96 Writes=64 Reads=32 Mismatches=0 ---
+  7040.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  7040.00ns INFO     cocotb.regression                  test_directed.test_sys_strobe_patterns passed
+  7040.00ns INFO     cocotb.regression                  running test_directed.test_xb12_reset_recovery (6/8)
+                                                            XB-12: Reset injected mid-flight across AW, W, B, AR, R phases, agent/scoreboard flush, and recovery.
+  8480.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=8 Writes=4 Reads=4 Mismatches=0 ---
+  8480.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  8480.00ns INFO     cocotb.regression                  test_directed.test_xb12_reset_recovery passed
+  8480.00ns INFO     cocotb.regression                  running test_directed.test_sys_contention (7/8)
+                                                            System-level dual-master contention on RAM.
+  8890.01ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=4 Writes=2 Reads=2 Mismatches=0 ---
+  8890.01ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  8890.01ns INFO     cocotb.regression                  test_directed.test_sys_contention passed
+  8890.01ns INFO     cocotb.regression                  running test_directed.TestCoverageClosure (8/8)
+                                                            Phase 5: Functional coverage closure exercising all Section 10 covergroups.
+135230.01ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=359 Writes=214 Reads=145 Mismatches=0 ---
+135230.01ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+135230.01ns INFO     cocotb.regression                  test_directed.TestCoverageClosure passed
+135230.01ns INFO     cocotb.regression                  ****************************************************************************************************
+                                                        ** TEST                                        STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ****************************************************************************************************
+                                                        ** test_directed.test_xb11_slverr_propagation   PASS         920.00           0.16       5744.34  **
+                                                        ** test_directed.test_xb14_prot_passthrough     PASS        1100.00           0.15       7455.70  **
+                                                        ** test_directed.test_xb15_unaligned_address    PASS        2350.00           0.17      13967.50  **
+                                                        ** test_directed.test_sys_write_ordering        PASS         450.00           0.10       4355.56  **
+                                                        ** test_directed.test_sys_strobe_patterns       PASS        2220.00           0.20      11150.04  **
+                                                        ** test_directed.test_xb12_reset_recovery       PASS        1440.00           0.14      10641.05  **
+                                                        ** test_directed.test_sys_contention            PASS         410.00           0.11       3894.51  **
+                                                        ** test_directed.TestCoverageClosure            PASS      126340.00           3.86      32717.38  **
+                                                        ****************************************************************************************************
+                                                        ** TESTS=8 PASS=8 FAIL=0 SKIP=0                           135230.01           4.92      27490.03  **
+                                                        ****************************************************************************************************
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+--- Running CDC sweeps across clock ratios and phases ---
+CLK_SLOW_PERIOD_NS=10.3 CLK_SLOW_PHASE_NS=2.5 SEED=103 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_directed \
+	TESTCASE=TestCoverageClosure \
+	SIM_BUILD=./build/sim_build/pyuvm_directed \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_cdc_10_3.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=icarus
+make[1]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_cdc_10_3.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_cdc_10_3.xml
+make[2]: Entering directory './tb/pyuvm'
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using TESTCASE is deprecated, please use COCOTB_TESTCASE instead.
+rm -f ./build/results/pyuvm/results_test_cdc_10_3.xml
+COCOTB_TEST_MODULES=test_directed COCOTB_TESTCASE=TestCoverageClosure COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/pyuvm_directed/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795602420
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns WARNING  py.warnings                        oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/_init.py:103: DeprecationWarning: COCOTB_TESTCASE is deprecated in favor of COCOTB_TEST_FILTER
+                                                          _setup_regression_manager()
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_directed.TestCoverageClosure (1/1)
+                                                            Phase 5: Functional coverage closure exercising all Section 10 covergroups.
+122300.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=359 Writes=214 Reads=145 Mismatches=0 ---
+122300.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_TestCoverageClosure_seed_103.yaml
+122300.00ns INFO     cocotb.regression                  test_directed.TestCoverageClosure passed
+122300.00ns INFO     cocotb.regression                  *******************************************************************************************
+                                                        ** TEST                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************
+                                                        ** test_directed.TestCoverageClosure   PASS      122300.00           4.26      28680.09  **
+                                                        *******************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                  122300.00           4.31      28351.92  **
+                                                        *******************************************************************************************
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+CLK_SLOW_PERIOD_NS=6.0 CLK_SLOW_PHASE_NS=1.2 SEED=60 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_directed \
+	TESTCASE=TestCoverageClosure \
+	SIM_BUILD=./build/sim_build/pyuvm_directed \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_cdc_6_0.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=icarus
+make[1]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_cdc_6_0.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_cdc_6_0.xml
+make[2]: Entering directory './tb/pyuvm'
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using TESTCASE is deprecated, please use COCOTB_TESTCASE instead.
+rm -f ./build/results/pyuvm/results_test_cdc_6_0.xml
+COCOTB_TEST_MODULES=test_directed COCOTB_TESTCASE=TestCoverageClosure COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         oss-cad-suite/bin/vvp -M oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/pyuvm_directed/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library 'oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795602427
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns WARNING  py.warnings                        oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/_init.py:103: DeprecationWarning: COCOTB_TESTCASE is deprecated in favor of COCOTB_TEST_FILTER
+                                                          _setup_regression_manager()
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_directed.TestCoverageClosure (1/1)
+                                                            Phase 5: Functional coverage closure exercising all Section 10 covergroups.
+121360.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=359 Writes=214 Reads=145 Mismatches=0 ---
+121360.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_TestCoverageClosure_seed_60.yaml
+121360.00ns INFO     cocotb.regression                  test_directed.TestCoverageClosure passed
+121360.00ns INFO     cocotb.regression                  *******************************************************************************************
+                                                        ** TEST                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************
+                                                        ** test_directed.TestCoverageClosure   PASS      121360.00           4.61      26308.10  **
+                                                        *******************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                  121360.00           4.67      26012.39  **
+                                                        *******************************************************************************************
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+make: Leaving directory './tb/pyuvm'

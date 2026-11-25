@@ -1,36 +1,147 @@
 # Verification & Implementation Results
 
-This document records **real, measured results** from actual tool execution generated from `docs/metrics.json`.
-**Status:** Metrics are currently **being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md))**. Raw logs are archived in `docs/logs/`.
+<!-- BEGIN:metrics:results_status_banner -->
+This document records **real, measured results** generated strictly from [`docs/metrics.json`](metrics.json) (no hand-typed constants).
+**Status:** Phase F synchronized | **CI Status:** **NOT VERIFIED** (Pending Phase G GitHub Actions push and remote verification). Raw tool logs are archived under [`docs/logs/`](logs/).
+<!-- END:metrics:results_status_banner -->
 
 ---
 
 ## 1. Overall Metrics Summary
 
-| Metric | Measured Value | Spec Reference | Log Reference / Command |
+<!-- BEGIN:metrics:results_summary_table -->
+| Metric | Measured Value | Spec Reference | Log / Source |
 |---|---|---|---|
-| RTL Modules / Total Lines | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 17 | `scripts/gen_metrics.py` |
-| Total Tests (Directed / Random) | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 9 | `docs/test_map.csv`, `docs/vplan.md` |
-| Random Transactions Executed | **200,000 transactions** (20 seeds × 10,000 transactions, re-run after Phase A) | Section 9.1 (XB-13) | `docs/logs/regression_20seeds.log` |
-| Multi-seed Regression Seeds Passed | **20/20 seeds** (being re-measured after Phase A; see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 9.1 (XB-13 Gate) | `docs/logs/regression_20seeds.log` |
-| Functional Coverage (Bins Hit / Total) | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 10 | `docs/logs/func_cov.log` |
-| Code Coverage (Verilator Line / Toggle) | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 10 | `docs/logs/code_cov_summary.txt` |
-| Formal Properties / BMC / k-induction | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 11 | `docs/logs/formal_suite.log` |
-| CDC Clock Ratios & Phases Swept | **3 ratios (25.0 ns, 10.3 ns, 6.0 ns) × 3 phases** (re-measured in Phase C) | Section 9.1 (CD-01) | `docs/logs/func_cov.log`, `formal/async_fifo.sby` |
-| Mutants Generated / Killed / Score | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 12 | `docs/logs/mutation.log`, `docs/mutation_report.md` |
-| Crossbar Added Latency (Cycles) | **0 cycles added latency** (verified in XB-06 parallel transfer cycle check) | Section 7.2 (≤1 cycle) | `docs/img/contention.png`, `tb/block/test_axil_xbar.py` |
-| Synthesis: Cell Count / Flop Count / Area | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 13 (SKY130) | `docs/logs/synth.log` |
-| STA: Target Period / WNS / TNS / $F_{\max}$ | being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 13 (100 MHz target) | `docs/logs/sta.log`, `docs/logs/fmax_sweep.log` |
-| CI Status | **NOT VERIFIED** on GitHub remote (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) | Section 14 | `.github/workflows/ci.yml` |
+| RTL Modules / Non-Blank Non-Comment Lines | **17 modules / 3,200 lines** | Section 17 | [`docs/metrics.json`](metrics.json) |
+| Test Definitions / XML Runs / Spec Map | **61 defs / 77 XML runs (77 PASS, 0 FAIL) / 40/40 PASS** | Section 9 | [`docs/test_map.csv`](test_map.csv), [`docs/vplan.md`](vplan.md) |
+| Random Transactions Executed | **200,000** (Verilator seeds `1..20`, 0 mismatches) + **200,000** (Icarus seeds `601..620`, 0 mismatches) | Section 9.1 (XB-13) | [`docs/logs/phase_c_cov_report.log`](logs/phase_c_cov_report.log), [`docs/logs/regression_20seeds.log`](logs/regression_20seeds.log) |
+| Functional Coverage | **100.00% (267/267 reachable)**, 36 waived, 24 merged YAMLs | Section 10 | [`docs/logs/func_cov.log`](logs/func_cov.log), [`docs/coverage_waivers.md`](coverage_waivers.md) |
+| Code Coverage (Verilator) | **Line 92.0% \| Branch 91.2% \| Expr 93.8% \| Toggle 74.8% \| FSM State 100.0%** | Section 10 | [`docs/logs/code_cov_summary.txt`](logs/code_cov_summary.txt) |
+| Formal Verification (SymbiYosys) | **10/10 suites PASS** (3 `prove`, 1 `prv+bmc`, 6 `bmc`; 84 covers) | Section 11 | [`docs/logs/formal_suite.log`](logs/formal_suite.log) |
+| CDC Sweeps | **3 periods (25.0 ns, 10.3 ns, 6.0 ns) × 3 phases**; formal depth 25 / 30 | Section 9.1 (CD-01) | [`docs/logs/func_cov.log`](logs/func_cov.log) |
+| Mutation Testing (240 Frozen Mutants) | **Baseline 165/240 (68.75%) → Final 205/240 (85.42% raw / 93.61% adj)** | Section 12 | [`docs/mutation_report.md`](mutation_report.md) |
+| Bugs Logged & Reference-Verified | **24 (`BUG-001`–`BUG-024`)** | Section 6 | [`docs/bugs.md`](bugs.md) |
+| Synthesis (SKY130, `RAM_DEPTH=64`) | **9,237 cells / 3,630 flops (2,048 RAM) / 138,086.19 µm²** | Section 13 | [`docs/logs/synth.log`](logs/synth.log) |
+| STA (100 MHz Target, OpenSTA) | **VIOLATED: WNS -18.60 ns / TNS -54046.39 ns / 34.97 MHz** (`62.89 MHz` datapath+I/O ref; `clk_slow` & hold MET) | Section 13 | [`docs/logs/sta.log`](logs/sta.log), [`docs/logs/fmax_sweep.log`](logs/fmax_sweep.log) |
+| CI Status | **NOT VERIFIED** | Section 14 | [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) |
+<!-- END:metrics:results_summary_table -->
 
 ---
 
-## 2. Detailed Re-Measurement Status (R2 Pass)
+## 2. RTL Codebase Inventory (Non-Blank, Non-Comment Lines)
 
-All detailed tables below (Formal, Functional Coverage, Verilator Code Coverage, Mutation Testing, Yosys Synthesis, and OpenSTA Timing/Fmax) are **being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md))** and will be regenerated strictly from `docs/metrics.json` in Phase F:
+<!-- BEGIN:metrics:results_rtl_table -->
+| Module | File | Non-Blank, Non-Comment Lines |
+|---|---|---:|
+| `amba_fabric_top` | `rtl/amba_fabric_top.v` | 365 |
+| `apb_decoder` | `rtl/apb/apb_decoder.v` | 56 |
+| `apb_gpio` | `rtl/apb/apb_gpio.v` | 89 |
+| `apb_timer` | `rtl/apb/apb_timer.v` | 155 |
+| `apb_uart` | `rtl/apb/apb_uart.v` | 450 |
+| `axil2apb_bridge` | `rtl/apb/axil2apb_bridge.v` | 171 |
+| `axil_csr` | `rtl/axil/axil_csr.v` | 278 |
+| `axil_decoder` | `rtl/axil/axil_decoder.v` | 31 |
+| `axil_default_slave` | `rtl/axil/axil_default_slave.v` | 78 |
+| `axil_ram` | `rtl/axil/axil_ram.v` | 204 |
+| `axil_xbar` | `rtl/axil/axil_xbar.v` | 424 |
+| `axil_cdc_bridge` | `rtl/cdc/axil_cdc_bridge.v` | 383 |
+| `slow_regs` | `rtl/cdc/slow_regs.v` | 107 |
+| `async_fifo` | `rtl/common/async_fifo.v` | 151 |
+| `rr_arbiter` | `rtl/common/rr_arbiter.v` | 102 |
+| `rst_sync` | `rtl/common/rst_sync.v` | 19 |
+| `sync_fifo` | `rtl/common/sync_fifo.v` | 137 |
+| **TOTAL (17 modules)** | `rtl/**/*.v` | **3,200** |
+<!-- END:metrics:results_rtl_table -->
 
-- **Formal Verification Table:** being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) — Phase B binds `formal/rr_arbiter_props.v`, adds `sync_fifo` data ordering, removes over-assumptions, and enforces exact wording.
-- **Functional & Code Coverage Tables:** being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) — Phase C fixes `CdcMonitor` edge measurement, adds real stimulus for uncovered bins, and fixes `make cov-report`.
-- **Mutation Testing Matrix:** being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) — Phase D fixes `run_mutants.py` process-group cleanup, `axil_xbar` scope, and generates `docs/mutation_report.md` directly from the run log.
-- **Synthesis & OpenSTA Timing Tables:** being re-measured (see [`docs/FIX_REPORT_R2.md`](docs/FIX_REPORT_R2.md)) — Phase E restores `synth/synth.ys` and replaces stale hardcoded netlist cells with portable port/hierarchy constraints.
-- **Historical Gate Logs (Phases 0–4 Baseline):** Archived under `docs/logs/phase0_gate.log` .. `docs/logs/phase4_gate.log` (superseded by Second Remediation Pass R2).
+---
+
+## 3. Formal Verification Matrix (SymbiYosys + Boolector)
+
+<!-- BEGIN:metrics:results_formal_table -->
+| Module | Mode | Depth | Result | Covers Reached | Runtime |
+|---|---|---:|---|---:|---:|
+| `apb_timer` | `prove` | 20 | **PASS** | 4 | 1s |
+| `apb_uart` | `bmc` | 25 | **PASS** | 9 | 5s |
+| `async_fifo` | `bmc` | 25 | **PASS** | 4 | 8s |
+| `axil2apb_bridge` | `bmc` | 25 | **PASS** | 10 | 6s |
+| `axil_cdc_bridge` | `bmc` | 30 | **PASS** | 5 | 78s |
+| `axil_csr` | `prv+bmc` | 20 | **PASS** | 5 | 3s |
+| `axil_ram` | `bmc` | 20 | **PASS** | 5 | 3s |
+| `axil_xbar` | `bmc` | 20 | **PASS** | 31 | 42s |
+| `rr_arbiter` | `prove` | 20 | **PASS** | 3 | 1s |
+| `sync_fifo` | `prove` | 20 | **PASS** | 8 | 3s |
+| **TOTAL** | **10 suites** | - | **10/10 PASS** | **84** | **150s** |
+<!-- END:metrics:results_formal_table -->
+
+---
+
+## 4. Functional & Code Coverage Summary
+
+### 4.1 Functional Coverage (`cocotb-coverage`, Merged Real Runs)
+
+<!-- BEGIN:metrics:results_func_cov_table -->
+| Covergroup | Leaf Sub-Metrics | Defined Pre-Waiver | Waived | Reachable Target | Covered | Coverage % |
+|---|---:|---:|---:|---:|---:|---:|
+| `cg_apb` | 6 | 36 | 3 | 33 | 33 | **100.00%** |
+| `cg_backpressure` | 3 | 29 | 0 | 29 | 29 | **100.00%** |
+| `cg_cdc` | 4 | 25 | 6 | 19 | 19 | **100.00%** |
+| `cg_contention` | 3 | 15 | 3 | 12 | 12 | **100.00%** |
+| `cg_order` | 3 | 19 | 0 | 19 | 19 | **100.00%** |
+| `cg_reset` | 1 | 5 | 0 | 5 | 5 | **100.00%** |
+| `cg_txn` | 5 | 72 | 24 | 48 | 48 | **100.00%** |
+| `cg_uart` | 4 | 18 | 0 | 18 | 18 | **100.00%** |
+| `cg_wstrb` | 3 | 84 | 0 | 84 | 84 | **100.00%** |
+| **TOTAL** | **32** | **303** | **36** | **267** | **267** | **100.00%** |
+<!-- END:metrics:results_func_cov_table -->
+
+### 4.2 Verilator HDL Code Coverage
+
+<!-- BEGIN:metrics:results_code_cov_table -->
+| Verilator Code Coverage Metric | Covered Points | Total Points | Coverage % |
+|---|---:|---:|---:|
+| Line | 494 | 537 | **92.0%** |
+| Branch | 499 | 547 | **91.2%** |
+| Expression | 1,036 | 1,105 | **93.8%** |
+| Toggle | 10,616 | 14,202 | **74.8%** |
+| FSM State | 5 | 5 | **100.0%** |
+| FSM Arc | 1 | 4 | **25.0%** |
+<!-- END:metrics:results_code_cov_table -->
+
+---
+
+## 5. Mutation Testing Matrix (Frozen 240-Mutant Suite)
+
+<!-- BEGIN:metrics:results_mutation_table -->
+| Module | Gen | Baseline Kill / Score | Final Kill | Final Surv | Tmo | BldErr | Raw Score | Equiv | Adj. Score |
+|---|---:|---|---:|---:|---:|---:|---:|---:|---:|
+| `rr_arbiter` | 30 | 19/30 (63.33%) | 22 | 8 | 0 | 0 | 73.33% | 6 | **91.67% (22/24)** |
+| `sync_fifo` | 30 | 25/30 (83.33%) | 28 | 2 | 0 | 0 | 93.33% | 2 | **100.00% (28/28)** |
+| `async_fifo` | 30 | 18/30 (60.00%) | 30 | 0 | 0 | 0 | 100.00% | 0 | **100.00% (30/30)** |
+| `axil_decoder` | 30 | 26/30 (86.67%) | 27 | 3 | 0 | 0 | 90.00% | 3 | **100.00% (27/27)** |
+| `axil_ram` | 30 | 17/30 (56.67%) | 24 | 6 | 0 | 0 | 80.00% | 0 | **80.00% (24/30)** |
+| `axil_csr` | 30 | 15/30 (50.00%) | 25 | 5 | 0 | 0 | 83.33% | 4 | **96.15% (25/26)** |
+| `axil2apb_bridge` | 30 | 23/30 (76.67%) | 26 | 4 | 0 | 0 | 86.67% | 3 | **96.30% (26/27)** |
+| `axil_xbar` | 30 | 22/30 (73.33%) | 23 | 7 | 0 | 0 | 76.67% | 3 | **85.19% (23/27)** |
+| **TOTAL** | **240** | **165/240 (68.75%)** | **205** | **35** | **0** | **0** | **85.42%** | **21** | **93.61% (205/219)** |
+<!-- END:metrics:results_mutation_table -->
+
+---
+
+## 6. Synthesis & OpenSTA Timing Summary (SKY130 HD)
+
+<!-- BEGIN:metrics:results_synth_sta_section -->
+- **Yosys SKY130 HD Synthesis (`RAM_DEPTH=64`, [`synth/synth.ys`](../synth/synth.ys)):**
+  - Total Cells: **9,237**
+  - Sequential Flip-Flops: **3,630** (`1,140` `dfrtp_1` + `10` `dfstp_1` + `2,480` `edfxtp_1`, including **2,048** RAM flops for `u_ram.mem[0..63]`)
+  - Total Cell Area: **138,086.19 µm²** (`103,261.54 µm²` / **74.78%** sequential)
+- **OpenSTA Timing Analysis (`100.00 MHz` / `10.00 ns` `clk_sys`, `41.67 MHz` / `24.00 ns` `clk_slow`):**
+  - Full Timed Netlist (`rst_n -> rst_sync` false-pathed only; `rst_sys_n`/`rst_slow_n` recovery timed): **WNS = `-18.60 ns`**, **TNS = `-54046.39 ns`** (**`VIOLATED`**), achieved $F_{\max}$ = **`34.97 MHz` (`28.60 ns`)**.
+  - Pre-Layout Bottleneck: Unbuffered reset net `rst_sys_n` driving `958` loads (`cap=3.46 pF`, `slew=29.27 ns`) violates reset recovery; `clk_sys` sync setup slack = `-15.48 ns`, `clk_slow` setup slack = **`+16.64 ns` (MET)**, min hold slack = **`+0.23 ns` (MET)**, `check_setup` unconstrained constant-1 endpoints = `5` (`DEC-011`).
+  - Datapath + I/O Reference (`rst_sync` Q isolated in STA only): **WNS = `-5.89 ns`**, **TNS = `-16999.71 ns`**, achieved $F_{\max}$ = **`62.89 MHz` (`15.90 ns`)**; pure reg-to-reg worst slack = `-4.15 ns`.
+<!-- END:metrics:results_synth_sta_section -->
+
+---
+
+## 7. Historical Archive (Superseded)
+
+Initial Phases 0–4 bring-up logs are archived under `docs/logs/phase0_gate.log` .. `docs/logs/phase4_gate.log` for historical traceability only and are superseded by the R2 remediation measurements reported above (`docs/FIX_REPORT_R2.md`).

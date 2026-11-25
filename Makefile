@@ -43,10 +43,14 @@ env-check:
 	echo "SKY130:    $$(test -f $(SKY130_LIB) && echo 'FOUND' || echo 'NOT FOUND')" && \
 	python3 -c "import cocotb, pyuvm, cocotb_coverage; print('Python packages: cocotb, pyuvm, cocotb-coverage OK')"
 
-# RTL Lint target using Verilator and synthetic coverage check
+# RTL Lint target using Verilator, coverage honesty check, bug refs, and docs consistency
 lint:
 	@$(ENV_CMD) && echo "=== Checking for Synthetic Coverage Calls ===" && \
 	$(PROJ_DIR)/scripts/check_no_synthetic_cov.sh
+	@$(ENV_CMD) && echo "=== Checking Bug Regression References ===" && \
+	python3 $(PROJ_DIR)/scripts/check_bug_refs.py
+	@$(ENV_CMD) && echo "=== Checking Documentation Consistency against metrics.json ===" && \
+	python3 $(PROJ_DIR)/scripts/check_docs_consistency.py
 	@$(ENV_CMD) && echo "=== Running RTL Lint (Verilator) ===" && \
 	if [ -n "$$(echo $(RTL_SRCS))" ]; then \
 		verilator --lint-only -Wall -Wno-DECLFILENAME -Wno-MULTITOP -I$(PROJ_DIR)/rtl/common -I$(PROJ_DIR)/rtl/axil -I$(PROJ_DIR)/rtl/apb -I$(PROJ_DIR)/rtl/cdc $(RTL_SRCS); \

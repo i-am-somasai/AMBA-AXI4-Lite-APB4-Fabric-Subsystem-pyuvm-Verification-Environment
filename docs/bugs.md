@@ -126,7 +126,7 @@ Per project rules, every bug must be reproduced deterministically, diagnosed to 
 - **Symptom:** Deadlock and timeout under concurrent multi-master contention or staggered writes (`order="w_first"`), where a granted master was preempted before both write channels completed.
 - **Root Cause:** Target locking in `axil_xbar` was initially conditioned on `aw_hs` or `ar_hs`. When an access was granted but one of the channels was delayed across cycles (or during staggered writes), the other master could win arbitration and reassign `active_wr_owner`, stranding the first master.
 - **Fix Applied:** In `rtl/axil/axil_xbar.v`, asserted `wr_locked[gt] <= 1'b1; wr_owner[gt] <= active_wr_owner[gt];` immediately upon `wr_active[gt] && !wr_locked[gt]`, and similarly for `rd_active[gt] && !rd_locked[gt]`.
-- **Regression Test:** `tb/pyuvm/tests/test_directed.py` (`TestContentionHandshake`), `tb/pyuvm/tests/test_stress.py`
+- **Regression Test:** `tb/pyuvm/tests/test_directed.py` (`test_sys_contention`), `tb/block/test_axil_xbar.py` (`test_xb05_contention_same_slave`), `tb/pyuvm/tests/test_stress.py`
 
 ### [BUG-013] CDC Slow Registers Asynchronous FIFO Pop Off-by-One Pipeline Skew
 - **Date Discovered:** 2026-11-24
@@ -144,7 +144,7 @@ Per project rules, every bug must be reproduced deterministically, diagnosed to 
 - **Symptom:** `error: Unable to bind wire/reg/memory req_addr_q['sd1:'sd0]... A symbol with that name was declared here. Check for declaration after use.`
 - **Root Cause:** `wire _unused` referenced `req_addr_q` before its declaration on line 48. Verilator accepted this, but Icarus Verilog strictly enforces declaration before use.
 - **Fix Applied:** Moved `wire _unused` to follow the declaration of `req_addr_q`.
-- **Regression Test:** `scripts/run_phase4_gate.sh` (`test_directed` on Icarus)
+- **Regression Test:** `scripts/run_phase4_gate.sh` (`tb/pyuvm/tests/test_directed.py` on Icarus)
 
 ### [BUG-015] Cocotb 2.1 Unresolved LogicArray Integer Conversion Exception
 - **Date Discovered:** 2026-11-24
@@ -162,7 +162,7 @@ Per project rules, every bug must be reproduced deterministically, diagnosed to 
 - **Symptom:** `assert (reg_ctrl[0] == 1'b0)` failed at induction step 4.
 - **Root Cause:** In `apb_timer.v`, APB register writes override autonomous timer counting and reload logic. The assertion checked that `reg_ctrl[0]` was cleared on timeout under `!reg_ctrl[1]`, but did not check if an APB write occurred in the preceding cycle writing `1` to `CTRL`.
 - **Fix Applied:** Qualified autonomous timer assertions with `!$past(apb_write && (paddr[3:2] == 2'b00))`.
-- **Regression Test:** `make formal` (`apb_timer.sby`)
+- **Regression Test:** `make formal` (`formal/apb_timer.sby`)
 
 ### [BUG-017] AXI-Lite RAM Slave Response Latency Tracking Skew under Backpressure
 - **Date Discovered:** 2026-11-24
@@ -171,7 +171,7 @@ Per project rules, every bug must be reproduced deterministically, diagnosed to 
 - **Symptom:** `assert (s_axil_bresp == ($past(write_in_bounds) ? RESP_OKAY : RESP_SLVERR))` failed at step 5.
 - **Root Cause:** When `s_axil_bready` was held low, `bvalid` remained high while `awready`/`wready` were briefly high, allowing a second write address to arrive. The property was asserting the new write's response while `bresp` still held the previous write's response waiting for `bready`.
 - **Fix Applied:** Verified that `bresp` matches bounds on the cycle following `write_commit = ((aw_hs || aw_done) && (w_hs || w_done) && (!bvalid || bready))`, and asserted `$stable(s_axil_bresp)` while waiting for `bready`.
-- **Regression Test:** `make formal` (`axil_ram.sby`)
+- **Regression Test:** `make formal` (`formal/axil_ram.sby`)
 
 ### [BUG-018] Cocotb COVERAGE Variable Collision with pyuvm Functional Coverage Directory
 - **Date Discovered:** 2026-11-24
@@ -189,7 +189,7 @@ Per project rules, every bug must be reproduced deterministically, diagnosed to 
 - **Symptom:** `ERROR: Failed to resolve identifier \dut.reg_load for width detection`.
 - **Root Cause:** Yosys AST parser does not support downward cross-module hierarchical references for port/wire width detection in separate wrapper modules.
 - **Fix Applied:** Embedded formal properties directly within each RTL module under `` `ifdef FORMAL ``, keeping formal verification clean, self-contained, and portable.
-- **Regression Test:** `make formal` (all 8 suites)
+- **Regression Test:** `make formal` (all 10 suites)
 
 ### [BUG-020] APB Bridge Test Stimulus Self-Comparison Masking Write Data Bit-Corruption
 - **Date Discovered:** 2026-11-24
@@ -216,7 +216,7 @@ Per project rules, every bug must be reproduced deterministically, diagnosed to 
 - **Symptom:** Crossbar BMC failed at step 3 due to write channel deadlock. After master AW handshake completed, master deasserted `awvalid` and changed `awaddr` before W data arrived. Subsequently `s_axil_wready` was held low (0) even though `wvalid` was high and the targeted slave had `wready` high (`tgt_wready=1`).
 - **Root Cause:** In `rtl/axil/axil_xbar.v`, `s_axil_wready` for both master 0 and master 1 was generated using the combinationally decoded address target `m_aw_tgt[m][gt]`. If the master changed `s_axil_awaddr` after the AW handshake while the target slave was already locked (`wr_locked[gt] && wr_owner[gt] == m`), `m_aw_tgt[m][gt]` became 0, gating `s_axil_wready` to 0. This caused a permanent write channel stall while `tgt_wvalid[gt]` was asserted to the slave.
 - **Fix Applied:** In `rtl/axil/axil_xbar.v`, updated the `m_wready_grant` logic for all masters to check `(wr_locked[gt] ? (wr_owner[gt] == m) : (active_wr_owner[gt] == m && m_aw_tgt[m][gt]))`. When a write channel is locked to a slave, WREADY gating depends on the recorded owner, not the transient input `awaddr`.
-- **Regression Test:** `formal/axil_xbar.sby` (BMC depth 20), `tb/pyuvm/tests/test_xb09_backpressure_burst.py`
+- **Regression Test:** `formal/axil_xbar.sby` (BMC depth 20), `tb/block/test_axil_xbar.py` (`test_xb08_write_orderings`, `test_xb09_random_ready_backpressure`)
 
 ### [BUG-023] AXI-Lite CSR Full Byte-Offset Decode Violating AXI4-Lite Rule 6 (`[1:0]` Ignored)
 - **Date Discovered:** 2026-11-25

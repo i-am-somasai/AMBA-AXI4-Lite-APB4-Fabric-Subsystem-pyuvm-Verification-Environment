@@ -9,11 +9,11 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 | Phase | Scope & Audit IDs | Status | Commits |
 |---|---|---|---|
 | **Phase A** | RTL Rule 6 fix (`axil_csr`), CDC reset fix, models, decisions (`DEC-006..008`), 8 test rewrites (`XB-03/07/12/14/15`, `UA-02`, `BR-05`, `CD-03`), 16 sanity mutants | `DONE` | `fix(R2-A)` (this commit) |
-| **Phase B** | Formal (`rr_arbiter_props.v`, bounded fairness, `sync_fifo` data ordering, bridge/xbar over-assumptions, CSR causality/Rule 6, exact wording) | `DONE` | [`docs/logs/phase_b_formal.log`](docs/logs/phase_b_formal.log) |
-| **Phase C** | Honest coverage (`CdcMonitor` edge measurement, stimulus for 44 holes, waivers, `make cov-report` fix & full re-measure) | `DONE` | [`docs/logs/func_cov.log`](docs/logs/func_cov.log) |
+| **Phase B** | Formal (`rr_arbiter_props.v`, bounded fairness, `sync_fifo` data ordering, bridge/xbar over-assumptions, CSR causality/Rule 6, exact wording) | `DONE` | [`docs/logs/phase_b_formal.log`](logs/phase_b_formal.log) |
+| **Phase C** | Honest coverage (`CdcMonitor` edge measurement, stimulus for 44 holes, waivers, `make cov-report` fix & full re-measure) | `DONE` | [`docs/logs/func_cov.log`](logs/func_cov.log) |
 | **Phase D** | Mutation (`run_mutants.py` process group kill, `axil_xbar` scope fix, CSR/bridge test gaps, 240-mutant run, script-generated report) | `DONE` | [`docs/mutation_report.md`](mutation_report.md) |
 | **Phase E** | Synthesis & STA (`synth/synth.ys`, portable reset false-path constraints, dynamic `fmax_sweep.py` parsing, clean measurements) | `DONE` | [`docs/logs/phase_e_fmax_sweep.log`](logs/phase_e_fmax_sweep.log) |
-| **Phase F** | Data-driven docs (`scripts/gen_metrics.py`, `docs/metrics.json`, regenerate docs, `bugs.md` / `decisions.md` / `interfaces.md`, CI check scripts) | `TODO` | - |
+| **Phase F** | Data-driven docs (`scripts/gen_metrics.py`, `docs/metrics.json`, regenerate docs, `bugs.md` / `decisions.md` / `interfaces.md`, CI check scripts) | `DONE` | [`docs/metrics.json`](metrics.json) |
 | **Phase G** | CI (`ci.yml` artifact/command alignment, fresh checkout check, remote GitHub Actions verification) | `TODO` | - |
 | **Final** | Clean-clone full re-measure & `remediation-r2-done` tag | `TODO` | - |
 
@@ -51,7 +51,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - **Status:** `DONE`
 - **Files Changed:** `formal/rr_arbiter.sby`, `formal/rr_arbiter_props.v`, `rtl/common/sync_fifo.v`, `formal/sync_fifo_props.v`, `formal/axil2apb_bridge_props.v`, `rtl/axil/axil_xbar.v`, `formal/axil_xbar_props.v`, `formal/apb_uart.sby`, `docs/coverage_waivers.md`, `scripts/run_all_formal.sh`, `README.md`, `docs/audit_r2_tracking.csv`, `docs/FIX_REPORT_R2.md`
 - **Commands Run:** `make lint`, `bash scripts/run_all_formal.sh`, `make unit SIM=icarus`, `make -C tb/block test_axil_xbar test_axil2apb_bridge SIM=icarus`
-- **Log Paths:** [`docs/logs/phase_b_lint.log`](docs/logs/phase_b_lint.log), [`docs/logs/phase_b_formal.log`](docs/logs/phase_b_formal.log), [`docs/logs/formal_suite.log`](docs/logs/formal_suite.log), [`docs/logs/phase_b_unit.log`](docs/logs/phase_b_unit.log)
+- **Log Paths:** [`docs/logs/phase_b_lint.log`](logs/phase_b_lint.log), [`docs/logs/phase_b_formal.log`](logs/phase_b_formal.log), [`docs/logs/formal_suite.log`](logs/formal_suite.log), [`docs/logs/phase_b_unit.log`](logs/phase_b_unit.log)
 - **Before / After Numbers:**
   - Before: `rr_arbiter_props.v` orphaned; no bounded fairness; `sync_fifo` lacked data-ordering proof; over-assumptions in `axil2apb_bridge_props.v` and `axil_xbar_props.v`; `coverage_waivers.md:43` claimed "exhaustively proven".
   - After: **10/10** formal suites PASS (`apb_timer` prove d=20 4c, `apb_uart` bmc d=25 9c, `async_fifo` bmc d=25 4c, `axil2apb_bridge` bmc d=25 10c, `axil_cdc_bridge` bmc d=30 5c, `axil_csr` prv+bmc d=20 5c, `axil_ram` bmc d=20 5c, `axil_xbar` bmc d=20 31c, `rr_arbiter` prove d=20 3c, `sync_fifo` prove d=20 8c), **0** undriven-wire warnings, **0** counterexamples from removing over-assumptions (no RTL bugs triggered, no reduced depth/DATA_WIDTH needed); `rr_arbiter` documented as standalone verified block (`DEC-007`).
@@ -63,7 +63,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - **Status:** `DONE`
 - **Files Changed:** `tb/pyuvm/func_cov/fabric_cov.py`, `tb/pyuvm/monitors/fabric_monitors.py`, `tb/models/axil_driver.py`, `tb/pyuvm/sequences/{axil_seq_item.py,axil_base_seq.py,coverage_closure_seq.py}`, `tb/pyuvm/agents/axil_master_agent.py`, `tb/pyuvm/tests/test_directed.py`, `tb/pyuvm/Makefile`, `tb/block/{Makefile.single,test_axil2apb_bridge.py}`, `scripts/{merge_cov.py,run_regression.sh}`, `docs/{coverage_waivers.md,decisions.md,audit_r2_tracking.csv,FIX_REPORT_R2.md}`
 - **Commands Run:** `./scripts/check_no_synthetic_cov.sh`, `make cov-report`, `python3 scripts/merge_cov.py docs/logs`
-- **Log Paths:** [`docs/logs/phase_c_cov_report.log`](docs/logs/phase_c_cov_report.log), [`docs/logs/func_cov.log`](docs/logs/func_cov.log), [`docs/logs/code_cov_summary.txt`](docs/logs/code_cov_summary.txt)
+- **Log Paths:** [`docs/logs/phase_c_cov_report.log`](logs/phase_c_cov_report.log), [`docs/logs/func_cov.log`](logs/func_cov.log), [`docs/logs/code_cov_summary.txt`](logs/code_cov_summary.txt)
 - **Before / After Numbers:**
   - Before: Functional coverage 83.88% (229/273) with 44 uncovered bins; `CdcMonitor` read `CLK_SLOW_PERIOD_NS` env var; `make cov-report` failed on `/tmp` space & exited 1; Verilator line 90.0%, branch 89.2%, expr 92.7%, toggle 75.2%.
   - After: Functional coverage **100.00% (267/267 reachable bins)** across 24 merged YAMLs (20 Verilator seeds `1..20`, directed tests, CDC `10.3ns`/`6.0ns` sweeps, block `cg_apb` tagged `source=block`), 36 documented waivers (`cg_txn` 24 + `cg_cdc` 6 + `cg_contention` 3 per `DEC-009` + `cg_apb.strb_cross` 3 per `DEC-010`, net 267 legal reachable bins vs 273 pre-R2); Verilator code coverage **line 92.0% (494/537)**, **branch 91.2% (499/547)**, **expr 93.8% (1036/1105)**, **toggle 74.8% (10616/14202)**, **fsm_state 100.0% (5/5)**; `make cov-report` exits `0` cleanly using `BUILD_DIR`.
@@ -96,14 +96,14 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 ---
 
 ### Phase F: Data-Driven Documentation (`METRIC-*`, `VPLAN-AUDIT`, `BUGS-AUDIT`, `DECISIONS-AUDIT`, `DOD-08/09`)
-- **Status:** `TODO`
-- **Files Changed:** Pending
-- **Commands Run:** Pending
-- **Log Paths:** Pending
+- **Status:** `DONE`
+- **Files Changed:** `scripts/{gen_metrics.py,doc_blocks.py,gen_docs.py,check_docs_consistency.py,check_bug_refs.py,gen_test_map.py}`, `Makefile`, `README.md`, `docs/{metrics.json,results.md,vplan.md,test_map.csv,bugs.md,interfaces.md,decisions.md,FIX_REPORT_R2.md,audit_r2_tracking.csv}`, `docs/logs/{synth.log,sta.log,fmax_sweep.log,regression_20seeds.log,phase_f_*}`
+- **Commands Run:** `make unit SIM=icarus && make block SIM=icarus && make -C tb/pyuvm test_directed SIM=icarus && make -C tb/pyuvm test_stress SIM=icarus SEED=42`, `python3 scripts/gen_test_map.py`, `python3 scripts/gen_metrics.py`, `python3 scripts/gen_docs.py`, `make lint` (running `check_no_synthetic_cov.sh` + `check_bug_refs.py` + `check_docs_consistency.py` + Verilator lint)
+- **Log Paths:** [`docs/logs/phase_f_lint.log`](logs/phase_f_lint.log), [`docs/logs/phase_f_unit.log`](logs/phase_f_unit.log), [`docs/logs/phase_f_block.log`](logs/phase_f_block.log), [`docs/logs/phase_f_pyuvm_directed.log`](logs/phase_f_pyuvm_directed.log), [`docs/logs/phase_f_stress_seed42.log`](logs/phase_f_stress_seed42.log)
 - **Before / After Numbers:**
-  - Before: Contradictory hand-typed metrics across `README.md`, `docs/results.md`, `docs/vplan.md` (lines 3238 vs 3759, bugs 21 vs 22, coverage 83.88% vs 100%, formal 8/8 vs 10/10); broken links (`contention.vcd`, `synth.ys`, `BUG-022` ref); 4 unlogged deviations in `docs/decisions.md`.
-  - After: Pending Phase F execution.
-- **Remaining Issues:** None yet.
+  - Before: Contradictory hand-typed metrics across `README.md`, `docs/results.md`, `docs/vplan.md` (`3,238` vs `3,759` lines, `21` vs `22` bugs, `83.88%` vs `100%` coverage, `8/8` vs `10/10` formal); broken links (`BUG-022` non-existent test file, `BUG-012` missing class, stale canonical STA logs); unlogged `axil_decoder` / `synth.ys` deviations.
+  - After: Single authoritative [`docs/metrics.json`](metrics.json) (`17` modules, `3,200` non-blank/non-comment RTL lines, `61` test defs, `77` XML runs, `40/40` Spec 9.1 PASS, `267/267` `100.00%` coverage, `92.0%` Verilator line cov, `10/10` formal, `205/240` raw / `93.61%` adj mutation, `24` bugs `BUG-001..BUG-024`, `9,237` cells / `3,630` flops / `138,086.19 um2`, `-18.60 ns` full WNS / `34.97 MHz` pre-layout reset limit vs `62.89 MHz` datapath+IO ref, CI `NOT VERIFIED`). All 21 generated `<!-- BEGIN:metrics:* -->` blocks across `README.md`, `docs/results.md`, and `docs/vplan.md` pass `check_docs_consistency.py` with `0` diffs, `0` stale strings, and `0` broken links; `check_bug_refs.py` passes on all 24 bugs; `make lint` exits `0`.
+- **Remaining Issues:** None for Phase F (`CI Status` remains `NOT VERIFIED` until Phase G pushes and confirms a remote GitHub Actions run).
 
 ---
 
@@ -175,15 +175,15 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `SYNTH-REPORT` (BLOCKER): CLOSED (dynamically parsed synthesis & STA metrics in `docs/logs/phase_e_{synth,sta,fmax_sweep}.log`; `100 MHz` violation stated honestly)
 - `CI-REMOTE` (MAJOR): OPEN (assigned to Phase G G)
 - `LAYOUT-SYNTH_YS` (BLOCKER): CLOSED (`synth/synth.ys` committed at Spec Sec 15 path)
-- `METRIC-01` (BLOCKER): OPEN (assigned to Phase F F1/F2)
-- `METRIC-02` (BLOCKER): OPEN (assigned to Phase F F1/F2)
-- `METRIC-05` (BLOCKER): OPEN (assigned to Phase F F1/F2)
-- `METRIC-06` (MAJOR): OPEN (assigned to Phase F F1/F2)
-- `METRIC-07` (MAJOR): OPEN (assigned to Phase F F1/F2)
-- `METRIC-09` (BLOCKER): OPEN (assigned to Phase F F1/F2)
-- `METRIC-10` (MAJOR): OPEN (assigned to Phase F F1/F3)
-- `METRIC-12` (BLOCKER): OPEN (assigned to Phase F F1/F2)
-- `METRIC-13` (BLOCKER): OPEN (assigned to Phase F F1/F2)
+- `METRIC-01` (BLOCKER): CLOSED (`scripts/gen_metrics.py` measures `17` modules / `3,200` non-blank non-comment lines across `rtl/**/*.v`)
+- `METRIC-02` (BLOCKER): CLOSED (`61` Python defs / `77` XML testcases PASS / `40/40` Spec 9.1 PASS in `docs/test_map.csv` & `docs/metrics.json`)
+- `METRIC-05` (BLOCKER): CLOSED (`267/267` `100.00%` across 24 merged YAMLs populated via `doc_blocks.py`)
+- `METRIC-06` (MAJOR): CLOSED (`Line 92.0% | Branch 91.2% | Expr 93.8% | Toggle 74.8% | FSM State 100.0%` populated from `docs/metrics.json`)
+- `METRIC-07` (MAJOR): CLOSED (`10/10` formal suites + `84` covers regenerated across `README.md`/`results.md`/`vplan.md` from `docs/metrics.json`)
+- `METRIC-09` (BLOCKER): CLOSED (`165/240` -> `205/240` `85.42%` raw / `93.61%` adj populated from `docs/metrics.json`)
+- `METRIC-10` (MAJOR): CLOSED (`24` sequential bugs `BUG-001..BUG-024` verified by `scripts/check_bug_refs.py` & `docs/metrics.json`)
+- `METRIC-12` (BLOCKER): CLOSED (`9,237` cells / `3,630` flops (`2,048` RAM) / `138,086.19 um2` populated from `docs/metrics.json`)
+- `METRIC-13` (BLOCKER): CLOSED (`WNS -18.60 ns / TNS -54046.39 ns / 34.97 MHz` & `62.89 MHz` datapath+IO ref populated from `docs/metrics.json`)
 - `METRIC-14` (MAJOR): OPEN (assigned to Phase G G)
 - `DOD-01` (BLOCKER): CLOSED (Phase A gate verified: 16/16 sanity mutants KILLED, Rule 6 fixed, 8 tests rewritten, 20 fresh seeds PASS)
 - `DOD-02` (MAJOR): CLOSED (20 Icarus seeds `601..620` in Phase A + 20 Verilator coverage seeds `1..20` in Phase C PASS)
@@ -192,8 +192,8 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `DOD-05` (BLOCKER): CLOSED (frozen `mutation/mutant_list_240.json` D3 baseline 165/240 -> D5 final 205/240 raw 85.42% / 93.61% adj via `docs/mutation_report.md`)
 - `DOD-06` (BLOCKER): CLOSED (two clean `make synth && make sta` runs yielded byte-identical `sta.log`/`fmax_sweep.log` & identical `synth` stats)
 - `DOD-07` (MAJOR): OPEN (assigned to Phase G G)
-- `DOD-08` (BLOCKER): OPEN (assigned to Phase F F2/F3/F5)
-- `DOD-09` (BLOCKER): OPEN (assigned to Phase F F6)
-- `VPLAN-AUDIT` (BLOCKER): OPEN (assigned to Phase F F2)
-- `BUGS-AUDIT` (MAJOR): OPEN (assigned to Phase F F3)
-- `DECISIONS-AUDIT` (MAJOR): OPEN (assigned to Phase F F4)
+- `DOD-08` (BLOCKER): CLOSED (`README.md`, `results.md`, `vplan.md` generated via `BEGIN:metrics` blocks; `make lint` enforces `check_bug_refs.py` & `check_docs_consistency.py`)
+- `DOD-09` (BLOCKER): CLOSED (`README.md` Section 9 resume bullets generated solely inside `BEGIN:metrics:readme_resume_bullets` from `docs/metrics.json`)
+- `VPLAN-AUDIT` (BLOCKER): CLOSED (`docs/vplan.md` Sections 1..6 regenerated cleanly from `docs/metrics.json` & `docs/test_map.csv`)
+- `BUGS-AUDIT` (MAJOR): CLOSED (`BUG-012/014/016/017/019/022` refs fixed; `scripts/check_bug_refs.py` verifies all 24 bugs PASS)
+- `DECISIONS-AUDIT` (MAJOR): CLOSED (`docs/interfaces.md` updated for `axil_decoder` `[3:0]` `slave_sel`; `DEC-006..DEC-013` recorded in `docs/decisions.md`)

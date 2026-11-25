@@ -109,11 +109,15 @@
 ### 3.2 AXI4-Lite Interconnect (`rtl/axil/`)
 
 #### `axil_decoder`
-- **Parameters:** None (encodes Section 2 address map for S0..S3 + default).
+- **Parameters:**
+  - `S0_BASE` (default: `32'h4000_0000`), `S0_MASK` (default: `32'hFFFF_0000`) — 64 KB (APB Subsystem)
+  - `S1_BASE` (default: `32'h5000_0000`), `S1_MASK` (default: `32'hFFFF_F000`) — 4 KB (Scratch RAM)
+  - `S2_BASE` (default: `32'h6000_0000`), `S2_MASK` (default: `32'hFFFF_FF00`) — 256 B (CSR Block)
+  - `S3_BASE` (default: `32'h7000_0000`), `S3_MASK` (default: `32'hFFFF_FF00`) — 256 B (CDC Slow Regs)
 - **Ports:**
   - `input  wire [31:0] addr`: 32-bit transaction address.
-  - `output reg  [1:0]  slave_sel`: 0=S0 (APB), 1=S1 (RAM), 2=S2 (CSR), 3=S3 (CDC).
-  - `output wire        decode_err`: High when `addr` does not match S0..S3.
+  - `output reg  [3:0]  slave_sel`: One-hot slave select (`4'b0001`=S0 APB, `4'b0010`=S1 RAM, `4'b0100`=S2 CSR, `4'b1000`=S3 CDC, `4'b0000`=unmapped).
+  - `output reg         decode_err`: High when `addr` does not match S0..S3.
 
 #### `axil_default_slave` (F-03)
 - **Ports:**

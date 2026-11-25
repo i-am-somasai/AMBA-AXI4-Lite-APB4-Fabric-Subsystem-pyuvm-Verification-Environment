@@ -114,8 +114,10 @@ def find_test_definitions():
                             num = int(m_id.group(2))
                             spec_id = f"{prefix}-{num:02d}"
                             if any(s[0] == spec_id for s in SPEC_TESTS):
-                                # Prioritize test files over helper models
-                                if spec_id not in id_map or "test_" in rel_path:
+                                # Prioritize spec-specific pyuvm directed tests (e.g. XB-11..15) or test_ files
+                                if spec_id not in id_map or (
+                                    "test_" in rel_path and "all_targets" in id_map[spec_id][0]
+                                ):
                                     id_map[spec_id] = (name, rel_path)
         except Exception as e:
             pass
@@ -290,7 +292,7 @@ def update_vplan(rows):
         flags=re.DOTALL
     )
 
-    # Replace 3.4 table
+    # Replace 3.4 table preserving <!-- END:metrics:vplan_test_catalog --> marker
     cd_block = (
         "### 3.4 CDC Bridge Suite (`CD-*`)\n\n"
         "| Test ID | Scenario Description | Expected Checks | Test Location | Result |\n"
@@ -298,8 +300,8 @@ def update_vplan(rows):
         + "\n".join(cd_rows) + "\n"
     )
     content = re.sub(
-        r"### 3\.4 CDC Bridge Suite \(`CD-\*`\)\n\n.*?---\n\n## 4\. Functional Coverage",
-        cd_block + "\n---\n\n## 4. Functional Coverage",
+        r"### 3\.4 CDC Bridge Suite \(`CD-\*`\)\n\n.*?(?=(?:<!-- END:metrics:vplan_test_catalog -->|---\n\n## 4\. Functional Coverage))",
+        cd_block,
         content,
         flags=re.DOTALL
     )

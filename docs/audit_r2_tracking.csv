@@ -47,15 +47,15 @@ SYNTH-STA,BLOCKER,FAIL,Phase E,E2/E3,"Use port/rst_sync constraints, verify non-
 SYNTH-REPORT,BLOCKER,FAIL,Phase E,E4,Report freshly measured synthesis & STA numbers dynamically,CLOSED,Fresh reproducible metrics in docs/logs/phase_e_{synth,sta,fmax_sweep}.log (9237 cells, 3630 flops, 138086.19 um2, full WNS=-18.60 ns / 34.97 MHz, datapath+IO ref -5.89 ns / 62.89 MHz)
 CI-REMOTE,MAJOR,NOT_RUN,Phase G,G,User pushes branch & provides green GitHub Actions run URL,OPEN,Target: Phase G (G)
 LAYOUT-SYNTH_YS,BLOCKER,NOT_FOUND,Phase E,E1,Commit synth/synth.ys at Spec Sec 15 path,CLOSED,synth/synth.ys committed and tracked in git
-METRIC-01,BLOCKER,FAIL,Phase F,F1/F2,Count non-blank non-comment RTL lines via gen_metrics.py,OPEN,Target: Phase F (F1/F2)
-METRIC-02,BLOCKER,FAIL,Phase F,F1/F2,Count real XML testcases & 40/40 fidelity-verified spec tests via gen_metrics.py,OPEN,Target: Phase F (F1/F2)
-METRIC-05,BLOCKER,FAIL,Phase F,F1/F2,Populate real merged functional coverage from metrics.json,OPEN,Target: Phase F (F1/F2)
-METRIC-06,MAJOR,FAIL,Phase F,F1/F2,Populate real Verilator code coverage from metrics.json,OPEN,Target: Phase F (F1/F2)
-METRIC-07,MAJOR,PARTIAL,Phase F,F1/F2,Regenerate formal table across README/results/vplan from metrics.json,OPEN,Target: Phase F (F1/F2)
-METRIC-09,BLOCKER,FAIL,Phase F,F1/F2,Populate mutation before/after/raw/adjusted numbers from metrics.json,OPEN,Target: Phase F (F1/F2)
-METRIC-10,MAJOR,FAIL,Phase F,F1/F3,Count bugs.md entries consistently via gen_metrics.py & check_bug_refs.py,OPEN,Target: Phase F (F1/F3)
-METRIC-12,BLOCKER,FAIL,Phase F,F1/F2,Populate real Yosys synthesis cell/flop/area from metrics.json,OPEN,Target: Phase F (F1/F2)
-METRIC-13,BLOCKER,FAIL,Phase F,F1/F2,Populate real OpenSTA WNS/TNS/Fmax from metrics.json,OPEN,Target: Phase F (F1/F2)
+METRIC-01,BLOCKER,FAIL,Phase F,F1/F2,Count non-blank non-comment RTL lines via gen_metrics.py,CLOSED,scripts/gen_metrics.py counts 17 RTL modules / 3200 non-blank non-comment lines across rtl/**/*.v into docs/metrics.json
+METRIC-02,BLOCKER,FAIL,Phase F,F1/F2,Count real XML testcases & 40/40 fidelity-verified spec tests via gen_metrics.py,CLOSED,61 Python test defs / 77 XML testcases executed (77 PASS) / 40/40 Spec 9.1 tests PASS in docs/test_map.csv & docs/metrics.json
+METRIC-05,BLOCKER,FAIL,Phase F,F1/F2,Populate real merged functional coverage from metrics.json,CLOSED,267/267 (100.00%) reachable bins across 24 merged YAMLs (36 waived) populated via doc_blocks.py
+METRIC-06,MAJOR,FAIL,Phase F,F1/F2,Populate real Verilator code coverage from metrics.json,CLOSED,Line 92.0% / Branch 91.2% / Expr 93.8% / Toggle 74.8% / FSM State 100.0% populated from code_cov_summary.txt
+METRIC-07,MAJOR,PARTIAL,Phase F,F1/F2,Regenerate formal table across README/results/vplan from metrics.json,CLOSED,10/10 formal suites (3 prove + 1 prv+bmc + 6 bmc, 84 covers, 150s) regenerated from formal_suite.log via metrics.json
+METRIC-09,BLOCKER,FAIL,Phase F,F1/F2,Populate mutation before/after/raw/adjusted numbers from metrics.json,CLOSED,Baseline 165/240 (68.75%) -> Final 205/240 (85.42% raw / 93.61% adj 205/219) populated in README/results/vplan
+METRIC-10,MAJOR,FAIL,Phase F,F1/F3,Count bugs.md entries consistently via gen_metrics.py & check_bug_refs.py,CLOSED,24 sequential bugs (BUG-001..BUG-024) verified by scripts/check_bug_refs.py & docs/metrics.json
+METRIC-12,BLOCKER,FAIL,Phase F,F1/F2,Populate real Yosys synthesis cell/flop/area from metrics.json,CLOSED,9237 cells / 3630 flops (2048 RAM) / 138086.19 um2 populated from phase_e_synth.log via metrics.json
+METRIC-13,BLOCKER,FAIL,Phase F,F1/F2,Populate real OpenSTA WNS/TNS/Fmax from metrics.json,CLOSED,Full WNS=-18.60 ns / TNS=-54046.39 ns / 34.97 MHz (62.89 MHz datapath+IO ref, clk_slow/hold MET) populated from metrics.json
 METRIC-14,MAJOR,NOT_RUN,Phase G,G,Mark CI Status NOT VERIFIED until remote green run URL is recorded,OPEN,Target: Phase G (G)
 DOD-01,BLOCKER,FAIL,Phase A,A1-A4,"Fix Rule 6 RTL bug, failing-capable P0 tests, and kill 16/16 sanity mutants",CLOSED,16/16 sanity mutants KILLED; lint/unit/block/formal_csr/formal_cdc/20-seed regress (601..620) PASS (docs/logs/phase_a_*.log)
 DOD-02,MAJOR,PARTIAL,Phase C,C4/Final,Document 20-seed Icarus + Verilator coverage/regression verification accurately,CLOSED,20 fresh Icarus seeds (601..620) in Phase A & 20 Verilator coverage seeds (1..20) in Phase C PASS with 0 mismatches (docs/logs/phase_c_cov_report.log)
@@ -64,8 +64,8 @@ DOD-04,MAJOR,PARTIAL,Phase B,B,All formal suites clean without over-assumptions 
 DOD-05,BLOCKER,FAIL,Phase D,D1-D5,Reproducible 240-mutant run & script-verified survivor triage report,CLOSED,Frozen mutation/mutant_list_240.json evaluated baseline (165/240) -> final (205/240 raw 85.42%, 93.61% adj) + Yosys miter log docs/logs/mutation_equiv.log & docs/mutation_report.md
 DOD-06,BLOCKER,FAIL,Phase E,E1-E4,Verify two clean make synth && make sta runs produce identical real results,CLOSED,Two clean make synth && make sta runs produced byte-identical sta.log & fmax_sweep.log and identical synth statistics (docs/logs/phase_e_*.log)
 DOD-07,MAJOR,NOT_RUN,Phase G,G,Verify green CI run & badge with recorded URL,OPEN,Target: Phase G (G)
-DOD-08,BLOCKER,FAIL,Phase F,F2/F3/F5,"Eliminate all doc contradictions, broken links; enforce check_docs_consistency.py",OPEN,Target: Phase F (F2/F3/F5)
-DOD-09,BLOCKER,FAIL,Phase F,F6,Regenerate README resume bullets solely from docs/metrics.json,OPEN,Target: Phase F (F6)
-VPLAN-AUDIT,BLOCKER,FAIL,Phase F,F2,Regenerate all sections of docs/vplan.md honestly from metrics.json,OPEN,Target: Phase F (F2)
-BUGS-AUDIT,MAJOR,FAIL,Phase F,F3,Fix BUG-022 ref & verify every bugs.md test exists with check_bug_refs.py,OPEN,Target: Phase F (F3)
-DECISIONS-AUDIT,MAJOR,FAIL,Phase F,F4,"Log decoder, inline arbiter, CSR Rule 6, synth.ys, STA & waiver decisions",OPEN,Target: Phase F (F4)
+DOD-08,BLOCKER,FAIL,Phase F,F2/F3/F5,"Eliminate all doc contradictions, broken links; enforce check_docs_consistency.py",CLOSED,README/results/vplan synchronized via BEGIN:metrics blocks; make lint runs check_bug_refs.py & check_docs_consistency.py (0 diffs, 0 broken links)
+DOD-09,BLOCKER,FAIL,Phase F,F6,Regenerate README resume bullets solely from docs/metrics.json,CLOSED,README Section 9 resume bullets generated solely inside BEGIN:metrics:readme_resume_bullets from docs/metrics.json
+VPLAN-AUDIT,BLOCKER,FAIL,Phase F,F2,Regenerate all sections of docs/vplan.md honestly from metrics.json,CLOSED,docs/vplan.md Sections 1..6 regenerated cleanly from docs/metrics.json & docs/test_map.csv
+BUGS-AUDIT,MAJOR,FAIL,Phase F,F3,Fix BUG-022 ref & verify every bugs.md test exists with check_bug_refs.py,CLOSED,Fixed BUG-012/014/016/017/019/022 references; scripts/check_bug_refs.py verifies all 24 bugs PASS
+DECISIONS-AUDIT,MAJOR,FAIL,Phase F,F4,"Log decoder, inline arbiter, CSR Rule 6, synth.ys, STA & waiver decisions",CLOSED,Updated docs/interfaces.md (axil_decoder 4-bit slave_sel) and logged DEC-006..DEC-013 in docs/decisions.md
