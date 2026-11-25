@@ -59,25 +59,39 @@ def sample_backpressure(ch, b):
 
 # -----------------------------------------------------------------------------
 # 5. cg_contention: Multi-master crossbar contention
-# Contention type (same_slave, diff_slaves, one_idle) x op combo (R/R, R/W, W/W) = 9 bins
+# Legal dual-master cross bins: (same_slave, diff_slaves) x (R/R, R/W, W/W) = 6 bins
+# Combining "one_idle" with a 2-master op pair is contradictory -> ign_bins (DEC-009)
 # -----------------------------------------------------------------------------
+ign_bins_contention = [
+    ("one_idle", "R/R"),
+    ("one_idle", "R/W"),
+    ("one_idle", "W/W"),
+]
+
 @CoverPoint("cg_contention.type", xf=lambda c, op: c, bins=["same_slave", "diff_slaves", "one_idle"])
 @CoverPoint("cg_contention.combo", xf=lambda c, op: op, bins=["R/R", "R/W", "W/W"])
-@CoverCross("cg_contention.cross", items=["cg_contention.type", "cg_contention.combo"])
+@CoverCross("cg_contention.cross", items=["cg_contention.type", "cg_contention.combo"], ign_bins=ign_bins_contention)
 def sample_contention(c, op):
     pass
 
 # -----------------------------------------------------------------------------
 # 6. cg_apb: APB bridge characteristics
 # Wait-state bucket {0, 1, 2-4, 5+} x PSLVERR (no_err, err) x op (RD, WR) = 16 bins
-# PSTRB pattern class (byte, halfword, word, sparse) x op (RD, WR) = 8 bins
+# PSTRB pattern class x op: APB4 spec Sec 2.1 requires PSTRB=0 on reads ->
+# ("byte"/"halfword"/"word", "RD") are illegal via ign_bins (DEC-010) -> 5 legal bins
 # -----------------------------------------------------------------------------
+ign_bins_apb_strb = [
+    ("byte", "RD"),
+    ("halfword", "RD"),
+    ("word", "RD"),
+]
+
 @CoverPoint("cg_apb.wait", xf=lambda w, err, op, s: w, bins=["0", "1", "2-4", "5+"])
 @CoverPoint("cg_apb.err", xf=lambda w, err, op, s: err, bins=["no_err", "err"])
 @CoverPoint("cg_apb.op", xf=lambda w, err, op, s: op, bins=["RD", "WR"])
 @CoverCross("cg_apb.wait_cross", items=["cg_apb.wait", "cg_apb.err", "cg_apb.op"])
 @CoverPoint("cg_apb.strb_class", xf=lambda w, err, op, s: s, bins=["byte", "halfword", "word", "sparse"])
-@CoverCross("cg_apb.strb_cross", items=["cg_apb.strb_class", "cg_apb.op"])
+@CoverCross("cg_apb.strb_cross", items=["cg_apb.strb_class", "cg_apb.op"], ign_bins=ign_bins_apb_strb)
 def sample_apb(w, err, op, s):
     pass
 
@@ -122,14 +136,23 @@ def sample_reset(p):
 
 
 class CoverageCollector:
-    """Singleton Coverage Collector managing sampling and reporting."""
+    """Singleton Coverage Collector managing sampling, source tagging, and reporting."""
     _instance = None
+
+    def __init__(self):
+        self.source = "top_level"
+        self.allowed_groups = None
 
     @classmethod
     def get(cls):
         if cls._instance is None:
             cls._instance = cls()
         return cls._instance
+
+    def configure(self, source="top_level", allowed_groups=None):
+        """Tag exported coverage with its origin ('top_level' or 'block') and filter groups."""
+        self.source = source
+        self.allowed_groups = list(allowed_groups) if allowed_groups is not None else None
 
     @staticmethod
     def decode_target(addr):
@@ -187,6 +210,22 @@ class CoverageCollector:
             sample_wstrb(target, item.strb & 0xF)
             sample_order(target, item.order if hasattr(item, "order") and item.order else "simultaneous")
 
-    def export(self, filepath):
+    def export(self, filepath, source=None, allowed_groups=None):
+        import yaml
         os.makedirs(os.path.dirname(os.path.abspath(filepath)), exist_ok=True)
         coverage_db.export_to_yaml(filepath)
+        src = source if source is not None else self.source
+        allowed = list(allowed_groups) if allowed_groups is not None else self.allowed_groups
+        with open(filepath, "r") as fp:
+            data = yaml.safe_load(fp) or {}
+        if allowed is not None:
+            data = {
+                k: v for k, v in data.items()
+                if any(k == p or k.startswith(p + ".") for p in allowed)
+            }
+        data["_meta"] = {
+            "source": src,
+            "allowed_groups": allowed if allowed is not None else ["all"],
+        }
+        with open(filepath, "w") as fp:
+            yaml.safe_dump(data, fp, sort_keys=False)

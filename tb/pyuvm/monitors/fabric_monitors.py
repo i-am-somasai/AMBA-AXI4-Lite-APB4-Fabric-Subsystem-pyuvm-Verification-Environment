@@ -1,8 +1,8 @@
 # tb/pyuvm/monitors/fabric_monitors.py
 # Passive monitors observing physical DUT signals and driving functional coverage sampling
-import os
 import cocotb
 from cocotb.triggers import RisingEdge
+from cocotb.utils import get_sim_time
 from func_cov.fabric_cov import (
     sample_txn, sample_wstrb, sample_order, sample_backpressure,
     sample_contention, sample_apb, sample_cdc, sample_uart, sample_reset,
@@ -68,6 +68,8 @@ class AxilBusMonitor:
         cycle = 0
         t_aw = None
         t_w = None
+        t_aw_valid = None
+        t_w_valid = None
         curr_awaddr = 0
         curr_wstrb = 0xF
         curr_araddr = 0
@@ -85,6 +87,8 @@ class AxilBusMonitor:
             if safe_int(self.rst_n.value) == 0:
                 t_aw = None
                 t_w = None
+                t_aw_valid = None
+                t_w_valid = None
                 aw_delay = 0
                 w_delay = 0
                 b_delay = 0
@@ -96,6 +100,8 @@ class AxilBusMonitor:
             awv = safe_int(self.awvalid.value)
             awr = safe_int(self.awready.value)
             if awv:
+                if t_aw_valid is None:
+                    t_aw_valid = cycle
                 if awr:
                     t_aw = cycle
                     curr_awaddr = safe_int(self.awaddr.value)
@@ -108,6 +114,8 @@ class AxilBusMonitor:
             wv = safe_int(self.wvalid.value)
             wr = safe_int(self.wready.value)
             if wv:
+                if t_w_valid is None:
+                    t_w_valid = cycle
                 if wr:
                     t_w = cycle
                     curr_wstrb = safe_int(self.wstrb.value)
@@ -128,9 +136,16 @@ class AxilBusMonitor:
                     resp = CoverageCollector.decode_resp(safe_int(self.bresp.value))
                     sample_txn(self.master_id, target, "WR", resp)
 
-                    # Handshake order
+                    # Handshake/arrival order: track earliest VALID assertion (w_first vs aw_first)
                     if t_aw is not None and t_w is not None:
-                        if t_aw == t_w:
+                        if t_w_valid is not None and t_aw_valid is not None:
+                            if t_w_valid < t_aw_valid:
+                                order = "w_first"
+                            elif t_aw_valid < t_w_valid or t_aw < t_w:
+                                order = "aw_first"
+                            else:
+                                order = "simultaneous"
+                        elif t_aw == t_w:
                             order = "simultaneous"
                         elif t_aw < t_w:
                             order = "aw_first"
@@ -141,6 +156,8 @@ class AxilBusMonitor:
                             sample_order(target, order)
                     t_aw = None
                     t_w = None
+                    t_aw_valid = None
+                    t_w_valid = None
                 else:
                     b_delay += 1
 
@@ -298,7 +315,7 @@ class ApbBusMonitor:
 
 
 class CdcMonitor:
-    """Monitors asynchronous CDC bridge crossings and probes FIFO state."""
+    """Monitors asynchronous CDC bridge crossings and measures physical clock periods."""
     def __init__(self, clk_sys, clk_slow, rst_n, dut=None):
         self.clk_sys = clk_sys
         self.clk_slow = clk_slow
@@ -306,44 +323,88 @@ class CdcMonitor:
         self.dut = dut if dut is not None else cocotb.top
         self.running = False
         self._task = None
+        self._sys_clk_task = None
+        self._slow_clk_task = None
+        self._sys_period_ns = None
+        self._slow_period_ns = None
 
     def start(self):
         if not self.running:
             self.running = True
+            self._sys_clk_task = cocotb.start_soon(self._measure_sys_clk())
+            self._slow_clk_task = cocotb.start_soon(self._measure_slow_clk())
             self._task = cocotb.start_soon(self._monitor_loop())
 
     def stop(self):
         self.running = False
-        if self._task:
-            self._task.cancel()
+        for t in (self._task, self._sys_clk_task, self._slow_clk_task):
+            if t:
+                t.cancel()
+
+    async def _measure_sys_clk(self):
+        last_t = None
+        while self.running:
+            await RisingEdge(self.clk_sys)
+            now = get_sim_time("ns")
+            if last_t is not None and now > last_t:
+                self._sys_period_ns = now - last_t
+            last_t = now
+
+    async def _measure_slow_clk(self):
+        last_t = None
+        while self.running:
+            await RisingEdge(self.clk_slow)
+            now = get_sim_time("ns")
+            if last_t is not None and now > last_t:
+                self._slow_period_ns = now - last_t
+            last_t = now
+
+    def _classify_ratio(self):
+        if self._slow_period_ns is None or self._sys_period_ns is None:
+            return None
+        if self._slow_period_ns > self._sys_period_ns * 1.1:
+            return "slow<sys"
+        elif self._slow_period_ns < self._sys_period_ns * 0.9:
+            return "slow>sys"
+        return "approx_equal"
 
     async def _monitor_loop(self):
-        # Determine clock ratio bucket
-        slow_period = float(os.environ.get("CLK_SLOW_PERIOD_NS", "25.0"))
-        if slow_period > 11.0:
-            ratio = "slow<sys"
-        elif slow_period < 9.0:
-            ratio = "slow>sys"
-        else:
-            ratio = "approx_equal"
-
         u_cdc = getattr(self.dut, "u_cdc_bridge", None)
         if u_cdc is None:
             return
 
+        sampled_partial = False
+        curr_ratio = None
+        curr_op = None
+
         while self.running:
             await RisingEdge(self.clk_sys)
             if safe_int(self.rst_n.value) == 0:
+                sampled_partial = False
+                curr_ratio = None
+                curr_op = None
                 continue
 
-            # Detect CDC transaction initiation (ST_PUSH_REQ state = 3)
             state = safe_int(u_cdc.state.value)
-            if state == 3: # ST_PUSH_REQ
-                is_wr = safe_int(u_cdc.reg_is_write.value) == 1
-                op = "WR" if is_wr else "RD"
-                rempty = safe_int(u_cdc.u_req_fifo.rempty.value)
-                occ = "empty" if rempty == 1 else "partial"
-                sample_cdc(ratio, occ, op)
+            # Detect CDC transaction initiation (ST_PUSH_REQ state = 3)
+            if state == 3:  # ST_PUSH_REQ
+                ratio = self._classify_ratio()
+                if ratio is not None:
+                    is_wr = safe_int(u_cdc.reg_is_write.value) == 1
+                    op = "WR" if is_wr else "RD"
+                    req_rempty = safe_int(u_cdc.u_req_fifo.rempty.value)
+                    rsp_rempty = safe_int(u_cdc.u_resp_fifo.rempty.value)
+                    occ = "empty" if (req_rempty == 1 and rsp_rempty == 1) else "partial"
+                    sample_cdc(ratio, occ, op)
+                    curr_ratio = ratio
+                    curr_op = op
+                    sampled_partial = (occ == "partial")
+            elif state == 4 and not sampled_partial and curr_ratio is not None:  # ST_WAIT_RESP
+                req_rempty = safe_int(u_cdc.u_req_fifo.rempty.value)
+                rsp_rempty = safe_int(u_cdc.u_resp_fifo.rempty.value)
+                if req_rempty == 0 or rsp_rempty == 0:
+                    sample_cdc(curr_ratio, "partial", curr_op)
+                    sampled_partial = True
 
 
 class UartActivityMonitor:
@@ -434,42 +495,47 @@ class ResetPhaseMonitor:
         if self._task:
             self._task.cancel()
 
+    def _classify_phase(self):
+        m0_awv = safe_int(getattr(self.dut, "s0_axil_awvalid", 0).value)
+        m0_awr = safe_int(getattr(self.dut, "s0_axil_awready", 0).value)
+        m1_awv = safe_int(getattr(self.dut, "s1_axil_awvalid", 0).value)
+        m1_awr = safe_int(getattr(self.dut, "s1_axil_awready", 0).value)
+
+        m0_wv = safe_int(getattr(self.dut, "s0_axil_wvalid", 0).value)
+        m0_wr = safe_int(getattr(self.dut, "s0_axil_wready", 0).value)
+        m1_wv = safe_int(getattr(self.dut, "s1_axil_wvalid", 0).value)
+        m1_wr = safe_int(getattr(self.dut, "s1_axil_wready", 0).value)
+
+        m0_bv = safe_int(getattr(self.dut, "s0_axil_bvalid", 0).value)
+        m1_bv = safe_int(getattr(self.dut, "s1_axil_bvalid", 0).value)
+
+        m0_arv = safe_int(getattr(self.dut, "s0_axil_arvalid", 0).value)
+        m1_arv = safe_int(getattr(self.dut, "s1_axil_arvalid", 0).value)
+        m0_rv = safe_int(getattr(self.dut, "s0_axil_rvalid", 0).value)
+        m1_rv = safe_int(getattr(self.dut, "s1_axil_rvalid", 0).value)
+
+        if (m0_awv and not m0_awr) or (m1_awv and not m1_awr):
+            return "aw_in_flight"
+        elif (m0_wv and not m0_wr) or (m1_wv and not m1_wr):
+            return "w_in_flight"
+        elif m0_bv or m1_bv:
+            return "b_pending"
+        elif m0_arv or m1_arv or m0_rv or m1_rv:
+            return "r_pending"
+        return "idle"
+
     async def _monitor_loop(self):
         last_rst = safe_int(self.rst_n.value)
+        last_active_phase = "idle"
         while self.running:
             await RisingEdge(self.clk)
             curr_rst = safe_int(self.rst_n.value)
             if last_rst == 1 and curr_rst == 0:
-                # Falling edge of reset: check physical in-flight signals
-                m0_awv = safe_int(getattr(self.dut, "s0_axil_awvalid", 0).value)
-                m0_awr = safe_int(getattr(self.dut, "s0_axil_awready", 0).value)
-                m1_awv = safe_int(getattr(self.dut, "s1_axil_awvalid", 0).value)
-                m1_awr = safe_int(getattr(self.dut, "s1_axil_awready", 0).value)
-
-                m0_wv = safe_int(getattr(self.dut, "s0_axil_wvalid", 0).value)
-                m0_wr = safe_int(getattr(self.dut, "s0_axil_wready", 0).value)
-                m1_wv = safe_int(getattr(self.dut, "s1_axil_wvalid", 0).value)
-                m1_wr = safe_int(getattr(self.dut, "s1_axil_wready", 0).value)
-
-                m0_bv = safe_int(getattr(self.dut, "s0_axil_bvalid", 0).value)
-                m1_bv = safe_int(getattr(self.dut, "s1_axil_bvalid", 0).value)
-
-                m0_arv = safe_int(getattr(self.dut, "s0_axil_arvalid", 0).value)
-                m1_arv = safe_int(getattr(self.dut, "s1_axil_arvalid", 0).value)
-                m0_rv = safe_int(getattr(self.dut, "s0_axil_rvalid", 0).value)
-                m1_rv = safe_int(getattr(self.dut, "s1_axil_rvalid", 0).value)
-
-                if (m0_awv and not m0_awr) or (m1_awv and not m1_awr):
-                    phase = "aw_in_flight"
-                elif (m0_wv and not m0_wr) or (m1_wv and not m1_wr):
-                    phase = "w_in_flight"
-                elif m0_bv or m1_bv:
-                    phase = "b_pending"
-                elif m0_arv or m1_arv or m0_rv or m1_rv:
-                    phase = "r_pending"
-                else:
-                    phase = "idle"
-
+                live_phase = self._classify_phase()
+                # Asynchronous negedge rst_n clears registered BVALID/RVALID immediately;
+                # fall back to the preceding active clock-edge phase when live signals cleared.
+                phase = live_phase if live_phase != "idle" else last_active_phase
                 sample_reset(phase)
-
+            if curr_rst == 1:
+                last_active_phase = self._classify_phase()
             last_rst = curr_rst

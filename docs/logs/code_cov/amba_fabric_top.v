@@ -12,66 +12,66 @@
             parameter GPIO_WIDTH = 16
         )(
             // Clocks and External Reset
- 100022     input  wire                   clk_sys,
- 040010     input  wire                   clk_slow,
-~000014     input  wire                   rst_n,
+ 935460     input  wire                   clk_sys,
+ 389558     input  wire                   clk_slow,
+~000021     input  wire                   rst_n,
         
             // AXI4-Lite Master 0 Interface
-~001535     input  wire [ADDR_WIDTH-1:0]  s0_axil_awaddr,
- 001556     input  wire [2:0]             s0_axil_awprot,
- 006359     input  wire                   s0_axil_awvalid,
- 006359     output wire                   s0_axil_awready,
- 001599     input  wire [DATA_WIDTH-1:0]  s0_axil_wdata,
- 001580     input  wire [STRB_WIDTH-1:0]  s0_axil_wstrb,
- 006359     input  wire                   s0_axil_wvalid,
- 006359     output wire                   s0_axil_wready,
- 000879     output wire [1:0]             s0_axil_bresp,
- 006359     output wire                   s0_axil_bvalid,
- 006359     input  wire                   s0_axil_bready,
-~001533     input  wire [ADDR_WIDTH-1:0]  s0_axil_araddr,
- 001574     input  wire [2:0]             s0_axil_arprot,
- 006277     input  wire                   s0_axil_arvalid,
- 006277     output wire                   s0_axil_arready,
- 002486     output wire [DATA_WIDTH-1:0]  s0_axil_rdata,
- 000843     output wire [1:0]             s0_axil_rresp,
- 006277     output wire                   s0_axil_rvalid,
- 006277     input  wire                   s0_axil_rready,
+~012462     input  wire [ADDR_WIDTH-1:0]  s0_axil_awaddr,
+ 012511     input  wire [2:0]             s0_axil_awprot,
+ 050005     input  wire                   s0_axil_awvalid,
+ 050005     output wire                   s0_axil_awready,
+ 012610     input  wire [DATA_WIDTH-1:0]  s0_axil_wdata,
+ 012502     input  wire [STRB_WIDTH-1:0]  s0_axil_wstrb,
+ 050005     input  wire                   s0_axil_wvalid,
+ 050005     output wire                   s0_axil_wready,
+ 006875     output wire [1:0]             s0_axil_bresp,
+ 050005     output wire                   s0_axil_bvalid,
+ 050005     input  wire                   s0_axil_bready,
+~012202     input  wire [ADDR_WIDTH-1:0]  s0_axil_araddr,
+ 012533     input  wire [2:0]             s0_axil_arprot,
+ 050252     input  wire                   s0_axil_arvalid,
+ 050252     output wire                   s0_axil_arready,
+ 021506     output wire [DATA_WIDTH-1:0]  s0_axil_rdata,
+ 006808     output wire [1:0]             s0_axil_rresp,
+ 050252     output wire                   s0_axil_rvalid,
+ 050252     input  wire                   s0_axil_rready,
         
             // AXI4-Lite Master 1 Interface
-~001581     input  wire [ADDR_WIDTH-1:0]  s1_axil_awaddr,
- 001595     input  wire [2:0]             s1_axil_awprot,
- 006376     input  wire                   s1_axil_awvalid,
- 006376     output wire                   s1_axil_awready,
- 001615     input  wire [DATA_WIDTH-1:0]  s1_axil_wdata,
- 001619     input  wire [STRB_WIDTH-1:0]  s1_axil_wstrb,
- 006376     input  wire                   s1_axil_wvalid,
- 006376     output wire                   s1_axil_wready,
- 001202     output wire [1:0]             s1_axil_bresp,
- 006376     output wire                   s1_axil_bvalid,
- 006376     input  wire                   s1_axil_bready,
-~001483     input  wire [ADDR_WIDTH-1:0]  s1_axil_araddr,
- 001592     input  wire [2:0]             s1_axil_arprot,
- 006220     input  wire                   s1_axil_arvalid,
- 006220     output wire                   s1_axil_arready,
- 002339     output wire [DATA_WIDTH-1:0]  s1_axil_rdata,
- 001233     output wire [1:0]             s1_axil_rresp,
- 006220     output wire                   s1_axil_rvalid,
- 006220     input  wire                   s1_axil_rready,
+~012659     input  wire [ADDR_WIDTH-1:0]  s1_axil_awaddr,
+ 012576     input  wire [2:0]             s1_axil_awprot,
+ 050398     input  wire                   s1_axil_awvalid,
+ 050398     output wire                   s1_axil_awready,
+ 012759     input  wire [DATA_WIDTH-1:0]  s1_axil_wdata,
+ 012518     input  wire [STRB_WIDTH-1:0]  s1_axil_wstrb,
+ 050398     input  wire                   s1_axil_wvalid,
+ 050398     output wire                   s1_axil_wready,
+ 009618     output wire [1:0]             s1_axil_bresp,
+ 050398     output wire                   s1_axil_bvalid,
+ 050398     input  wire                   s1_axil_bready,
+~012194     input  wire [ADDR_WIDTH-1:0]  s1_axil_araddr,
+ 012454     input  wire [2:0]             s1_axil_arprot,
+ 049704     input  wire                   s1_axil_arvalid,
+ 049704     output wire                   s1_axil_arready,
+ 020432     output wire [DATA_WIDTH-1:0]  s1_axil_rdata,
+ 009576     output wire [1:0]             s1_axil_rresp,
+ 049704     output wire                   s1_axil_rvalid,
+ 049704     input  wire                   s1_axil_rready,
         
             // Peripheral I/O Pins
-%000006     input  wire                   uart_rx,
- 000014     output wire                   uart_tx,
+~000026     input  wire                   uart_rx,
+ 000144     output wire                   uart_tx,
 %000000     input  wire [GPIO_WIDTH-1:0]  gpio_i,
- 000027     output wire [GPIO_WIDTH-1:0]  gpio_o,
- 000024     output wire [GPIO_WIDTH-1:0]  gpio_dir,
-%000006     output wire                   irq_o
+ 000208     output wire [GPIO_WIDTH-1:0]  gpio_o,
+ 000207     output wire [GPIO_WIDTH-1:0]  gpio_dir,
+ 000020     output wire                   irq_o
         );
         
             // -------------------------------------------------------------
             // Reset Synchronizers (Assert Asynchronous, Deassert Synchronous)
             // -------------------------------------------------------------
-~000014     wire rst_sys_n;
-~000014     wire rst_slow_n;
+~000021     wire rst_sys_n;
+~000021     wire rst_slow_n;
         
             rst_sync u_rst_sync_sys (
                 .clk       (clk_sys),
@@ -89,29 +89,29 @@
             // Crossbar Slave Port Interconnect Signals
             // Slaves: S0=APB, S1=RAM, S2=CSR, S3=CDC
             // -------------------------------------------------------------
-~002975     wire [4*ADDR_WIDTH-1:0] xbar_s_awaddr;
- 002767     wire [4*3-1:0]          xbar_s_awprot;
- 005029     wire [3:0]              xbar_s_awvalid;
- 002012     wire [3:0]              xbar_s_awready;
+~022352     wire [4*ADDR_WIDTH-1:0] xbar_s_awaddr;
+ 021549     wire [4*3-1:0]          xbar_s_awprot;
+ 040047     wire [3:0]              xbar_s_awvalid;
+ 028542     wire [3:0]              xbar_s_awready;
         
- 002824     wire [4*DATA_WIDTH-1:0] xbar_s_wdata;
- 002761     wire [4*STRB_WIDTH-1:0] xbar_s_wstrb;
- 005029     wire [3:0]              xbar_s_wvalid;
-~002012     wire [3:0]              xbar_s_wready;
+ 021652     wire [4*DATA_WIDTH-1:0] xbar_s_wdata;
+ 021394     wire [4*STRB_WIDTH-1:0] xbar_s_wstrb;
+ 040047     wire [3:0]              xbar_s_wvalid;
+ 022856     wire [3:0]              xbar_s_wready;
         
-~000347     wire [4*2-1:0]          xbar_s_bresp;
- 005029     wire [3:0]              xbar_s_bvalid;
- 005029     wire [3:0]              xbar_s_bready;
+~002781     wire [4*2-1:0]          xbar_s_bresp;
+ 040047     wire [3:0]              xbar_s_bvalid;
+ 040047     wire [3:0]              xbar_s_bready;
         
-~002829     wire [4*ADDR_WIDTH-1:0] xbar_s_araddr;
- 002748     wire [4*3-1:0]          xbar_s_arprot;
- 004902     wire [3:0]              xbar_s_arvalid;
-~001977     wire [3:0]              xbar_s_arready;
+~021776     wire [4*ADDR_WIDTH-1:0] xbar_s_araddr;
+ 021568     wire [4*3-1:0]          xbar_s_arprot;
+ 039918     wire [3:0]              xbar_s_arvalid;
+ 022729     wire [3:0]              xbar_s_arready;
         
- 000927     wire [4*DATA_WIDTH-1:0] xbar_s_rdata;
-~000362     wire [4*2-1:0]          xbar_s_rresp;
- 004902     wire [3:0]              xbar_s_rvalid;
- 004902     wire [3:0]              xbar_s_rready;
+ 008661     wire [4*DATA_WIDTH-1:0] xbar_s_rdata;
+~002807     wire [4*2-1:0]          xbar_s_rresp;
+ 039918     wire [3:0]              xbar_s_rvalid;
+ 039918     wire [3:0]              xbar_s_rready;
         
             // Instantiate 2-Master x 4-Slave Crossbar
             axil_xbar #(
@@ -179,16 +179,16 @@
             // Slave 0: APB Subsystem (Bridge + Decoder + UART + Timer + GPIO)
             // -------------------------------------------------------------
             // APB master interface from bridge
-~000946     wire [ADDR_WIDTH-1:0] apb_paddr;
- 000996     wire [2:0]            apb_pprot;
- 003899     wire                  apb_psel;
- 003899     wire                  apb_penable;
- 001004     wire                  apb_pwrite;
- 000488     wire [DATA_WIDTH-1:0] apb_pwdata;
- 000697     wire [STRB_WIDTH-1:0] apb_pstrb;
- 003899     wire                  apb_pready;
- 000986     wire [DATA_WIDTH-1:0] apb_prdata;
- 000957     wire                  apb_pslverr;
+~007436     wire [ADDR_WIDTH-1:0] apb_paddr;
+ 007481     wire [2:0]            apb_pprot;
+ 030066     wire                  apb_psel;
+ 030066     wire                  apb_penable;
+ 007527     wire                  apb_pwrite;
+ 003816     wire [DATA_WIDTH-1:0] apb_pwdata;
+ 005273     wire [STRB_WIDTH-1:0] apb_pstrb;
+ 030066     wire                  apb_pready;
+ 008155     wire [DATA_WIDTH-1:0] apb_prdata;
+ 007437     wire                  apb_pslverr;
         
             axil2apb_bridge #(
                 .ADDR_WIDTH(ADDR_WIDTH),
@@ -234,19 +234,19 @@
             );
         
             // APB Peripherals: UART (0), Timer (1), GPIO (2)
- 001035     wire                  psel_uart;
- 001035     wire                  pready_uart;
-~000791     wire [DATA_WIDTH-1:0] prdata_uart;
+ 007557     wire                  psel_uart;
+ 007557     wire                  pready_uart;
+~006147     wire [DATA_WIDTH-1:0] prdata_uart;
 %000000     wire                  pslverr_uart;
         
- 000990     wire                  psel_timer;
- 000990     wire                  pready_timer;
- 000185     wire [DATA_WIDTH-1:0] prdata_timer;
+ 007496     wire                  psel_timer;
+ 007496     wire                  pready_timer;
+ 001543     wire [DATA_WIDTH-1:0] prdata_timer;
 %000000     wire                  pslverr_timer;
         
- 000917     wire                  psel_gpio;
- 000917     wire                  pready_gpio;
-~000185     wire [DATA_WIDTH-1:0] prdata_gpio;
+ 007576     wire                  psel_gpio;
+ 007576     wire                  pready_gpio;
+~001533     wire [DATA_WIDTH-1:0] prdata_gpio;
 %000000     wire                  pslverr_gpio;
         
             apb_decoder #(
@@ -277,7 +277,7 @@
             );
         
             // Peripheral 0: UART (0x4000_0000)
-%000000     wire uart_irq;
+%000002     wire uart_irq;
             apb_uart #(
                 .FIFO_DEPTH(8),
                 .ADDR_WIDTH(12),
@@ -303,7 +303,7 @@
             );
         
             // Peripheral 1: Timer (0x4000_1000)
-%000002     wire timer_irq;
+ 000010     wire timer_irq;
             apb_timer #(
                 .ADDR_WIDTH(12),
                 .DATA_WIDTH(DATA_WIDTH)

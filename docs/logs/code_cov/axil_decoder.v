@@ -13,25 +13,25 @@
             parameter [31:0] S3_BASE = 32'h7000_0000,
             parameter [31:0] S3_MASK = 32'hFFFF_FF00  // 256 B (CDC Slow Regs)
         )(
-~006093     input  wire [31:0] addr,
- 005969     output reg  [3:0]  slave_sel,
- 002235     output reg         decode_err
+~048725     input  wire [31:0] addr,
+ 048074     output reg  [3:0]  slave_sel,
+ 017969     output reg         decode_err
         );
         
- 2119692     always @(*) begin
- 2119692         slave_sel  = 4'b0000;
- 2119692         decode_err = 1'b0;
+ 20817368     always @(*) begin
+ 20817368         slave_sel  = 4'b0000;
+ 20817368         decode_err = 1'b0;
         
- 283187         if ((addr & S0_MASK) == S0_BASE) begin
- 283187             slave_sel = 4'b0001;
- 578591         end else if ((addr & S1_MASK) == S1_BASE) begin
- 578591             slave_sel = 4'b0010;
- 268262         end else if ((addr & S2_MASK) == S2_BASE) begin
- 268262             slave_sel = 4'b0100;
- 840216         end else if ((addr & S3_MASK) == S3_BASE) begin
- 840216             slave_sel = 4'b1000;
- 149436         end else begin
- 149436             decode_err = 1'b1;
+ 3051649         if ((addr & S0_MASK) == S0_BASE) begin
+ 3051649             slave_sel = 4'b0001;
+ 6374625         end else if ((addr & S1_MASK) == S1_BASE) begin
+ 6374625             slave_sel = 4'b0010;
+ 3057500         end else if ((addr & S2_MASK) == S2_BASE) begin
+ 3057500             slave_sel = 4'b0100;
+ 6834030         end else if ((addr & S3_MASK) == S3_BASE) begin
+ 6834030             slave_sel = 4'b1000;
+ 1499564         end else begin
+ 1499564             decode_err = 1'b1;
                 end
             end
         

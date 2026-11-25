@@ -13,9 +13,12 @@ import sys
 import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../models")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../pyuvm")))
 from axil_driver import AxilDriver
 from apb_slave_responder import ApbSlaveResponder
 from axil_monitor import AxilProtocolMonitor
+from monitors.fabric_monitors import ApbBusMonitor
+from func_cov.fabric_cov import CoverageCollector
 
 
 async def setup_dut(dut):
@@ -393,4 +396,64 @@ async def test_br06_delayed_w_no_early_psel(dut):
 
     apb_slave.stop()
     await RisingEdge(dut.clk)
+    await Timer(10, unit="ns")
+
+
+@cocotb.test()
+async def test_br07_apb_wait_err_cov(dut):
+    """BR-07: Exercise APB wait states (0, 1, 2-4, 5+), PSLVERR, PSTRB classes, and W-before-AW ordering."""
+    await setup_dut(dut)
+
+    driver = AxilDriver(
+        clk=dut.clk, rst_n=dut.rst_n, name="m0_driver",
+        awaddr=dut.s_axil_awaddr, awprot=dut.s_axil_awprot, awvalid=dut.s_axil_awvalid, awready=dut.s_axil_awready,
+        wdata=dut.s_axil_wdata, wstrb=dut.s_axil_wstrb, wvalid=dut.s_axil_wvalid, wready=dut.s_axil_wready,
+        bresp=dut.s_axil_bresp, bvalid=dut.s_axil_bvalid, bready=dut.s_axil_bready,
+        araddr=dut.s_axil_araddr, arprot=dut.s_axil_arprot, arvalid=dut.s_axil_arvalid, arready=dut.s_axil_arready,
+        rdata=dut.s_axil_rdata, rresp=dut.s_axil_rresp, rvalid=dut.s_axil_rvalid, rready=dut.s_axil_rready,
+    )
+
+    apb_mon = ApbBusMonitor(
+        clk=dut.clk, rst_n=dut.rst_n,
+        psel=dut.m_apb_psel, penable=dut.m_apb_penable, pwrite=dut.m_apb_pwrite,
+        pready=dut.m_apb_pready, pslverr=dut.m_apb_pslverr, pstrb=dut.m_apb_pstrb,
+        paddr=dut.m_apb_paddr, dut=dut,
+    )
+    apb_mon.start()
+
+    for ws in [0, 1, 3, 6]:
+        for inject_err in [False, True]:
+            apb_slave = ApbSlaveResponder(
+                clk=dut.clk, rst_n=dut.rst_n, name=f"apb_cov_ws{ws}_err{int(inject_err)}",
+                wait_states=ws, inject_pslverr=inject_err, base_addr=0x40000000,
+                paddr=dut.m_apb_paddr, psel=dut.m_apb_psel, penable=dut.m_apb_penable,
+                pwrite=dut.m_apb_pwrite, pwdata=dut.m_apb_pwdata, pstrb=dut.m_apb_pstrb,
+                pready=dut.m_apb_pready, prdata=dut.m_apb_prdata, pslverr=dut.m_apb_pslverr,
+            )
+            apb_slave.start()
+
+            exp_resp = 2 if inject_err else 0
+            # Exercise W-first and AW-first staggered writes as well as byte/halfword/word/sparse strobes
+            w_strbs = [0xF, 0x1, 0x3, 0x5] if ws == 0 and not inject_err else [0xF]
+            for idx, strb in enumerate(w_strbs):
+                order = "w_first" if (idx == 0 and ws == 1) else ("aw_first" if idx == 1 else "simultaneous")
+                addr = 0x40000080 + (idx * 4)
+                val = 0x10203040 + ws * 16 + idx
+                resp = await driver.write(addr=addr, data=val, strb=strb, order=order)
+                assert resp == exp_resp
+
+                rdata, rresp = await driver.read(addr=addr)
+                assert rresp == exp_resp
+                assert int(dut.m_apb_pstrb.value) == 0, "APB4 requires PSTRB=0 on reads"
+                if not inject_err and strb == 0xF:
+                    assert rdata == val
+
+            apb_slave.stop()
+            await RisingEdge(dut.clk)
+
+    apb_mon.stop()
+    proj_dir = os.environ.get("PROJ_DIR", os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+    cov_path = os.path.join(proj_dir, "docs/logs/cov_bridge_block.yaml")
+    CoverageCollector.get().configure(source="block", allowed_groups=["cg_apb"])
+    CoverageCollector.get().export(cov_path, source="block", allowed_groups=["cg_apb"])
     await Timer(10, unit="ns")

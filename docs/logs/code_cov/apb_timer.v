@@ -8,81 +8,81 @@
             parameter ADDR_WIDTH = 12,
             parameter DATA_WIDTH = 32
         )(
- 100022     input  wire                  clk,
-~000014     input  wire                  rst_n,
+ 935460     input  wire                  clk,
+~000021     input  wire                  rst_n,
         
             // APB4 Slave Interface
-~000863     input  wire [ADDR_WIDTH-1:0] paddr,
- 000996     input  wire [2:0]            pprot,
- 000990     input  wire                  psel,
- 003899     input  wire                  penable,
- 001004     input  wire                  pwrite,
- 000488     input  wire [DATA_WIDTH-1:0] pwdata,
- 000697     input  wire [3:0]            pstrb,
- 000990     output reg                   pready,
- 000185     output reg  [DATA_WIDTH-1:0] prdata,
+~006582     input  wire [ADDR_WIDTH-1:0] paddr,
+ 007481     input  wire [2:0]            pprot,
+ 007496     input  wire                  psel,
+ 030066     input  wire                  penable,
+ 007527     input  wire                  pwrite,
+ 003816     input  wire [DATA_WIDTH-1:0] pwdata,
+ 005273     input  wire [3:0]            pstrb,
+ 007496     output reg                   pready,
+ 001543     output reg  [DATA_WIDTH-1:0] prdata,
 %000000     output reg                   pslverr,
         
             // Interrupt Output
-%000002     output wire                  timer_irq
+ 000010     output wire                  timer_irq
         );
         
             // Suppress lint for unused ports
-~629953     wire _unused = &{1'b0, pprot, pstrb, paddr[ADDR_WIDTH-1:4], paddr[1:0]};
+~6139802     wire _unused = &{1'b0, pprot, pstrb, paddr[ADDR_WIDTH-1:4], paddr[1:0]};
         
             // Registers
             // 0x00: CTRL    [0] EN, [1] PERIODIC, [2] IRQ_EN
             // 0x04: LOAD    [31:0] Reload value
             // 0x08: VALUE   [31:0] Current countdown value
             // 0x0C: STATUS  [0] TIMEOUT (W1C)
- 000028     reg [2:0]  reg_ctrl;
- 000034     reg [31:0] reg_load;
-~027643     reg [31:0] reg_value;
-%000003     reg        reg_timeout;
+ 000252     reg [2:0]  reg_ctrl;
+ 000265     reg [31:0] reg_load;
+ 226817     reg [31:0] reg_value;
+%000007     reg        reg_timeout;
         
             // Interrupt is active when IRQ_EN is set and TIMEOUT is asserted
- 594016     assign timer_irq = reg_ctrl[2] & reg_timeout;
+ 6036575     assign timer_irq = reg_ctrl[2] & reg_timeout;
         
             // Timer countdown logic
- 100030     always @(posedge clk or negedge rst_n) begin
- 099859         if (!rst_n) begin
- 000171             reg_ctrl    <= 3'b000;
- 000171             reg_load    <= 32'd0;
- 000171             reg_value   <= 32'd0;
- 000171             reg_timeout <= 1'b0;
- 099859         end else begin
+ 935460     always @(posedge clk or negedge rst_n) begin
+ 935207         if (!rst_n) begin
+ 000253             reg_ctrl    <= 3'b000;
+ 000253             reg_load    <= 32'd0;
+ 000253             reg_value   <= 32'd0;
+ 000253             reg_timeout <= 1'b0;
+ 935207         end else begin
                     // Down-counter operation
- 055501             if (reg_ctrl[0]) begin // EN
- 055274                 if (reg_value == 32'd0) begin
- 000227                     reg_timeout <= 1'b1;
-~000226                     if (reg_ctrl[1]) begin // PERIODIC
- 000226                         reg_value <= reg_load;
-%000001                     end else begin
-%000001                         reg_ctrl[0] <= 1'b0; // Stop one-shot
+ 480118             if (reg_ctrl[0]) begin // EN
+ 453484                 if (reg_value == 32'd0) begin
+ 001605                     reg_timeout <= 1'b1;
+~001601                     if (reg_ctrl[1]) begin // PERIODIC
+ 001601                         reg_value <= reg_load;
+%000004                     end else begin
+%000004                         reg_ctrl[0] <= 1'b0; // Stop one-shot
                             end
- 055274                 end else begin
- 055274                     reg_value <= reg_value - 1'b1;
+ 453484                 end else begin
+ 453484                     reg_value <= reg_value - 1'b1;
                         end
                     end
         
                     // APB Register Writes (evaluated during ACCESS phase: psel && penable && pwrite)
- 099369             if (psel && penable && pwrite) begin
- 000490                 case (paddr[3:2])
- 000105                     2'b00: begin // 0x00: CTRL
- 000105                         reg_ctrl <= pwdata[2:0];
+ 931392             if (psel && penable && pwrite) begin
+ 003815                 case (paddr[3:2])
+ 000929                     2'b00: begin // 0x00: CTRL
+ 000929                         reg_ctrl <= pwdata[2:0];
                                 // If transitioning from disabled to enabled, load VALUE from LOAD
- 000077                         if (pwdata[0] && !reg_ctrl[0]) begin
- 000028                             reg_value <= reg_load;
+ 000677                         if (pwdata[0] && !reg_ctrl[0]) begin
+ 000252                             reg_value <= reg_load;
                                 end
                             end
- 000142                     2'b01: begin // 0x04: LOAD
- 000142                         reg_load <= pwdata;
+ 000975                     2'b01: begin // 0x04: LOAD
+ 000975                         reg_load <= pwdata;
                             end
- 000120                     2'b10: begin // 0x08: VALUE is RO
+ 000950                     2'b10: begin // 0x08: VALUE is RO
                             end
- 000123                     2'b11: begin // 0x0C: STATUS (W1C on bit 0)
- 000062                         if (pwdata[0]) begin
- 000062                             reg_timeout <= 1'b0;
+ 000961                     2'b11: begin // 0x0C: STATUS (W1C on bit 0)
+ 000501                         if (pwdata[0]) begin
+ 000460                             reg_timeout <= 1'b0;
                                 end
                             end
                         endcase
@@ -91,28 +91,28 @@
             end
         
             // APB Read Response & Handshake (1-cycle access)
- 100030     always @(posedge clk or negedge rst_n) begin
- 099859         if (!rst_n) begin
- 000171             pready  <= 1'b0;
- 000171             prdata  <= 32'd0;
- 000171             pslverr <= 1'b0;
- 099859         end else begin
- 097879             if (psel && !penable) begin
+ 935460     always @(posedge clk or negedge rst_n) begin
+ 935207         if (!rst_n) begin
+ 000253             pready  <= 1'b0;
+ 000253             prdata  <= 32'd0;
+ 000253             pslverr <= 1'b0;
+ 935207         end else begin
+ 920215             if (psel && !penable) begin
                         // SETUP phase: assert pready for next cycle
- 000990                 pready  <= 1'b1;
- 000990                 pslverr <= 1'b0;
- 000990                 case (paddr[3:2])
- 000230                     2'b00:   prdata <= {29'd0, reg_ctrl};
- 000256                     2'b01:   prdata <= reg_load;
- 000263                     2'b10:   prdata <= reg_value;
- 000241                     2'b11:   prdata <= {31'd0, reg_timeout};
+ 007496                 pready  <= 1'b1;
+ 007496                 pslverr <= 1'b0;
+ 007496                 case (paddr[3:2])
+ 001837                     2'b00:   prdata <= {29'd0, reg_ctrl};
+ 001872                     2'b01:   prdata <= reg_load;
+ 001884                     2'b10:   prdata <= reg_value;
+ 001903                     2'b11:   prdata <= {31'd0, reg_timeout};
 %000000                     default: prdata <= 32'd0;
                         endcase
- 097879             end else if (psel && penable) begin
+ 920215             end else if (psel && penable) begin
                         // End of ACCESS phase
- 000990                 pready <= 1'b0;
- 097879             end else begin
- 097879                 pready <= 1'b0;
+ 007496                 pready <= 1'b0;
+ 920215             end else begin
+ 920215                 pready <= 1'b0;
                     end
                 end
             end

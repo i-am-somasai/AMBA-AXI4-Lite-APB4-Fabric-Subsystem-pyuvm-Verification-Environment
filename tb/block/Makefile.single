@@ -15,6 +15,9 @@ endif
 
 ifeq ($(SIM),verilator)
 EXTRA_ARGS += -DCOCOTB_SIM
+ifeq ($(VERILATOR_COVERAGE),1)
+EXTRA_ARGS += --coverage
+endif
 endif
 
 # Include standard cocotb Makefile

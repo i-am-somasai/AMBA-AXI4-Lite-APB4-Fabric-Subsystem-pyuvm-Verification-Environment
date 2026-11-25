@@ -1,96 +1,68 @@
 ================================================================================
                AMBA-FABRIC FUNCTIONAL COVERAGE REPORT (COCOTB-COVERAGE)         
 ================================================================================
-Merged 8 coverage database file(s):
-  - docs/logs/cov_TestCoverageClosure_seed_103.yaml
-  - docs/logs/cov_TestCoverageClosure_seed_60.yaml
-  - docs/logs/cov_test_directed_seed_0.yaml
-  - docs/logs/cov_test_stress_seed_123.yaml
-  - docs/logs/cov_test_stress_seed_2024.yaml
-  - docs/logs/cov_test_stress_seed_42.yaml
-  - docs/logs/cov_test_stress_seed_777.yaml
-  - docs/logs/cov_test_stress_seed_9999.yaml
+Merged 24 coverage database file(s):
+  - docs/logs/cov_TestCoverageClosure_seed_103.yaml [source=top_level, groups=all]
+  - docs/logs/cov_TestCoverageClosure_seed_60.yaml [source=top_level, groups=all]
+  - docs/logs/cov_bridge_block.yaml [source=block, groups=cg_apb]
+  - docs/logs/cov_test_directed_seed_0.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_1.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_10.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_11.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_12.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_13.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_14.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_15.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_16.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_17.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_18.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_19.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_2.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_20.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_3.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_4.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_5.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_6.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_7.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_8.yaml [source=top_level, groups=all]
+  - docs/logs/cov_test_stress_seed_9.yaml [source=top_level, groups=all]
 --------------------------------------------------------------------------------
 Covergroup / Metric                 | Bins     | Covered  | Coverage %
 --------------------------------------------------------------------------------
 cg_apb.err                          | 2        | 2        |   100.00%
 cg_apb.op                           | 2        | 2        |   100.00%
 cg_apb.strb_class                   | 4        | 4        |   100.00%
-cg_apb.strb_cross                   | 8        | 5        |    62.50%
-cg_apb.wait                         | 4        | 1        |    25.00%
-cg_apb.wait_cross                   | 16       | 4        |    25.00%
+cg_apb.strb_cross                   | 5        | 5        |   100.00%
+cg_apb.wait                         | 4        | 4        |   100.00%
+cg_apb.wait_cross                   | 16       | 16       |   100.00%
 cg_backpressure.bucket              | 4        | 4        |   100.00%
 cg_backpressure.channel             | 5        | 5        |   100.00%
-cg_backpressure.cross               | 20       | 14       |    70.00%
-cg_cdc.cross                        | 12       | 6        |    50.00%
-cg_cdc.occupancy                    | 2        | 1        |    50.00%
+cg_backpressure.cross               | 20       | 20       |   100.00%
+cg_cdc.cross                        | 12       | 12       |   100.00%
+cg_cdc.occupancy                    | 2        | 2        |   100.00%
 cg_cdc.op                           | 2        | 2        |   100.00%
 cg_cdc.ratio                        | 3        | 3        |   100.00%
 cg_contention.combo                 | 3        | 3        |   100.00%
-cg_contention.cross                 | 9        | 8        |    88.89%
+cg_contention.cross                 | 6        | 6        |   100.00%
 cg_contention.type                  | 3        | 3        |   100.00%
-cg_order.cross                      | 12       | 8        |    66.67%
-cg_order.order                      | 3        | 2        |    66.67%
+cg_order.cross                      | 12       | 12       |   100.00%
+cg_order.order                      | 3        | 3        |   100.00%
 cg_order.target                     | 4        | 4        |   100.00%
-cg_reset.phase                      | 5        | 1        |    20.00%
+cg_reset.phase                      | 5        | 5        |   100.00%
 cg_txn.cross                        | 36       | 36       |   100.00%
 cg_txn.master                       | 2        | 2        |   100.00%
 cg_txn.op                           | 2        | 2        |   100.00%
 cg_txn.resp                         | 3        | 3        |   100.00%
 cg_txn.target                       | 5        | 5        |   100.00%
 cg_uart.baud                        | 3        | 3        |   100.00%
-cg_uart.cross                       | 9        | 7        |    77.78%
-cg_uart.err                         | 3        | 2        |    66.67%
+cg_uart.cross                       | 9        | 9        |   100.00%
+cg_uart.err                         | 3        | 3        |   100.00%
 cg_uart.fifo                        | 3        | 3        |   100.00%
 cg_wstrb.cross                      | 64       | 64       |   100.00%
 cg_wstrb.strb                       | 16       | 16       |   100.00%
 cg_wstrb.target                     | 4        | 4        |   100.00%
 ================================================================================
-OVERALL AGGREGATE COVERAGE          | 273      | 229      |    83.88%
+OVERALL AGGREGATE COVERAGE          | 267      | 267      |   100.00%
 ================================================================================
 
-=== UNCOVERED BINS (HOLES) ===
-  [HOLE] cg_apb.strb_cross: bin ('byte', 'RD')
-  [HOLE] cg_apb.strb_cross: bin ('halfword', 'RD')
-  [HOLE] cg_apb.strb_cross: bin ('word', 'RD')
-  [HOLE] cg_apb.wait: bin 1
-  [HOLE] cg_apb.wait: bin 2-4
-  [HOLE] cg_apb.wait: bin 5+
-  [HOLE] cg_apb.wait_cross: bin ('1', 'err', 'RD')
-  [HOLE] cg_apb.wait_cross: bin ('1', 'err', 'WR')
-  [HOLE] cg_apb.wait_cross: bin ('1', 'no_err', 'RD')
-  [HOLE] cg_apb.wait_cross: bin ('1', 'no_err', 'WR')
-  [HOLE] cg_apb.wait_cross: bin ('2-4', 'err', 'RD')
-  [HOLE] cg_apb.wait_cross: bin ('2-4', 'err', 'WR')
-  [HOLE] cg_apb.wait_cross: bin ('2-4', 'no_err', 'RD')
-  [HOLE] cg_apb.wait_cross: bin ('2-4', 'no_err', 'WR')
-  [HOLE] cg_apb.wait_cross: bin ('5+', 'err', 'RD')
-  [HOLE] cg_apb.wait_cross: bin ('5+', 'err', 'WR')
-  [HOLE] cg_apb.wait_cross: bin ('5+', 'no_err', 'RD')
-  [HOLE] cg_apb.wait_cross: bin ('5+', 'no_err', 'WR')
-  [HOLE] cg_backpressure.cross: bin ('B', '1')
-  [HOLE] cg_backpressure.cross: bin ('B', '2-4')
-  [HOLE] cg_backpressure.cross: bin ('B', '5-16')
-  [HOLE] cg_backpressure.cross: bin ('R', '1')
-  [HOLE] cg_backpressure.cross: bin ('R', '2-4')
-  [HOLE] cg_backpressure.cross: bin ('R', '5-16')
-  [HOLE] cg_cdc.cross: bin ('approx_equal', 'partial', 'RD')
-  [HOLE] cg_cdc.cross: bin ('approx_equal', 'partial', 'WR')
-  [HOLE] cg_cdc.cross: bin ('slow<sys', 'partial', 'RD')
-  [HOLE] cg_cdc.cross: bin ('slow<sys', 'partial', 'WR')
-  [HOLE] cg_cdc.cross: bin ('slow>sys', 'partial', 'RD')
-  [HOLE] cg_cdc.cross: bin ('slow>sys', 'partial', 'WR')
-  [HOLE] cg_cdc.occupancy: bin partial
-  [HOLE] cg_contention.cross: bin ('one_idle', 'R/W')
-  [HOLE] cg_order.cross: bin ('APB', 'w_first')
-  [HOLE] cg_order.cross: bin ('CDC', 'w_first')
-  [HOLE] cg_order.cross: bin ('CSR', 'w_first')
-  [HOLE] cg_order.cross: bin ('RAM', 'w_first')
-  [HOLE] cg_order.order: bin w_first
-  [HOLE] cg_reset.phase: bin aw_in_flight
-  [HOLE] cg_reset.phase: bin b_pending
-  [HOLE] cg_reset.phase: bin r_pending
-  [HOLE] cg_reset.phase: bin w_in_flight
-  [HOLE] cg_uart.cross: bin ('0', 'full')
-  [HOLE] cg_uart.cross: bin ('1', 'full')
-  [HOLE] cg_uart.err: bin frame_err
+*** ZERO HOLES DETECTED: 100% COVERAGE ACHIEVED ***

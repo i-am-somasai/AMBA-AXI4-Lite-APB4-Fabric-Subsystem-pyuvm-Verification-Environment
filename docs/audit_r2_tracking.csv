@@ -4,9 +4,9 @@ F-05,BLOCKER,FAIL,Phase A,A1,Fix axil_csr.v to decode word offset [7:2]; test 0x
 F-06,MAJOR,PARTIAL,Phase A,A3,Observe APB PPROT in XB-14; add dual-master BR-05 test; kill SMUT-09/SMUT-16,CLOSED,test_xb14_prot_passthrough & test_br01 check APB PPROT (0..7); test_br05_dual_master_apb_mixed_rw added; SMUT-09 & SMUT-16 KILLED
 F-08,MAJOR,PARTIAL,Phase A,A3,Add RX_OVF test to UA-02; kill SMUT-12,CLOSED,test_ua02_fifo_full_and_overflow_flags drives 9th RX byte and verifies RX_OVF=1 & W1C=0; SMUT-12 KILLED
 V-02,MAJOR,PARTIAL,Phase A,A1/A3,Align tb/models/ [1:0] decode rule; check PPROT in scoreboard/monitors,CLOSED,tb/models/{addr_map,reg_model,ram_model,peripheral_model}.py aligned to Rule 6; XB-14/BR-01 assert APB PPROT
-V-04,BLOCKER,FAIL,Phase C,C2/C4,Close real coverage holes via real stimulus & valid waivers; update metrics,OPEN,Target: Phase C (C2/C4)
-V-05,MAJOR,PARTIAL,Phase C,C3,"Fix make cov-report to build in build/, clean incrementally, and exit 0 cleanly",OPEN,Target: Phase C (C3)
-V-06,MAJOR,PARTIAL,Phase B,B/C1,Use rr_arbiter_props.v in rr_arbiter.sby; measure clk_slow period on pins in CdcMonitor,OPEN,Phase B formal DONE (rr_arbiter_props.v bound); awaits Phase C (C1) CdcMonitor period measurement
+V-04,BLOCKER,FAIL,Phase C,C2/C4,Close real coverage holes via real stimulus & valid waivers; update metrics,CLOSED,267/267 (100.00%) reachable functional coverage bins hit across 24 merged YAMLs (docs/logs/func_cov.log) with DEC-009/010 waivers
+V-05,MAJOR,PARTIAL,Phase C,C3,"Fix make cov-report to build in build/, clean incrementally, and exit 0 cleanly",CLOSED,scripts/run_regression.sh builds in BUILD_DIR, cleans intermediate sim_build dirs, and make cov-report exits 0 cleanly (docs/logs/phase_c_cov_report.log)
+V-06,MAJOR,PARTIAL,Phase B,B/C1,Use rr_arbiter_props.v in rr_arbiter.sby; measure clk_slow period on pins in CdcMonitor,CLOSED,Phase B bound rr_arbiter_props.v; Phase C replaced CLK_SLOW_PERIOD_NS env read in CdcMonitor with RisingEdge timestamp period measurement on clk_sys/clk_slow pins
 V-07,MAJOR,PARTIAL,Phase B,B,"Wire rr_arbiter_props, add sync_fifo data-order prop, remove over-assumptions, enable CSR causality",CLOSED,rr_arbiter_props bound; sync_fifo magic data-order prove PASS; bridge/xbar over-assumptions removed; axil_csr prv+bmc PASS (docs/logs/phase_b_formal.log)
 V-09,BLOCKER,FAIL,Phase D,D1-D5,"Fix process leak & xbar scope, run fixed 240-mutant list, generate report from log",OPEN,Target: Phase D (D1-D5)
 V-10,MAJOR,NOT_RUN,Phase G,G,Align CI artifacts/steps; obtain green remote GitHub Actions URL,OPEN,Target: Phase G (G)
@@ -20,15 +20,15 @@ XB-12,BLOCKER,FAIL,Phase A,A3,Assert rst_n while AW/W/B/AR/R in flight; flush SB
 XB-14,BLOCKER,FAIL,Phase A,A3,Observe APB PPROT on bridge/top and assert equality across all 8 prot values,CLOSED,tb/pyuvm/sequences/directed_seqs.py & test_br01 observe apb_pprot/m_apb_pprot for prot 0..7; SMUT-09 KILLED
 XB-15,BLOCKER,FAIL,Phase A,A3,"Test unaligned +1/+2/+3 across RAM, CSR, APB UART/Timer/GPIO, slow_regs",CLOSED,tb/pyuvm/sequences/directed_seqs.py verifies +1/+2/+3 across RAM/CSR/APB/CDC; SMUT-11 KILLED
 UA-02,MAJOR,PARTIAL,Phase A,A3,"Fill 8-entry RX FIFO, drive 9th byte, assert RX_OVF set & W1C clear",CLOSED,tb/block/test_apb_uart.py checks RX_OVF set on 9th byte & W1C clear; SMUT-12 KILLED
-COV-cg_order,MAJOR,PARTIAL,Phase C,C2,Drive w_first skew across all 4 targets in directed and stress sequences,OPEN,Target: Phase C (C2)
-COV-cg_backpressure,MAJOR,PARTIAL,Phase C,C2,"Drive random BREADY/RREADY delays (buckets 1, 2-4, 5-16) in master agents",OPEN,Target: Phase C (C2)
-COV-cg_apb,MAJOR,PARTIAL,Phase C,C2,Attach ApbBusMonitor + collector in bridge block test (wait states & read PSTRB=0),OPEN,Target: Phase C (C2)
-COV-cg_cdc,MAJOR,PARTIAL,Phase C,C1/C4,Measure clk_slow/clk_sys on DUT pins in CdcMonitor; verify reachability,OPEN,Target: Phase C (C1/C4)
-COV-cg_uart,MAJOR,PARTIAL,Phase C,C2,Add top-level pyuvm UART bad-stop-bit sequence for cg_uart.frame_err,OPEN,Target: Phase C (C2)
-COV-cg_reset,MAJOR,PARTIAL,Phase C,C2,Hit aw/w/b/r in-flight bins via rewritten XB-12,OPEN,Target: Phase C (C2)
-COV-HONESTY,MAJOR,PARTIAL,Phase C,C1,Remove CLK_SLOW_PERIOD_NS dependency in CdcMonitor; re-run reachability check,OPEN,Target: Phase C (C1)
-COV-FUNC-MERGE,BLOCKER,FAIL,Phase C,C3/C4,Merge 20-seed + block coverage cleanly and remove false 280/280 claims,OPEN,Target: Phase C (C3/C4)
-COV-CODE-VERILATOR,MAJOR,PARTIAL,Phase C,C3/C4,Fix cov-report build flow and investigate/report uncovered HDL code,OPEN,Target: Phase C (C3/C4)
+COV-cg_order,MAJOR,PARTIAL,Phase C,C2,Drive w_first skew across all 4 targets in directed and stress sequences,CLOSED,AxilBusMonitor tracks VALID arrival order (t_w_valid vs t_aw_valid); cg_order.cross 12/12 (100.00%)
+COV-cg_backpressure,MAJOR,PARTIAL,Phase C,C2,"Drive random BREADY/RREADY delays (buckets 1, 2-4, 5-16) in master agents",CLOSED,AxilSeqItem + AxilDriver + CoverageClosureSeq exercise 0/1/2-4/5-16 BREADY/RREADY delays; cg_backpressure.cross 20/20 (100.00%)
+COV-cg_apb,MAJOR,PARTIAL,Phase C,C2,Attach ApbBusMonitor + collector in bridge block test (wait states & read PSTRB=0),CLOSED,test_br07_apb_wait_err_cov runs ApbBusMonitor (source=block, allowed=cg_apb); DEC-010 waives illegal RD strobes; wait_cross 16/16 & strb_cross 5/5 (100.00%)
+COV-cg_cdc,MAJOR,PARTIAL,Phase C,C1/C4,Measure clk_slow/clk_sys on DUT pins in CdcMonitor; verify reachability,CLOSED,CdcMonitor measures physical clk_sys/clk_slow edges & observes ST_WAIT_RESP FIFO occupancy; cg_cdc.cross 12/12 (100.00%)
+COV-cg_uart,MAJOR,PARTIAL,Phase C,C2,Add top-level pyuvm UART bad-stop-bit sequence for cg_uart.frame_err,CLOSED,CoverageClosureSeq fills TX FIFO at BAUDDIV 0/1/4 & drives external bad stop bit on uart_rx; cg_uart.cross 9/9 & cg_uart.err 3/3 (100.00%)
+COV-cg_reset,MAJOR,PARTIAL,Phase C,C2,Hit aw/w/b/r in-flight bins via rewritten XB-12,CLOSED,test_xb12_reset_recovery asserts rst_n=0 mid-AW/W/B/AR/R before driver cleanup; ResetPhaseMonitor hits cg_reset.phase 5/5 (100.00%)
+COV-HONESTY,MAJOR,PARTIAL,Phase C,C1,Remove CLK_SLOW_PERIOD_NS dependency in CdcMonitor; re-run reachability check,CLOSED,Zero CLK_SLOW_PERIOD_NS refs in fabric_monitors.py & check_no_synthetic_cov.sh PASS
+COV-FUNC-MERGE,BLOCKER,FAIL,Phase C,C3/C4,Merge 20-seed + block coverage cleanly and remove false 280/280 claims,CLOSED,merge_cov.py merges 20 Verilator seeds (1..20) + directed + CDC sweeps + block cg_apb = 267/267 (100.00%) in docs/logs/func_cov.log
+COV-CODE-VERILATOR,MAJOR,PARTIAL,Phase C,C3/C4,Fix cov-report build flow and investigate/report uncovered HDL code,CLOSED,Verilator code coverage merged across 20 seeds+directed+bridge: line 92.0% (494/537), branch 91.2% (499/547), expr 93.8% (1036/1105), toggle 74.8% (docs/logs/code_cov_summary.txt)
 FORMAL-async_fifo,MAJOR,PARTIAL,Phase B,B,Replace 'exhaustively proven' in coverage_waivers.md:43 with exact BMC depth 25,CLOSED,docs/coverage_waivers.md:43 updated to bounded model checking (multiclock BMC depth 25)
 FORMAL-axil2apb_bridge,MAJOR,PARTIAL,Phase B,B,Remove/justify bridge !arvalid assumption and verify concurrent R/W reachability,CLOSED,Removed !s_axil_arvalid assumption in formal/axil2apb_bridge_props.v & added concurrent WR+RD covers (bmc d=25 PASS 10 covers)
 FORMAL-axil_xbar,MAJOR,PARTIAL,Phase B,B,Fix xbar_props.v liveness assumption so wvalid is not skipped,CLOSED,Fixed f_s_bresp_wait to require committed AW+W handshake; added wr_prio/rd_prio bounded fairness & contention covers (bmc d=20 PASS 31 covers)
@@ -58,8 +58,8 @@ METRIC-12,BLOCKER,FAIL,Phase F,F1/F2,Populate real Yosys synthesis cell/flop/are
 METRIC-13,BLOCKER,FAIL,Phase F,F1/F2,Populate real OpenSTA WNS/TNS/Fmax from metrics.json,OPEN,Target: Phase F (F1/F2)
 METRIC-14,MAJOR,NOT_RUN,Phase G,G,Mark CI Status NOT VERIFIED until remote green run URL is recorded,OPEN,Target: Phase G (G)
 DOD-01,BLOCKER,FAIL,Phase A,A1-A4,"Fix Rule 6 RTL bug, failing-capable P0 tests, and kill 16/16 sanity mutants",CLOSED,16/16 sanity mutants KILLED; lint/unit/block/formal_csr/formal_cdc/20-seed regress (601..620) PASS (docs/logs/phase_a_*.log)
-DOD-02,MAJOR,PARTIAL,Phase C,C4/Final,Document 20-seed Icarus + Verilator coverage/regression verification accurately,OPEN,Target: Phase C (C4/Final)
-DOD-03,BLOCKER,FAIL,Phase C,C2-C4,Real stimulus coverage closure + waivers + working make cov-report,OPEN,Target: Phase C (C2-C4)
+DOD-02,MAJOR,PARTIAL,Phase C,C4/Final,Document 20-seed Icarus + Verilator coverage/regression verification accurately,CLOSED,20 fresh Icarus seeds (601..620) in Phase A & 20 Verilator coverage seeds (1..20) in Phase C PASS with 0 mismatches (docs/logs/phase_c_cov_report.log)
+DOD-03,BLOCKER,FAIL,Phase C,C2-C4,Real stimulus coverage closure + waivers + working make cov-report,CLOSED,make cov-report exits 0 cleanly; 267/267 (100.00%) real monitor coverage + DEC-009/010 waivers in docs/coverage_waivers.md
 DOD-04,MAJOR,PARTIAL,Phase B,B,All formal suites clean without over-assumptions or orphaned checkers,CLOSED,10/10 formal suites PASS in docs/logs/phase_b_formal.log with 0 undriven-wire warnings & no weakening assumptions
 DOD-05,BLOCKER,FAIL,Phase D,D1-D5,Reproducible 240-mutant run & script-verified survivor triage report,OPEN,Target: Phase D (D1-D5)
 DOD-06,BLOCKER,FAIL,Phase E,E1-E4,Verify two clean make synth && make sta runs produce identical real results,OPEN,Target: Phase E (E1-E4)

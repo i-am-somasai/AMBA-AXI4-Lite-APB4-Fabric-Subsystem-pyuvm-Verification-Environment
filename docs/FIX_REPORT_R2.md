@@ -10,7 +10,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 |---|---|---|---|
 | **Phase A** | RTL Rule 6 fix (`axil_csr`), CDC reset fix, models, decisions (`DEC-006..008`), 8 test rewrites (`XB-03/07/12/14/15`, `UA-02`, `BR-05`, `CD-03`), 16 sanity mutants | `DONE` | `fix(R2-A)` (this commit) |
 | **Phase B** | Formal (`rr_arbiter_props.v`, bounded fairness, `sync_fifo` data ordering, bridge/xbar over-assumptions, CSR causality/Rule 6, exact wording) | `DONE` | [`docs/logs/phase_b_formal.log`](docs/logs/phase_b_formal.log) |
-| **Phase C** | Honest coverage (`CdcMonitor` edge measurement, stimulus for 44 holes, waivers, `make cov-report` fix & full re-measure) | `TODO` | - |
+| **Phase C** | Honest coverage (`CdcMonitor` edge measurement, stimulus for 44 holes, waivers, `make cov-report` fix & full re-measure) | `DONE` | [`docs/logs/func_cov.log`](docs/logs/func_cov.log) |
 | **Phase D** | Mutation (`run_mutants.py` process group kill, `axil_xbar` scope fix, CSR/bridge test gaps, 240-mutant run, script-generated report) | `TODO` | - |
 | **Phase E** | Synthesis & STA (`synth/synth.ys`, portable reset false-path constraints, dynamic `fmax_sweep.py` parsing, clean measurements) | `TODO` | - |
 | **Phase F** | Data-driven docs (`scripts/gen_metrics.py`, `docs/metrics.json`, regenerate docs, `bugs.md` / `decisions.md` / `interfaces.md`, CI check scripts) | `TODO` | - |
@@ -60,14 +60,14 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 ---
 
 ### Phase C: Honest Functional & Code Coverage (`V-04`, `V-05`, `COV-*`)
-- **Status:** `TODO`
-- **Files Changed:** Pending
-- **Commands Run:** Pending
-- **Log Paths:** Pending
+- **Status:** `DONE`
+- **Files Changed:** `tb/pyuvm/func_cov/fabric_cov.py`, `tb/pyuvm/monitors/fabric_monitors.py`, `tb/models/axil_driver.py`, `tb/pyuvm/sequences/{axil_seq_item.py,axil_base_seq.py,coverage_closure_seq.py}`, `tb/pyuvm/agents/axil_master_agent.py`, `tb/pyuvm/tests/test_directed.py`, `tb/pyuvm/Makefile`, `tb/block/{Makefile.single,test_axil2apb_bridge.py}`, `scripts/{merge_cov.py,run_regression.sh}`, `docs/{coverage_waivers.md,decisions.md,audit_r2_tracking.csv,FIX_REPORT_R2.md}`
+- **Commands Run:** `./scripts/check_no_synthetic_cov.sh`, `make cov-report`, `python3 scripts/merge_cov.py docs/logs`
+- **Log Paths:** [`docs/logs/phase_c_cov_report.log`](docs/logs/phase_c_cov_report.log), [`docs/logs/func_cov.log`](docs/logs/func_cov.log), [`docs/logs/code_cov_summary.txt`](docs/logs/code_cov_summary.txt)
 - **Before / After Numbers:**
-  - Before: Functional coverage 83.88% (229/273) with 44 uncovered bins; `CdcMonitor` reads `CLK_SLOW_PERIOD_NS` env var; `make cov-report` exits non-zero / fails on small `/tmp`; `vplan.md` & `results.md` claim 280/280 (100%).
-  - After: Pending Phase C execution.
-- **Remaining Issues:** None yet.
+  - Before: Functional coverage 83.88% (229/273) with 44 uncovered bins; `CdcMonitor` read `CLK_SLOW_PERIOD_NS` env var; `make cov-report` failed on `/tmp` space & exited 1; Verilator line 90.0%, branch 89.2%, expr 92.7%, toggle 75.2%.
+  - After: Functional coverage **100.00% (267/267 reachable bins)** across 24 merged YAMLs (20 Verilator seeds `1..20`, directed tests, CDC `10.3ns`/`6.0ns` sweeps, block `cg_apb` tagged `source=block`), 36 documented waivers (`cg_txn` 24 + `cg_cdc` 6 + `cg_contention` 3 per `DEC-009` + `cg_apb.strb_cross` 3 per `DEC-010`, net 267 legal reachable bins vs 273 pre-R2); Verilator code coverage **line 92.0% (494/537)**, **branch 91.2% (499/547)**, **expr 93.8% (1036/1105)**, **toggle 74.8% (10616/14202)**, **fsm_state 100.0% (5/5)**; `make cov-report` exits `0` cleanly using `BUILD_DIR`.
+- **Remaining Issues:** None for Phase C (`check_no_synthetic_cov.sh` PASS).
 
 ---
 
@@ -132,9 +132,9 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `F-06` (MAJOR): CLOSED (`test_xb14_prot_passthrough` & `test_br01` assert `PPROT`; `test_br05_dual_master_apb_mixed_rw` added; `SMUT-09`/`SMUT-16` KILLED)
 - `F-08` (MAJOR): CLOSED (`test_ua02_fifo_full_and_overflow_flags` verifies `RX_OVF` & W1C; `SMUT-12` KILLED)
 - `V-02` (MAJOR): CLOSED (`tb/models/` aligned to `[1:0]` ignore Rule 6; APB `PPROT` checked in `XB-14` & `BR-01`)
-- `V-04` (BLOCKER): OPEN (assigned to Phase C C2/C4)
-- `V-05` (MAJOR): OPEN (assigned to Phase C C3)
-- `V-06` (MAJOR): OPEN (Phase B formal DONE: `rr_arbiter_props.v` bound in `rr_arbiter.sby`; awaits Phase C C1 `CdcMonitor` period measurement)
+- `V-04` (BLOCKER): CLOSED (`267/267 (100.00%)` reachable bins across 24 merged YAMLs in `docs/logs/func_cov.log`; `DEC-009`/`DEC-010` waivers documented)
+- `V-05` (MAJOR): CLOSED (`scripts/run_regression.sh` builds in `BUILD_DIR`, cleans intermediate `sim_build`, and `make cov-report` exits 0)
+- `V-06` (MAJOR): CLOSED (Phase B bound `rr_arbiter_props.v`; Phase C replaced `CLK_SLOW_PERIOD_NS` read in `CdcMonitor` with `RisingEdge` pin timing)
 - `V-07` (MAJOR): CLOSED (`rr_arbiter_props` bound, `sync_fifo` magic data-order `prove` PASS, bridge/xbar over-assumptions removed, `axil_csr` `prv+bmc` PASS in `docs/logs/phase_b_formal.log`)
 - `V-09` (BLOCKER): OPEN (assigned to Phase D D1-D5)
 - `V-10` (MAJOR): OPEN (assigned to Phase G G)
@@ -148,15 +148,15 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `XB-14` (BLOCKER): CLOSED (`ProtPassThroughSeq` & `test_br01` assert physical `apb_pprot`/`m_apb_pprot` 0..7; `SMUT-09` KILLED)
 - `XB-15` (BLOCKER): CLOSED (`UnalignedAddressSeq` checks `+1/+2/+3` across RAM/CSR/APB/CDC; `SMUT-11` KILLED)
 - `UA-02` (MAJOR): CLOSED (`test_ua02_fifo_full_and_overflow_flags` verifies `RX_OVF` & W1C; `SMUT-12` KILLED)
-- `COV-cg_order` (MAJOR): OPEN (assigned to Phase C C2)
-- `COV-cg_backpressure` (MAJOR): OPEN (assigned to Phase C C2)
-- `COV-cg_apb` (MAJOR): OPEN (assigned to Phase C C2)
-- `COV-cg_cdc` (MAJOR): OPEN (assigned to Phase C C1/C4)
-- `COV-cg_uart` (MAJOR): OPEN (assigned to Phase C C2)
-- `COV-cg_reset` (MAJOR): OPEN (assigned to Phase C C2)
-- `COV-HONESTY` (MAJOR): OPEN (assigned to Phase C C1)
-- `COV-FUNC-MERGE` (BLOCKER): OPEN (assigned to Phase C C3/C4)
-- `COV-CODE-VERILATOR` (MAJOR): OPEN (assigned to Phase C C3/C4)
+- `COV-cg_order` (MAJOR): CLOSED (`AxilBusMonitor` tracks `t_w_valid` vs `t_aw_valid`; `cg_order.cross` 12/12 100.00%)
+- `COV-cg_backpressure` (MAJOR): CLOSED (`AxilSeqItem` + `AxilDriver` + `CoverageClosureSeq` cover `0/1/2-4/5-16` `BREADY`/`RREADY`; `cg_backpressure.cross` 20/20 100.00%)
+- `COV-cg_apb` (MAJOR): CLOSED (`test_br07_apb_wait_err_cov` with `ApbBusMonitor` `source=block`; `DEC-010` waives RD strobes; `wait_cross` 16/16 & `strb_cross` 5/5)
+- `COV-cg_cdc` (MAJOR): CLOSED (`CdcMonitor` measures physical clock periods & observes `ST_WAIT_RESP` partial occupancy; `cg_cdc.cross` 12/12 100.00%)
+- `COV-cg_uart` (MAJOR): CLOSED (`CoverageClosureSeq` fills TX FIFO at `BAUDDIV` 0/1/4 & drives external `uart_rx` bad stop bit; `cg_uart.cross` 9/9 & `err` 3/3)
+- `COV-cg_reset` (MAJOR): CLOSED (`test_xb12_reset_recovery` drops `rst_n` mid-AW/W/B/AR/R before driver cleanup; `cg_reset.phase` 5/5 100.00%)
+- `COV-HONESTY` (MAJOR): CLOSED (`CdcMonitor` free of `CLK_SLOW_PERIOD_NS` env read; `check_no_synthetic_cov.sh` PASS)
+- `COV-FUNC-MERGE` (BLOCKER): CLOSED (`merge_cov.py` merges 20 Verilator seeds `1..20` + directed + CDC + block `cg_apb` = 267/267 in `docs/logs/func_cov.log`)
+- `COV-CODE-VERILATOR` (MAJOR): CLOSED (`code_cov_summary.txt`: line 92.0% 494/537, branch 91.2% 499/547, expr 93.8% 1036/1105, toggle 74.8%)
 - `FORMAL-async_fifo` (MAJOR): CLOSED (`docs/coverage_waivers.md:43` updated to `bounded model checking (multiclock BMC depth 25)`)
 - `FORMAL-axil2apb_bridge` (MAJOR): CLOSED (`!s_axil_arvalid` over-assumption removed in `formal/axil2apb_bridge_props.v`; concurrent WR+RD covers verified, `bmc d=25` PASS 10 covers)
 - `FORMAL-axil_xbar` (MAJOR): CLOSED (`f_s_bresp_wait` fixed to require committed `AW+W` handshake; `wr_prio`/`rd_prio` bounded fairness & contention covers added, `bmc d=20` PASS 31 covers)
@@ -186,8 +186,8 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `METRIC-13` (BLOCKER): OPEN (assigned to Phase F F1/F2)
 - `METRIC-14` (MAJOR): OPEN (assigned to Phase G G)
 - `DOD-01` (BLOCKER): CLOSED (Phase A gate verified: 16/16 sanity mutants KILLED, Rule 6 fixed, 8 tests rewritten, 20 fresh seeds PASS)
-- `DOD-02` (MAJOR): OPEN (assigned to Phase C C4/Final)
-- `DOD-03` (BLOCKER): OPEN (assigned to Phase C C2-C4)
+- `DOD-02` (MAJOR): CLOSED (20 Icarus seeds `601..620` in Phase A + 20 Verilator coverage seeds `1..20` in Phase C PASS)
+- `DOD-03` (BLOCKER): CLOSED (`make cov-report` exits 0; 267/267 100.00% real coverage + `DEC-009`/`DEC-010` waivers)
 - `DOD-04` (MAJOR): CLOSED (10/10 formal suites PASS in `docs/logs/phase_b_formal.log` with 0 undriven-wire warnings & no weakening assumptions)
 - `DOD-05` (BLOCKER): OPEN (assigned to Phase D D1-D5)
 - `DOD-06` (BLOCKER): OPEN (assigned to Phase E E1-E4)

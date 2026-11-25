@@ -13,6 +13,8 @@ class AxilSeqItem(uvm_sequence_item):
         self.strb = 0xF
         self.prot = 0
         self.order = "simultaneous" # "simultaneous", "aw_first", "w_first"
+        self.bready_delay = 0
+        self.rready_delay = 0
         self.master_id = 0
 
         # Response fields (filled by driver)
@@ -89,6 +91,8 @@ class AxilSeqItem(uvm_sequence_item):
         self.strb = random.choice([0xF, 0x1, 0x2, 0x4, 0x8, 0x3, 0xC, 0x5, 0xA])
         self.prot = random.randint(0, 7)
         self.order = random.choice(["simultaneous", "aw_first", "w_first"])
+        self.bready_delay = random.choice([0, 0, 0, 1, 2, 3, 6])
+        self.rready_delay = random.choice([0, 0, 0, 1, 2, 3, 6])
 
     def __str__(self):
         op = "WR" if self.is_write else "RD"

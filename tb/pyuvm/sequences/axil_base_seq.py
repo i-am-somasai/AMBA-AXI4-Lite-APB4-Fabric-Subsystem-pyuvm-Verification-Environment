@@ -7,7 +7,7 @@ class AxilBaseSeq(uvm_sequence):
     def __init__(self, name="AxilBaseSeq"):
         super().__init__(name)
 
-    async def write(self, addr, data, strb=0xF, prot=0, order="simultaneous"):
+    async def write(self, addr, data, strb=0xF, prot=0, order="simultaneous", bready_delay=0):
         item = AxilSeqItem(f"{self.get_name()}_wr")
         item.is_write = True
         item.addr = addr
@@ -15,16 +15,18 @@ class AxilBaseSeq(uvm_sequence):
         item.strb = strb
         item.prot = prot
         item.order = order
+        item.bready_delay = bready_delay
 
         await self.start_item(item)
         await self.finish_item(item)
         return item.resp
 
-    async def read(self, addr, prot=0):
+    async def read(self, addr, prot=0, rready_delay=0):
         item = AxilSeqItem(f"{self.get_name()}_rd")
         item.is_write = False
         item.addr = addr
         item.prot = prot
+        item.rready_delay = rready_delay
 
         await self.start_item(item)
         await self.finish_item(item)

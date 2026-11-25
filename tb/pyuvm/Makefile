@@ -58,7 +58,7 @@ test_directed:
 		TOPLEVEL=amba_fabric_top \
 		MODULE=test_directed \
 		TESTCASE=TestCoverageClosure \
-		SIM_BUILD=$(BUILD_DIR)/sim_build/pyuvm_cdc_10_3 \
+		SIM_BUILD=$(BUILD_DIR)/sim_build/pyuvm_directed \
 		COCOTB_RESULTS_FILE=$(BUILD_DIR)/results/pyuvm/results_test_cdc_10_3.xml \
 		VERILOG_SOURCES="$(ALL_RTL_SOURCES)" \
 		SIM=$(SIM)
@@ -67,10 +67,12 @@ test_directed:
 		TOPLEVEL=amba_fabric_top \
 		MODULE=test_directed \
 		TESTCASE=TestCoverageClosure \
-		SIM_BUILD=$(BUILD_DIR)/sim_build/pyuvm_cdc_6_0 \
+		SIM_BUILD=$(BUILD_DIR)/sim_build/pyuvm_directed \
 		COCOTB_RESULTS_FILE=$(BUILD_DIR)/results/pyuvm/results_test_cdc_6_0.xml \
 		VERILOG_SOURCES="$(ALL_RTL_SOURCES)" \
 		SIM=$(SIM)
+
+STRESS_SIM_BUILD ?= $(BUILD_DIR)/sim_build/pyuvm_stress_$(SEED)
 
 test_stress:
 	@echo "--- Running XB-13 stress test (SEED=$(SEED), TRANS=$(shell echo $$(($(NUM_TRANS_PER_MASTER)*2)))) ---"
@@ -78,7 +80,7 @@ test_stress:
 	$(MAKE) -f $(PROJ_DIR)/tb/pyuvm/Makefile.single \
 		TOPLEVEL=amba_fabric_top \
 		MODULE=test_stress \
-		SIM_BUILD=$(BUILD_DIR)/sim_build/pyuvm_stress_$(SEED) \
+		SIM_BUILD=$(STRESS_SIM_BUILD) \
 		COCOTB_RESULTS_FILE=$(BUILD_DIR)/results/pyuvm/results_test_stress_$(SEED).xml \
 		VERILOG_SOURCES="$(ALL_RTL_SOURCES)" \
 		SIM=$(SIM)

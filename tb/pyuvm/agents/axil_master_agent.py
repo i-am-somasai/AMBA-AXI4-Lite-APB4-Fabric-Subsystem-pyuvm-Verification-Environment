@@ -48,14 +48,16 @@ class AxilDriver(uvm_driver):
                     data=item.data,
                     strb=item.strb,
                     prot=item.prot,
-                    order=item.order
+                    order=item.order,
+                    bready_delay=item.bready_delay
                 )
                 item.resp = resp
                 item.rdata = 0
             else:
                 rdata, resp = await self.raw_driver.read(
                     addr=item.addr,
-                    prot=item.prot
+                    prot=item.prot,
+                    rready_delay=item.rready_delay
                 )
                 item.rdata = rdata
                 item.resp = resp

@@ -126,8 +126,11 @@ TestStrobes = test_sys_strobe_patterns
 class test_xb12_reset_recovery(BaseFabricTest):
     """XB-12: Reset injected mid-flight across AW, W, B, AR, R phases, agent/scoreboard flush, and recovery."""
     async def _pulse_reset_and_flush(self, dut, in_flight_wr_addrs):
-        # Reset immediately and deassert valid signals from master agents
+        # Assert rst_n=0 BEFORE clearing raw driver outputs so ResetPhaseMonitor
+        # observes live valid/ready phases on the clocked reset edge, then flush.
         dut.rst_n.value = 0
+        await RisingEdge(dut.clk_sys)
+
         m0_flushed = self.env.m0_agent.driver.flush_pending()
         m1_flushed = self.env.m1_agent.driver.flush_pending()
         self.env.m0_agent.driver.raw_driver.init_signals()
@@ -138,7 +141,7 @@ class test_xb12_reset_recovery(BaseFabricTest):
                 wr_addrs.append(a)
         self.env.scoreboard.flush_on_reset(in_flight_wr_addrs=wr_addrs, preserve_ram=True)
 
-        for _ in range(5):
+        for _ in range(4):
             await RisingEdge(dut.clk_sys)
             assert int(dut.s0_axil_bvalid.value) == 0, "M0 bvalid must clear during reset"
             assert int(dut.s0_axil_rvalid.value) == 0, "M0 rvalid must clear during reset"
@@ -157,28 +160,34 @@ class test_xb12_reset_recovery(BaseFabricTest):
         dut = cocotb.top
 
         # Pre-seed RAM (0x5000_0050) and CSR SCRATCH (0x6000_0008) cleanly
-        init_seq = AxilBaseSeq("xb12_init")
-        init_seq.sequencer = self.env.m0_agent.sequencer
-        await init_seq.start(self.env.m0_agent.sequencer)  # harmless start check below
         seq_setup = ResetRecoverySeq("setup")
         await seq_setup.start(self.env.m0_agent.sequencer)
 
+        # Idle reset pulse (hits cg_reset.phase = idle)
+        await self._pulse_reset_and_flush(dut, [])
+
         # ------------------------------------------------------------------
-        # Scenario 1: AW in flight (AW accepted / locked by xbar, W not yet driven -> aw_done=1, wr_locked=1)
-        # Wait: drive AWVALID=1, WVALID=0 on M0 targeting RAM (0x5000_0054) until awready=1,
-        # OR capture mid-AWVALID if slave locked. Kills SMUT-14 if wr_locked/aw_done not reset!
+        # Scenario 1: AW in flight (M1 locks RAM write channel without WVALID;
+        # M0 drives s0_axil_awvalid=1 with s0_axil_awready=0 -> aw_in_flight)
         # ------------------------------------------------------------------
+        dut.s1_axil_awaddr.value = 0x50000050
+        dut.s1_axil_awprot.value = 0
+        dut.s1_axil_awvalid.value = 1
+        dut.s1_axil_wvalid.value = 0
+        dut.s1_axil_bready.value = 0
+        for _ in range(6):
+            await RisingEdge(dut.clk_sys)
+            if int(dut.s1_axil_awready.value) == 1:
+                dut.s1_axil_awvalid.value = 0
+                break
         dut.s0_axil_awaddr.value = 0x50000054
         dut.s0_axil_awprot.value = 0
         dut.s0_axil_awvalid.value = 1
         dut.s0_axil_wvalid.value = 0
         dut.s0_axil_bready.value = 0
-        for _ in range(10):
-            await RisingEdge(dut.clk_sys)
-            if int(dut.s0_axil_awready.value) == 1:
-                dut.s0_axil_awvalid.value = 0
-                break
-        await self._pulse_reset_and_flush(dut, [0x50000054])
+        await RisingEdge(dut.clk_sys)
+        assert int(dut.s0_axil_awvalid.value) == 1 and int(dut.s0_axil_awready.value) == 0
+        await self._pulse_reset_and_flush(dut, [0x50000050, 0x50000054])
 
         # Verify ref model marked interrupted write address UNKNOWN, and M1 can immediately claim S1
         assert (0x50000054 & ~0x3) in self.env.scoreboard.ref_model.unknown_words

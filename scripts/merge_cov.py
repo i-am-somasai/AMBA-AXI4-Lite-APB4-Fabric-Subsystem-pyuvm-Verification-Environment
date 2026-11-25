@@ -19,15 +19,27 @@ def merge_coverage(log_dir="docs/logs", pattern="cov_*.yaml"):
 
     merged_groups = {} # name -> {"type": ..., "size": int, "weight": int, "bins": {bin_key: hit_count}}
 
+    source_counts = {"top_level": 0, "block": 0, "legacy": 0}
+    file_sources = []
+
     for f in files:
         with open(f, "r") as fp:
             data = yaml.safe_load(fp)
             if not data:
                 continue
 
+            meta = data.get("_meta", {})
+            src = meta.get("source", "legacy") if isinstance(meta, dict) else "legacy"
+            allowed = meta.get("allowed_groups", ["all"]) if isinstance(meta, dict) else ["all"]
+            source_counts[src] = source_counts.get(src, 0) + 1
+            file_sources.append((f, src, allowed))
+
             for name, item in data.items():
-                if not isinstance(item, dict):
+                if name == "_meta" or not isinstance(item, dict):
                     continue
+                if src == "block" and "all" not in allowed:
+                    if not any(name == p or name.startswith(p + ".") for p in allowed):
+                        continue
                 # We care about CoverPoint and CoverCross (they have 'bins:_hits')
                 if "bins:_hits" in item:
                     if name not in merged_groups:
@@ -62,24 +74,25 @@ def merge_coverage(log_dir="docs/logs", pattern="cov_*.yaml"):
             "bins": grp["bins"]
         }
 
-        # Accumulate only top-level crosses or points without crosses to avoid double counting
         total_bins += g_size
         covered_bins += g_covered
 
     overall_pct = (covered_bins / total_bins * 100.0) if total_bins > 0 else 0.0
-    return total_bins, covered_bins, group_stats, files
+    return total_bins, covered_bins, group_stats, file_sources
 
 
-def generate_report(total_bins, covered_bins, group_stats, files, out_path="docs/logs/func_cov.log"):
+def generate_report(total_bins, covered_bins, group_stats, file_sources, out_path="docs/logs/func_cov.log"):
     overall_pct = (covered_bins / total_bins * 100.0) if total_bins > 0 else 0.0
+    proj_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
     lines = []
     lines.append("================================================================================")
     lines.append("               AMBA-FABRIC FUNCTIONAL COVERAGE REPORT (COCOTB-COVERAGE)         ")
     lines.append("================================================================================")
-    lines.append(f"Merged {len(files)} coverage database file(s):")
-    for f in files:
-        lines.append(f"  - {f}")
+    lines.append(f"Merged {len(file_sources)} coverage database file(s):")
+    for f, src, allowed in file_sources:
+        rel_f = os.path.relpath(os.path.abspath(f), proj_dir)
+        lines.append(f"  - {rel_f} [source={src}, groups={','.join(allowed)}]")
     lines.append("--------------------------------------------------------------------------------")
     lines.append(f"{'Covergroup / Metric':<35} | {'Bins':<8} | {'Covered':<8} | {'Coverage %':<10}")
     lines.append("--------------------------------------------------------------------------------")

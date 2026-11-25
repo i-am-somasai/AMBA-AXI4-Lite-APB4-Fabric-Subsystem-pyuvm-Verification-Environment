@@ -1,0 +1,1307 @@
+=== Generating Coverage Report ===
+================================================================================
+ Starting Full Verification Regression & Coverage Collection
+ Simulator: Verilator (with HDL Code Coverage & pyuvm Functional Coverage)
+ BUILD_DIR: ./build
+================================================================================
+make[1]: Entering directory './tb/pyuvm'
+rm -rf sim_build* ./build/sim_build/pyuvm_* ./build/results/pyuvm results*.xml dump.vcd *.vcd __pycache__
+make[1]: Leaving directory './tb/pyuvm'
+make[1]: Entering directory './tb/block'
+rm -rf sim_build* ./build/sim_build/block_* ./build/results/block results*.xml results.xml dump.vcd *.vcd __pycache__
+make[1]: Leaving directory './tb/block'
+>>> Step 1/4: Running pyuvm Directed & CDC Sweep Verification Suite...
+make[1]: Entering directory './tb/pyuvm'
+--- Running pyuvm directed tests (XB-09..XB-15, BR-04..BR-06) ---
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_directed \
+	SIM_BUILD=./build/sim_build/pyuvm_directed \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_directed.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_directed.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_directed.xml
+make[3]: Entering directory './tb/pyuvm'
+mkdir -p ./build/sim_build/pyuvm_directed
+~/oss-cad-suite/bin/verilator -cc --exe -Mdir ./build/sim_build/pyuvm_directed --top-module amba_fabric_top --timescale 1ns/1ps --vpi --public-flat-rw --prefix Vtop -o Vtop -LDFLAGS "-Wl,-rpath,~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -L~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -lcocotbvpi_verilator" -DCOCOTB_SIM --trace --coverage ./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/share/lib/verilator/verilator.cpp
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 1.324 MB sources in 19 modules, into 3.771 MB in 18 C++ files needing 0.000 MB
+- Verilator: Walltime 0.478 s (elab=0.026, cvt=0.381, bld=0.000); cpu 0.478 s on 1 threads; allocated 44.277 MB
+make -C ./build/sim_build/pyuvm_directed  -f Vtop.mk
+make[4]: Entering directory './build/sim_build/pyuvm_directed'
+g++  -I.  -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable  -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"     -Os  -c -o verilator.o ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/share/lib/verilator/verilator.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated.o ~/oss-cad-suite/share/verilator/include/verilated.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_dpi.o ~/oss-cad-suite/share/verilator/include/verilated_dpi.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_vpi.o ~/oss-cad-suite/share/verilator/include/verilated_vpi.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_cov.o ~/oss-cad-suite/share/verilator/include/verilated_cov.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_covergroup.o ~/oss-cad-suite/share/verilator/include/verilated_covergroup.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_rtmd.o ~/oss-cad-suite/share/verilator/include/verilated_rtmd.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_vcd_c.o ~/oss-cad-suite/share/verilator/include/verilated_vcd_c.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_threads.o ~/oss-cad-suite/share/verilator/include/verilated_threads.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -x c++-header Vtop__pch.h -o Vtop__pch.h.fast.gch
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -x c++-header Vtop__pch.h -o Vtop__pch.h.slow.gch
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.fast -c Vtop.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.fast -c Vtop___024root__0.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.fast -c Vtop___024root__1.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.fast -c Vtop___024root__2.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.fast -c Vtop__Dpi.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__ConstPool__0__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop___024root__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop___024root__0__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__Syms__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdActSetTable__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdDataTypeTable__0__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdDataTypeTable__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdGlobalTable__0__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdGlobalTable__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdVarTypeTable__0__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdVarTypeTable__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdHierTable__0__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdHierTable__Slow.cpp
+g++    -rdynamic verilator.o verilated.o verilated_dpi.o verilated_vpi.o verilated_cov.o verilated_covergroup.o verilated_rtmd.o verilated_vcd_c.o verilated_threads.o Vtop__ALL.a   -Wl,-rpath,~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -L~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -lcocotbvpi_verilator  -pthread -lpthread -latomic -ldl   -o Vtop
+rm Vtop__ALL.verilator_deplist.tmp
+make[4]: Leaving directory './build/sim_build/pyuvm_directed'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_directed.xml
+COCOTB_TEST_MODULES=test_directed COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_directed/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588179
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_directed.test_xb11_slverr_propagation (1/8)
+                                                            XB-11: SLVERR propagation from all subsystems.
+   920.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=8 Writes=4 Reads=4 Mismatches=0 ---
+   920.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+   920.00ns INFO     cocotb.regression                  test_directed.test_xb11_slverr_propagation passed
+   920.00ns INFO     cocotb.regression                  running test_directed.test_xb14_prot_passthrough (2/8)
+                                                            XB-14: AWPROT and ARPROT pass-through.
+  2020.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=16 Writes=8 Reads=8 Mismatches=0 ---
+  2020.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  2020.00ns INFO     cocotb.regression                  test_directed.test_xb14_prot_passthrough passed
+  2020.00ns INFO     cocotb.regression                  running test_directed.test_xb15_unaligned_address (3/8)
+                                                            XB-15: Unaligned address LSBs.
+  4370.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=25 Writes=5 Reads=20 Mismatches=0 ---
+  4370.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  4370.00ns INFO     cocotb.regression                  test_directed.test_xb15_unaligned_address passed
+  4370.00ns INFO     cocotb.regression                  running test_directed.test_sys_write_ordering (4/8)
+                                                            System-level write channel ordering test (AW first, W first, simultaneous).
+  4820.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=6 Writes=3 Reads=3 Mismatches=0 ---
+  4820.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  4820.00ns INFO     cocotb.regression                  test_directed.test_sys_write_ordering passed
+  4820.00ns INFO     cocotb.regression                  running test_directed.test_sys_strobe_patterns (5/8)
+                                                            System-level WSTRB patterns on RAM and CSR.
+  7040.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=96 Writes=64 Reads=32 Mismatches=0 ---
+  7040.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  7040.00ns INFO     cocotb.regression                  test_directed.test_sys_strobe_patterns passed
+  7040.00ns INFO     cocotb.regression                  running test_directed.test_xb12_reset_recovery (6/8)
+                                                            XB-12: Reset injected mid-flight across AW, W, B, AR, R phases, agent/scoreboard flush, and recovery.
+  8480.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=8 Writes=4 Reads=4 Mismatches=0 ---
+  8480.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  8480.00ns INFO     cocotb.regression                  test_directed.test_xb12_reset_recovery passed
+  8480.00ns INFO     cocotb.regression                  running test_directed.test_sys_contention (7/8)
+                                                            System-level dual-master contention on RAM.
+  8890.01ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=4 Writes=2 Reads=2 Mismatches=0 ---
+  8890.01ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+  8890.01ns INFO     cocotb.regression                  test_directed.test_sys_contention passed
+  8890.01ns INFO     cocotb.regression                  running test_directed.TestCoverageClosure (8/8)
+                                                            Phase 5: Functional coverage closure exercising all Section 10 covergroups.
+135230.01ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=359 Writes=214 Reads=145 Mismatches=0 ---
+135230.01ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_directed_seed_0.yaml
+135230.01ns INFO     cocotb.regression                  test_directed.TestCoverageClosure passed
+135230.01ns INFO     cocotb.regression                  ****************************************************************************************************
+                                                        ** TEST                                        STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ****************************************************************************************************
+                                                        ** test_directed.test_xb11_slverr_propagation   PASS         920.00           0.17       5574.94  **
+                                                        ** test_directed.test_xb14_prot_passthrough     PASS        1100.00           0.16       7071.44  **
+                                                        ** test_directed.test_xb15_unaligned_address    PASS        2350.00           0.18      13401.06  **
+                                                        ** test_directed.test_sys_write_ordering        PASS         450.00           0.10       4489.03  **
+                                                        ** test_directed.test_sys_strobe_patterns       PASS        2220.00           0.16      13561.72  **
+                                                        ** test_directed.test_xb12_reset_recovery       PASS        1440.00           0.12      12260.64  **
+                                                        ** test_directed.test_sys_contention            PASS         410.00           0.09       4377.47  **
+                                                        ** test_directed.TestCoverageClosure            PASS      126340.00           3.14      40210.92  **
+                                                        ****************************************************************************************************
+                                                        ** TESTS=8 PASS=8 FAIL=0 SKIP=0                           135230.01           4.15      32580.23  **
+                                                        ****************************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+--- Running CDC sweeps across clock ratios and phases ---
+CLK_SLOW_PERIOD_NS=10.3 CLK_SLOW_PHASE_NS=2.5 SEED=103 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_directed \
+	TESTCASE=TestCoverageClosure \
+	SIM_BUILD=./build/sim_build/pyuvm_directed \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_cdc_10_3.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_cdc_10_3.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_cdc_10_3.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using TESTCASE is deprecated, please use COCOTB_TESTCASE instead.
+rm -f ./build/results/pyuvm/results_test_cdc_10_3.xml
+COCOTB_TEST_MODULES=test_directed COCOTB_TESTCASE=TestCoverageClosure COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_directed/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588187
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns WARNING  py.warnings                        ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/_init.py:103: DeprecationWarning: COCOTB_TESTCASE is deprecated in favor of COCOTB_TEST_FILTER
+                                                          _setup_regression_manager()
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_directed.TestCoverageClosure (1/1)
+                                                            Phase 5: Functional coverage closure exercising all Section 10 covergroups.
+122300.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=359 Writes=214 Reads=145 Mismatches=0 ---
+122300.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_TestCoverageClosure_seed_103.yaml
+122300.00ns INFO     cocotb.regression                  test_directed.TestCoverageClosure passed
+122300.00ns INFO     cocotb.regression                  *******************************************************************************************
+                                                        ** TEST                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************
+                                                        ** test_directed.TestCoverageClosure   PASS      122300.00           3.27      37422.59  **
+                                                        *******************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                  122300.00           3.31      36905.81  **
+                                                        *******************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+CLK_SLOW_PERIOD_NS=6.0 CLK_SLOW_PHASE_NS=1.2 SEED=60 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_directed \
+	TESTCASE=TestCoverageClosure \
+	SIM_BUILD=./build/sim_build/pyuvm_directed \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_cdc_6_0.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_cdc_6_0.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_cdc_6_0.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using TESTCASE is deprecated, please use COCOTB_TESTCASE instead.
+rm -f ./build/results/pyuvm/results_test_cdc_6_0.xml
+COCOTB_TEST_MODULES=test_directed COCOTB_TESTCASE=TestCoverageClosure COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_directed/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588194
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns WARNING  py.warnings                        ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/_init.py:103: DeprecationWarning: COCOTB_TESTCASE is deprecated in favor of COCOTB_TEST_FILTER
+                                                          _setup_regression_manager()
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_directed.TestCoverageClosure (1/1)
+                                                            Phase 5: Functional coverage closure exercising all Section 10 covergroups.
+121360.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=359 Writes=214 Reads=145 Mismatches=0 ---
+121360.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_TestCoverageClosure_seed_60.yaml
+121360.00ns INFO     cocotb.regression                  test_directed.TestCoverageClosure passed
+121360.00ns INFO     cocotb.regression                  *******************************************************************************************
+                                                        ** TEST                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************
+                                                        ** test_directed.TestCoverageClosure   PASS      121360.00           3.61      33590.95  **
+                                                        *******************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                  121360.00           3.67      33029.39  **
+                                                        *******************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+>>> Step 2/4: Running Block-Level Bridge Tests (cg_apb wait states & PSTRB=0)...
+make[1]: Entering directory './tb/block'
+--- Running test_axil2apb_bridge (BR-01..BR-03) ---
+make -f ./tb/block/Makefile.single \
+	TOPLEVEL=axil2apb_bridge \
+	MODULE=test_axil2apb_bridge \
+	VERILOG_SOURCES=./rtl/apb/axil2apb_bridge.v \
+	SIM=verilator
+make[2]: Entering directory './tb/block'
+rm -f ./build/results/block/results_test_axil2apb_bridge.xml
+"make" -f ./tb/block/Makefile.single ./build/results/block/results_test_axil2apb_bridge.xml
+make[3]: Entering directory './tb/block'
+mkdir -p ./build/sim_build/block_axil2apb_bridge
+~/oss-cad-suite/bin/verilator -cc --exe -Mdir ./build/sim_build/block_axil2apb_bridge --top-module axil2apb_bridge --timescale 1ns/1ps --vpi --public-flat-rw --prefix Vtop -o Vtop -LDFLAGS "-Wl,-rpath,~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -L~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -lcocotbvpi_verilator" -DCOCOTB_SIM --coverage ./rtl/apb/axil2apb_bridge.v ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/share/lib/verilator/verilator.cpp
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 0.038 MB sources in 3 modules, into 0.171 MB in 6 C++ files needing 0.000 MB
+- Verilator: Walltime 0.015 s (elab=0.001, cvt=0.008, bld=0.000); cpu 0.015 s on 1 threads; allocated 21.410 MB
+make -C ./build/sim_build/block_axil2apb_bridge  -f Vtop.mk
+make[4]: Entering directory './build/sim_build/block_axil2apb_bridge'
+g++  -I.  -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable  -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"     -Os  -c -o verilator.o ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/share/lib/verilator/verilator.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated.o ~/oss-cad-suite/share/verilator/include/verilated.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_dpi.o ~/oss-cad-suite/share/verilator/include/verilated_dpi.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_vpi.o ~/oss-cad-suite/share/verilator/include/verilated_vpi.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_cov.o ~/oss-cad-suite/share/verilator/include/verilated_cov.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_covergroup.o ~/oss-cad-suite/share/verilator/include/verilated_covergroup.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_threads.o ~/oss-cad-suite/share/verilator/include/verilated_threads.cpp
+python3 ~/oss-cad-suite/share/verilator/bin/verilator_includer -DVL_INCLUDE_OPT=include Vtop.cpp Vtop___024root__0.cpp Vtop__Dpi.cpp Vtop___024root__Slow.cpp Vtop___024root__0__Slow.cpp Vtop__Syms__Slow.cpp > Vtop__ALL.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o Vtop__ALL.o Vtop__ALL.cpp
+g++    -rdynamic verilator.o verilated.o verilated_dpi.o verilated_vpi.o verilated_cov.o verilated_covergroup.o verilated_threads.o Vtop__ALL.a   -Wl,-rpath,~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -L~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -lcocotbvpi_verilator  -pthread -lpthread -latomic -ldl   -o Vtop
+rm Vtop__ALL.verilator_deplist.tmp
+make[4]: Leaving directory './build/sim_build/block_axil2apb_bridge'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/block/results_test_axil2apb_bridge.xml
+COCOTB_TEST_MODULES=test_axil2apb_bridge COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=axil2apb_bridge TOPLEVEL_LANG=verilog \
+         ./build/sim_build/block_axil2apb_bridge/Vtop  -DCOCOTB_SIM --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588216
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_axil2apb_bridge.test_br01_single_rw_zero_wait (1/7)
+                                                            BR-01: Verify single write and read with zero wait states.
+  1540.00ns INFO     cocotb.regression                  test_axil2apb_bridge.test_br01_single_rw_zero_wait passed
+  1540.00ns INFO     cocotb.regression                  running test_axil2apb_bridge.test_br02_wait_states (2/7)
+                                                            BR-02: Verify APB wait states (PREADY delayed 1..4 cycles).
+  2040.00ns INFO     cocotb.regression                  test_axil2apb_bridge.test_br02_wait_states passed
+  2040.00ns INFO     cocotb.regression                  running test_axil2apb_bridge.test_br03_pslverr_propagation (3/7)
+                                                            BR-03: Verify PSLVERR propagation to AXI-Lite SLVERR (2'b10).
+  2200.00ns INFO     cocotb.regression                  test_axil2apb_bridge.test_br03_pslverr_propagation passed
+  2200.00ns INFO     cocotb.regression                  running test_axil2apb_bridge.test_br04_pstrb_patterns (4/7)
+                                                            BR-04: Verify PSTRB patterns match WSTRB at bridge level.
+  2740.00ns INFO     cocotb.regression                  test_axil2apb_bridge.test_br04_pstrb_patterns passed
+  2740.00ns INFO     cocotb.regression                  running test_axil2apb_bridge.test_br05_back_to_back_mixed_rw (5/7)
+                                                            BR-05: Back-to-back mixed read/write transfers, verify single-outstanding arbitration and no starvation.
+  4100.00ns INFO     cocotb.regression                  test_axil2apb_bridge.test_br05_back_to_back_mixed_rw passed
+  4100.00ns INFO     cocotb.regression                  running test_axil2apb_bridge.test_br06_delayed_w_no_early_psel (6/7)
+                                                            BR-06: Write with W arriving long after AW; assert PSEL never rises before W arrives.
+  4360.01ns INFO     cocotb.regression                  test_axil2apb_bridge.test_br06_delayed_w_no_early_psel passed
+  4360.01ns INFO     cocotb.regression                  running test_axil2apb_bridge.test_br07_apb_wait_err_cov (7/7)
+                                                            BR-07: Exercise APB wait states (0, 1, 2-4, 5+), PSLVERR, PSTRB classes, and W-before-AW ordering.
+  6030.01ns INFO     cocotb.regression                  test_axil2apb_bridge.test_br07_apb_wait_err_cov passed
+  6030.01ns INFO     cocotb.regression                  ****************************************************************************************************************
+                                                        ** TEST                                                    STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ****************************************************************************************************************
+                                                        ** test_axil2apb_bridge.test_br01_single_rw_zero_wait       PASS        1540.00           0.02      76888.25  **
+                                                        ** test_axil2apb_bridge.test_br02_wait_states               PASS         500.00           0.00     151769.58  **
+                                                        ** test_axil2apb_bridge.test_br03_pslverr_propagation       PASS         160.00           0.00     149363.15  **
+                                                        ** test_axil2apb_bridge.test_br04_pstrb_patterns            PASS         540.00           0.01      99842.37  **
+                                                        ** test_axil2apb_bridge.test_br05_back_to_back_mixed_rw     PASS        1360.00           0.01     158323.95  **
+                                                        ** test_axil2apb_bridge.test_br06_delayed_w_no_early_psel   PASS         260.00           0.00     128402.10  **
+                                                        ** test_axil2apb_bridge.test_br07_apb_wait_err_cov          PASS        1670.00           0.12      14467.63  **
+                                                        ****************************************************************************************************************
+                                                        ** TESTS=7 PASS=7 FAIL=0 SKIP=0                                         6030.01           0.17      34666.46  **
+                                                        ****************************************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/block'
+make[2]: Leaving directory './tb/block'
+make[1]: Leaving directory './tb/block'
+>>> Step 3/4: Running 20-Seed Stress Regression (5000*2 txns/seed)...
+    -> Running Seed 1 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=1, TRANS=10000) ---
+SEED=1 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_1.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_1.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_1.xml
+make[3]: Entering directory './tb/pyuvm'
+mkdir -p ./build/sim_build/pyuvm_stress_cov
+~/oss-cad-suite/bin/verilator -cc --exe -Mdir ./build/sim_build/pyuvm_stress_cov --top-module amba_fabric_top --timescale 1ns/1ps --vpi --public-flat-rw --prefix Vtop -o Vtop -LDFLAGS "-Wl,-rpath,~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -L~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -lcocotbvpi_verilator" -DCOCOTB_SIM --trace --coverage ./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/share/lib/verilator/verilator.cpp
+- V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+- Verilator: Built from 1.324 MB sources in 19 modules, into 3.771 MB in 18 C++ files needing 0.000 MB
+- Verilator: Walltime 0.513 s (elab=0.032, cvt=0.407, bld=0.000); cpu 0.513 s on 1 threads; allocated 44.348 MB
+make -C ./build/sim_build/pyuvm_stress_cov  -f Vtop.mk
+make[4]: Entering directory './build/sim_build/pyuvm_stress_cov'
+g++  -I.  -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable  -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"     -Os  -c -o verilator.o ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/share/lib/verilator/verilator.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated.o ~/oss-cad-suite/share/verilator/include/verilated.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_dpi.o ~/oss-cad-suite/share/verilator/include/verilated_dpi.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_vpi.o ~/oss-cad-suite/share/verilator/include/verilated_vpi.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_cov.o ~/oss-cad-suite/share/verilator/include/verilated_cov.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_covergroup.o ~/oss-cad-suite/share/verilator/include/verilated_covergroup.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_rtmd.o ~/oss-cad-suite/share/verilator/include/verilated_rtmd.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_vcd_c.o ~/oss-cad-suite/share/verilator/include/verilated_vcd_c.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -o verilated_threads.o ~/oss-cad-suite/share/verilator/include/verilated_threads.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -x c++-header Vtop__pch.h -o Vtop__pch.h.fast.gch
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -c -x c++-header Vtop__pch.h -o Vtop__pch.h.slow.gch
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.fast -c Vtop.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.fast -c Vtop___024root__0.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.fast -c Vtop___024root__1.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.fast -c Vtop___024root__2.cpp
+g++ -Os -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.fast -c Vtop__Dpi.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__ConstPool__0__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop___024root__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop___024root__0__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__Syms__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdActSetTable__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdDataTypeTable__0__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdDataTypeTable__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdGlobalTable__0__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdGlobalTable__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdVarTypeTable__0__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdVarTypeTable__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdHierTable__0__Slow.cpp
+g++  -I. -MMD -I~/oss-cad-suite/share/verilator/include -I~/oss-cad-suite/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=1 -DVM_SC=0 -DVM_TIMING=0 -DVM_DPI=1 -DVM_TRACE=1 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=1 -DVM_TRACE_SAIF=0 -DVM_VPI=1 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -DVM_PREFIX_INCLUDE="<Vtop.h>" -DVM_PREFIX=Vtop -DVM_PREFIX_INCLUDE_DPI="<Vtop__Dpi.h>"  -include Vtop__pch.h.slow -c Vtop__RtmdHierTable__Slow.cpp
+g++    -rdynamic verilator.o verilated.o verilated_dpi.o verilated_vpi.o verilated_cov.o verilated_covergroup.o verilated_rtmd.o verilated_vcd_c.o verilated_threads.o Vtop__ALL.a   -Wl,-rpath,~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -L~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -lcocotbvpi_verilator  -pthread -lpthread -latomic -ldl   -o Vtop
+rm Vtop__ALL.verilator_deplist.tmp
+make[4]: Leaving directory './build/sim_build/pyuvm_stress_cov'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_1.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588249
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=1 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+455200.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+455200.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5060 Reads=4940 Mismatches=0 ---
+455200.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_1.yaml
+455200.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+455200.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      455200.00          14.13      32220.57  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             455200.00          14.13      32210.45  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 2 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=2, TRANS=10000) ---
+SEED=2 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_2.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_2.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_2.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_2.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588267
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=2 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+465490.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+465490.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5063 Reads=4937 Mismatches=0 ---
+465490.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_2.yaml
+465490.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+465490.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      465490.00          14.14      32913.28  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             465490.00          14.15      32903.18  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 3 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=3, TRANS=10000) ---
+SEED=3 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_3.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_3.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_3.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_3.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588285
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=3 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+462540.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+462540.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4921 Reads=5079 Mismatches=0 ---
+462540.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_3.yaml
+462540.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+462540.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      462540.00          14.35      32232.76  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             462540.00          14.35      32222.90  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 4 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=4, TRANS=10000) ---
+SEED=4 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_4.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_4.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_4.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_4.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588302
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=4 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+469520.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+469520.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4953 Reads=5047 Mismatches=0 ---
+469520.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_4.yaml
+469520.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+469520.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      469520.00          14.24      32976.04  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             469520.00          14.24      32965.80  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 5 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=5, TRANS=10000) ---
+SEED=5 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_5.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_5.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_5.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_5.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588320
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=5 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+457800.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+457800.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5027 Reads=4973 Mismatches=0 ---
+457800.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_5.yaml
+457800.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+457800.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      457800.00          13.97      32764.26  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             457800.00          13.98      32753.74  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 6 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=6, TRANS=10000) ---
+SEED=6 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_6.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_6.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_6.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_6.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588338
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=6 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+466470.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+466470.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5000 Reads=5000 Mismatches=0 ---
+466470.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_6.yaml
+466470.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+466470.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      466470.00          14.10      33081.36  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             466470.00          14.11      33070.76  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 7 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=7, TRANS=10000) ---
+SEED=7 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_7.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_7.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_7.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_7.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588355
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=7 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+468740.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+468740.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5028 Reads=4972 Mismatches=0 ---
+468740.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_7.yaml
+468740.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+468740.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      468740.00          14.39      32582.70  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             468740.00          14.39      32572.73  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 8 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=8, TRANS=10000) ---
+SEED=8 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_8.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_8.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_8.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_8.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588373
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=8 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+452610.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+452610.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4958 Reads=5042 Mismatches=0 ---
+452610.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_8.yaml
+452610.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+452610.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      452610.00          14.10      32099.42  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             452610.00          14.10      32089.39  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 9 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=9, TRANS=10000) ---
+SEED=9 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_9.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_9.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_9.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_9.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588391
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=9 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+460160.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+460160.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4958 Reads=5042 Mismatches=0 ---
+460160.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_9.yaml
+460160.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+460160.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      460160.00          14.02      32819.64  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             460160.00          14.03      32809.56  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 10 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=10, TRANS=10000) ---
+SEED=10 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_10.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_10.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_10.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_10.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588408
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=10 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+465320.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+465320.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5049 Reads=4951 Mismatches=0 ---
+465320.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_10.yaml
+465320.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+465320.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      465320.00          14.41      32297.97  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             465320.00          14.41      32288.08  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 11 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=11, TRANS=10000) ---
+SEED=11 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_11.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_11.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_11.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_11.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588426
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=11 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+454540.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+454540.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5041 Reads=4959 Mismatches=0 ---
+454540.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_11.yaml
+454540.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+454540.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      454540.00          13.91      32680.20  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             454540.00          13.91      32669.84  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 12 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=12, TRANS=10000) ---
+SEED=12 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_12.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_12.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_12.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_12.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588443
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=12 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+464020.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+464020.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5009 Reads=4991 Mismatches=0 ---
+464020.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_12.yaml
+464020.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+464020.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      464020.00          14.15      32802.72  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             464020.00          14.15      32792.42  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 13 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=13, TRANS=10000) ---
+SEED=13 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_13.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_13.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_13.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_13.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588461
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=13 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+472010.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+472010.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5017 Reads=4983 Mismatches=0 ---
+472010.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_13.yaml
+472010.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+472010.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      472010.00          14.30      32998.80  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             472010.00          14.31      32988.70  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 14 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=14, TRANS=10000) ---
+SEED=14 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_14.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_14.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_14.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_14.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588479
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=14 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+462340.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+462340.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5008 Reads=4992 Mismatches=0 ---
+462340.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_14.yaml
+462340.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+462340.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      462340.00          14.09      32811.75  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             462340.00          14.10      32801.32  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 15 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=15, TRANS=10000) ---
+SEED=15 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_15.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_15.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_15.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_15.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588496
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=15 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+471260.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+471260.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4998 Reads=5002 Mismatches=0 ---
+471260.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_15.yaml
+471260.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+471260.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      471260.00          14.36      32820.60  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             471260.00          14.36      32810.60  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 16 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=16, TRANS=10000) ---
+SEED=16 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_16.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_16.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_16.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_16.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588514
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=16 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+446280.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+446280.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5031 Reads=4969 Mismatches=0 ---
+446280.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_16.yaml
+446280.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+446280.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      446280.00          13.74      32486.43  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             446280.00          13.74      32476.09  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 17 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=17, TRANS=10000) ---
+SEED=17 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_17.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_17.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_17.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_17.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588531
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=17 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+455230.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+455230.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5011 Reads=4989 Mismatches=0 ---
+455230.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_17.yaml
+455230.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+455230.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      455230.00          14.09      32310.20  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             455230.00          14.09      32300.24  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 18 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=18, TRANS=10000) ---
+SEED=18 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_18.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_18.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_18.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_18.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588549
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=18 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+468940.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+468940.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4984 Reads=5016 Mismatches=0 ---
+468940.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_18.yaml
+468940.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+468940.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      468940.00          14.21      32991.75  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             468940.00          14.22      32981.55  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 19 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=19, TRANS=10000) ---
+SEED=19 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_19.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_19.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_19.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_19.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588567
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=19 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+468940.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+468940.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5033 Reads=4967 Mismatches=0 ---
+468940.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_19.yaml
+468940.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+468940.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      468940.00          14.18      33073.08  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             468940.00          14.18      33063.04  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+    -> Running Seed 20 (10000 concurrent transactions)...
+make[1]: Entering directory './tb/pyuvm'
+--- Running XB-13 stress test (SEED=20, TRANS=10000) ---
+SEED=20 NUM_TRANS_PER_MASTER=5000 \
+make -f ./tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_stress \
+	SIM_BUILD=./build/sim_build/pyuvm_stress_cov \
+	COCOTB_RESULTS_FILE=./build/results/pyuvm/results_test_stress_20.xml \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=verilator
+make[2]: Entering directory './tb/pyuvm'
+rm -f ./build/results/pyuvm/results_test_stress_20.xml
+"make" -f ./tb/pyuvm/Makefile.single ./build/results/pyuvm/results_test_stress_20.xml
+make[3]: Entering directory './tb/pyuvm'
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.verilator:69: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/pyuvm/results_test_stress_20.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ./build/sim_build/pyuvm_stress_cov/Vtop  -DCOCOTB_SIM --trace --coverage   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Verilator version 5.055 devel
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795588584
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=20 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+445620.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+445620.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5040 Reads=4960 Mismatches=0 ---
+445620.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: ./docs/logs/cov_test_stress_seed_20.yaml
+445620.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+445620.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      445620.00          13.86      32139.95  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             445620.00          13.87      32129.72  **
+                                                        **************************************************************************************
+- (null):0: Verilog $finish
+make[3]: Leaving directory './tb/pyuvm'
+make[2]: Leaving directory './tb/pyuvm'
+make[1]: Leaving directory './tb/pyuvm'
+>>> Step 4/4: Merging Code & Functional Coverage Reports...
+Coverage Summary:
+  line      :  92.0% (  494/  537)
+  toggle    :  74.8% (10616/14202)
+  branch    :  91.2% (  499/  547)
+  expr      :  93.8% ( 1036/ 1105)
+  fsm_state : 100.0% (    5/    5)
+  fsm_arc   :  25.0% (    1/    4)
+Coverage Summary:
+  line      :  92.0% (  494/  537)
+  toggle    :  74.8% (10616/14202)
+  branch    :  91.2% (  499/  547)
+  expr      :  93.8% ( 1036/ 1105)
+  fsm_state : 100.0% (    5/    5)
+  fsm_arc   :  25.0% (    1/    4)
+Annotation Summary:
+  lines with all attached points covered : 78.8%  (1268/1609)
+See lines with '%00' in ./docs/logs/code_cov
+================================================================================
+               AMBA-FABRIC FUNCTIONAL COVERAGE REPORT (COCOTB-COVERAGE)         
+================================================================================
+Merged 24 coverage database file(s):
+  - ./docs/logs/cov_TestCoverageClosure_seed_103.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_TestCoverageClosure_seed_60.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_bridge_block.yaml [source=block, groups=cg_apb]
+  - ./docs/logs/cov_test_directed_seed_0.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_1.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_10.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_11.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_12.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_13.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_14.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_15.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_16.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_17.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_18.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_19.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_2.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_20.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_3.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_4.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_5.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_6.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_7.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_8.yaml [source=top_level, groups=all]
+  - ./docs/logs/cov_test_stress_seed_9.yaml [source=top_level, groups=all]
+--------------------------------------------------------------------------------
+Covergroup / Metric                 | Bins     | Covered  | Coverage %
+--------------------------------------------------------------------------------
+cg_apb.err                          | 2        | 2        |   100.00%
+cg_apb.op                           | 2        | 2        |   100.00%
+cg_apb.strb_class                   | 4        | 4        |   100.00%
+cg_apb.strb_cross                   | 5        | 5        |   100.00%
+cg_apb.wait                         | 4        | 4        |   100.00%
+cg_apb.wait_cross                   | 16       | 16       |   100.00%
+cg_backpressure.bucket              | 4        | 4        |   100.00%
+cg_backpressure.channel             | 5        | 5        |   100.00%
+cg_backpressure.cross               | 20       | 20       |   100.00%
+cg_cdc.cross                        | 12       | 12       |   100.00%
+cg_cdc.occupancy                    | 2        | 2        |   100.00%
+cg_cdc.op                           | 2        | 2        |   100.00%
+cg_cdc.ratio                        | 3        | 3        |   100.00%
+cg_contention.combo                 | 3        | 3        |   100.00%
+cg_contention.cross                 | 6        | 6        |   100.00%
+cg_contention.type                  | 3        | 3        |   100.00%
+cg_order.cross                      | 12       | 12       |   100.00%
+cg_order.order                      | 3        | 3        |   100.00%
+cg_order.target                     | 4        | 4        |   100.00%
+cg_reset.phase                      | 5        | 5        |   100.00%
+cg_txn.cross                        | 36       | 36       |   100.00%
+cg_txn.master                       | 2        | 2        |   100.00%
+cg_txn.op                           | 2        | 2        |   100.00%
+cg_txn.resp                         | 3        | 3        |   100.00%
+cg_txn.target                       | 5        | 5        |   100.00%
+cg_uart.baud                        | 3        | 3        |   100.00%
+cg_uart.cross                       | 9        | 9        |   100.00%
+cg_uart.err                         | 3        | 3        |   100.00%
+cg_uart.fifo                        | 3        | 3        |   100.00%
+cg_wstrb.cross                      | 64       | 64       |   100.00%
+cg_wstrb.strb                       | 16       | 16       |   100.00%
+cg_wstrb.target                     | 4        | 4        |   100.00%
+================================================================================
+OVERALL AGGREGATE COVERAGE          | 267      | 267      |   100.00%
+================================================================================
+
+*** ZERO HOLES DETECTED: 100% COVERAGE ACHIEVED ***
+
+Report saved to: docs/logs/func_cov.log
+================================================================================
+ Regression & Coverage Collection Complete!
+ Results available in ./docs/logs/
+================================================================================
