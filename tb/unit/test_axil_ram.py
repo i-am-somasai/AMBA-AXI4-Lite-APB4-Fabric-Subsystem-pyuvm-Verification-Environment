@@ -64,25 +64,34 @@ async def test_axil_ram_operations(dut):
     assert rdata == 0xBBCCAA55, f"Expected 0xBBCCAA55, got {rdata:#x}"
 
     # 3. Comprehensive full-depth memory sweep across all 256 words
-    # Pass A: Write distinct non-zero walking pattern to every single word
+    # Pass A: Write distinct non-zero walking pattern to every single word, wait odd cycle, read back
     for idx in range(256):
         w_addr = 0x5000_0000 + (idx * 4)
         val = ((idx * 0x01010101) ^ 0xA55A3CC3) & 0xFFFFFFFF
         resp = await driver.write(w_addr, val, strb=0xF)
         assert resp == RESP_OKAY, f"Write failed at word {idx}"
+    await RisingEdge(dut.clk)  # Break even-cycle write-to-read parity against DFF Q oscillating mutants
     for idx in range(256):
         w_addr = 0x5000_0000 + (idx * 4)
         expected = ((idx * 0x01010101) ^ 0xA55A3CC3) & 0xFFFFFFFF
         rdata, rresp = await driver.read(w_addr)
         assert rresp == RESP_OKAY
         assert rdata == expected, f"RAM mismatch at word {idx}: expected {expected:#x}, got {rdata:#x}"
+        # Re-read immediately at +0 extra idle cycles (even/odd cycle cross-check)
+        if idx in (16, 44, 48, 123, 163, 208, 224):
+            await RisingEdge(dut.clk)
+            rdata2, rresp2 = await driver.read(w_addr)
+            assert rresp2 == RESP_OKAY and rdata2 == expected, (
+                f"RAM 1-cycle retention parity fail at word {idx}: expected {expected:#x}, got {rdata2:#x}"
+            )
 
-    # Pass B: Write inverted bitwise complement to every word
+    # Pass B: Write inverted bitwise complement to every word, wait odd cycle, read back
     for idx in range(256):
         w_addr = 0x5000_0000 + (idx * 4)
         val = (~((idx * 0x01010101) ^ 0xA55A3CC3)) & 0xFFFFFFFF
         resp = await driver.write(w_addr, val, strb=0xF)
         assert resp == RESP_OKAY
+    await RisingEdge(dut.clk)
     for idx in range(256):
         w_addr = 0x5000_0000 + (idx * 4)
         expected = (~((idx * 0x01010101) ^ 0xA55A3CC3)) & 0xFFFFFFFF
@@ -90,16 +99,34 @@ async def test_axil_ram_operations(dut):
         assert rresp == RESP_OKAY
         assert rdata == expected, f"RAM complement mismatch at word {idx}: expected {expected:#x}, got {rdata:#x}"
 
-    # Pass C: Write all zeros to detect any stuck-at-1 bits across memory words
+    # Pass C: Write all zeros to detect stuck-at-1 bits across memory words + odd-cycle retention check
     for idx in range(256):
         w_addr = 0x5000_0000 + (idx * 4)
         resp = await driver.write(w_addr, 0x00000000, strb=0xF)
         assert resp == RESP_OKAY
+    await RisingEdge(dut.clk)
     for idx in range(256):
         w_addr = 0x5000_0000 + (idx * 4)
         rdata, rresp = await driver.read(w_addr)
         assert rresp == RESP_OKAY
         assert rdata == 0, f"Stuck-at-1 bit detected at word {idx}: expected 0, got {rdata:#x}"
+
+    # 3b. Exhaustive 16 WSTRB patterns across simultaneous, aw_first, and w_first orders
+    for ord_mode in ("simultaneous", "aw_first", "w_first"):
+        for strb in range(16):
+            target_addr = 0x5000_0040 + ((strb % 4) * 4)
+            await driver.write(target_addr, 0xA5A55A5A, strb=0xF)
+            wdata = 0x13579BDF ^ (strb * 0x01010101)
+            resp = await driver.write(target_addr, wdata, strb=strb, order=ord_mode)
+            assert resp == RESP_OKAY
+            exp = 0
+            for b in range(4):
+                m = 0xFF << (8 * b)
+                exp |= (wdata & m) if ((strb >> b) & 1) else (0xA5A55A5A & m)
+            rdata, rresp = await driver.read(target_addr)
+            assert rresp == RESP_OKAY and rdata == exp, (
+                f"RAM {ord_mode} strb={strb:#x} mismatch: expected {exp:#x}, got {rdata:#x}"
+            )
 
     # 4. Out-of-order write handshakes: W before AW (w_first)
     dut.s_axil_wdata.value = 0x12345678
@@ -150,11 +177,16 @@ async def test_axil_ram_operations(dut):
     assert rresp == RESP_OKAY and rdata == 0x87654321, "aw_first write data mismatch"
 
     # 6. Out-of-range tests (RAM_DEPTH=256 words -> offset 256*4 = 0x400)
+    # First read all-ones word so residual s_axil_rdata bits are non-zero before OOR read
+    await driver.write(0x5000_0000, 0xFFFFFFFF, strb=0xF)
+    rdata_ones, rresp_ones = await driver.read(0x5000_0000)
+    assert rresp_ones == RESP_OKAY and rdata_ones == 0xFFFFFFFF
+
     oor_addr = 0x5000_0400
-    resp = await driver.write(oor_addr, 0xBAD0BAD0, strb=0xF)
+    resp = await driver.write(oor_addr, 0xBAD0BAD0, strb=0xF, bready_delay=3)
     assert resp == RESP_SLVERR, f"Expected SLVERR on OOR write, got {resp:#b}"
 
-    rdata, rresp = await driver.read(oor_addr)
+    rdata, rresp = await driver.read(oor_addr, rready_delay=3)
     assert rresp == RESP_SLVERR, f"Expected SLVERR on OOR read, got {rresp:#b}"
     assert rdata == 0, f"Expected rdata=0 on OOR read, got {rdata:#x}"
 

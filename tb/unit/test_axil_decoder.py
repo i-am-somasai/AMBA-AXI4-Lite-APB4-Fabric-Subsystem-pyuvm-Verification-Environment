@@ -34,14 +34,36 @@ async def test_axil_decoder_all(dut):
         (0x0000_0000, 0b0000, 1),
         (0x1000_0000, 0b0000, 1),
         (0x3FFF_FFFF, 0b0000, 1),
+        # Bit-adjacent unmapped addresses just outside each slave mask
         (0x4001_0000, 0b0000, 1),
+        (0x4FFF_FFFC, 0b0000, 1),
         (0x5000_1000, 0b0000, 1),
+        (0x5001_0000, 0b0000, 1),
         (0x6000_0100, 0b0000, 1),
+        (0x6001_0000, 0b0000, 1),
         (0x7000_0100, 0b0000, 1),
+        (0x7001_0000, 0b0000, 1),
         (0x8000_0000, 0b0000, 1),
         (0xDEAD_BEEF, 0b0000, 1),
         (0xFFFF_FFFC, 0b0000, 1),
     ]
+
+    # Add walking single-bit flips around S0..S3 bases across bits [8..31]
+    regions = [
+        (0x4000_0000, 0xFFFF_0000, 0b0001),
+        (0x5000_0000, 0xFFFF_F000, 0b0010),
+        (0x6000_0000, 0xFFFF_FF00, 0b0100),
+        (0x7000_0000, 0xFFFF_FF00, 0b1000),
+    ]
+    for base, _mask, _sel in regions:
+        for bit in range(8, 32):
+            probe = base ^ (1 << bit)
+            exp_sel, exp_err = 0b0000, 1
+            for r_base, r_mask, r_sel in regions:
+                if (probe & r_mask) == r_base:
+                    exp_sel, exp_err = r_sel, 0
+                    break
+            test_vectors.append((probe, exp_sel, exp_err))
 
     for addr, exp_sel, exp_err in test_vectors:
         dut.addr.value = addr

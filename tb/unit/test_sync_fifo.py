@@ -123,4 +123,59 @@ async def test_sync_fifo_all(dut):
     dut.pop.value = 0
     await RisingEdge(dut.clk)
 
+    # Drain remaining 2 entries (0xBB, 0xCC) cleanly
+    for exp in (0xBB, 0xCC):
+        dut.pop.value = 1
+        await RisingEdge(dut.clk)
+        await Timer(1, unit="ns")
+        assert int(dut.rdata.value) == exp, f"Drain expected {exp:#x}, got {int(dut.rdata.value):#x}"
+    dut.pop.value = 0
+    await Timer(1, unit="ns")
+    assert int(dut.empty.value) == 1 and int(dut.count.value) == 0
+
+    # Simultaneous push+pop when EMPTY (should push 0x5A, count=1, underflow=1)
+    dut.push.value = 1
+    dut.pop.value = 1
+    dut.wdata.value = 0x5A
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert int(dut.count.value) == 1 and int(dut.underflow.value) == 1
+    dut.push.value = 0
+    dut.pop.value = 1
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert int(dut.rdata.value) == 0x5A and int(dut.empty.value) == 1
+    dut.pop.value = 0
+
+    # Full-depth 0xFF and 0x00 passes across non-zero pointer offsets + simultaneous push+pop when FULL
+    for fill_pat in ([0xFF] * depth, [0x00] * depth, [0xA5 ^ (i * 0x11) for i in range(depth)]):
+        for val in fill_pat:
+            dut.push.value = 1
+            dut.wdata.value = val
+            await RisingEdge(dut.clk)
+        dut.push.value = 0
+        await Timer(1, unit="ns")
+        assert int(dut.full.value) == 1 and int(dut.count.value) == depth
+
+        # Simultaneous push+pop when FULL: pushes 0xE7, pops fill_pat[0], count remains 8, no overflow/underflow
+        dut.push.value = 1
+        dut.pop.value = 1
+        dut.wdata.value = 0xE7
+        await RisingEdge(dut.clk)
+        await Timer(1, unit="ns")
+        assert int(dut.rdata.value) == fill_pat[0]
+        assert int(dut.count.value) == depth and int(dut.full.value) == 1
+        assert int(dut.overflow.value) == 0 and int(dut.underflow.value) == 0
+        dut.push.value = 0
+        dut.pop.value = 0
+
+        for exp in fill_pat[1:] + [0xE7]:
+            dut.pop.value = 1
+            await RisingEdge(dut.clk)
+            await Timer(1, unit="ns")
+            assert int(dut.rdata.value) == exp, f"Wrap read expected {exp:#x}, got {int(dut.rdata.value):#x}"
+        dut.pop.value = 0
+        await Timer(1, unit="ns")
+        assert int(dut.empty.value) == 1
+
     dut._log.info("test_sync_fifo_all PASSED")

@@ -106,4 +106,52 @@ async def test_rr_arbiter_fairness_and_lock(dut):
     assert dut.grant.value == 0b01, f"Expected grant=0b01 out of idle, got {dut.grant.value}"
     assert dut.grant_valid.value == 1
 
+    # 9. Lock behavior edge cases (requester 1 locked, lock without matching req, lock from idle)
+    # 9a. Lock holding requester 1 under req=0b11
+    dut.lock.value = 0
+    dut.req.value = 0b10
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert int(dut.grant.value) == 0b10
+    dut.lock.value = 1
+    dut.req.value = 0b11
+    for _ in range(3):
+        await RisingEdge(dut.clk)
+        await Timer(1, unit="ns")
+        assert int(dut.grant.value) == 0b10, f"Lock on req1 violated: {int(dut.grant.value):02b}"
+
+    # 9b. Locked requester 1 drops req, requester 0 active -> lock must NOT hold dead requester
+    dut.req.value = 0b01
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert int(dut.grant.value) == 0b01, f"Lock held inactive requester 1: {int(dut.grant.value):02b}"
+
+    # 9c. Locked with req=0b00 -> grant must drop to 0b00 immediately
+    dut.req.value = 0b00
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert int(dut.grant.value) == 0b00 and int(dut.grant_valid.value) == 0
+
+    # 9d. Out of idle with lock=1 asserted: requester 0 and requester 1 still grant normally
+    dut.req.value = 0b01
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert int(dut.grant.value) == 0b01
+
+    dut.req.value = 0b00
+    await RisingEdge(dut.clk)
+    dut.req.value = 0b10
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert int(dut.grant.value) == 0b10
+
+    # 9e. Unlock while both active: must rotate cleanly to requester 0 -> 1 -> 0
+    dut.lock.value = 0
+    dut.req.value = 0b11
+    expected_seq = [0b01, 0b10, 0b01, 0b10]
+    for exp_g in expected_seq:
+        await RisingEdge(dut.clk)
+        await Timer(1, unit="ns")
+        assert int(dut.grant.value) == exp_g, f"Expected rotation {exp_g:02b}, got {int(dut.grant.value):02b}"
+
     dut._log.info("test_rr_arbiter_fairness_and_lock PASSED")

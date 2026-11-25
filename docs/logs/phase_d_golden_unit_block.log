@@ -1,0 +1,785 @@
+=== Running L0 Unit Tests (SIM=icarus) ===
+make[1]: Entering directory './tb/unit'
+rm -rf sim_build* ./build/sim_build/unit_* ./build/results/unit results*.xml results.xml dump.vcd *.vcd __pycache__
+make[1]: Leaving directory './tb/unit'
+make[1]: Entering directory './tb/unit'
+--- Running test_hello_world ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=hello_world \
+	MODULE=test_hello_world \
+	VERILOG_SOURCES=./tb/unit/hello_world.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f ./build/results/unit/results_test_hello_world.xml
+"make" -f ./tb/unit/Makefile.single ./build/results/unit/results_test_hello_world.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p ./build/sim_build/unit_hello_world
+~/oss-cad-suite/bin/iverilog -o ./build/sim_build/unit_hello_world/sim.vvp -s hello_world -g2012 -f ./build/sim_build/unit_hello_world/cmds.f  ./tb/unit/hello_world.v
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/unit/results_test_hello_world.xml
+COCOTB_TEST_MODULES=test_hello_world COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=hello_world TOPLEVEL_LANG=verilog \
+         ~/oss-cad-suite/bin/vvp -M ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/unit_hello_world/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795590252
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_hello_world.test_hello_world (1/1)
+                                                            Phase 0 cocotb + pyuvm integration smoke test
+     0.00ns INFO     cocotb.hello_world                 Starting Phase 0 cocotb + pyuvm smoke test
+     0.00ns INFO     ../tb/unit/test_hello_world.py(17) [uvm_test_top]: HelloTest: build_phase executed
+     0.00ns INFO     ../tb/unit/test_hello_world.py(11) [uvm_test_top.env]: HelloEnv: build_phase executed
+     0.00ns INFO     ../tb/unit/test_hello_world.py(22) [uvm_test_top]: HelloTest: driving clock and reset
+    81.00ns INFO     ../tb/unit/test_hello_world.py(39) [uvm_test_top]: HelloTest: count verified successfully (5)
+    81.00ns INFO     cocotb.hello_world                 Phase 0 cocotb + pyuvm smoke test PASSED
+    81.00ns INFO     cocotb.regression                  test_hello_world.test_hello_world passed
+    81.00ns INFO     cocotb.regression                  *******************************************************************************************
+                                                        ** TEST                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************
+                                                        ** test_hello_world.test_hello_world   PASS          81.00           0.03       2974.79  **
+                                                        *******************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                      81.00           0.03       2636.58  **
+                                                        *******************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+--- Running test_rst_sync ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=rst_sync \
+	MODULE=test_rst_sync \
+	VERILOG_SOURCES=./rtl/common/rst_sync.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f ./build/results/unit/results_test_rst_sync.xml
+"make" -f ./tb/unit/Makefile.single ./build/results/unit/results_test_rst_sync.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p ./build/sim_build/unit_rst_sync
+~/oss-cad-suite/bin/iverilog -o ./build/sim_build/unit_rst_sync/sim.vvp -s rst_sync -g2012 -f ./build/sim_build/unit_rst_sync/cmds.f  ./rtl/common/rst_sync.v
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/unit/results_test_rst_sync.xml
+COCOTB_TEST_MODULES=test_rst_sync COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=rst_sync TOPLEVEL_LANG=verilog \
+         ~/oss-cad-suite/bin/vvp -M ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/unit_rst_sync/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795590255
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_rst_sync.test_rst_sync_basic (1/1)
+                                                            Verify asynchronous assertion and 2-cycle synchronous deassertion.
+     0.00ns INFO     cocotb.rst_sync                    Starting test_rst_sync_basic
+    56.00ns INFO     cocotb.rst_sync                    test_rst_sync_basic PASSED
+    56.00ns INFO     cocotb.regression                  test_rst_sync.test_rst_sync_basic passed
+    56.00ns INFO     cocotb.regression                  *******************************************************************************************
+                                                        ** TEST                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************
+                                                        ** test_rst_sync.test_rst_sync_basic   PASS          56.00           0.00      56205.08  **
+                                                        *******************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                      56.00           0.00      12529.66  **
+                                                        *******************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+--- Running test_sync_fifo ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=sync_fifo \
+	MODULE=test_sync_fifo \
+	VERILOG_SOURCES=./rtl/common/sync_fifo.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f ./build/results/unit/results_test_sync_fifo.xml
+"make" -f ./tb/unit/Makefile.single ./build/results/unit/results_test_sync_fifo.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p ./build/sim_build/unit_sync_fifo
+~/oss-cad-suite/bin/iverilog -o ./build/sim_build/unit_sync_fifo/sim.vvp -s sync_fifo -g2012 -f ./build/sim_build/unit_sync_fifo/cmds.f  ./rtl/common/sync_fifo.v
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/unit/results_test_sync_fifo.xml
+COCOTB_TEST_MODULES=test_sync_fifo COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=sync_fifo TOPLEVEL_LANG=verilog \
+         ~/oss-cad-suite/bin/vvp -M ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/unit_sync_fifo/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795590257
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_sync_fifo.test_sync_fifo_all (1/1)
+                                                            Test full, empty, count, overflow, underflow, and simultaneous push/pop.
+     0.00ns INFO     cocotb.sync_fifo                   Starting test_sync_fifo_all
+  1132.00ns INFO     cocotb.sync_fifo                   test_sync_fifo_all PASSED
+  1132.00ns INFO     cocotb.regression                  test_sync_fifo.test_sync_fifo_all passed
+  1132.00ns INFO     cocotb.regression                  *******************************************************************************************
+                                                        ** TEST                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************
+                                                        ** test_sync_fifo.test_sync_fifo_all   PASS        1132.00           0.01     111438.58  **
+                                                        *******************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                    1132.00           0.02      65814.89  **
+                                                        *******************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+--- Running test_async_fifo ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=async_fifo \
+	MODULE=test_async_fifo \
+	VERILOG_SOURCES=./rtl/common/async_fifo.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f ./build/results/unit/results_test_async_fifo.xml
+"make" -f ./tb/unit/Makefile.single ./build/results/unit/results_test_async_fifo.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p ./build/sim_build/unit_async_fifo
+~/oss-cad-suite/bin/iverilog -o ./build/sim_build/unit_async_fifo/sim.vvp -s async_fifo -g2012 -f ./build/sim_build/unit_async_fifo/cmds.f  ./rtl/common/async_fifo.v
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/unit/results_test_async_fifo.xml
+COCOTB_TEST_MODULES=test_async_fifo COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=async_fifo TOPLEVEL_LANG=verilog \
+         ~/oss-cad-suite/bin/vvp -M ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/unit_async_fifo/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795590260
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_async_fifo.test_cd02_async_fifo_stream (1/3)
+                                                            CD-02: Async FIFO continuous random-rate stream (fast writer/slow reader and reverse).
+     0.00ns INFO     cocotb.async_fifo                  Starting CD-02: Async FIFO continuous stream test
+     0.00ns INFO     cocotb.async_fifo                  Running fast writer (10 ns) / slow reader (25 ns)...
+  7710.00ns INFO     cocotb.async_fifo                  Running slow writer (25 ns) / fast reader (10 ns)...
+ 15160.00ns INFO     cocotb.async_fifo                  CD-02 PASSED: 400 total items streamed with full/empty reached and 0 mismatches
+ 15160.00ns INFO     cocotb.regression                  test_async_fifo.test_cd02_async_fifo_stream passed
+ 15160.00ns INFO     cocotb.regression                  running test_async_fifo.test_async_fifo_dual_clock (2/3)
+                                                            Basic dual-clock async FIFO functionality check.
+ 16887.00ns INFO     cocotb.regression                  test_async_fifo.test_async_fifo_dual_clock passed
+ 16887.00ns INFO     cocotb.regression                  running test_async_fifo.test_async_fifo_overflow_preserve (3/3)
+                                                            Verify winc while wfull=1 is ignored and existing stored words are not overwritten.
+ 17398.00ns INFO     cocotb.regression                  test_async_fifo.test_async_fifo_overflow_preserve passed
+ 17398.00ns INFO     cocotb.regression                  ***********************************************************************************************************
+                                                        ** TEST                                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ***********************************************************************************************************
+                                                        ** test_async_fifo.test_cd02_async_fifo_stream         PASS       15160.00           0.19      79781.74  **
+                                                        ** test_async_fifo.test_async_fifo_dual_clock          PASS        1727.00           0.02      75017.74  **
+                                                        ** test_async_fifo.test_async_fifo_overflow_preserve   PASS         511.00           0.00     152352.10  **
+                                                        ***********************************************************************************************************
+                                                        ** TESTS=3 PASS=3 FAIL=0 SKIP=0                                   17398.00           0.22      78476.71  **
+                                                        ***********************************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+--- Running test_rr_arbiter ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=rr_arbiter \
+	MODULE=test_rr_arbiter \
+	VERILOG_SOURCES=./rtl/common/rr_arbiter.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f ./build/results/unit/results_test_rr_arbiter.xml
+"make" -f ./tb/unit/Makefile.single ./build/results/unit/results_test_rr_arbiter.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p ./build/sim_build/unit_rr_arbiter
+~/oss-cad-suite/bin/iverilog -o ./build/sim_build/unit_rr_arbiter/sim.vvp -s rr_arbiter -g2012 -f ./build/sim_build/unit_rr_arbiter/cmds.f  ./rtl/common/rr_arbiter.v
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/unit/results_test_rr_arbiter.xml
+COCOTB_TEST_MODULES=test_rr_arbiter COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=rr_arbiter TOPLEVEL_LANG=verilog \
+         ~/oss-cad-suite/bin/vvp -M ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/unit_rr_arbiter/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795590263
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_rr_arbiter.test_rr_arbiter_fairness_and_lock (1/1)
+                                                            Test single request, round-robin fairness, and transaction lock behavior.
+     0.00ns INFO     cocotb.rr_arbiter                  Starting test_rr_arbiter_fairness_and_lock
+   361.00ns INFO     cocotb.rr_arbiter                  test_rr_arbiter_fairness_and_lock PASSED
+   361.00ns INFO     cocotb.regression                  test_rr_arbiter.test_rr_arbiter_fairness_and_lock passed
+   361.00ns INFO     cocotb.regression                  ***********************************************************************************************************
+                                                        ** TEST                                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ***********************************************************************************************************
+                                                        ** test_rr_arbiter.test_rr_arbiter_fairness_and_lock   PASS         361.00           0.00      99151.58  **
+                                                        ***********************************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                                     361.00           0.01      38029.48  **
+                                                        ***********************************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+--- Running test_axil_decoder ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=axil_decoder \
+	MODULE=test_axil_decoder \
+	VERILOG_SOURCES=./rtl/axil/axil_decoder.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f ./build/results/unit/results_test_axil_decoder.xml
+"make" -f ./tb/unit/Makefile.single ./build/results/unit/results_test_axil_decoder.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p ./build/sim_build/unit_axil_decoder
+~/oss-cad-suite/bin/iverilog -o ./build/sim_build/unit_axil_decoder/sim.vvp -s axil_decoder -g2012 -f ./build/sim_build/unit_axil_decoder/cmds.f  ./rtl/axil/axil_decoder.v
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/unit/results_test_axil_decoder.xml
+COCOTB_TEST_MODULES=test_axil_decoder COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=axil_decoder TOPLEVEL_LANG=verilog \
+         ~/oss-cad-suite/bin/vvp -M ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/unit_axil_decoder/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795590265
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_axil_decoder.test_axil_decoder_all (1/1)
+                                                            Test full decode map and unmapped detection for axil_decoder.
+   124.00ns INFO     cocotb.axil_decoder                test_axil_decoder_all PASSED across all mapped and unmapped vectors
+   124.00ns INFO     cocotb.regression                  test_axil_decoder.test_axil_decoder_all passed
+   124.00ns INFO     cocotb.regression                  *************************************************************************************************
+                                                        ** TEST                                     STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *************************************************************************************************
+                                                        ** test_axil_decoder.test_axil_decoder_all   PASS         124.00           0.00      26738.66  **
+                                                        *************************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                           124.00           0.01      14089.72  **
+                                                        *************************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+--- Running test_axil_default_slave ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=axil_default_slave \
+	MODULE=test_axil_default_slave \
+	VERILOG_SOURCES=./rtl/axil/axil_default_slave.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f ./build/results/unit/results_test_axil_default_slave.xml
+"make" -f ./tb/unit/Makefile.single ./build/results/unit/results_test_axil_default_slave.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p ./build/sim_build/unit_axil_default_slave
+~/oss-cad-suite/bin/iverilog -o ./build/sim_build/unit_axil_default_slave/sim.vvp -s axil_default_slave -g2012 -f ./build/sim_build/unit_axil_default_slave/cmds.f  ./rtl/axil/axil_default_slave.v
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/unit/results_test_axil_default_slave.xml
+COCOTB_TEST_MODULES=test_axil_default_slave COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=axil_default_slave TOPLEVEL_LANG=verilog \
+         ~/oss-cad-suite/bin/vvp -M ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/unit_axil_default_slave/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795590268
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_axil_default_slave.test_axil_default_slave_all (1/1)
+                                                            Verify that default slave returns DECERR on writes and reads in all channel arrival orders.
+     0.00ns INFO     cocotb.axil_default_slave          Starting test_axil_default_slave_all
+   160.00ns INFO     cocotb.axil_default_slave          test_axil_default_slave_all PASSED
+   160.00ns INFO     cocotb.regression                  test_axil_default_slave.test_axil_default_slave_all passed
+   160.00ns INFO     cocotb.regression                  *************************************************************************************************************
+                                                        ** TEST                                                 STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *************************************************************************************************************
+                                                        ** test_axil_default_slave.test_axil_default_slave_all   PASS         160.00           0.00      76277.41  **
+                                                        *************************************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                                       160.00           0.01      27511.53  **
+                                                        *************************************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+--- Running test_axil_ram ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=axil_ram \
+	MODULE=test_axil_ram \
+	VERILOG_SOURCES=./rtl/axil/axil_ram.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f ./build/results/unit/results_test_axil_ram.xml
+"make" -f ./tb/unit/Makefile.single ./build/results/unit/results_test_axil_ram.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p ./build/sim_build/unit_axil_ram
+~/oss-cad-suite/bin/iverilog -o ./build/sim_build/unit_axil_ram/sim.vvp -s axil_ram -g2012 -f ./build/sim_build/unit_axil_ram/cmds.f  ./rtl/axil/axil_ram.v
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/unit/results_test_axil_ram.xml
+COCOTB_TEST_MODULES=test_axil_ram COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=axil_ram TOPLEVEL_LANG=verilog \
+         ~/oss-cad-suite/bin/vvp -M ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/unit_axil_ram/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795590270
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_axil_ram.test_axil_ram_operations (1/1)
+                                                            Verify RAM reads, writes, byte enables, and out-of-range SLVERR.
+     0.00ns INFO     cocotb.axil_ram                    Starting test_axil_ram_operations
+ 34950.00ns INFO     cocotb.axil_ram                    test_axil_ram_operations PASSED
+ 34950.00ns INFO     cocotb.regression                  test_axil_ram.test_axil_ram_operations passed
+ 34950.00ns INFO     cocotb.regression                  ************************************************************************************************
+                                                        ** TEST                                    STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ************************************************************************************************
+                                                        ** test_axil_ram.test_axil_ram_operations   PASS       34950.00           0.31     111615.87  **
+                                                        ************************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                        34950.00           0.32     109111.22  **
+                                                        ************************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+--- Running test_axil_csr ---
+make -f ./tb/unit/Makefile.single \
+	TOPLEVEL=axil_csr \
+	MODULE=test_axil_csr \
+	VERILOG_SOURCES=./rtl/axil/axil_csr.v \
+	SIM=icarus
+make[2]: Entering directory './tb/unit'
+rm -f ./build/results/unit/results_test_axil_csr.xml
+"make" -f ./tb/unit/Makefile.single ./build/results/unit/results_test_axil_csr.xml
+make[3]: Entering directory './tb/unit'
+mkdir -p ./build/sim_build/unit_axil_csr
+~/oss-cad-suite/bin/iverilog -o ./build/sim_build/unit_axil_csr/sim.vvp -s axil_csr -g2012 -f ./build/sim_build/unit_axil_csr/cmds.f  ./rtl/axil/axil_csr.v
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/unit/results_test_axil_csr.xml
+COCOTB_TEST_MODULES=test_axil_csr COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=axil_csr TOPLEVEL_LANG=verilog \
+         ~/oss-cad-suite/bin/vvp -M ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/unit_axil_csr/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795590273
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_axil_csr.test_cs01_reset_values (1/4)
+                                                            CS-01: System CSR reset values verification.
+     0.00ns INFO     cocotb.axil_csr                    Starting CS-01: Reset values check
+   270.00ns INFO     cocotb.axil_csr                    CS-01 PASSED
+   270.00ns INFO     cocotb.regression                  test_axil_csr.test_cs01_reset_values passed
+   270.00ns INFO     cocotb.regression                  running test_axil_csr.test_cs02_access_types_w1c (2/4)
+                                                            CS-02: System CSR access types (RO, RW, W1C) and W1C_SET hook.
+   270.00ns INFO     cocotb.axil_csr                    Starting CS-02: Access types and W1C check
+  3800.00ns INFO     cocotb.axil_csr                    CS-02 PASSED
+  3800.00ns INFO     cocotb.regression                  test_axil_csr.test_cs02_access_types_w1c passed
+  3800.00ns INFO     cocotb.regression                  running test_axil_csr.test_cs03_irq_aggregation (3/4)
+                                                            CS-03: System CSR interrupt aggregation, masking, and irq_o driving.
+  3800.00ns INFO     cocotb.axil_csr                    Starting CS-03: IRQ aggregation check
+  4130.00ns INFO     cocotb.axil_csr                    CS-03 PASSED
+  4130.00ns INFO     cocotb.regression                  test_axil_csr.test_cs03_irq_aggregation passed
+  4130.00ns INFO     cocotb.regression                  running test_axil_csr.test_cs04_ooo_w1c32_ro_wo_and_backpressure (4/4)
+                                                            CS-04: CSR aw_first/w_first staging, 32-bit W1C, RO writes, WO reads, and B/R hold.
+ 11720.00ns INFO     cocotb.regression                  test_axil_csr.test_cs04_ooo_w1c32_ro_wo_and_backpressure passed
+ 11720.00ns INFO     cocotb.regression                  ******************************************************************************************************************
+                                                        ** TEST                                                      STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ******************************************************************************************************************
+                                                        ** test_axil_csr.test_cs01_reset_values                       PASS         270.00           0.00      80763.23  **
+                                                        ** test_axil_csr.test_cs02_access_types_w1c                   PASS        3530.00           0.03     110268.73  **
+                                                        ** test_axil_csr.test_cs03_irq_aggregation                    PASS         330.00           0.00      96032.77  **
+                                                        ** test_axil_csr.test_cs04_ooo_w1c32_ro_wo_and_backpressure   PASS        7590.00           0.06     121031.40  **
+                                                        ******************************************************************************************************************
+                                                        ** TESTS=4 PASS=4 FAIL=0 SKIP=0                                          11720.00           0.11     105190.16  **
+                                                        ******************************************************************************************************************
+make[3]: Leaving directory './tb/unit'
+make[2]: Leaving directory './tb/unit'
+=====================================================
+All L0 unit tests executed successfully (SIM=icarus).
+=====================================================
+make[1]: Leaving directory './tb/unit'
+=== Running L1 Block Tests (SIM=icarus) ===
+make[1]: Entering directory './tb/block'
+rm -rf sim_build* ./build/sim_build/block_* ./build/results/block results*.xml results.xml dump.vcd *.vcd __pycache__
+make[1]: Leaving directory './tb/block'
+make[1]: Entering directory './tb/block'
+--- Running test_axil2apb_bridge (BR-01..BR-03) ---
+make -f ./tb/block/Makefile.single \
+	TOPLEVEL=axil2apb_bridge \
+	MODULE=test_axil2apb_bridge \
+	VERILOG_SOURCES=./rtl/apb/axil2apb_bridge.v \
+	SIM=icarus
+make[2]: Entering directory './tb/block'
+rm -f ./build/results/block/results_test_axil2apb_bridge.xml
+"make" -f ./tb/block/Makefile.single ./build/results/block/results_test_axil2apb_bridge.xml
+make[3]: Entering directory './tb/block'
+mkdir -p ./build/sim_build/block_axil2apb_bridge
+~/oss-cad-suite/bin/iverilog -o ./build/sim_build/block_axil2apb_bridge/sim.vvp -s axil2apb_bridge -g2012 -g2012 -DCOCOTB_SIM -f ./build/sim_build/block_axil2apb_bridge/cmds.f  ./rtl/apb/axil2apb_bridge.v
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/block/results_test_axil2apb_bridge.xml
+COCOTB_TEST_MODULES=test_axil2apb_bridge COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=axil2apb_bridge TOPLEVEL_LANG=verilog \
+         ~/oss-cad-suite/bin/vvp -M ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/block_axil2apb_bridge/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795590276
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_axil2apb_bridge.test_br01_single_rw_zero_wait (1/8)
+                                                            BR-01: Verify single write and read with zero wait states.
+  1540.00ns INFO     cocotb.regression                  test_axil2apb_bridge.test_br01_single_rw_zero_wait passed
+  1540.00ns INFO     cocotb.regression                  running test_axil2apb_bridge.test_br02_wait_states (2/8)
+                                                            BR-02: Verify APB wait states (PREADY delayed 1..4 cycles).
+  2040.00ns INFO     cocotb.regression                  test_axil2apb_bridge.test_br02_wait_states passed
+  2040.00ns INFO     cocotb.regression                  running test_axil2apb_bridge.test_br03_pslverr_propagation (3/8)
+                                                            BR-03: Verify PSLVERR propagation to AXI-Lite SLVERR (2'b10).
+  2200.00ns INFO     cocotb.regression                  test_axil2apb_bridge.test_br03_pslverr_propagation passed
+  2200.00ns INFO     cocotb.regression                  running test_axil2apb_bridge.test_br04_pstrb_patterns (4/8)
+                                                            BR-04: Verify PSTRB patterns match WSTRB at bridge level.
+  2740.00ns INFO     cocotb.regression                  test_axil2apb_bridge.test_br04_pstrb_patterns passed
+  2740.00ns INFO     cocotb.regression                  running test_axil2apb_bridge.test_br05_back_to_back_mixed_rw (5/8)
+                                                            BR-05: Back-to-back mixed read/write transfers, verify single-outstanding arbitration and no starvation.
+  4100.00ns INFO     cocotb.regression                  test_axil2apb_bridge.test_br05_back_to_back_mixed_rw passed
+  4100.00ns INFO     cocotb.regression                  running test_axil2apb_bridge.test_br06_delayed_w_no_early_psel (6/8)
+                                                            BR-06: Write with W arriving long after AW; assert PSEL never rises before W arrives.
+  4360.01ns INFO     cocotb.regression                  test_axil2apb_bridge.test_br06_delayed_w_no_early_psel passed
+  4360.01ns INFO     cocotb.regression                  running test_axil2apb_bridge.test_br07_apb_wait_err_cov (7/8)
+                                                            BR-07: Exercise APB wait states (0, 1, 2-4, 5+), PSLVERR, PSTRB classes, and W-before-AW ordering.
+  6030.01ns INFO     cocotb.regression                  test_axil2apb_bridge.test_br07_apb_wait_err_cov passed
+  6030.01ns INFO     cocotb.regression                  running test_axil2apb_bridge.test_br08_addr_walk_and_ooo_backpressure (8/8)
+                                                            BR-08: Full 32-bit PADDR walking-1 pass-through, W-before-AW, PSTRB=0 on reads, and B/R backpressure.
+ 11990.01ns INFO     cocotb.regression                  test_axil2apb_bridge.test_br08_addr_walk_and_ooo_backpressure passed
+ 11990.01ns INFO     cocotb.regression                  ***********************************************************************************************************************
+                                                        ** TEST                                                           STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ***********************************************************************************************************************
+                                                        ** test_axil2apb_bridge.test_br01_single_rw_zero_wait              PASS        1540.00           0.03      58050.56  **
+                                                        ** test_axil2apb_bridge.test_br02_wait_states                      PASS         500.00           0.01      91089.43  **
+                                                        ** test_axil2apb_bridge.test_br03_pslverr_propagation              PASS         160.00           0.00      88394.18  **
+                                                        ** test_axil2apb_bridge.test_br04_pstrb_patterns                   PASS         540.00           0.01      85890.18  **
+                                                        ** test_axil2apb_bridge.test_br05_back_to_back_mixed_rw            PASS        1360.00           0.01      94733.01  **
+                                                        ** test_axil2apb_bridge.test_br06_delayed_w_no_early_psel          PASS         260.00           0.00     104837.44  **
+                                                        ** test_axil2apb_bridge.test_br07_apb_wait_err_cov                 PASS        1670.00           0.12      13801.73  **
+                                                        ** test_axil2apb_bridge.test_br08_addr_walk_and_ooo_backpressure   PASS        5960.00           0.06     103047.36  **
+                                                        ***********************************************************************************************************************
+                                                        ** TESTS=8 PASS=8 FAIL=0 SKIP=0                                               11990.01           0.26      46886.96  **
+                                                        ***********************************************************************************************************************
+make[3]: Leaving directory './tb/block'
+make[2]: Leaving directory './tb/block'
+--- Running test_axil_xbar (XB-01..XB-08) ---
+make -f ./tb/block/Makefile.single \
+	TOPLEVEL=tb_axil_xbar \
+	MODULE=test_axil_xbar \
+	VERILOG_SOURCES="./rtl/axil/axil_decoder.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_xbar.v ./tb/block/tb_axil_xbar.v" \
+	SIM=icarus
+make[2]: Entering directory './tb/block'
+rm -f ./build/results/block/results_test_axil_xbar.xml
+"make" -f ./tb/block/Makefile.single ./build/results/block/results_test_axil_xbar.xml
+make[3]: Entering directory './tb/block'
+mkdir -p ./build/sim_build/block_tb_axil_xbar
+~/oss-cad-suite/bin/iverilog -o ./build/sim_build/block_tb_axil_xbar/sim.vvp -s tb_axil_xbar -g2012 -g2012 -DCOCOTB_SIM -f ./build/sim_build/block_tb_axil_xbar/cmds.f  ./rtl/axil/axil_decoder.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_xbar.v ./tb/block/tb_axil_xbar.v
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/block/results_test_axil_xbar.xml
+COCOTB_TEST_MODULES=test_axil_xbar COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=tb_axil_xbar TOPLEVEL_LANG=verilog \
+         ~/oss-cad-suite/bin/vvp -M ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/block_tb_axil_xbar/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795590279
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_axil_xbar.test_xb01_single_rw_each_master_to_each_slave (1/11)
+                                                            XB-01: Single write and read, each master to each mapped slave (S0..S3).
+   520.00ns INFO     cocotb.regression                  test_axil_xbar.test_xb01_single_rw_each_master_to_each_slave passed
+   520.00ns INFO     cocotb.regression                  running test_axil_xbar.test_xb02_ram_data_integrity (2/11)
+                                                            XB-02: Write-then-read data integrity across multiple locations in RAM (S1).
+   920.00ns INFO     cocotb.regression                  test_axil_xbar.test_xb02_ram_data_integrity passed
+   920.00ns INFO     cocotb.regression                  running test_axil_xbar.test_xb03_wstrb_patterns (3/11)
+                                                            XB-03: All 16 WSTRB patterns on RAM (S1) and CSR SCRATCH2 region (S2).
+  3840.00ns INFO     cocotb.regression                  test_axil_xbar.test_xb03_wstrb_patterns passed
+  3840.00ns INFO     cocotb.regression                  running test_axil_xbar.test_xb04_unmapped_decerr (4/11)
+                                                            XB-04: Unmapped addresses return DECERR (2'b11), without hang.
+  4120.00ns INFO     cocotb.regression                  test_axil_xbar.test_xb04_unmapped_decerr passed
+  4120.00ns INFO     cocotb.regression                  running test_axil_xbar.test_xb05_contention_same_slave (5/11)
+                                                            XB-05: Both masters to the same slave simultaneously (contention serialization).
+  4280.00ns INFO     cocotb.regression                  test_axil_xbar.test_xb05_contention_same_slave passed
+  4280.00ns INFO     cocotb.regression                  running test_axil_xbar.test_xb06_parallel_different_slaves (6/11)
+                                                            XB-06: Both masters access different slaves simultaneously without serialization stall.
+  4350.01ns INFO     cocotb.regression                  test_axil_xbar.test_xb06_parallel_different_slaves passed
+  4350.01ns INFO     cocotb.regression                  running test_axil_xbar.test_xb07_arbitration_fairness (7/11)
+                                                            XB-07: Arbitration fairness under continuous contention (diff <= 1 for WR and RD).
+ 10450.01ns INFO     cocotb.tb_axil_xbar                XB-07 PASSED: WR M0=50/M1=50, RD M0=50/M1=50
+ 10470.01ns INFO     cocotb.regression                  test_axil_xbar.test_xb07_arbitration_fairness passed
+ 10470.01ns INFO     cocotb.regression                  running test_axil_xbar.test_xb08_write_orderings (8/11)
+                                                            XB-08: Test AW before W, W before AW, and simultaneous AW+W.
+ 10730.01ns INFO     cocotb.regression                  test_axil_xbar.test_xb08_write_orderings passed
+ 10730.01ns INFO     cocotb.regression                  running test_axil_xbar.test_xb09_random_ready_backpressure (9/11)
+                                                            XB-09: Random READY back-pressure on all channels, >= 2,000 transactions, no loss or duplication.
+ 10750.01ns INFO     cocotb.tb_axil_xbar                Starting XB-09 random backpressure test with 2000 transactions...
+ 92580.01ns INFO     cocotb.tb_axil_xbar                XB-09 progress: 1000/2000 transactions complete
+176350.01ns INFO     cocotb.tb_axil_xbar                XB-09 progress: 2000/2000 transactions complete
+176350.01ns INFO     cocotb.tb_axil_xbar                XB-09: 2,000 transactions passed with zero loss and zero duplication.
+176370.01ns INFO     cocotb.regression                  test_axil_xbar.test_xb09_random_ready_backpressure passed
+176370.01ns INFO     cocotb.regression                  running test_axil_xbar.test_xb10_delayed_bready_rready_stability (10/11)
+                                                            XB-10: Delayed BREADY/RREADY; assert that BVALID/RVALID, response code and data stay stable until accepted.
+177590.01ns INFO     cocotb.regression                  test_axil_xbar.test_xb10_delayed_bready_rready_stability passed
+177590.01ns INFO     cocotb.regression                  running test_axil_xbar.test_xb11_all_targets_contention_and_backpressure (11/11)
+                                                            XB-11: Contention, w_first/aw_first, and B/R hold across all 4 mapped targets + default slave.
+181830.01ns INFO     cocotb.regression                  test_axil_xbar.test_xb11_all_targets_contention_and_backpressure passed
+181830.01ns INFO     cocotb.regression                  **************************************************************************************************************************
+                                                        ** TEST                                                              STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************************************************
+                                                        ** test_axil_xbar.test_xb01_single_rw_each_master_to_each_slave       PASS         520.00           0.03      19926.89  **
+                                                        ** test_axil_xbar.test_xb02_ram_data_integrity                        PASS         400.00           0.02      26212.35  **
+                                                        ** test_axil_xbar.test_xb03_wstrb_patterns                            PASS        2920.00           0.11      26837.55  **
+                                                        ** test_axil_xbar.test_xb04_unmapped_decerr                           PASS         280.00           0.01      21639.64  **
+                                                        ** test_axil_xbar.test_xb05_contention_same_slave                     PASS         160.00           0.01      20355.14  **
+                                                        ** test_axil_xbar.test_xb06_parallel_different_slaves                 PASS          70.00           0.00      14418.37  **
+                                                        ** test_axil_xbar.test_xb07_arbitration_fairness                      PASS        6120.00           0.27      22998.59  **
+                                                        ** test_axil_xbar.test_xb08_write_orderings                           PASS         260.00           0.01      27261.61  **
+                                                        ** test_axil_xbar.test_xb09_random_ready_backpressure                 PASS      165640.00           5.40      30668.75  **
+                                                        ** test_axil_xbar.test_xb10_delayed_bready_rready_stability           PASS        1220.00           0.04      30019.95  **
+                                                        ** test_axil_xbar.test_xb11_all_targets_contention_and_backpressure   PASS        4240.00           0.16      27346.09  **
+                                                        **************************************************************************************************************************
+                                                        ** TESTS=11 PASS=11 FAIL=0 SKIP=0                                               181830.01           6.07      29956.05  **
+                                                        **************************************************************************************************************************
+VCD info: dumpfile dump.vcd opened for output.
+make[3]: Leaving directory './tb/block'
+make[2]: Leaving directory './tb/block'
+--- Running test_apb_timer (TM-01..TM-03) ---
+make -f ./tb/block/Makefile.single \
+	TOPLEVEL=apb_timer \
+	MODULE=test_apb_timer \
+	VERILOG_SOURCES=./rtl/apb/apb_timer.v \
+	SIM=icarus
+make[2]: Entering directory './tb/block'
+rm -f ./build/results/block/results_test_apb_timer.xml
+"make" -f ./tb/block/Makefile.single ./build/results/block/results_test_apb_timer.xml
+make[3]: Entering directory './tb/block'
+mkdir -p ./build/sim_build/block_apb_timer
+~/oss-cad-suite/bin/iverilog -o ./build/sim_build/block_apb_timer/sim.vvp -s apb_timer -g2012 -g2012 -DCOCOTB_SIM -f ./build/sim_build/block_apb_timer/cmds.f  ./rtl/apb/apb_timer.v
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/block/results_test_apb_timer.xml
+COCOTB_TEST_MODULES=test_apb_timer COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=apb_timer TOPLEVEL_LANG=verilog \
+         ~/oss-cad-suite/bin/vvp -M ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/block_apb_timer/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795590288
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_apb_timer.test_tm01_oneshot_countdown (1/3)
+                                                            TM-01: One-shot countdown: timeout after exactly LOAD+1 cycles.
+   220.00ns INFO     cocotb.apb_timer                   One-shot timer fired after 11 cycles (LOAD=10)
+   290.00ns INFO     cocotb.regression                  test_apb_timer.test_tm01_oneshot_countdown passed
+   290.00ns INFO     cocotb.regression                  running test_apb_timer.test_tm02_periodic_countdown (2/3)
+                                                            TM-02: Periodic mode: reloads and fires repeatedly with exact period.
+   450.00ns INFO     cocotb.apb_timer                   Periodic interval 0: fired after 7 cycles
+   510.00ns INFO     cocotb.apb_timer                   Periodic interval 1: fired after 2 cycles
+   570.00ns INFO     cocotb.apb_timer                   Periodic interval 2: fired after 2 cycles
+   650.00ns INFO     cocotb.regression                  test_apb_timer.test_tm02_periodic_countdown passed
+   650.00ns INFO     cocotb.regression                  running test_apb_timer.test_tm03_w1c_timeout_and_irq_clear (3/3)
+                                                            TM-03: W1C of TIMEOUT bit clears STATUS[0] and timer_irq.
+   950.00ns INFO     cocotb.regression                  test_apb_timer.test_tm03_w1c_timeout_and_irq_clear passed
+   950.00ns INFO     cocotb.regression                  ************************************************************************************************************
+                                                        ** TEST                                                STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ************************************************************************************************************
+                                                        ** test_apb_timer.test_tm01_oneshot_countdown           PASS         290.00           0.00      98641.49  **
+                                                        ** test_apb_timer.test_tm02_periodic_countdown          PASS         360.00           0.00     128189.95  **
+                                                        ** test_apb_timer.test_tm03_w1c_timeout_and_irq_clear   PASS         300.00           0.00     133011.75  **
+                                                        ************************************************************************************************************
+                                                        ** TESTS=3 PASS=3 FAIL=0 SKIP=0                                      950.00           0.01      69693.69  **
+                                                        ************************************************************************************************************
+make[3]: Leaving directory './tb/block'
+make[2]: Leaving directory './tb/block'
+--- Running test_apb_gpio (GP-01..GP-03) ---
+make -f ./tb/block/Makefile.single \
+	TOPLEVEL=apb_gpio \
+	MODULE=test_apb_gpio \
+	VERILOG_SOURCES=./rtl/apb/apb_gpio.v \
+	SIM=icarus
+make[2]: Entering directory './tb/block'
+rm -f ./build/results/block/results_test_apb_gpio.xml
+"make" -f ./tb/block/Makefile.single ./build/results/block/results_test_apb_gpio.xml
+make[3]: Entering directory './tb/block'
+mkdir -p ./build/sim_build/block_apb_gpio
+~/oss-cad-suite/bin/iverilog -o ./build/sim_build/block_apb_gpio/sim.vvp -s apb_gpio -g2012 -g2012 -DCOCOTB_SIM -f ./build/sim_build/block_apb_gpio/cmds.f  ./rtl/apb/apb_gpio.v
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/block/results_test_apb_gpio.xml
+COCOTB_TEST_MODULES=test_apb_gpio COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=apb_gpio TOPLEVEL_LANG=verilog \
+         ~/oss-cad-suite/bin/vvp -M ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/block_apb_gpio/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795590291
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_apb_gpio.test_gp01_direction_and_out (1/3)
+                                                            GP-01: Verify DIR and OUT registers control gpio_dir and gpio_o.
+   150.00ns INFO     cocotb.regression                  test_apb_gpio.test_gp01_direction_and_out passed
+   150.00ns INFO     cocotb.regression                  running test_apb_gpio.test_gp02_input_sync_latency (2/3)
+                                                            GP-02: 2-FF input synchronization latency on IN register (0x08).
+   280.00ns INFO     cocotb.regression                  test_apb_gpio.test_gp02_input_sync_latency passed
+   280.00ns INFO     cocotb.regression                  running test_apb_gpio.test_gp03_rising_edge_irq_and_w1c (3/3)
+                                                            GP-03: Rising-edge IRQ detection, masking, and W1C clearing.
+   550.00ns INFO     cocotb.regression                  test_apb_gpio.test_gp03_rising_edge_irq_and_w1c passed
+   550.00ns INFO     cocotb.regression                  *********************************************************************************************************
+                                                        ** TEST                                             STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *********************************************************************************************************
+                                                        ** test_apb_gpio.test_gp01_direction_and_out         PASS         150.00           0.00      72952.88  **
+                                                        ** test_apb_gpio.test_gp02_input_sync_latency        PASS         130.00           0.00     122009.29  **
+                                                        ** test_apb_gpio.test_gp03_rising_edge_irq_and_w1c   PASS         270.00           0.00     134130.29  **
+                                                        *********************************************************************************************************
+                                                        ** TESTS=3 PASS=3 FAIL=0 SKIP=0                                   550.00           0.01      51477.82  **
+                                                        *********************************************************************************************************
+make[3]: Leaving directory './tb/block'
+make[2]: Leaving directory './tb/block'
+--- Running test_apb_uart (UA-01..UA-03, UA-05) ---
+make -f ./tb/block/Makefile.single \
+	TOPLEVEL=apb_uart \
+	MODULE=test_apb_uart \
+	VERILOG_SOURCES="./rtl/common/sync_fifo.v ./rtl/apb/apb_uart.v" \
+	SIM=icarus
+make[2]: Entering directory './tb/block'
+rm -f ./build/results/block/results_test_apb_uart.xml
+"make" -f ./tb/block/Makefile.single ./build/results/block/results_test_apb_uart.xml
+make[3]: Entering directory './tb/block'
+mkdir -p ./build/sim_build/block_apb_uart
+~/oss-cad-suite/bin/iverilog -o ./build/sim_build/block_apb_uart/sim.vvp -s apb_uart -g2012 -g2012 -DCOCOTB_SIM -f ./build/sim_build/block_apb_uart/cmds.f  ./rtl/common/sync_fifo.v ./rtl/apb/apb_uart.v
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/block/results_test_apb_uart.xml
+COCOTB_TEST_MODULES=test_apb_uart COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=apb_uart TOPLEVEL_LANG=verilog \
+         ~/oss-cad-suite/bin/vvp -M ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/block_apb_uart/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795590293
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_apb_uart.test_ua01_loopback_bytes (1/5)
+                                                            UA-01: Loopback transmission of byte values (RX data == TX data, flags correct).
+  1730.00ns INFO     cocotb.apb_uart                    Successfully transmitted and received byte 0x55 in 39 cycles
+  3380.00ns INFO     cocotb.apb_uart                    Successfully transmitted and received byte 0xaa in 39 cycles
+  5030.00ns INFO     cocotb.apb_uart                    Successfully transmitted and received byte 0x0 in 39 cycles
+  6680.00ns INFO     cocotb.apb_uart                    Successfully transmitted and received byte 0xff in 39 cycles
+  8330.00ns INFO     cocotb.apb_uart                    Successfully transmitted and received byte 0x3c in 39 cycles
+  9980.00ns INFO     cocotb.apb_uart                    Successfully transmitted and received byte 0xc3 in 39 cycles
+ 11630.00ns INFO     cocotb.apb_uart                    Successfully transmitted and received byte 0x12 in 39 cycles
+ 13280.00ns INFO     cocotb.apb_uart                    Successfully transmitted and received byte 0x89 in 39 cycles
+ 13290.00ns INFO     cocotb.regression                  test_apb_uart.test_ua01_loopback_bytes passed
+ 13290.00ns INFO     cocotb.regression                  running test_apb_uart.test_ua02_fifo_full_and_overflow_flags (2/5)
+                                                            UA-02: FIFO full / empty flags, TX_OVF and RX_OVF detection and W1C clearing.
+ 29100.00ns INFO     cocotb.regression                  test_apb_uart.test_ua02_fifo_full_and_overflow_flags passed
+ 29100.00ns INFO     cocotb.regression                  running test_apb_uart.test_ua03_bauddiv_sweep (3/5)
+                                                            UA-03: Sweep BAUDDIV and verify bit duration scaling.
+ 29410.00ns INFO     cocotb.apb_uart                    BAUDDIV=0: measured start bit length = 16 cycles (expected 16)
+ 31410.00ns INFO     cocotb.apb_uart                    BAUDDIV=1: measured start bit length = 31 cycles (expected 32)
+ 35010.00ns INFO     cocotb.apb_uart                    BAUDDIV=2: measured start bit length = 47 cycles (expected 48)
+ 39470.00ns INFO     cocotb.regression                  test_apb_uart.test_ua03_bauddiv_sweep passed
+ 39470.00ns INFO     cocotb.regression                  running test_apb_uart.test_ua05_rx_irq (4/5)
+                                                            UA-05: RX IRQ enable/disable follows (RX_IRQ_EN & ~RX_EMPTY).
+ 43800.00ns INFO     cocotb.regression                  test_apb_uart.test_ua05_rx_irq passed
+ 43800.00ns INFO     cocotb.regression                  running test_apb_uart.test_ua04_framing_error (5/5)
+                                                            UA-04: Drive uart_rx with bad stop bit; assert FRAME_ERR set, W1C clears it, next good frame OK.
+ 47890.00ns INFO     cocotb.regression                  test_apb_uart.test_ua04_framing_error passed
+ 47890.00ns INFO     cocotb.regression                  **************************************************************************************************************
+                                                        ** TEST                                                  STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************************************
+                                                        ** test_apb_uart.test_ua01_loopback_bytes                 PASS       13290.00           0.10     134502.89  **
+                                                        ** test_apb_uart.test_ua02_fifo_full_and_overflow_flags   PASS       15810.00           0.12     136019.20  **
+                                                        ** test_apb_uart.test_ua03_bauddiv_sweep                  PASS       10370.00           0.07     140993.46  **
+                                                        ** test_apb_uart.test_ua05_rx_irq                         PASS        4330.00           0.02     182019.27  **
+                                                        ** test_apb_uart.test_ua04_framing_error                  PASS        4090.00           0.02     183073.33  **
+                                                        **************************************************************************************************************
+                                                        ** TESTS=5 PASS=5 FAIL=0 SKIP=0                                      47890.00           0.34     139032.29  **
+                                                        **************************************************************************************************************
+make[3]: Leaving directory './tb/block'
+make[2]: Leaving directory './tb/block'
+--- Running test_axil_cdc_bridge (CD-01, CD-04, CD-05) ---
+make -f ./tb/block/Makefile.single \
+	TOPLEVEL=axil_cdc_bridge \
+	MODULE=test_axil_cdc_bridge \
+	VERILOG_SOURCES="./rtl/common/async_fifo.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v" \
+	SIM=icarus
+make[2]: Entering directory './tb/block'
+rm -f ./build/results/block/results_test_axil_cdc_bridge.xml
+"make" -f ./tb/block/Makefile.single ./build/results/block/results_test_axil_cdc_bridge.xml
+make[3]: Entering directory './tb/block'
+mkdir -p ./build/sim_build/block_axil_cdc_bridge
+~/oss-cad-suite/bin/iverilog -o ./build/sim_build/block_axil_cdc_bridge/sim.vvp -s axil_cdc_bridge -g2012 -g2012 -DCOCOTB_SIM -f ./build/sim_build/block_axil_cdc_bridge/cmds.f  ./rtl/common/async_fifo.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/block/results_test_axil_cdc_bridge.xml
+COCOTB_TEST_MODULES=test_axil_cdc_bridge COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=axil_cdc_bridge TOPLEVEL_LANG=verilog \
+         ~/oss-cad-suite/bin/vvp -M ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/block_axil_cdc_bridge/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795590296
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_axil_cdc_bridge.test_cd01_ratio_phase_sweep (1/4)
+                                                            CD-01: Data integrity through the CDC bridge across ratio and phase sweep.
+     0.00ns INFO     cocotb.axil_cdc_bridge             CD-01 testing ratio period=25.0 ns, phase=0.0 ns...
+  2150.00ns INFO     cocotb.axil_cdc_bridge             CD-01 testing ratio period=25.0 ns, phase=2.5 ns...
+  4100.00ns INFO     cocotb.axil_cdc_bridge             CD-01 testing ratio period=25.0 ns, phase=5.0 ns...
+  6260.00ns INFO     cocotb.axil_cdc_bridge             CD-01 testing ratio period=10.3 ns, phase=0.0 ns...
+  7580.00ns INFO     cocotb.axil_cdc_bridge             CD-01 testing ratio period=10.3 ns, phase=2.5 ns...
+  8900.00ns INFO     cocotb.axil_cdc_bridge             CD-01 testing ratio period=10.3 ns, phase=5.0 ns...
+ 10210.00ns INFO     cocotb.axil_cdc_bridge             CD-01 testing ratio period=6.0 ns, phase=0.0 ns...
+ 11330.00ns INFO     cocotb.axil_cdc_bridge             CD-01 testing ratio period=6.0 ns, phase=2.5 ns...
+ 12450.00ns INFO     cocotb.axil_cdc_bridge             CD-01 testing ratio period=6.0 ns, phase=5.0 ns...
+ 13580.00ns INFO     cocotb.axil_cdc_bridge             CD-01 PASSED: all 9 ratio/phase combinations verified with data integrity
+ 13580.00ns INFO     cocotb.regression                  test_axil_cdc_bridge.test_cd01_ratio_phase_sweep passed
+ 13580.00ns INFO     cocotb.regression                  running test_axil_cdc_bridge.test_cd03_reset_recovery (2/4)
+                                                            CD-03: Independent reset in clk_sys OR clk_slow mid-transaction; assert clean non-hanging recovery per DEC-008.
+ 13710.00ns INFO     cocotb.axil_cdc_bridge             CD-03 Part 1: Injecting mid-transaction reset in clk_sys domain only...
+ 14300.00ns INFO     cocotb.axil_cdc_bridge             CD-03 Part 1: clk_sys-only reset recovery OK
+ 14300.00ns INFO     cocotb.axil_cdc_bridge             CD-03 Part 2: Injecting mid-transaction reset in clk_slow domain only...
+ 15250.00ns INFO     cocotb.axil_cdc_bridge             CD-03 Part 2: clk_slow-only reset recovery OK (in-flight rresp=2)
+ 15260.00ns INFO     cocotb.axil_cdc_bridge             CD-03 PASSED: independent domain resets recover cleanly without hanging
+ 15260.00ns INFO     cocotb.regression                  test_axil_cdc_bridge.test_cd03_reset_recovery passed
+ 15260.00ns INFO     cocotb.regression                  running test_axil_cdc_bridge.test_cd04_free_running_counter (3/4)
+                                                            CD-04: Free-running counter in clk_slow incrementing and controllable via SLOW_CTRL.
+ 16080.00ns INFO     cocotb.axil_cdc_bridge             SLOW_COUNTER: val1=6, val2=25 (incremented by 19)
+ 16980.00ns INFO     cocotb.axil_cdc_bridge             Counter successfully paused at 35
+ 17690.00ns INFO     cocotb.axil_cdc_bridge             CD-04 PASSED
+ 17690.00ns INFO     cocotb.regression                  test_axil_cdc_bridge.test_cd04_free_running_counter passed
+ 17690.00ns INFO     cocotb.regression                  running test_axil_cdc_bridge.test_cd_slow_id_and_unmapped (4/4)
+                                                            Read SLOW_ID (0x510E_0001), read-only protection, and SLVERR on unmapped offset.
+ 18950.00ns INFO     cocotb.regression                  test_axil_cdc_bridge.test_cd_slow_id_and_unmapped passed
+ 18950.00ns INFO     cocotb.regression                  *************************************************************************************************************
+                                                        ** TEST                                                 STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *************************************************************************************************************
+                                                        ** test_axil_cdc_bridge.test_cd01_ratio_phase_sweep      PASS       13580.00           0.13     106552.79  **
+                                                        ** test_axil_cdc_bridge.test_cd03_reset_recovery         PASS        1680.00           0.01     131795.21  **
+                                                        ** test_axil_cdc_bridge.test_cd04_free_running_counter   PASS        2430.00           0.02     141351.62  **
+                                                        ** test_axil_cdc_bridge.test_cd_slow_id_and_unmapped     PASS        1260.00           0.01     138476.65  **
+                                                        *************************************************************************************************************
+                                                        ** TESTS=4 PASS=4 FAIL=0 SKIP=0                                     18950.00           0.18     107863.57  **
+                                                        *************************************************************************************************************
+make[3]: Leaving directory './tb/block'
+make[2]: Leaving directory './tb/block'
+--- Running test_amba_fabric_top (TOP-01, TOP-02) ---
+make -f ./tb/block/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_amba_fabric_top \
+	VERILOG_SOURCES="./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v" \
+	SIM=icarus
+make[2]: Entering directory './tb/block'
+rm -f ./build/results/block/results_test_amba_fabric_top.xml
+"make" -f ./tb/block/Makefile.single ./build/results/block/results_test_amba_fabric_top.xml
+make[3]: Entering directory './tb/block'
+mkdir -p ./build/sim_build/block_amba_fabric_top
+~/oss-cad-suite/bin/iverilog -o ./build/sim_build/block_amba_fabric_top/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f ./build/sim_build/block_amba_fabric_top/cmds.f  ./rtl/common/rst_sync.v ./rtl/common/sync_fifo.v ./rtl/common/async_fifo.v ./rtl/common/rr_arbiter.v ./rtl/axil/axil_default_slave.v ./rtl/axil/axil_decoder.v ./rtl/axil/axil_xbar.v ./rtl/axil/axil_ram.v ./rtl/axil/axil_csr.v ./rtl/apb/axil2apb_bridge.v ./rtl/apb/apb_decoder.v ./rtl/apb/apb_uart.v ./rtl/apb/apb_timer.v ./rtl/apb/apb_gpio.v ./rtl/cdc/slow_regs.v ./rtl/cdc/axil_cdc_bridge.v ./rtl/amba_fabric_top.v
+~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f ./build/results/block/results_test_amba_fabric_top.xml
+COCOTB_TEST_MODULES=test_amba_fabric_top COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         ~/oss-cad-suite/bin/vvp -M ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   ./build/sim_build/block_amba_fabric_top/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at ~/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795590299
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from ~/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_amba_fabric_top.test_top01_register_map_connectivity (1/4)
+                                                            TOP-01: Full-top connectivity test exercising every register map entry from both masters.
+    90.00ns INFO     cocotb.amba_fabric_top             --- Testing S2: CSR Block ---
+   430.00ns INFO     cocotb.amba_fabric_top             --- Testing S1: Scratchpad RAM ---
+   530.00ns INFO     cocotb.amba_fabric_top             --- Testing S0: APB Peripherals ---
+  3280.00ns INFO     cocotb.amba_fabric_top             --- Testing S3: CDC Bridge & Slow Regs ---
+  4720.00ns INFO     cocotb.amba_fabric_top             --- Testing Default Slave Unmapped Address ---
+  4760.00ns INFO     cocotb.amba_fabric_top             TOP-01: Every register-map entry verified clean across all blocks!
+  4770.00ns INFO     cocotb.regression                  test_amba_fabric_top.test_top01_register_map_connectivity passed
+  4770.00ns INFO     cocotb.regression                  running test_amba_fabric_top.test_top02_irq_aggregation_to_pin (2/4)
+                                                            TOP-02: IRQ aggregation from UART, Timer, and GPIO through CSR to top-level irq_o pin.
+  4870.00ns INFO     cocotb.amba_fabric_top             --- Testing Timer IRQ Aggregation ---
+  5320.00ns INFO     cocotb.amba_fabric_top             --- Testing GPIO IRQ Aggregation ---
+  5570.00ns INFO     cocotb.amba_fabric_top             --- Testing UART IRQ Aggregation ---
+  7460.00ns INFO     cocotb.amba_fabric_top             TOP-02: All 3 IRQ sources aggregated and verified on irq_o pin!
+  7480.00ns INFO     cocotb.regression                  test_amba_fabric_top.test_top02_irq_aggregation_to_pin passed
+  7480.00ns INFO     cocotb.regression                  running test_amba_fabric_top.test_cd05_dual_master_slow_regs (3/4)
+                                                            CD-05: Both masters interleaving reads and writes to slow registers through the full path.
+  7570.00ns INFO     cocotb.amba_fabric_top             Starting CD-05: Dual-master interleaved access to CDC slow registers...
+ 30080.00ns INFO     cocotb.amba_fabric_top             CD-05 PASSED: 20 rounds of dual-master interleaved CDC access succeeded with 0 errors
+ 30100.00ns INFO     cocotb.regression                  test_amba_fabric_top.test_cd05_dual_master_slow_regs passed
+ 30100.00ns INFO     cocotb.regression                  running test_amba_fabric_top.test_br05_dual_master_apb_mixed_rw (4/4)
+                                                            BR-05: Concurrent dual-master mixed R/W transfers to APB peripherals via crossbar + bridge.
+ 34390.00ns INFO     cocotb.amba_fabric_top             BR-05 PASSED: 20 rounds of concurrent dual-master mixed R/W over APB bridge
+ 34410.00ns INFO     cocotb.regression                  test_amba_fabric_top.test_br05_dual_master_apb_mixed_rw passed
+ 34410.00ns INFO     cocotb.regression                  *******************************************************************************************************************
+                                                        ** TEST                                                       STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************************************
+                                                        ** test_amba_fabric_top.test_top01_register_map_connectivity   PASS        4770.00           0.06      79609.85  **
+                                                        ** test_amba_fabric_top.test_top02_irq_aggregation_to_pin      PASS        2710.00           0.04      77255.77  **
+                                                        ** test_amba_fabric_top.test_cd05_dual_master_slow_regs        PASS       22620.00           0.23      97828.60  **
+                                                        ** test_amba_fabric_top.test_br05_dual_master_apb_mixed_rw     PASS        4310.00           0.09      48349.52  **
+                                                        *******************************************************************************************************************
+                                                        ** TESTS=4 PASS=4 FAIL=0 SKIP=0                                           34410.00           0.43      80420.64  **
+                                                        *******************************************************************************************************************
+make[3]: Leaving directory './tb/block'
+make[2]: Leaving directory './tb/block'
+=====================================================
+All Phase 3 block and top tests executed successfully (SIM=icarus).
+=====================================================
+make[1]: Leaving directory './tb/block'

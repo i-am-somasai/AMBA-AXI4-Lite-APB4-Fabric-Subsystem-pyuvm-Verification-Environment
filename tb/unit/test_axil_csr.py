@@ -205,3 +205,71 @@ async def test_cs03_irq_aggregation(dut):
     await RisingEdge(dut.clk)
     await Timer(10, unit="ns")
     dut._log.info("CS-03 PASSED")
+
+
+@cocotb.test()
+async def test_cs04_ooo_w1c32_ro_wo_and_backpressure(dut):
+    """CS-04: CSR aw_first/w_first staging, 32-bit W1C, RO writes, WO reads, and B/R hold."""
+    driver = await setup_csr(dut)
+
+    # 1. All RO registers ignore writes with OKAY and hold fixed/external values
+    dut.irq_sources.value = 0b101
+    for ro_addr, exp_val in [(0x6000_0000, 0xA3BA0001), (0x6000_0004, 0x00010000), (0x6000_0010, 0b101), (0x6000_0018, 0b000)]:
+        bresp = await driver.write(ro_addr, 0xFFFFFFFF, order="w_first", bready_delay=2)
+        assert bresp == RESP_OKAY
+        rdata, rresp = await driver.read(ro_addr, rready_delay=2)
+        assert rresp == RESP_OKAY and rdata == exp_val, f"RO {ro_addr:#x}: exp {exp_val:#x}, got {rdata:#x}"
+    dut.irq_sources.value = 0
+
+    # 2. W1C_SET (0x20) is WO: reading it returns 0 with OKAY, after writing full 32-bit patterns
+    for wpat in [0xFFFFFFFF, 0xAAAAAAAA, 0x55555555]:
+        assert await driver.write(0x6000_001C, 0xFFFFFFFF) == RESP_OKAY  # Clear all
+        assert await driver.write(0x6000_0020, wpat, order="w_first") == RESP_OKAY
+        wo_rd, wo_resp = await driver.read(0x6000_0020)
+        assert wo_resp == RESP_OKAY and wo_rd == 0, f"W1C_SET read must be 0 OKAY, got {wo_rd:#x} resp={wo_resp}"
+        t_rd, t_resp = await driver.read(0x6000_001C)
+        assert t_resp == RESP_OKAY and t_rd == wpat
+        assert await driver.write(0x6000_001C, wpat, order="aw_first") == RESP_OKAY
+        t_clr, _ = await driver.read(0x6000_001C)
+        assert t_clr == 0
+
+    # 3. Walking 1s across all 32 bits of W1C_SET / W1C_TEST via both w_first and aw_first
+    for bit in range(32):
+        mask = 1 << bit
+        ord_m = "w_first" if (bit % 2 == 0) else "aw_first"
+        assert await driver.write(0x6000_0020, mask, order=ord_m) == RESP_OKAY
+        val, _ = await driver.read(0x6000_001C)
+        assert val == mask, f"32-bit W1C set bit {bit} failed: got {val:#x}"
+        assert await driver.write(0x6000_001C, mask, order=("aw_first" if ord_m == "w_first" else "w_first")) == RESP_OKAY
+        val2, _ = await driver.read(0x6000_001C)
+        assert val2 == 0, f"32-bit W1C clear bit {bit} failed: got {val2:#x}"
+
+    # 4. SCRATCH (0x08) and SCRATCH2 (0x0C) under aw_first / w_first and full 16 WSTRB values
+    assert await driver.write(0x6000_0008, 0x12345678, order="w_first") == RESP_OKAY
+    assert await driver.write(0x6000_000D, 0x87654321, strb=0xF, order="aw_first") == RESP_OKAY
+    s1, _ = await driver.read(0x6000_0008)
+    s2, _ = await driver.read(0x6000_000C)
+    assert s1 == 0x12345678 and s2 == 0x87654321
+    for ord_m in ("aw_first", "w_first"):
+        for bit in (0, 9, 17, 25, 31):
+            v = 1 << bit
+            assert await driver.write(0x6000_0009, v, order=ord_m) == RESP_OKAY
+            rv, _ = await driver.read(0x6000_0008)
+            assert rv == v
+        for strb in range(16):
+            assert await driver.write(0x6000_000C, 0xA55A3CC3, strb=0xF) == RESP_OKAY
+            wval = 0xF0E1D2C3 ^ (strb * 0x01010101)
+            assert await driver.write(0x6000_000E, wval, strb=strb, order=ord_m) == RESP_OKAY
+            exp = 0
+            for b in range(4):
+                m = 0xFF << (8 * b)
+                exp |= (wval & m) if ((strb >> b) & 1) else (0xA55A3CC3 & m)
+            rv2, _ = await driver.read(0x6000_000C)
+            assert rv2 == exp, f"CSR SCRATCH2 {ord_m} strb={strb:#x} mismatch: {rv2:#x} != {exp:#x}"
+
+    # 5. Backpressure BREADY=0 and RREADY=0 stability on CSR
+    bresp_slv = await driver.write(0x6000_0030, 0x1, order="w_first", bready_delay=3)
+    assert bresp_slv == RESP_SLVERR
+    rdata_slv, rresp_slv = await driver.read(0x6000_0030, rready_delay=3)
+    assert rresp_slv == RESP_SLVERR and rdata_slv == 0
+    await Timer(10, unit="ns")

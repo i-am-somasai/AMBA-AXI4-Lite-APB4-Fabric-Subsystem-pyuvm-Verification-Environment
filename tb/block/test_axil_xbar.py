@@ -640,3 +640,44 @@ async def test_xb10_delayed_bready_rready_stability(dut):
     tb.stop_all()
     await RisingEdge(dut.clk)
     await Timer(10, unit="ns")
+
+
+@cocotb.test()
+async def test_xb11_all_targets_contention_and_backpressure(dut):
+    """XB-11: Contention, w_first/aw_first, and B/R hold across all 4 mapped targets + default slave."""
+    tb = XbarTestbench(dut)
+    await tb.reset()
+
+    targets = [
+        (0x40000010, 0x40000014, 0),  # S0 APB
+        (0x50000010, 0x50000014, 0),  # S1 RAM
+        (0x60000010, 0x60000014, 0),  # S2 CSR
+        (0x70000010, 0x70000014, 0),  # S3 CDC
+        (0x90000010, 0x90000014, 3),  # Default slave (DECERR)
+    ]
+
+    for a0, a1, exp_resp in targets:
+        # 1. Both masters write to the SAME target with delayed BREADY & mixed order
+        for round_idx in range(4):
+            d0 = 0xA0000000 + (round_idx << 8) + ((a0 >> 28) & 0xF)
+            d1 = 0xB0000000 + (round_idx << 8) + ((a1 >> 28) & 0xF)
+            ord0 = "w_first" if (round_idx % 2 == 0) else "aw_first"
+            ord1 = "aw_first" if (round_idx % 2 == 0) else "simultaneous"
+
+            t0 = cocotb.start_soon(tb.m0.write(a0, d0, strb=0xF, order=ord0, bready_delay=2))
+            t1 = cocotb.start_soon(tb.m1.write(a1, d1, strb=0xF, order=ord1, bready_delay=2))
+            r0 = await t0
+            r1 = await t1
+            assert r0 == exp_resp and r1 == exp_resp
+
+            tr0 = cocotb.start_soon(tb.m0.read(a0, rready_delay=2))
+            tr1 = cocotb.start_soon(tb.m1.read(a1, rready_delay=2))
+            v0, rr0 = await tr0
+            v1, rr1 = await tr1
+            assert rr0 == exp_resp and rr1 == exp_resp
+            if exp_resp == 0:
+                assert v0 == d0 and v1 == d1
+
+    tb.stop_all()
+    await RisingEdge(dut.clk)
+    await Timer(10, unit="ns")

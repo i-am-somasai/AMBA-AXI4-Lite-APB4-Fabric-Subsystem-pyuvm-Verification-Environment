@@ -11,7 +11,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 | **Phase A** | RTL Rule 6 fix (`axil_csr`), CDC reset fix, models, decisions (`DEC-006..008`), 8 test rewrites (`XB-03/07/12/14/15`, `UA-02`, `BR-05`, `CD-03`), 16 sanity mutants | `DONE` | `fix(R2-A)` (this commit) |
 | **Phase B** | Formal (`rr_arbiter_props.v`, bounded fairness, `sync_fifo` data ordering, bridge/xbar over-assumptions, CSR causality/Rule 6, exact wording) | `DONE` | [`docs/logs/phase_b_formal.log`](docs/logs/phase_b_formal.log) |
 | **Phase C** | Honest coverage (`CdcMonitor` edge measurement, stimulus for 44 holes, waivers, `make cov-report` fix & full re-measure) | `DONE` | [`docs/logs/func_cov.log`](docs/logs/func_cov.log) |
-| **Phase D** | Mutation (`run_mutants.py` process group kill, `axil_xbar` scope fix, CSR/bridge test gaps, 240-mutant run, script-generated report) | `TODO` | - |
+| **Phase D** | Mutation (`run_mutants.py` process group kill, `axil_xbar` scope fix, CSR/bridge test gaps, 240-mutant run, script-generated report) | `DONE` | [`docs/mutation_report.md`](mutation_report.md) |
 | **Phase E** | Synthesis & STA (`synth/synth.ys`, portable reset false-path constraints, dynamic `fmax_sweep.py` parsing, clean measurements) | `TODO` | - |
 | **Phase F** | Data-driven docs (`scripts/gen_metrics.py`, `docs/metrics.json`, regenerate docs, `bugs.md` / `decisions.md` / `interfaces.md`, CI check scripts) | `TODO` | - |
 | **Phase G** | CI (`ci.yml` artifact/command alignment, fresh checkout check, remote GitHub Actions verification) | `TODO` | - |
@@ -72,14 +72,14 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 ---
 
 ### Phase D: Mutation Testing (`V-09`, `MUT-*`)
-- **Status:** `TODO`
-- **Files Changed:** Pending
-- **Commands Run:** Pending
-- **Log Paths:** Pending
+- **Status:** `DONE`
+- **Files Changed:** `mutation/{run_mutants.py,mutant_list_240.json,gen_mutation_report.py}`, `tb/unit/{test_async_fifo,test_rr_arbiter,test_sync_fifo,test_axil_decoder,test_axil_ram,test_axil_csr}.py`, `tb/block/{test_axil2apb_bridge,test_axil_xbar}.py`, `docs/{mutation_report.md,audit_r2_tracking.csv,FIX_REPORT_R2.md}` (deleted duplicate `docs/mutation_triage.md`)
+- **Commands Run:** `python3 mutation/run_mutants.py --generate-list mutation/mutant_list_240.json --seed 42 --max-mutants 240`, `python3 mutation/run_mutants.py --mutant-list mutation/mutant_list_240.json --seed 42 -j4 --output docs/logs/mutation_baseline.log`, `make unit SIM=icarus && make block SIM=icarus`, `python3 mutation/run_mutants.py --mutant-list mutation/mutant_list_240.json --seed 42 -j4 --output docs/logs/mutation.log`, Yosys `equiv_induct` + Boolector `d=10` miter checks (`docs/logs/mutation_equiv.log`), `python3 mutation/gen_mutation_report.py`
+- **Log Paths:** [`docs/logs/mutation_baseline.log`](logs/mutation_baseline.log), [`docs/logs/mutation.log`](logs/mutation.log), [`docs/logs/mutation_equiv.log`](logs/mutation_equiv.log), [`docs/logs/phase_d_golden_unit_block.log`](logs/phase_d_golden_unit_block.log)
 - **Before / After Numbers:**
-  - Before: Fresh run 183/240 (76.25%); `run_mutants.py` leaks timed-out `vvp` processes; `axil_xbar` mutates TB/wrapper; `docs/mutation_report.md` has 30/29 math (103.4%), phantom survivor `#29`, duplicate `mutation_triage.md`, and misclassified test gaps.
-  - After: Pending Phase D execution.
-- **Remaining Issues:** None yet.
+  - Before (D3 baseline on frozen 240-mutant list): **165/240 killed (68.75% raw)**, 64 survived, 11 timeouts (`async_fifo`), 0 build errors. Previously `run_mutants.py` leaked `vvp` processes, mutated `tb_axil_xbar`/submodules, and `docs/mutation_report.md` had 30/29 math & duplicate `docs/mutation_triage.md`.
+  - After (D5 final on identical 240-mutant list): **205/240 killed (85.42% raw, +40 kills / +16.67%)**, 35 survived, **0 timeouts**, **0 build errors**; 21 equivalent (18 Yosys `equiv_induct` / Boolector `d=10` miter + 3 `axil_default_slave._unused_inputs` signal proof), 14 residual non-equivalent survivors, **93.61% adjusted (205/219)**; 0 leaked `vvp` processes.
+- **Remaining Issues:** None for Phase D (`V-09`, `MUT-SCRIPT`, `MUT-TRIAGE`, `MUT-SPOT5`, `DOD-05` closed).
 
 ---
 
@@ -136,7 +136,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `V-05` (MAJOR): CLOSED (`scripts/run_regression.sh` builds in `BUILD_DIR`, cleans intermediate `sim_build`, and `make cov-report` exits 0)
 - `V-06` (MAJOR): CLOSED (Phase B bound `rr_arbiter_props.v`; Phase C replaced `CLK_SLOW_PERIOD_NS` read in `CdcMonitor` with `RisingEdge` pin timing)
 - `V-07` (MAJOR): CLOSED (`rr_arbiter_props` bound, `sync_fifo` magic data-order `prove` PASS, bridge/xbar over-assumptions removed, `axil_csr` `prv+bmc` PASS in `docs/logs/phase_b_formal.log`)
-- `V-09` (BLOCKER): OPEN (assigned to Phase D D1-D5)
+- `V-09` (BLOCKER): CLOSED (`mutation/run_mutants.py` process-group kill & strict `axil_xbar` scope; 205/240 raw 85.42%, 205/219 adj 93.61% in `docs/mutation_report.md`)
 - `V-10` (MAJOR): OPEN (assigned to Phase G G)
 - `S-01` (BLOCKER): OPEN (assigned to Phase E E1-E4)
 - `REG-UART-08` (MAJOR): CLOSED (`test_ua02_fifo_full_and_overflow_flags` asserts `STATUS[5]==1` & W1C in `docs/logs/phase_a_block.log`)
@@ -164,9 +164,9 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `FORMAL-sync_fifo` (MAJOR): CLOSED (inductive `(* anyconst *)` magic-value data-ordering & integrity proof added in `rtl/common/sync_fifo.v`, `prove d=20` PASS 8 covers)
 - `FORMAL-rr_arbiter_props` (MAJOR): CLOSED (`formal/rr_arbiter.sby` runs `prep -top rr_arbiter_props` with 0 undriven-wire warnings)
 - `FORMAL-WORDING` (MAJOR): CLOSED (`coverage_waivers.md:43` 'exhaustively proven' removed; `README.md` documents formal depths & standalone `rr_arbiter`)
-- `MUT-SCRIPT` (MAJOR): OPEN (assigned to Phase D D1)
-- `MUT-TRIAGE` (BLOCKER): OPEN (assigned to Phase D D4)
-- `MUT-SPOT5` (MAJOR): OPEN (assigned to Phase D D3/D4)
+- `MUT-SCRIPT` (MAJOR): CLOSED (`mutation/run_mutants.py` uses `start_new_session=True` + `os.killpg(SIGKILL)`, separates `TIMEOUT`/`BUILD_ERROR`, scopes `axil_xbar` to `$paramod*axil_xbar`)
+- `MUT-TRIAGE` (BLOCKER): CLOSED (deleted duplicate `docs/mutation_triage.md`; `mutation/gen_mutation_report.py` parses logs & `mutation_equiv.log` deterministically)
+- `MUT-SPOT5` (MAJOR): CLOSED (added `test_cs04` CSR OOO/RO/WO/32b-W1C & `test_br08` 32b PADDR/`w_first`/`PSTRB=0` + unit/block tests; +40 kills)
 - `PROBE-02` (BLOCKER): CLOSED (`0x6000_0001..3` return `OKAY` + `0xA3BA0001` in `test_cs01_reset_values` & `test_xb15_unaligned_address`)
 - `SMUT-09` (BLOCKER): CLOSED (`mutation/sanity/run_sanity.py` kills `SMUT-09` at `tb/pyuvm/sequences/directed_seqs.py:54`)
 - `SMUT-10` (BLOCKER): CLOSED (`mutation/sanity/run_sanity.py` kills `SMUT-10` at `tb/block/test_axil_xbar.py:405`)
@@ -189,7 +189,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `DOD-02` (MAJOR): CLOSED (20 Icarus seeds `601..620` in Phase A + 20 Verilator coverage seeds `1..20` in Phase C PASS)
 - `DOD-03` (BLOCKER): CLOSED (`make cov-report` exits 0; 267/267 100.00% real coverage + `DEC-009`/`DEC-010` waivers)
 - `DOD-04` (MAJOR): CLOSED (10/10 formal suites PASS in `docs/logs/phase_b_formal.log` with 0 undriven-wire warnings & no weakening assumptions)
-- `DOD-05` (BLOCKER): OPEN (assigned to Phase D D1-D5)
+- `DOD-05` (BLOCKER): CLOSED (frozen `mutation/mutant_list_240.json` D3 baseline 165/240 -> D5 final 205/240 raw 85.42% / 93.61% adj via `docs/mutation_report.md`)
 - `DOD-06` (BLOCKER): OPEN (assigned to Phase E E1-E4)
 - `DOD-07` (MAJOR): OPEN (assigned to Phase G G)
 - `DOD-08` (BLOCKER): OPEN (assigned to Phase F F2/F3/F5)

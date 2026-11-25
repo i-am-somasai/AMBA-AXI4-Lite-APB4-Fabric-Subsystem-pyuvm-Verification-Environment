@@ -1,0 +1,163 @@
+================================================================================
+AMBA-Fabric Scaled Mutation Testing Summary Report
+Timestamp: 2026-11-25 12:27:11
+Execution Time: 391.56 seconds
+RNG Seed: 42
+Parallel Jobs: 4
+================================================================================
+Module           | Gen   | Valid | Kill  | Surv  | Tmo  | BldErr | Score (%)
+------------------------------------------------------------------------------
+rr_arbiter       | 30    | 30    | 19    | 11    | 0    | 0      |    63.33%
+sync_fifo        | 30    | 30    | 25    | 5     | 0    | 0      |    83.33%
+async_fifo       | 30    | 30    | 18    | 1     | 11   | 0      |    60.00%
+axil_decoder     | 30    | 30    | 26    | 4     | 0    | 0      |    86.67%
+axil_ram         | 30    | 30    | 17    | 13    | 0    | 0      |    56.67%
+axil_csr         | 30    | 30    | 15    | 15    | 0    | 0      |    50.00%
+axil2apb_bridge  | 30    | 30    | 23    | 7     | 0    | 0      |    76.67%
+axil_xbar        | 30    | 30    | 22    | 8     | 0    | 0      |    73.33%
+==============================================================================
+TOTAL / OVERALL  | 240   | 240   | 165   | 64    | 11   | 0      |    68.75%
+================================================================================
+
+Total Survivors: 64 (Timeouts: 11, BuildErrors: 0)
+  - [async_fifo #25]: mutate -mode const1 -module async_fifo -cell $rtl/common/async_fifo.v:63$logic_not$23 -port Y -portbit 0 -src rtl/common/async_fifo.v:63.25-63.31
+    Saved RTL: mutation/results/survivors/async_fifo_mut_25.v
+  - [axil2apb_bridge #3]: mutate -mode const0 -module axil2apb_bridge -cell $procdff$314 -port Q -portbit 0 -wire s_axil_bresp -wirebit 0 -src rtl/apb/axil2apb_bridge.v:25.34-25.46 -src rtl/apb/axil2apb_bridge.v:67.5-197.8
+    Saved RTL: mutation/results/survivors/axil2apb_bridge_mut_3.v
+  - [axil2apb_bridge #6]: mutate -mode cnot1 -module axil2apb_bridge -cell $procmux$152 -port B -portbit 9 -ctrlbit 2 -src rtl/apb/axil2apb_bridge.v:139.20-139.20 -src rtl/apb/axil2apb_bridge.v:96.13-195.20
+    Saved RTL: mutation/results/survivors/axil2apb_bridge_mut_6.v
+  - [axil2apb_bridge #13]: mutate -mode const0 -module axil2apb_bridge -cell $procmux$245 -port A -portbit 27 -wire m_apb_paddr -wirebit 27 -src rtl/apb/axil2apb_bridge.v:40.34-40.45 -src rtl/apb/axil2apb_bridge.v:148.20-148.20 -src rtl/apb/axil2apb_bridge.v:96.13-195.20
+    Saved RTL: mutation/results/survivors/axil2apb_bridge_mut_13.v
+  - [axil2apb_bridge #15]: mutate -mode const0 -module axil2apb_bridge -cell $procdff$384 -port Q -portbit 18 -wire reg_addr -wirebit 18 -src rtl/apb/axil2apb_bridge.v:61.26-61.34 -src rtl/apb/axil2apb_bridge.v:67.5-197.8
+    Saved RTL: mutation/results/survivors/axil2apb_bridge_mut_15.v
+  - [axil2apb_bridge #19]: mutate -mode const0 -module axil2apb_bridge -cell $procmux$129 -port B -portbit 2 -src rtl/apb/axil2apb_bridge.v:142.25-142.39 -src rtl/apb/axil2apb_bridge.v:142.21-147.24
+    Saved RTL: mutation/results/survivors/axil2apb_bridge_mut_19.v
+  - [axil2apb_bridge #23]: mutate -mode const0 -module axil2apb_bridge -cell $rtl/apb/axil2apb_bridge.v:155$ternary$4 -port A -portbit 2 -src rtl/apb/axil2apb_bridge.v:155.38-155.83
+    Saved RTL: mutation/results/survivors/axil2apb_bridge_mut_23.v
+  - [axil2apb_bridge #29]: mutate -mode const0 -module axil2apb_bridge -cell $procmux$184 -port B -portbit 2 -src rtl/apb/axil2apb_bridge.v:133.25-133.38 -src rtl/apb/axil2apb_bridge.v:133.21-138.24
+    Saved RTL: mutation/results/survivors/axil2apb_bridge_mut_29.v
+  - [axil_csr #0]: mutate -mode const1 -module axil_csr -cell $procdff$249 -port Q -portbit 3 -wire awoffset_q -wirebit 3 -src rtl/axil/axil_csr.v:62.15-62.25 -src rtl/axil/axil_csr.v:73.5-155.8
+    Saved RTL: mutation/results/survivors/axil_csr_mut_0.v
+  - [axil_csr #4]: mutate -mode cnot1 -module axil_csr -cell $procmux$140 -port A -portbit 7 -ctrlbit 19 -src rtl/axil/axil_csr.v:142.24-142.24 -src rtl/axil/axil_csr.v:111.17-150.24
+    Saved RTL: mutation/results/survivors/axil_csr_mut_4.v
+  - [axil_csr #6]: mutate -mode inv -module axil_csr -cell $rtl/axil/axil_csr.v:69$ternary$5 -port B -portbit 9 -src rtl/axil/axil_csr.v:69.41-69.72
+    Saved RTL: mutation/results/survivors/axil_csr_mut_6.v
+  - [axil_csr #7]: mutate -mode const0 -module axil_csr -cell $procmux$129 -port B -portbit 28 -src rtl/axil/axil_csr.v:98.17-98.47 -src rtl/axil/axil_csr.v:98.13-102.16
+    Saved RTL: mutation/results/survivors/axil_csr_mut_7.v
+  - [axil_csr #9]: mutate -mode const0 -module axil_csr -cell $procmux$122 -port S -portbit 0 -src rtl/axil/axil_csr.v:98.17-98.47 -src rtl/axil/axil_csr.v:98.13-102.16
+    Saved RTL: mutation/results/survivors/axil_csr_mut_9.v
+  - [axil_csr #14]: mutate -mode inv -module axil_csr -cell $procdff$229 -port Q -portbit 25 -wire reg_scratch -wirebit 25 -src rtl/axil/axil_csr.v:51.16-51.27 -src rtl/axil/axil_csr.v:73.5-155.8
+    Saved RTL: mutation/results/survivors/axil_csr_mut_14.v
+  - [axil_csr #17]: mutate -mode cnot0 -module axil_csr -cell $rtl/axil/axil_csr.v:141$and$28 -port B -portbit 27 -ctrlbit 4 -src rtl/axil/axil_csr.v:141.41-141.67
+    Saved RTL: mutation/results/survivors/axil_csr_mut_17.v
+  - [axil_csr #18]: mutate -mode cnot1 -module axil_csr -cell $procmux$45_CMP0 -port A -portbit 0 -ctrlbit 5 -src rtl/axil/axil_csr.v:203.24-203.24 -src rtl/axil/axil_csr.v:171.17-212.24
+    Saved RTL: mutation/results/survivors/axil_csr_mut_18.v
+  - [axil_csr #19]: mutate -mode const0 -module axil_csr -cell $procmux$166 -port A -portbit 0 -src rtl/axil/axil_csr.v:151.26-151.56 -src rtl/axil/axil_csr.v:151.22-153.16
+    Saved RTL: mutation/results/survivors/axil_csr_mut_19.v
+  - [axil_csr #20]: mutate -mode const1 -module axil_csr -cell $procmux$68 -port A -portbit 7 -wire s_axil_rdata -wirebit 7 -src rtl/axil/axil_csr.v:31.34-31.46 -src rtl/axil/axil_csr.v:169.17-169.49 -src rtl/axil/axil_csr.v:169.13-215.16
+    Saved RTL: mutation/results/survivors/axil_csr_mut_20.v
+  - [axil_csr #23]: mutate -mode cnot0 -module axil_csr -cell $rtl/axil/axil_csr.v:145$or$29 -port A -portbit 7 -ctrlbit 3 -src rtl/axil/axil_csr.v:145.41-145.66
+    Saved RTL: mutation/results/survivors/axil_csr_mut_23.v
+  - [axil_csr #24]: mutate -mode cnot1 -module axil_csr -cell $procmux$65_CMP0 -port A -portbit 0 -ctrlbit 5 -src rtl/axil/axil_csr.v:179.24-179.24 -src rtl/axil/axil_csr.v:171.17-212.24
+    Saved RTL: mutation/results/survivors/axil_csr_mut_24.v
+  - [axil_csr #25]: mutate -mode cnot0 -module axil_csr -cell $procdff$264 -port Q -portbit 1 -ctrlbit 2 -wire wstrb_q -wirebit 1 -src rtl/axil/axil_csr.v:65.30-65.37 -src rtl/axil/axil_csr.v:73.5-155.8
+    Saved RTL: mutation/results/survivors/axil_csr_mut_25.v
+  - [axil_csr #26]: mutate -mode cnot1 -module axil_csr -cell $procmux$140 -port B -portbit 23 -ctrlbit 26 -src rtl/axil/axil_csr.v:142.24-142.24 -src rtl/axil/axil_csr.v:111.17-150.24
+    Saved RTL: mutation/results/survivors/axil_csr_mut_26.v
+  - [axil_csr #29]: mutate -mode cnot0 -module axil_csr -cell $procmux$178_CMP0 -port A -portbit 2 -ctrlbit 3 -src rtl/axil/axil_csr.v:128.24-128.24 -src rtl/axil/axil_csr.v:111.17-150.24
+    Saved RTL: mutation/results/survivors/axil_csr_mut_29.v
+  - [axil_decoder #1]: mutate -mode cnot1 -module axil_decoder -cell $rtl/axil/axil_decoder.v:30$eq$9 -port A -portbit 22 -ctrlbit 19 -src rtl/axil/axil_decoder.v:30.22-30.49
+    Saved RTL: mutation/results/survivors/axil_decoder_mut_1.v
+  - [axil_decoder #4]: mutate -mode const0 -module axil_decoder -cell $procmux$35 -port A -portbit 1 -src rtl/axil/axil_decoder.v:28.22-28.49 -src rtl/axil/axil_decoder.v:28.18-34.12
+    Saved RTL: mutation/results/survivors/axil_decoder_mut_4.v
+  - [axil_decoder #7]: mutate -mode const0 -module axil_decoder -cell $rtl/axil/axil_decoder.v:28$eq$7 -port A -portbit 16 -src rtl/axil/axil_decoder.v:28.22-28.49
+    Saved RTL: mutation/results/survivors/axil_decoder_mut_7.v
+  - [axil_decoder #10]: mutate -mode cnot1 -module axil_decoder -cell $procmux$35 -port A -portbit 1 -ctrlbit 0 -src rtl/axil/axil_decoder.v:28.22-28.49 -src rtl/axil/axil_decoder.v:28.18-34.12
+    Saved RTL: mutation/results/survivors/axil_decoder_mut_10.v
+  - [axil_ram #0]: mutate -mode cnot1 -module axil_ram -cell $procmux$52855 -port B -portbit 1 -ctrlbit 3 -src rtl/axil/axil_ram.v:95.17-97.50 -src rtl/axil/axil_ram.v:95.13-113.16
+    Saved RTL: mutation/results/survivors/axil_ram_mut_0.v
+  - [axil_ram #2]: mutate -mode cnot0 -module axil_ram -cell $procmux$88700 -port B -portbit 6 -ctrlbit 4 -src rtl/axil/axil_ram.v:104.25-104.45 -src rtl/axil/axil_ram.v:104.21-104.100
+    Saved RTL: mutation/results/survivors/axil_ram_mut_2.v
+  - [axil_ram #3]: mutate -mode const1 -module axil_ram -cell $procmux$142359 -port A -portbit 1 -src rtl/axil/axil_ram.v:88.17-88.47 -src rtl/axil/axil_ram.v:88.13-92.16
+    Saved RTL: mutation/results/survivors/axil_ram_mut_3.v
+  - [axil_ram #4]: mutate -mode cnot0 -module axil_ram -cell $procdff$143323 -port Q -portbit 11 -ctrlbit 25 -wire mem[123] -wirebit 11 -src rtl/axil/axil_ram.v:47.26-47.29 -src rtl/axil/axil_ram.v:68.5-115.8
+    Saved RTL: mutation/results/survivors/axil_ram_mut_4.v
+  - [axil_ram #6]: mutate -mode cnot0 -module axil_ram -cell $procdff$143603 -port Q -portbit 5 -ctrlbit 12 -wire mem[163] -wirebit 5 -src rtl/axil/axil_ram.v:47.26-47.29 -src rtl/axil/axil_ram.v:68.5-115.8
+    Saved RTL: mutation/results/survivors/axil_ram_mut_6.v
+  - [axil_ram #8]: mutate -mode cnot0 -module axil_ram -cell $procmux$109891 -port A -portbit 4 -ctrlbit 5 -src rtl/axil/axil_ram.v:107.25-107.45 -src rtl/axil/axil_ram.v:107.21-107.102
+    Saved RTL: mutation/results/survivors/axil_ram_mut_8.v
+  - [axil_ram #10]: mutate -mode cnot1 -module axil_ram -cell $procdff$142574 -port Q -portbit 27 -ctrlbit 31 -wire mem[16] -wirebit 27 -src rtl/axil/axil_ram.v:47.26-47.29 -src rtl/axil/axil_ram.v:68.5-115.8
+    Saved RTL: mutation/results/survivors/axil_ram_mut_10.v
+  - [axil_ram #16]: mutate -mode inv -module axil_ram -cell $procdff$142770 -port Q -portbit 12 -wire mem[44] -wirebit 12 -src rtl/axil/axil_ram.v:47.26-47.29 -src rtl/axil/axil_ram.v:68.5-115.8
+    Saved RTL: mutation/results/survivors/axil_ram_mut_16.v
+  - [axil_ram #18]: mutate -mode inv -module axil_ram -cell $procmux$76980 -port B -portbit 0 -src rtl/axil/axil_ram.v:104.25-104.45 -src rtl/axil/axil_ram.v:104.21-104.100
+    Saved RTL: mutation/results/survivors/axil_ram_mut_18.v
+  - [axil_ram #20]: mutate -mode inv -module axil_ram -cell $procdff$142798 -port Q -portbit 9 -wire mem[48] -wirebit 9 -src rtl/axil/axil_ram.v:47.26-47.29 -src rtl/axil/axil_ram.v:68.5-115.8
+    Saved RTL: mutation/results/survivors/axil_ram_mut_20.v
+  - [axil_ram #21]: mutate -mode const1 -module axil_ram -cell $procmux$384 -port A -portbit 24 -wire s_axil_rdata -wirebit 24 -src rtl/axil/axil_ram.v:36.34-36.46 -src rtl/axil/axil_ram.v:132.17-132.49 -src rtl/axil/axil_ram.v:132.13-143.16
+    Saved RTL: mutation/results/survivors/axil_ram_mut_21.v
+  - [axil_ram #22]: mutate -mode cnot1 -module axil_ram -cell $procmux$75404 -port A -portbit 4 -ctrlbit 7 -src rtl/axil/axil_ram.v:104.25-104.45 -src rtl/axil/axil_ram.v:104.21-104.100
+    Saved RTL: mutation/results/survivors/axil_ram_mut_22.v
+  - [axil_ram #23]: mutate -mode const1 -module axil_ram -cell $procmux$6795 -port A -portbit 2 -src rtl/axil/axil_ram.v:106.25-106.45 -src rtl/axil/axil_ram.v:106.21-106.102
+    Saved RTL: mutation/results/survivors/axil_ram_mut_23.v
+  - [axil_xbar #0]: mutate -mode const1 -module $paramod$3cec153e1ff2f3e7a227b49b5627139027cc0be9\axil_xbar -cell $rtl/axil/axil_xbar.v:299$eq$1633 -port Y -portbit 0 -src rtl/axil/axil_xbar.v:299.75-299.94
+    Saved RTL: mutation/results/survivors/axil_xbar_mut_0.v
+  - [axil_xbar #5]: mutate -mode inv -module $paramod$3cec153e1ff2f3e7a227b49b5627139027cc0be9\axil_xbar -cell $procmux$2027 -port Y -portbit 2 -wire def_araddr -wirebit 2 -src rtl/axil/axil_xbar.v:140.27-140.37 -src rtl/axil/axil_xbar.v:436.38-436.46
+    Saved RTL: mutation/results/survivors/axil_xbar_mut_5.v
+  - [axil_xbar #9]: mutate -mode const0 -module $paramod$3cec153e1ff2f3e7a227b49b5627139027cc0be9\axil_xbar -cell $rtl/axil/axil_xbar.v:429$logic_not$1947 -port A -portbit 0 -src rtl/axil/axil_xbar.v:429.56-429.70
+    Saved RTL: mutation/results/survivors/axil_xbar_mut_9.v
+  - [axil_xbar #10]: mutate -mode inv -module $paramod$3cec153e1ff2f3e7a227b49b5627139027cc0be9\axil_xbar -cell u_default_slave -port s_axil_wdata -portbit 20 -wire def_wdata -wirebit 20 -src rtl/axil/axil_xbar.v:133.27-133.36 -src rtl/axil/axil_xbar.v:152.7-174.6
+    Saved RTL: mutation/results/survivors/axil_xbar_mut_10.v
+  - [axil_xbar #11]: mutate -mode cnot0 -module $paramod$3cec153e1ff2f3e7a227b49b5627139027cc0be9\axil_xbar -cell $procmux$2063 -port Y -portbit 8 -ctrlbit 9 -wire def_awaddr -wirebit 8 -src rtl/axil/axil_xbar.v:129.27-129.37 -src rtl/axil/axil_xbar.v:306.38-306.46
+    Saved RTL: mutation/results/survivors/axil_xbar_mut_11.v
+  - [axil_xbar #13]: mutate -mode inv -module $paramod$3cec153e1ff2f3e7a227b49b5627139027cc0be9\axil_xbar -cell $procmux$2069 -port A -portbit 7 -src rtl/axil/axil_xbar.v:311.38-311.45
+    Saved RTL: mutation/results/survivors/axil_xbar_mut_13.v
+  - [axil_xbar #16]: mutate -mode inv -module $paramod$3cec153e1ff2f3e7a227b49b5627139027cc0be9\axil_xbar -cell $procmux$2271 -port Y -portbit 7 -src rtl/axil/axil_xbar.v:513.26-513.58 -src rtl/axil/axil_xbar.v:513.22-513.199
+    Saved RTL: mutation/results/survivors/axil_xbar_mut_16.v
+  - [axil_xbar #22]: mutate -mode const1 -module $paramod$3cec153e1ff2f3e7a227b49b5627139027cc0be9\axil_xbar -cell $rtl/axil/axil_xbar.v:313$shiftx$1671 -port A -portbit 0 -src rtl/axil/axil_xbar.v:313.83-313.104
+    Saved RTL: mutation/results/survivors/axil_xbar_mut_22.v
+  - [rr_arbiter #1]: mutate -mode const1 -module rr_arbiter -cell $rtl/common/rr_arbiter.v:27$reduce_or$6 -port Y -portbit 0 -src rtl/common/rr_arbiter.v:27.22-27.30
+    Saved RTL: mutation/results/survivors/rr_arbiter_mut_1.v
+  - [rr_arbiter #5]: mutate -mode const0 -module rr_arbiter -cell $procmux$146 -port A -portbit 0 -src rtl/common/rr_arbiter.v:30.22-30.26 -src rtl/common/rr_arbiter.v:30.18-52.12
+    Saved RTL: mutation/results/survivors/rr_arbiter_mut_5.v
+  - [rr_arbiter #8]: mutate -mode const0 -module rr_arbiter -cell $procmux$52 -port S -portbit 0 -src rtl/common/rr_arbiter.v:44.17-44.23 -src rtl/common/rr_arbiter.v:44.13-51.16
+    Saved RTL: mutation/results/survivors/rr_arbiter_mut_8.v
+  - [rr_arbiter #10]: mutate -mode cnot0 -module rr_arbiter -cell $rtl/common/rr_arbiter.v:27$and$8 -port B -portbit 0 -ctrlbit 1 -src rtl/common/rr_arbiter.v:27.38-27.51
+    Saved RTL: mutation/results/survivors/rr_arbiter_mut_10.v
+  - [rr_arbiter #11]: mutate -mode const0 -module rr_arbiter -cell $rtl/common/rr_arbiter.v:27$and$8 -port B -portbit 1 -src rtl/common/rr_arbiter.v:27.38-27.51
+    Saved RTL: mutation/results/survivors/rr_arbiter_mut_11.v
+  - [rr_arbiter #12]: mutate -mode cnot1 -module rr_arbiter -cell $procmux$239 -port B -portbit 0 -ctrlbit 1 -src rtl/common/rr_arbiter.v:27.13-27.53 -src rtl/common/rr_arbiter.v:27.9-52.12
+    Saved RTL: mutation/results/survivors/rr_arbiter_mut_12.v
+  - [rr_arbiter #16]: mutate -mode const1 -module rr_arbiter -cell $procmux$38 -port B -portbit 0 -src rtl/common/rr_arbiter.v:46.25-46.41 -src rtl/common/rr_arbiter.v:46.21-49.24
+    Saved RTL: mutation/results/survivors/rr_arbiter_mut_16.v
+  - [rr_arbiter #22]: mutate -mode const1 -module rr_arbiter -cell $procmux$124 -port A -portbit 0 -src rtl/common/rr_arbiter.v:35.29-35.62 -src rtl/common/rr_arbiter.v:35.25-38.28
+    Saved RTL: mutation/results/survivors/rr_arbiter_mut_22.v
+  - [rr_arbiter #23]: mutate -mode const1 -module rr_arbiter -cell $procmux$163 -port Y -portbit 0 -src rtl/common/rr_arbiter.v:35.29-35.62 -src rtl/common/rr_arbiter.v:35.25-38.28
+    Saved RTL: mutation/results/survivors/rr_arbiter_mut_23.v
+  - [rr_arbiter #24]: mutate -mode inv -module rr_arbiter -cell $rtl/common/rr_arbiter.v:35$logic_not$14 -port A -portbit 0 -src rtl/common/rr_arbiter.v:35.29-35.35
+    Saved RTL: mutation/results/survivors/rr_arbiter_mut_24.v
+  - [rr_arbiter #28]: mutate -mode cnot1 -module rr_arbiter -cell $rtl/common/rr_arbiter.v:27$reduce_or$9 -port A -portbit 0 -ctrlbit 1 -src rtl/common/rr_arbiter.v:27.36-27.52
+    Saved RTL: mutation/results/survivors/rr_arbiter_mut_28.v
+  - [sync_fifo #10]: mutate -mode inv -module sync_fifo -cell $procmux$476 -port A -portbit 5 -src rtl/common/sync_fifo.v:45.25-45.30 -src rtl/common/sync_fifo.v:45.21-51.24
+    Saved RTL: mutation/results/survivors/sync_fifo_mut_10.v
+  - [sync_fifo #20]: mutate -mode inv -module sync_fifo -cell $procmux$636 -port A -portbit 0 -src rtl/common/sync_fifo.v:62.20-62.20 -src rtl/common/sync_fifo.v:43.13-86.20
+    Saved RTL: mutation/results/survivors/sync_fifo_mut_20.v
+  - [sync_fifo #21]: mutate -mode cnot0 -module sync_fifo -cell $procdff$761 -port Q -portbit 0 -ctrlbit 5 -wire mem[3] -wirebit 0 -src rtl/common/sync_fifo.v:24.21-24.24 -src rtl/common/sync_fifo.v:31.5-88.8
+    Saved RTL: mutation/results/survivors/sync_fifo_mut_21.v
+  - [sync_fifo #24]: mutate -mode const0 -module sync_fifo -cell $procmux$684 -port A -portbit 3 -src rtl/common/sync_fifo.v:55.25-55.31 -src rtl/common/sync_fifo.v:55.21-61.24
+    Saved RTL: mutation/results/survivors/sync_fifo_mut_24.v
+  - [sync_fifo #28]: mutate -mode cnot0 -module sync_fifo -cell $procdff$782 -port Q -portbit 3 -ctrlbit 7 -wire mem[6] -wirebit 3 -src rtl/common/sync_fifo.v:24.21-24.24 -src rtl/common/sync_fifo.v:31.5-88.8
+    Saved RTL: mutation/results/survivors/sync_fifo_mut_28.v
+
+Timed-out Mutants (NOT counted as killed):
+  - [async_fifo #6]: mutate -mode const0 -module async_fifo -cell $rtl/common/async_fifo.v:48$ternary$12 -port Y -portbit 1 -wire rbin_next -wirebit 1 -src rtl/common/async_fifo.v:48.26-48.35 -src rtl/common/async_fifo.v:48.39-48.79
+  - [async_fifo #13]: mutate -mode cnot1 -module async_fifo -cell $rtl/common/async_fifo.v:46$add$5 -port A -portbit 1 -ctrlbit 2 -src rtl/common/async_fifo.v:46.59-46.70
+  - [async_fifo #15]: mutate -mode const1 -module async_fifo -cell $procdff$103 -port D -portbit 1 -wire rptr_gray -wirebit 1 -src rtl/common/async_fifo.v:37.25-37.34 -src rtl/common/async_fifo.v:70.5-78.8
+  - [async_fifo #17]: mutate -mode const0 -module async_fifo -cell $rtl/common/async_fifo.v:63$logic_and$24 -port A -portbit 0 -wire winc -wirebit 0 -src rtl/common/async_fifo.v:12.29-12.33 -src rtl/common/async_fifo.v:63.17-63.31
+  - [async_fifo #18]: mutate -mode const0 -module async_fifo -cell $procdff$108 -port D -portbit 1 -wire sync_r2w_q1 -wirebit 1 -src rtl/common/async_fifo.v:42.25-42.36 -src rtl/common/async_fifo.v:70.5-78.8
+  - [async_fifo #20]: mutate -mode cnot0 -module async_fifo -cell $rtl/common/async_fifo.v:52$not$15 -port A -portbit 0 -ctrlbit 1 -wire sync_r2w_q2 -wirebit 1 -src rtl/common/async_fifo.v:43.25-43.36 -src rtl/common/async_fifo.v:52.38-52.75
+  - [async_fifo #21]: mutate -mode inv -module async_fifo -cell $procdff$88 -port D -portbit 0 -wire rempty_val -wirebit 0 -src rtl/common/async_fifo.v:82.10-82.20 -src rtl/common/async_fifo.v:84.5-94.8
+  - [async_fifo #22]: mutate -mode inv -module async_fifo -cell $rtl/common/async_fifo.v:52$eq$16 -port B -portbit 1 -src rtl/common/async_fifo.v:52.23-52.104
+  - [async_fifo #23]: mutate -mode const0 -module async_fifo -cell $rtl/common/async_fifo.v:48$add$11 -port Y -portbit 2 -src rtl/common/async_fifo.v:48.60-48.71
+  - [async_fifo #27]: mutate -mode cnot1 -module async_fifo -cell $rtl/common/async_fifo.v:82$eq$29 -port B -portbit 0 -ctrlbit 1 -wire sync_w2r_q2 -wirebit 0 -src rtl/common/async_fifo.v:41.25-41.36 -src rtl/common/async_fifo.v:82.24-82.49
+  - [async_fifo #28]: mutate -mode inv -module async_fifo -cell $procdff$108 -port D -portbit 2 -wire sync_r2w_q1 -wirebit 2 -src rtl/common/async_fifo.v:42.25-42.36 -src rtl/common/async_fifo.v:70.5-78.8
