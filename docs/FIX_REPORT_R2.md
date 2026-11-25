@@ -14,7 +14,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 | **Phase D** | Mutation (`run_mutants.py` process group kill, `axil_xbar` scope fix, CSR/bridge test gaps, 240-mutant run, script-generated report) | `DONE` | [`docs/mutation_report.md`](mutation_report.md) |
 | **Phase E** | Synthesis & STA (`synth/synth.ys`, portable reset false-path constraints, dynamic `fmax_sweep.py` parsing, clean measurements) | `DONE` | [`docs/logs/phase_e_fmax_sweep.log`](logs/phase_e_fmax_sweep.log) |
 | **Phase F** | Data-driven docs (`scripts/gen_metrics.py`, `docs/metrics.json`, regenerate docs, `bugs.md` / `decisions.md` / `interfaces.md`, CI check scripts) | `DONE` | [`docs/metrics.json`](metrics.json) |
-| **Phase G** | CI (`ci.yml` artifact/command alignment, fresh checkout check, remote GitHub Actions verification) | `PARTIAL` | [`docs/logs/phase_g_ci_local_check.log`](logs/phase_g_ci_local_check.log) (awaiting remote push) |
+| **Phase G** | CI (`ci.yml` artifact/command alignment, fresh checkout check, remote GitHub Actions verification) | `DONE` | [run `45602303543`](https://github.com/i-am-somasai/AMBA-AXI4-Lite-APB4-Fabric-Subsystem-pyuvm-Verification-Environment/actions/runs/45602303543) |
 | **Final** | Clean-clone full re-measure & `remediation-r2-done` tag | `TODO` | - |
 
 ---
@@ -108,22 +108,29 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 ---
 
 ### Phase G: CI & Final Clean-Clone Re-Measure (`CI-WORKFLOW`, `CI-REMOTE`, `V-10`)
-- **Status:** `PARTIAL` (local workflow alignment & clean-clone CI dry run `PASS`; awaiting user push + green GitHub Actions URL)
-- **Files Changed:** `.github/workflows/ci.yml`, `Makefile`, `tb/{unit,block}/Makefile.single`, `mutation/run_mutants.py`, `README.md`, `docs/{FIX_REPORT_R2.md,logs/phase_g_ci_local_check.log}`
-- **Commands Run:** Fresh clean clone (`build/clean_clone_ci`) with `scripts/env.sh` removed and isolated `HOME`: `./scripts/check_no_synthetic_cov.sh`, `python3 scripts/check_bug_refs.py`, `python3 scripts/check_docs_consistency.py`, `make lint`, `make unit SIM=icarus`, `make block SIM=icarus`, `make regress SIM=icarus SEEDS=3`, `python3 mutation/sanity/run_sanity.py`, `make formal`, `make mutation-sample`
-- **Log Paths:** [`docs/logs/phase_g_ci_local_check.log`](logs/phase_g_ci_local_check.log)
+- **Status:** `DONE`
+- **Files Changed:** `.github/workflows/ci.yml`, `Makefile`, `tb/{unit,block}/Makefile.single`, `mutation/run_mutants.py`, `requirements.txt`, `scripts/{gen_metrics.py,doc_blocks.py}`, `README.md`, `docs/{metrics.json,results.md,vplan.md,audit_r2_tracking.csv,FIX_REPORT_R2.md,logs/ci_remote_verified.json,logs/phase_g_ci_local_check.log}`
+- **Commands Run:** Fresh clean-clone CI run (`build/clean_clone_ci`, without `scripts/env.sh`), `git push -u origin remediation-r2`, remote GitHub Actions run `45602303543` (`c46cc77`), `python3 scripts/gen_metrics.py`, `python3 scripts/gen_docs.py`, `make lint`
+- **Log Paths:** [`docs/logs/phase_g_ci_local_check.log`](logs/phase_g_ci_local_check.log), [`docs/logs/ci_remote_verified.json`](logs/ci_remote_verified.json), [GitHub Actions Run `45602303543`](https://github.com/i-am-somasai/AMBA-AXI4-Lite-APB4-Fabric-Subsystem-pyuvm-Verification-Environment/actions/runs/45602303543)
 - **Before / After Numbers:**
-  - Before: `CI Status: PASS` unverified on GitHub; `.github/workflows/ci.yml` did not trigger on `remediation-*` branches and uploaded unbuilt `docs/logs/` & `synth/results/`; `tb/{unit,block}/Makefile.single` depended on `scripts/env.sh` `PYTHONPATH`.
-  - After: `.github/workflows/ci.yml` triggers on `[main, 'phase-*', 'remediation-*']`, pins `YosysHQ/setup-oss-cad-suite@v3` (`2026-11-22`) matching local `~/oss-cad-suite/VERSION` (`20261122`) and `requirements.txt`, adds `check_no_synthetic_cov.sh`, `check_bug_refs.py`, `check_docs_consistency.py`, `run_sanity.py`, and uploads only built artifacts (`build/results/` & `docs/logs/formal_suite.log`). All 10 CI steps passed in an isolated clean clone without `scripts/env.sh`. Local `CI Status` remains `NOT VERIFIED` pending user push.
-- **Remaining Issues:** `V-10`, `CI-REMOTE`, `METRIC-14`, `DOD-07` remain `OPEN` until `remediation-r2` is pushed to GitHub and a green GitHub Actions run URL is recorded in `docs/metrics.json` & docs.
+  - Before: `CI Status: PASS` unverified on GitHub; `.github/workflows/ci.yml` did not trigger on `remediation-*`, used conflicting `setup-python` against `oss-cad-suite` `vvp` `PYTHONHOME`, and uploaded unbuilt `docs/logs/` & `synth/results/`.
+  - After: `.github/workflows/ci.yml` triggers on `[main, 'phase-*', 'remediation-*']`, pins `YosysHQ/setup-oss-cad-suite@v3` (`2026-11-22`), uses `oss-cad-suite` bundled Python 3.11 (`tabbypy3`, `DEC-002`) with pinned `requirements.txt`, enforces `check_no_synthetic_cov.sh`, `check_bug_refs.py`, `check_docs_consistency.py`, `make lint`, `make unit`, `make block`, `make regress SEEDS=3`, `run_sanity.py` (16/16), `make formal` (10/10), `make mutation-sample`, and uploads only `build/results/` & `docs/logs/formal_suite.log` (`27,329` bytes). Remote run `45602303543` completed `success` across all steps; `docs/metrics.json`, `README.md`, and `docs/results.md` updated via `ci_remote_verified.json`.
+- **Remaining Issues:** Ready for Final clean-clone re-measure and `remediation-r2-done` tag.
 
 ---
 
 ## Commit & Tag Log
 
-| Commit SHA | Tag | Message | Gate Evidence |
+| Commit SHA | Phase | Message | Gate Evidence |
 |---|---|---|---|
-| *Pending* | - | - | - |
+| `4df91d4` | R2-00 | Initialize R2 tracking, isolate `BUILD_DIR`, untrack XMLs | `docs/audit_r2_tracking.csv` |
+| `98f336d` | Phase A | CSR Rule 6, CDC independent reset, 8 weak tests, 16 sanity mutants | `docs/logs/phase_a_*.log` (`16/16 KILLED`) |
+| `8d88475` | Phase B | Bind `rr_arbiter_props`, `sync_fifo` data order, remove over-assumptions | `docs/logs/phase_b_formal.log` (`10/10 PASS`) |
+| `570b96d` | Phase C | Honest `CdcMonitor` timing, close 44 holes (`267/267`), fix `cov-report` | `docs/logs/func_cov.log`, `docs/logs/code_cov_summary.txt` |
+| `99e5a4d`, `52bf157` | Phase D | Runner scope/pgid, frozen 240-mutant run (`205/240` raw, `93.61%` adj) | `docs/mutation_report.md`, `docs/logs/mutation*.log` |
+| `d2291b4` | Phase E | `synth/synth.ys`, portable reset constraints, dynamic `fmax_sweep.py` | `docs/logs/phase_e_{synth,sta,fmax_sweep}.log` |
+| `4fed12c` | Phase F | `gen_metrics.py`, `metrics.json`, `doc_blocks`, bug/doc checks | `docs/logs/phase_f_lint.log` |
+| `4896e57`..`c46cc77`+ | Phase G | Aligned `ci.yml`, `oss-cad-suite` Python 3.11, green remote CI run | Run `45602303543`, `docs/logs/phase_g_ci_local_check.log` |
 
 ## Audit Row Closure Register (70 BLOCKER & MAJOR Rows)
 
@@ -137,7 +144,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `V-06` (MAJOR): CLOSED (Phase B bound `rr_arbiter_props.v`; Phase C replaced `CLK_SLOW_PERIOD_NS` read in `CdcMonitor` with `RisingEdge` pin timing)
 - `V-07` (MAJOR): CLOSED (`rr_arbiter_props` bound, `sync_fifo` magic data-order `prove` PASS, bridge/xbar over-assumptions removed, `axil_csr` `prv+bmc` PASS in `docs/logs/phase_b_formal.log`)
 - `V-09` (BLOCKER): CLOSED (`mutation/run_mutants.py` process-group kill & strict `axil_xbar` scope; 205/240 raw 85.42%, 205/219 adj 93.61% in `docs/mutation_report.md`)
-- `V-10` (MAJOR): OPEN (assigned to Phase G G)
+- `V-10` (MAJOR): CLOSED (green remote GitHub Actions run `45602303543` on `c46cc77` with built-only artifacts `27,329` bytes)
 - `S-01` (BLOCKER): CLOSED (`synth/synth.ys` committed, `9237` cells / `3630` flops / `138086.19 um2`, dynamic OpenSTA `-18.60 ns` recovery WNS / `34.97 MHz` full netlist & `-5.89 ns` / `62.89 MHz` datapath+IO ref)
 - `REG-UART-08` (MAJOR): CLOSED (`test_ua02_fifo_full_and_overflow_flags` asserts `STATUS[5]==1` & W1C in `docs/logs/phase_a_block.log`)
 - `AXIL-R6` (BLOCKER): CLOSED (`rtl/axil/axil_csr.v` decodes `[7:2]`, `axil_csr.sby` prove+bmc+cover PASS in `docs/logs/phase_a_formal_csr.log`)
@@ -173,7 +180,7 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `SYNTH-YS` (BLOCKER): CLOSED (`synth/synth.ys` committed and invoked by `Makefile` `synth` target in `docs/logs/phase_e_synth.log`)
 - `SYNTH-STA` (BLOCKER): CLOSED (`sta.tcl` enforces non-empty queries, keeps `rst_sys_n`/`rst_slow_n` timed per E2, runs `check_setup`, dynamic `fmax_sweep.py` parsing in `docs/logs/phase_e_sta.log`)
 - `SYNTH-REPORT` (BLOCKER): CLOSED (dynamically parsed synthesis & STA metrics in `docs/logs/phase_e_{synth,sta,fmax_sweep}.log`; `100 MHz` violation stated honestly)
-- `CI-REMOTE` (MAJOR): OPEN (assigned to Phase G G)
+- `CI-REMOTE` (MAJOR): CLOSED (pushed `remediation-r2` to `origin`; GitHub Actions run `45602303543` `completed/success`)
 - `LAYOUT-SYNTH_YS` (BLOCKER): CLOSED (`synth/synth.ys` committed at Spec Sec 15 path)
 - `METRIC-01` (BLOCKER): CLOSED (`scripts/gen_metrics.py` measures `17` modules / `3,200` non-blank non-comment lines across `rtl/**/*.v`)
 - `METRIC-02` (BLOCKER): CLOSED (`61` Python defs / `77` XML testcases PASS / `40/40` Spec 9.1 PASS in `docs/test_map.csv` & `docs/metrics.json`)
@@ -184,14 +191,14 @@ Tracks remediation of the independent adversarial audit on commit `8664339` (`au
 - `METRIC-10` (MAJOR): CLOSED (`24` sequential bugs `BUG-001..BUG-024` verified by `scripts/check_bug_refs.py` & `docs/metrics.json`)
 - `METRIC-12` (BLOCKER): CLOSED (`9,237` cells / `3,630` flops (`2,048` RAM) / `138,086.19 um2` populated from `docs/metrics.json`)
 - `METRIC-13` (BLOCKER): CLOSED (`WNS -18.60 ns / TNS -54046.39 ns / 34.97 MHz` & `62.89 MHz` datapath+IO ref populated from `docs/metrics.json`)
-- `METRIC-14` (MAJOR): OPEN (assigned to Phase G G)
+- `METRIC-14` (MAJOR): CLOSED (`CI Status: PASS` + run `45602303543` URL recorded via `ci_remote_verified.json` -> `metrics.json` -> `README.md`/`results.md`)
 - `DOD-01` (BLOCKER): CLOSED (Phase A gate verified: 16/16 sanity mutants KILLED, Rule 6 fixed, 8 tests rewritten, 20 fresh seeds PASS)
 - `DOD-02` (MAJOR): CLOSED (20 Icarus seeds `601..620` in Phase A + 20 Verilator coverage seeds `1..20` in Phase C PASS)
 - `DOD-03` (BLOCKER): CLOSED (`make cov-report` exits 0; 267/267 100.00% real coverage + `DEC-009`/`DEC-010` waivers)
 - `DOD-04` (MAJOR): CLOSED (10/10 formal suites PASS in `docs/logs/phase_b_formal.log` with 0 undriven-wire warnings & no weakening assumptions)
 - `DOD-05` (BLOCKER): CLOSED (frozen `mutation/mutant_list_240.json` D3 baseline 165/240 -> D5 final 205/240 raw 85.42% / 93.61% adj via `docs/mutation_report.md`)
 - `DOD-06` (BLOCKER): CLOSED (two clean `make synth && make sta` runs yielded byte-identical `sta.log`/`fmax_sweep.log` & identical `synth` stats)
-- `DOD-07` (MAJOR): OPEN (assigned to Phase G G)
+- `DOD-07` (MAJOR): CLOSED (verified green CI run `45602303543` and updated CI badge/table links in `README.md` & `docs/results.md`)
 - `DOD-08` (BLOCKER): CLOSED (`README.md`, `results.md`, `vplan.md` generated via `BEGIN:metrics` blocks; `make lint` enforces `check_bug_refs.py` & `check_docs_consistency.py`)
 - `DOD-09` (BLOCKER): CLOSED (`README.md` Section 9 resume bullets generated solely inside `BEGIN:metrics:readme_resume_bullets` from `docs/metrics.json`)
 - `VPLAN-AUDIT` (BLOCKER): CLOSED (`docs/vplan.md` Sections 1..6 regenerated cleanly from `docs/metrics.json` & `docs/test_map.csv`)

@@ -454,6 +454,17 @@ def parse_sta():
     }
 
 
+def parse_ci_status():
+    ci_path = PROJ_DIR / "docs" / "logs" / "ci_remote_verified.json"
+    if ci_path.exists():
+        return json.loads(ci_path.read_text(encoding="utf-8"))
+    return {
+        "status": "NOT VERIFIED",
+        "run_url": None,
+        "note": "Pending Phase G GitHub Actions push and remote verification",
+    }
+
+
 def main():
     rtl = count_rtl_metrics()
     test_defs = count_test_defs()
@@ -467,6 +478,7 @@ def main():
     bugs = parse_bugs()
     synth = parse_synthesis()
     sta = parse_sta()
+    ci = parse_ci_status()
 
     metrics = {
         "schema_version": 1,
@@ -504,11 +516,7 @@ def main():
         "bugs": bugs,
         "synthesis": synth,
         "sta": sta,
-        "ci": {
-            "status": "NOT VERIFIED",
-            "run_url": None,
-            "note": "Pending Phase G GitHub Actions push and remote verification",
-        },
+        "ci": ci,
     }
 
     out_path = PROJ_DIR / "docs" / "metrics.json"
