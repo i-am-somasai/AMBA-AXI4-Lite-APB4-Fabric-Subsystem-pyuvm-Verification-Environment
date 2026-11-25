@@ -20,21 +20,17 @@ jobs:
         with:
           version: '2026-11-22'
 
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-
-      - name: Install Python Dependencies
+      - name: Use OSS CAD Suite Bundled Python 3.11 (DEC-002)
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          OSS_ROOT="$(dirname "$(dirname "$(which yosys)")")"
+          echo "${OSS_ROOT}/py3bin" >> "$GITHUB_PATH"
+          grep -vE '^(cocotb|find_libpython)==' requirements.txt > "${RUNNER_TEMP}/ci-requirements.txt"
+          "${OSS_ROOT}/py3bin/python3" -m pip install --no-cache-dir --no-deps -r "${RUNNER_TEMP}/ci-requirements.txt"
 
       - name: Environment Sanity Check
         run: |
-          which iverilog verilator yosys sby boolector
-          python -c "import cocotb, pyuvm, cocotb_coverage; print('Python EDA packages OK')"
+          which python3 cocotb-config iverilog verilator yosys sby boolector
+          python3 -c "import cocotb, pyuvm, cocotb_coverage; print('Python EDA packages OK:', cocotb.__file__, cocotb.__version__)"
 
       - name: Check for Synthetic Coverage Calls
         run: ./scripts/check_no_synthetic_cov.sh
