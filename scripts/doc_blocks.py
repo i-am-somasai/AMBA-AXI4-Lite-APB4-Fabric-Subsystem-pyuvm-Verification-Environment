@@ -83,6 +83,8 @@ def render_all_blocks(m):
     ci_link = ci["run_url"] if ci.get("run_url") else ".github/workflows/ci.yml"
     ci_run_md = f"[run `{ci['run_id']}`]({ci['run_url']})" if ci.get("run_url") else "[`.github/workflows/ci.yml`](.github/workflows/ci.yml)"
     ci_run_md_docs = f"[run `{ci['run_id']}`]({ci['run_url']})" if ci.get("run_url") else "[`.github/workflows/ci.yml`](../.github/workflows/ci.yml)"
+    ci_sha_note = f"commit `{ci['head_sha']}`" if ci.get("head_sha") else "unpushed"
+    ci_dur_note = f", `{ci['duration']}`" if ci.get("duration") else ""
 
     # ---------------- README blocks ----------------
     readme_memory_map = "\n".join([
@@ -127,7 +129,7 @@ def render_all_blocks(m):
         f"| **Synthesis (SKY130 HD, `RAM_DEPTH={syn['ram_depth']}`)** | **{syn['total_cells']:,} cells / {syn['flops']:,} flops** ({syn['ram_flops']:,} RAM flops) / **{syn['chip_area_um2']:,} µm²** ({syn['sequential_area_pct']:.2f}% sequential) | Section 13 | [`synth/synth.ys`](synth/synth.ys), [`docs/logs/synth.log`](docs/logs/synth.log) |",
         f"| **STA (OpenSTA): Target {sta['target_clk_sys_mhz']:.0f} MHz ({sta['target_clk_sys_ns']:.1f} ns)** | **VIOLATED: WNS {sta['full_wns_ns']:.2f} ns / TNS {sta['full_tns_ns']:.2f} ns** (full timed netlist; pre-layout unbuffered `rst_sys_n`, fanout {sta['reset_bottleneck_fanout']}, slew {sta['reset_bottleneck_slew_ns']:.2f} ns); **`clk_slow` MET (+{sta['clk_slow_setup_slack_ns']:.2f} ns)**, **Hold MET (+{sta['hold_worst_slack_ns']:.2f} ns)**; datapath+I/O ref WNS {sta['datapath_io_wns_ns']:.2f} ns | Section 13 | [`docs/logs/sta.log`](docs/logs/sta.log), [`synth/amba_fabric.sdc`](synth/amba_fabric.sdc) |",
         f"| **STA (OpenSTA): Achieved $F_{{\\max}}$** | **{sta['full_fmax_mhz']:.2f} MHz ({sta['full_fmax_period_ns']:.2f} ns)** full pre-layout netlist; **{sta['datapath_io_fmax_mhz']:.2f} MHz ({sta['datapath_io_fmax_period_ns']:.2f} ns)** datapath+I/O reference (`rst_sync` Q isolated in STA only) | Section 13 | [`docs/logs/fmax_sweep.log`](docs/logs/fmax_sweep.log) |",
-        f"| **Continuous Integration Status** | **{ci['status']}** ({ci_run_md}: {ci['note']}) | Section 14 | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) |",
+        f"| **Continuous Integration Status** | **{ci['status']}** ({ci_run_md}, {ci_sha_note}{ci_dur_note}: {ci['note']}) | Section 14 | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) |",
         "| **Out-of-Scope Items (`S-02/S-03`, `X-01/X-02`)** | **N/A (out of scope)**: gate-level sim (`S-02`), OpenLane GDSII (`S-03`), RISC-V CPU (`X-01`), multi-outstanding AXI4 (`X-02`) | Section 1.4 / 13.5 | [`docs/spec.md`](docs/spec.md) |",
     ])
 
@@ -178,7 +180,7 @@ def render_all_blocks(m):
     # ---------------- docs/results.md blocks ----------------
     results_status_banner = (
         f"This document records **real, measured results** generated strictly from [`docs/metrics.json`](metrics.json) (no hand-typed constants).\n"
-        f"**Status:** R3 Release-Prep | **CI Status:** **{ci['status']}** ({ci_run_md_docs}: {ci['note']}). Raw tool logs are archived under [`docs/logs/`](logs/)."
+        f"**Status:** R3 Release-Prep | **CI Status:** **{ci['status']}** ({ci_run_md_docs}, {ci_sha_note}{ci_dur_note}: {ci['note']}). Raw tool logs are archived under [`docs/logs/`](logs/)."
     )
 
     results_summary_table = "\n".join([
@@ -195,7 +197,7 @@ def render_all_blocks(m):
         f"| Bugs Logged & Reference-Verified | **{bugs['total']} (`{bugs['first_id']}`–`{bugs['last_id']}`)** | Section 6 | [`docs/bugs.md`](bugs.md) |",
         f"| Synthesis (SKY130, `RAM_DEPTH={syn['ram_depth']}`) | **{syn['total_cells']:,} cells / {syn['flops']:,} flops ({syn['ram_flops']:,} RAM) / {syn['chip_area_um2']:,} µm²** | Section 13 | [`docs/logs/synth.log`](logs/synth.log) |",
         f"| STA (100 MHz Target, OpenSTA) | **VIOLATED: WNS {sta['full_wns_ns']:.2f} ns / TNS {sta['full_tns_ns']:.2f} ns / {sta['full_fmax_mhz']:.2f} MHz** (`{sta['datapath_io_fmax_mhz']:.2f} MHz` datapath+I/O ref; `clk_slow` & hold MET) | Section 13 | [`docs/logs/sta.log`](logs/sta.log), [`docs/logs/fmax_sweep.log`](logs/fmax_sweep.log) |",
-        f"| CI Status | **{ci['status']}** ({ci_run_md_docs}) | Section 14 | [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) |",
+        f"| CI Status | **{ci['status']}** ({ci_run_md_docs}, {ci_sha_note}{ci_dur_note}: {ci['note']}) | Section 14 | [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) |",
     ])
 
     results_rtl_table = "\n".join(

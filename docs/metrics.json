@@ -993,13 +993,19 @@
     "reset_bottleneck_slew_ns": 29.27
   },
   "ci": {
-    "status": "PENDING",
-    "run_id": null,
+    "status": "PASS",
+    "run_id": 45665895644,
     "branch": "release-prep",
-    "head_sha": null,
-    "run_url": null,
+    "event": "push",
+    "workflow": "ci.yml",
+    "head_sha": "4bd08534f3a7ebb5f99c3322843b2703eab7ac96",
+    "run_url": "https://github.com/i-am-somasai/AMBA-AXI4-Lite-APB4-Fabric-Subsystem-pyuvm-Verification-Environment/actions/runs/45665895644",
     "job": "Lint, Unit, Regression, Formal & Mutation",
-    "artifact": null,
-    "note": "Pending push of release-prep and remote GitHub Actions verification"
+    "duration": "4m 37s",
+    "artifact": "verification-logs-and-reports (29664 bytes)",
+    "annotations": [
+      "Non-blocking Node.js 20 deprecation warning for actions/checkout@v4, actions/upload-artifact@v4, and YosysHQ/setup-oss-cad-suite@v3"
+    ],
+    "note": "Covers check_no_synthetic_cov, check_bug_refs, check_docs_consistency, Verilator lint, L0 unit, L1 block, 3-seed Icarus regress, 17 sanity mutants, 10/10 formal, 24-mutant sampled mutation smoke, and artifact upload; SKY130 synthesis/STA, full 20-seed coverage, and the full 240-mutant run are local only"
   }
 }

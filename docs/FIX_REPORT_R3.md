@@ -157,10 +157,14 @@ Tracks closure of the **16 MAJOR** findings (and targeted fidelity / documentati
    - Commit `fix(R3-05): ...` cleanly, push `release-prep` to `origin` (or pause for user push if credentials are not configured in this sandbox), and confirm the Actions run is green with commit SHA matching `git rev-parse HEAD`.
 
 #### Measured Results & Evidence
-- **Status:** `PARTIAL` (all local clean-clone CI checks pass; awaiting remote GitHub Actions push/green URL & matching SHA confirmation)
-- **CI Workflow & Honest Remote Tracking:**
-  - Updated [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) `on.push.branches` to `[ main, 'phase-*', 'remediation-*', 'release-*' ]`.
-  - Updated [`docs/logs/ci_remote_verified.json`](logs/ci_remote_verified.json) from stale `c46cc77` PASS to `"status": "PENDING"` for `release-prep`, updated badge branch to `release-prep` in [`scripts/doc_blocks.py`](../scripts/doc_blocks.py), and regenerated `docs/metrics.json`, `README.md`, `docs/results.md`, and `docs/vplan.md`.
+- **Status:** `DONE`
+- **CI Workflow & Non-Blocking Annotation:**
+  - Updated [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) `on.push.branches` to `[ main, 'phase-*', 'remediation-*', 'release-*' ]`. Left workflow steps unchanged after green run; documented the non-blocking Node.js 20 deprecation annotation (`actions/checkout@v4`, `actions/upload-artifact@v4`, `YosysHQ/setup-oss-cad-suite@v3`) in [`docs/limitations.md`](limitations.md).
+- **Verified Remote GitHub Actions Run ([`docs/logs/ci_remote_verified.json`](logs/ci_remote_verified.json)):**
+  - **Run URL:** `https://github.com/i-am-somasai/AMBA-AXI4-Lite-APB4-Fabric-Subsystem-pyuvm-Verification-Environment/actions/runs/45665895644`
+  - **Status / Event / Branch / Job / Duration:** `Success` (`push` on `release-prep`, workflow `ci.yml`, job `"Lint, Unit, Regression, Formal & Mutation"`, `4m 37s`, artifact `verification-logs-and-reports` `29,664` bytes).
+  - **Verified Commit SHA:** `4bd08534f3a7ebb5f99c3322843b2703eab7ac96` (matched `git rev-parse HEAD` when pushed).
+  - **Scope Disclosed in `README.md` & `docs/results.md`:** Covers synthetic-cov/bug-ref/doc checks, Verilator lint, L0 unit, L1 block, 3-seed Icarus regression, `17` sanity mutants, `10/10` formal, and `24`-mutant sampled mutation smoke; SKY130 synthesis/STA, full 20-seed Verilator coverage, and the full 240-mutant run remain local-only.
 - **Clean-Clone Full CI Reproduction ([`docs/logs/clean_clone_r3.log`](logs/clean_clone_r3.log)):**
   - Cloned committed tree (`git clone --local . build/r3_5_clean_clone`) and ran the entire `.github/workflows/ci.yml` sequence:
     `./scripts/check_no_synthetic_cov.sh && python3 scripts/check_bug_refs.py && python3 scripts/check_docs_consistency.py && make lint && make unit SIM=icarus && make block SIM=icarus && make regress SIM=icarus SEEDS=1 && python3 mutation/sanity/run_sanity.py && make formal && make mutation-sample`

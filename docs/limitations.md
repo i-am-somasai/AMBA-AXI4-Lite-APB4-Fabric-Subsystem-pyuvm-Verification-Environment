@@ -35,3 +35,7 @@ When compiling `rtl/axil/axil_xbar.v` with `iverilog -g2012 -Wall`, Icarus emits
 ### 2.2 Pre-Layout Reset Fanout in OpenSTA
 
 As recorded in [`docs/decisions.md`](decisions.md) (`DEC-011`) and [`docs/results.md`](results.md), pre-layout Yosys synthesis leaves synchronized reset net `rst_sys_n` unbuffered (`fanout=958`, `cap=3.46 pF`, `slew=29.27 ns`), causing `100 MHz` `clk_sys` reset recovery to report `VIOLATED` (`WNS = -18.60 ns` / `34.97 MHz` full netlist vs `62.89 MHz` datapath+I/O reference with `rst_sync` Q isolated in STA). Physical reset-tree buffering / CTS (`S-03` OpenLane) is out of scope.
+
+### 2.3 GitHub Actions Node.js 20 Deprecation Warning (Non-Blocking)
+
+In GitHub Actions run [`45665895644`](https://github.com/i-am-somasai/AMBA-AXI4-Lite-APB4-Fabric-Subsystem-pyuvm-Verification-Environment/actions/runs/45665895644) (workflow [`.github/workflows/ci.yml`](../.github/workflows/ci.yml), `ubuntu-latest`), GitHub emits one non-blocking annotation noting Node.js 20 deprecation for `actions/checkout@v4`, `actions/upload-artifact@v4`, and `YosysHQ/setup-oss-cad-suite@v3`. The workflow passes cleanly (`Success` in `4m 37s`) and is left unchanged. Note that GitHub Actions runs synthetic-cov/doc/lint, L0 unit, L1 block, 3-seed Icarus regression, `17` sanity mutants, `10/10` SymbiYosys formal suites, and `24`-mutant sampled mutation smoke, whereas SKY130 synthesis/STA, full 20-seed Verilator coverage, and the full 240-mutant run execute locally.
