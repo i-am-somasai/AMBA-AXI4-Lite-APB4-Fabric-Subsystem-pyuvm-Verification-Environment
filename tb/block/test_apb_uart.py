@@ -23,7 +23,7 @@ class UartTestbench:
 
 @cocotb.test()
 async def test_ua01_loopback_bytes(dut):
-    """UA-01: Loopback transmission of byte values (RX data == TX data, flags correct)."""
+    """UA-01: Loopback transmission of all 256 byte values (RX data == TX data, flags correct)."""
     tb = UartTestbench(dut)
     await tb.reset()
 
@@ -32,14 +32,15 @@ async def test_ua01_loopback_bytes(dut):
     # CTRL = TX_EN(1) | RX_EN(2) | LOOPBACK(4) = 0x07
     await tb.apb.write(addr=0x0C, data=0x07)
 
-    test_bytes = [0x55, 0xAA, 0x00, 0xFF, 0x3C, 0xC3, 0x12, 0x89]
-    for b in test_bytes:
+    # Spec Section 9.1: loop all 256 byte values (0x00..0xFF)
+    for b in range(256):
         # Write byte to TXDATA (0x00)
         await tb.apb.write(addr=0x00, data=b)
 
         # Wait for byte to be received into RX FIFO (poll STATUS[3] RX_EMPTY == 0)
         timeout = 250
         cycles = 0
+        rx_empty = 1
         while cycles < timeout:
             status, _ = await tb.apb.read(addr=0x08)
             rx_empty = (status >> 3) & 1
@@ -53,7 +54,12 @@ async def test_ua01_loopback_bytes(dut):
         # Read byte from RXDATA (0x04)
         rdata, _ = await tb.apb.read(addr=0x04)
         assert (rdata & 0xFF) == b, f"Loopback data mismatch: expected {hex(b)}, got {hex(rdata & 0xFF)}"
-        dut._log.info(f"Successfully transmitted and received byte {hex(b)} in {cycles} cycles")
+
+    # Confirm RX FIFO drained and zero framing/overflow errors across all 256 bytes
+    status, _ = await tb.apb.read(addr=0x08)
+    assert (status & 0x08) != 0, f"Expected RX_EMPTY=1 after draining all 256 bytes: {hex(status)}"
+    assert (status & 0x70) == 0, f"Unexpected error flags during 256-byte loopback: {hex(status)}"
+    dut._log.info("UA-01 PASSED: All 256 byte values (0x00..0xFF) looped back cleanly")
 
     await RisingEdge(dut.clk)
 

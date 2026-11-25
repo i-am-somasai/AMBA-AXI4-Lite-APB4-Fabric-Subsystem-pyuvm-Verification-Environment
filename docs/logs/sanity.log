@@ -1,0 +1,20 @@
+=== Running 17-Mutant Sanity Gate (SMUT-01..SMUT-17) ===
+[SMUT-01] KILLED   | Inject arbiter priority swap in rr_arbiter.v | test_rr_arbiter.test_rr_arbiter_fairness_and_lock (tb/unit/test_rr_arbiter.py:34 in test_rr_arbiter_fairness_and_lock): assertion failed
+[SMUT-02] KILLED   | Inject dropped WSTRB[2] bit in axil_ram.v | test_axil_ram.* (tb/unit/test_axil_ram.py:34 in test_axil_ram_operations): AssertionError: Expected 0xDEADBEEF, got 0xde00beef
+[SMUT-03] KILLED   | Inject Gray-pointer encoding error in async_fifo.v | test_async_fifo.test_cd02_async_fifo_stream (tb/unit/test_async_fifo.py:175 in test_async_fifo_overflow_preserve): assertion failed
+[SMUT-04] KILLED   | Inject PSLVERR mapped to OKAY in axil2apb_bridge.v | test_axil2apb_bridge.test_br03_pslverr_propagation (tb/block/test_axil2apb_bridge.py:239 in test_br03_pslverr_propagation): AssertionError: Expected SLVERR (2), got 0
+[SMUT-05] KILLED   | Inject timer off-by-one LOAD period in apb_timer.v | test_apb_timer.test_tm01_oneshot_countdown (tb/block/test_apb_timer.py:100 in test_tm02_periodic_countdown): assertion failed
+[SMUT-06] KILLED   | Inject DECERR changed to SLVERR in axil_default_slave.v | test_axil_default_slave.* (tb/unit/test_axil_default_slave.py:23 in test_axil_default_slave_all): AssertionError: Expected DECERR (0b11), got 0b10
+[SMUT-07] KILLED   | Inject APB PENABLE asserted one cycle early in axil2apb_bridge.v | test_axil2apb_bridge.test_br01_single_rw_zero_wait (tb/block/test_axil2apb_bridge.py:83 in test_br01_single_rw_zero_wait): AssertionError: Expected 0xDEADBEEF, got 0x0
+[SMUT-08] KILLED   | Inject FIFO full flag off-by-one in sync_fifo.v | test_sync_fifo.test_sync_fifo_all (tb/unit/test_sync_fifo.py:45 in test_sync_fifo_all): assertion failed
+[SMUT-09] KILLED   | Inject m_apb_pprot forced to 3'b000 in axil2apb_bridge.v | test_directed.test_xb14_prot_passthrough (tb/pyuvm/sequences/directed_seqs.py:54 in body): AssertionError: XB-14 AWPROT->PPROT mismatch: expected (1, 1), observed (1, 0)
+[SMUT-10] KILLED   | Inject stuck write priority wr_prio[gt]<=0 in axil_xbar.v | test_axil_xbar.test_xb07_arbitration_fairness (tb/block/test_axil_xbar.py:414 in test_xb07_arbitration_fairness): AssertionError: XB-07 WRITE arbitration unfair mid-window at total=2: M0=2, M1=0 (diff=2 > 1)
+[SMUT-11] KILLED   | Inject CSR full-offset decode violation of Rule 6 in axil_csr.v | test_directed.test_xb15_unaligned_address (tb/pyuvm/sequences/directed_seqs.py:89 in body): AssertionError: CSR ID unaligned +1 failed Rule 6: resp=2, rdata=0x0
+[SMUT-12] KILLED   | Inject RX_OVF never set in apb_uart.v | test_apb_uart.test_ua02_fifo_full_and_overflow_flags (tb/block/test_apb_uart.py:123 in test_ua02_fifo_full_and_overflow_flags): assertion failed
+[SMUT-13] KILLED   | Inject SCRATCH2 ignores WSTRB in axil_csr.v | test_directed.test_sys_strobe_patterns (tb/pyuvm/sequences/directed_seqs.py:167 in body): AssertionError: CSR_SCRATCH2 WSTRB 0x0 mismatch: expected 0xa5a55a5a, got 0x13572468
+[SMUT-14] KILLED   | Inject xbar lock/pending not cleared by reset in axil_xbar.v | test_directed.test_xb12_reset_recovery (tb/models/axil_driver.py:97 in write): assertion failed
+[SMUT-15] KILLED   | Inject CDC bridge pending state not aborted/reset on rst_slow_n in axil_cdc_bridge.v | test_axil_cdc_bridge.test_cd03_reset_recovery (tb/block/test_axil_cdc_bridge.py:171 in test_cd03_reset_recovery): assertion failed
+[SMUT-16] KILLED   | Inject bridge read/write arbitration stuck on write in axil2apb_bridge.v | test_axil2apb_bridge.test_br05_back_to_back_mixed_rw (tb/block/test_axil2apb_bridge.py:358 in test_br05_back_to_back_mixed_rw): assertion failed
+[SMUT-17] KILLED   | Reduce GPIO 2-FF input synchronizer to 1-FF in apb_gpio.v | test_apb_gpio.test_gp02_input_sync_latency (tb/block/test_apb_gpio.py:97 in test_gp02_input_sync_latency): assertion failed
+
+Sanity Summary: 17/17 KILLED, 0 SURVIVED, 0 INVALID

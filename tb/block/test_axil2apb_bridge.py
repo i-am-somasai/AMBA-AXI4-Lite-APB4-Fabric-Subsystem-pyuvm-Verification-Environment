@@ -8,7 +8,7 @@ Implements verification plan tests:
 """
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import RisingEdge, Timer
+from cocotb.triggers import RisingEdge, Timer, ReadOnly
 import sys
 import os
 
@@ -157,16 +157,53 @@ async def test_br02_wait_states(dut):
         )
         apb_slave.start()
 
-        # Write with wait states
+        wait_checks = {"count": 0}
+
+        async def _check_apb_wait_hold(checks=wait_checks):
+            prev_hold = None
+            while True:
+                await RisingEdge(dut.clk)
+                await ReadOnly()
+                psel = int(dut.m_apb_psel.value)
+                penable = int(dut.m_apb_penable.value)
+                pready = int(dut.m_apb_pready.value)
+                cur_bus = (
+                    int(dut.m_apb_paddr.value),
+                    int(dut.m_apb_pwrite.value),
+                    int(dut.m_apb_pwdata.value),
+                    int(dut.m_apb_pstrb.value),
+                )
+                if prev_hold is not None:
+                    assert psel == 1, "BR-02: PSEL dropped while waiting for PREADY=0"
+                    assert penable == 1, "BR-02: PENABLE dropped while waiting for PREADY=0"
+                    assert cur_bus == prev_hold, (
+                        f"BR-02: APB control/data signals mutated while PREADY=0: "
+                        f"expected {prev_hold}, got {cur_bus}"
+                    )
+                    checks["count"] += 1
+                if psel == 1 and penable == 1 and pready == 0:
+                    prev_hold = cur_bus
+                else:
+                    prev_hold = None
+
+        hold_task = cocotb.start_soon(_check_apb_wait_hold())
+
+        # Write with non-all-ones PSTRB first, then full word write/readback (verifies PSTRB hold under PREADY=0)
         test_val = 0xCAFE0000 + ws
-        resp = await driver.write(addr=0x40000020, data=test_val, strb=0xF)
+        resp = await driver.write(addr=0x40000020, data=test_val, strb=0xA)
         assert resp == 0, f"Expected OKAY, got {resp}"
 
-        # Read back
+        resp_full = await driver.write(addr=0x40000020, data=test_val, strb=0xF)
+        assert resp_full == 0, f"Expected OKAY, got {resp_full}"
+
         data, rresp = await driver.read(addr=0x40000020)
         assert rresp == 0, f"Expected OKAY, got {rresp}"
         assert data == test_val, f"Expected {hex(test_val)}, got {hex(data)}"
 
+        hold_task.cancel()
+        assert wait_checks["count"] >= 3 * ws, (
+            f"BR-02 ws={ws}: expected >= {3 * ws} PREADY=0 hold cycles, observed {wait_checks['count']}"
+        )
         apb_slave.stop()
         await RisingEdge(dut.clk)
 

@@ -171,6 +171,7 @@ Evaluated on a frozen deterministic 240-mutant suite (`30` mutants per module ac
 - **D3 Baseline (before gap tests):** `165/240` killed (**`68.75%` raw**), `64` survived, `11` timeouts, `0` build errors.
 - **D5 Final (same 240-mutant list):** **`205/240` killed (`85.42%` raw)**, **`0` timeouts**, **`0` build errors**.
 - **Formal Equivalence & Adjusted Score:** Of `35` survivors, **`21` are proven equivalent** (`18` by Yosys `equiv_induct` / Boolector depth-10 miters in [`docs/logs/mutation_equiv.log`](docs/logs/mutation_equiv.log) + `3` signal-level proofs on `axil_default_slave._unused_inputs`), leaving **`14` residual non-equivalent survivors** and **`93.61%` (`205/219`) adjusted mutation score**.
+- **Sanity Gate:** **`17/17` KILLED** (`0` survived, `0` invalid; [`docs/logs/sanity.log`](docs/logs/sanity.log)).
 <!-- END:metrics:readme_mutation_summary -->
 
 ### 5.4 Synthesis and STA (SKY130 High Density)

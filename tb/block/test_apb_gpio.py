@@ -49,28 +49,106 @@ async def test_gp01_direction_and_out(dut):
 
 @cocotb.test()
 async def test_gp02_input_sync_latency(dut):
-    """GP-02: 2-FF input synchronization latency on IN register (0x08)."""
+    """GP-02: 2-FF input synchronization latency on IN register (0x08) for 0->1, 1->0, and 1-cycle pulse."""
     tb = GpioTestbench(dut)
     await tb.reset()
 
-    # Initial state: gpio_i is 0
-    rdata, _ = await tb.apb.read(addr=0x08)
-    assert rdata == 0, f"Initial IN not 0: {hex(rdata)}"
+    async def measure_in_after_step(target_val, init_val, offset_cycles):
+        """Return IN register via APB with SETUP capture aligned to +offset_cycles after driving gpio_i."""
+        assert offset_cycles >= 1
+        dut.gpio_i.value = init_val
+        for _ in range(3):
+            await RisingEdge(dut.clk)
 
-    # Set gpio_i to 0xBEEF
-    input_val = 0xBEEF
-    await RisingEdge(dut.clk)
-    dut.gpio_i.value = input_val
+        # Drive step immediately after clock edge T0
+        dut.gpio_i.value = target_val
+        for _ in range(offset_cycles - 1):
+            await RisingEdge(dut.clk)
+        rdata, err = await tb.apb.read(addr=0x08)
+        assert err == 0, f"APB read IN failed: pslverr={err}"
+        return rdata
 
-    # Cycle 1: still in synchronizer flop 1
-    await RisingEdge(dut.clk)
+    async def measure_in_after_pulse(pulse_val, offset_cycles):
+        """Drive a 1-cycle gpio_i pulse and read IN aligned to +offset_cycles (+1, +2, or +3)."""
+        assert offset_cycles >= 1
+        dut.gpio_i.value = 0
+        for _ in range(3):
+            await RisingEdge(dut.clk)
 
-    # Cycle 2: synchronizer flop 2 latches input_val
-    await RisingEdge(dut.clk)
+        # Drive pulse after T0; launch APB read at T0 for offset==1 so SETUP starts at T1
+        dut.gpio_i.value = pulse_val
+        if offset_cycles == 1:
+            read_task = cocotb.start_soon(tb.apb.read(addr=0x08))
+            await RisingEdge(dut.clk)
+            dut.gpio_i.value = 0
+            rdata, err = await read_task
+        else:
+            await RisingEdge(dut.clk)
+            dut.gpio_i.value = 0
+            for _ in range(offset_cycles - 2):
+                await RisingEdge(dut.clk)
+            rdata, err = await tb.apb.read(addr=0x08)
+        assert err == 0, f"APB read IN failed: pslverr={err}"
+        return rdata
 
-    # Read IN register
-    rdata, _ = await tb.apb.read(addr=0x08)
-    assert rdata == input_val, f"IN register after 2-FF latency mismatch: expected {hex(input_val)}, got {hex(rdata)}"
+    # 1. Verify 0 -> 1 step: unchanged at +1 cycle, updated at +2 cycles
+    step_val = 0xBEEF
+    in_rise_p1 = await measure_in_after_step(target_val=step_val, init_val=0x0000, offset_cycles=1)
+    assert in_rise_p1 == 0x0000, (
+        f"GP-02 0->1 (+1 cycle): expected unchanged 0x0000, got {hex(in_rise_p1)}"
+    )
+    in_rise_p2 = await measure_in_after_step(target_val=step_val, init_val=0x0000, offset_cycles=2)
+    assert in_rise_p2 == step_val, (
+        f"GP-02 0->1 (+2 cycles): expected {hex(step_val)}, got {hex(in_rise_p2)}"
+    )
+
+    # 2. Verify 1 -> 0 step: unchanged at +1 cycle, cleared at +2 cycles
+    in_fall_p1 = await measure_in_after_step(target_val=0x0000, init_val=step_val, offset_cycles=1)
+    assert in_fall_p1 == step_val, (
+        f"GP-02 1->0 (+1 cycle): expected unchanged {hex(step_val)}, got {hex(in_fall_p1)}"
+    )
+    in_fall_p2 = await measure_in_after_step(target_val=0x0000, init_val=step_val, offset_cycles=2)
+    assert in_fall_p2 == 0x0000, (
+        f"GP-02 1->0 (+2 cycles): expected 0x0000, got {hex(in_fall_p2)}"
+    )
+
+    # 3. Verify 1-cycle pulse: unchanged (0) at +1, high at +2, back to 0 at +3
+    pulse_val = 0xCAFE
+    pulse_p1 = await measure_in_after_pulse(pulse_val=pulse_val, offset_cycles=1)
+    assert pulse_p1 == 0x0000, (
+        f"GP-02 1-cycle pulse (+1 cycle): expected 0x0000, got {hex(pulse_p1)}"
+    )
+    pulse_p2 = await measure_in_after_pulse(pulse_val=pulse_val, offset_cycles=2)
+    assert pulse_p2 == pulse_val, (
+        f"GP-02 1-cycle pulse (+2 cycles): expected {hex(pulse_val)}, got {hex(pulse_p2)}"
+    )
+    pulse_p3 = await measure_in_after_pulse(pulse_val=pulse_val, offset_cycles=3)
+    assert pulse_p3 == 0x0000, (
+        f"GP-02 1-cycle pulse (+3 cycles): expected 0x0000, got {hex(pulse_p3)}"
+    )
+
+    # Secondary read-only check of internal synchronizer flop timing on a single 1-cycle pulse
+    if hasattr(dut, "sync_gpio_q2"):
+        dut.gpio_i.value = 0
+        for _ in range(3):
+            await RisingEdge(dut.clk)
+        dut.gpio_i.value = pulse_val
+        await RisingEdge(dut.clk)
+        dut.gpio_i.value = 0
+        await cocotb.triggers.ReadOnly()
+        assert int(dut.sync_gpio_q2.value) == 0x0000, (
+            f"GP-02 flop check (+1): sync_gpio_q2 changed early: {hex(int(dut.sync_gpio_q2.value))}"
+        )
+        await RisingEdge(dut.clk)
+        await cocotb.triggers.ReadOnly()
+        assert int(dut.sync_gpio_q2.value) == pulse_val, (
+            f"GP-02 flop check (+2): sync_gpio_q2 missed pulse: {hex(int(dut.sync_gpio_q2.value))}"
+        )
+        await RisingEdge(dut.clk)
+        await cocotb.triggers.ReadOnly()
+        assert int(dut.sync_gpio_q2.value) == 0x0000, (
+            f"GP-02 flop check (+3): sync_gpio_q2 stayed high: {hex(int(dut.sync_gpio_q2.value))}"
+        )
 
     await RisingEdge(dut.clk)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 mutation/sanity/run_sanity.py
-Permanent 16-mutant sanity gate (SMUT-01..SMUT-16).
+Permanent sanity gate (SMUT-01..SMUT-17).
 Every mutant must compile/lint cleanly with iverilog/verilator (otherwise marked
 INVALID, never KILLED) and be KILLED by its target verification test.
 All temporary builds and results stay strictly inside BUILD_DIR/sanity.
@@ -236,6 +236,18 @@ SANITY_MUTANTS = [
         "testcase": "test_br05_back_to_back_mixed_rw",
         "sources": ["rtl/apb/axil2apb_bridge.v"],
     },
+    {
+        "id": "SMUT-17",
+        "desc": "Reduce GPIO 2-FF input synchronizer to 1-FF in apb_gpio.v",
+        "file": "rtl/apb/apb_gpio.v",
+        "target": "sync_gpio_q2   <= sync_gpio_q1;",
+        "replacement": "sync_gpio_q2   <= gpio_i | (sync_gpio_q1 & {GPIO_WIDTH{1'b0}}); // SMUT-17 (1-FF bypass)",
+        "make_dir": "tb/block",
+        "toplevel": "apb_gpio",
+        "module": "test_apb_gpio",
+        "testcase": "test_gp02_input_sync_latency",
+        "sources": ["rtl/apb/apb_gpio.v"],
+    },
 ]
 
 
@@ -374,7 +386,8 @@ def main():
     invalid = 0
     survived = 0
 
-    print("=== Running 16-Mutant Sanity Gate (SMUT-01..SMUT-16) ===")
+    total = len(SANITY_MUTANTS)
+    print(f"=== Running {total}-Mutant Sanity Gate ({SANITY_MUTANTS[0]['id']}..{SANITY_MUTANTS[-1]['id']}) ===")
     for mut in SANITY_MUTANTS:
         status_id, status, detail = run_one_mutant(mut)
         detail_sanitized = detail.replace(PROJ_DIR + "/", "").replace(os.path.expanduser("~"), "~")

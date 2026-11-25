@@ -178,7 +178,11 @@ async def test_xb01_single_rw_each_master_to_each_slave(dut):
 
 @cocotb.test()
 async def test_xb02_ram_data_integrity(dut):
-    """XB-02: Write-then-read data integrity across multiple locations in RAM (S1)."""
+    """XB-02 (L1 crossbar): Write-then-read data integrity across S1 via AxilSlaveResponder.
+
+    Real axil_ram RTL storage is covered by L0 (tb/unit/test_axil_ram.py::test_axil_ram_operations)
+    and L2 subsystem tests (tb/block/test_amba_fabric_top.py::test_top01_register_map_connectivity).
+    """
     tb = XbarTestbench(dut)
     await tb.reset()
 
@@ -203,7 +207,12 @@ async def test_xb02_ram_data_integrity(dut):
 
 @cocotb.test()
 async def test_xb03_wstrb_patterns(dut):
-    """XB-03: All 16 WSTRB patterns on RAM (S1) and CSR SCRATCH2 region (S2)."""
+    """XB-03 (L1 crossbar): All 16 WSTRB patterns routed across S1/S2 via AxilSlaveResponder.
+
+    Real axil_ram and axil_csr RTL byte-strobe masking is covered by L0
+    (tb/unit/test_axil_ram.py::test_axil_ram_operations, tb/unit/test_axil_csr.py::test_cs02_access_types_w1c)
+    and L2 (tb/pyuvm/tests/test_directed.py::test_sys_strobe_patterns).
+    """
     tb = XbarTestbench(dut)
     await tb.reset()
 

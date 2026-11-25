@@ -52,7 +52,7 @@ jobs:
       - name: L1/L2 Subsystem Regression (3 seeds)
         run: make regress SIM=icarus SEEDS=3
 
-      - name: 16-Mutant Sanity Gate
+      - name: Sanity Gate
         run: python3 mutation/sanity/run_sanity.py
 
       - name: SymbiYosys Formal Verification (10/10 Suites)

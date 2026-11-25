@@ -64,6 +64,7 @@ def render_all_blocks(m):
     fc = m["functional_coverage"]
     cc = m["code_coverage"]
     fm = m["formal"]
+    san = m.get("sanity", {"killed": 0, "total": 0, "survived": 0, "invalid": 0})
     mut = m["mutation"]
     bugs = m["bugs"]
     syn = m["synthesis"]
@@ -124,7 +125,8 @@ def render_all_blocks(m):
         f"Evaluated on a frozen deterministic 240-mutant suite (`30` mutants per module across `8` RTL modules, seed `42`, [`mutation/mutant_list_240.json`](mutation/mutant_list_240.json)) using isolated process-group execution (`mutation/run_mutants.py`) and strict `$paramod*axil_xbar` module scoping ([`docs/mutation_report.md`](docs/mutation_report.md)):\n"
         f"- **D3 Baseline (before gap tests):** `{mut['baseline']['kill']}/{mut['generated']}` killed (**`{mut['baseline']['score_pct']:.2f}%` raw**), `{mut['baseline']['surv']}` survived, `{mut['baseline']['tmo']}` timeouts, `{mut['baseline']['bld_err']}` build errors.\n"
         f"- **D5 Final (same 240-mutant list):** **`{mut['final']['kill']}/{mut['generated']}` killed (`{mut['final']['score_pct']:.2f}%` raw)**, **`{mut['final']['tmo']}` timeouts**, **`{mut['final']['bld_err']}` build errors**.\n"
-        f"- **Formal Equivalence & Adjusted Score:** Of `{mut['final']['surv']}` survivors, **`{mut['equivalent_total']}` are proven equivalent** (`{mut['equivalent_formal']}` by Yosys `equiv_induct` / Boolector depth-10 miters in [`docs/logs/mutation_equiv.log`](docs/logs/mutation_equiv.log) + `{mut['equivalent_signal']}` signal-level proofs on `axil_default_slave._unused_inputs`), leaving **`{mut['residual_non_equiv']}` residual non-equivalent survivors** and **`{mut['adjusted_score_pct']:.2f}%` (`{mut['final']['kill']}/{mut['adjusted_denominator']}`) adjusted mutation score**."
+        f"- **Formal Equivalence & Adjusted Score:** Of `{mut['final']['surv']}` survivors, **`{mut['equivalent_total']}` are proven equivalent** (`{mut['equivalent_formal']}` by Yosys `equiv_induct` / Boolector depth-10 miters in [`docs/logs/mutation_equiv.log`](docs/logs/mutation_equiv.log) + `{mut['equivalent_signal']}` signal-level proofs on `axil_default_slave._unused_inputs`), leaving **`{mut['residual_non_equiv']}` residual non-equivalent survivors** and **`{mut['adjusted_score_pct']:.2f}%` (`{mut['final']['kill']}/{mut['adjusted_denominator']}`) adjusted mutation score**.\n"
+        f"- **Sanity Gate:** **`{san['killed']}/{san['total']}` KILLED** (`{san['survived']}` survived, `{san['invalid']}` invalid; [`docs/logs/sanity.log`](docs/logs/sanity.log))."
     )
 
     readme_synth_sta_summary = (
@@ -163,7 +165,7 @@ def render_all_blocks(m):
         f"| Code Coverage (Verilator) | **Line {cc['line']['pct']:.1f}% \\| Branch {cc['branch']['pct']:.1f}% \\| Expr {cc['expr']['pct']:.1f}% \\| Toggle {cc['toggle']['pct']:.1f}% \\| FSM State {cc['fsm_state']['pct']:.1f}%** | Section 10 | [`docs/logs/code_cov_summary.txt`](logs/code_cov_summary.txt) |",
         f"| Formal Verification (SymbiYosys) | **{fm['passed_suites']}/{fm['total_suites']} suites PASS** ({prove_cnt} `prove`, {hybrid_cnt} `prv+bmc`, {bmc_cnt} `bmc`; {fm['total_covers']} covers) | Section 11 | [`docs/logs/formal_suite.log`](logs/formal_suite.log) |",
         f"| CDC Sweeps | **{cdc['ratio_count']} periods ({', '.join(str(x) + ' ns' for x in cdc['slow_periods_ns'])}) × {cdc['phase_count']} phases**; formal depth {cdc['formal_async_fifo_depth']} / {cdc['formal_cdc_bridge_depth']} | Section 9.1 (CD-01) | [`docs/logs/func_cov.log`](logs/func_cov.log) |",
-        f"| Mutation Testing (240 Frozen Mutants) | **Baseline {mut['baseline']['kill']}/{mut['generated']} ({mut['baseline']['score_pct']:.2f}%) → Final {mut['final']['kill']}/{mut['generated']} ({mut['final']['score_pct']:.2f}% raw / {mut['adjusted_score_pct']:.2f}% adj)** | Section 12 | [`docs/mutation_report.md`](mutation_report.md) |",
+        f"| Mutation Testing (240 Frozen Mutants) | **Baseline {mut['baseline']['kill']}/{mut['generated']} ({mut['baseline']['score_pct']:.2f}%) → Final {mut['final']['kill']}/{mut['generated']} ({mut['final']['score_pct']:.2f}% raw / {mut['adjusted_score_pct']:.2f}% adj)**; Sanity Gate: **{san['killed']}/{san['total']} KILLED** | Section 12 | [`docs/mutation_report.md`](mutation_report.md), [`docs/logs/sanity.log`](logs/sanity.log) |",
         f"| Bugs Logged & Reference-Verified | **{bugs['total']} (`{bugs['first_id']}`–`{bugs['last_id']}`)** | Section 6 | [`docs/bugs.md`](bugs.md) |",
         f"| Synthesis (SKY130, `RAM_DEPTH={syn['ram_depth']}`) | **{syn['total_cells']:,} cells / {syn['flops']:,} flops ({syn['ram_flops']:,} RAM) / {syn['chip_area_um2']:,} µm²** | Section 13 | [`docs/logs/synth.log`](logs/synth.log) |",
         f"| STA (100 MHz Target, OpenSTA) | **VIOLATED: WNS {sta['full_wns_ns']:.2f} ns / TNS {sta['full_tns_ns']:.2f} ns / {sta['full_fmax_mhz']:.2f} MHz** (`{sta['datapath_io_fmax_mhz']:.2f} MHz` datapath+I/O ref; `clk_slow` & hold MET) | Section 13 | [`docs/logs/sta.log`](logs/sta.log), [`docs/logs/fmax_sweep.log`](logs/fmax_sweep.log) |",
@@ -249,12 +251,18 @@ def render_all_blocks(m):
         for r in csv.DictReader(f):
             tmap[r["spec_id"]] = r
 
+    extra_l2_refs = {
+        "XB-02": "; L0 `tb/unit/test_axil_ram.py` (`test_axil_ram_operations`); L2 `tb/block/test_amba_fabric_top.py` (`test_top01_register_map_connectivity`)",
+        "XB-03": "; L0 `tb/unit/test_axil_ram.py` (`test_axil_ram_operations`), `tb/unit/test_axil_csr.py` (`test_cs02_access_types_w1c`); L2 `tb/pyuvm/tests/test_directed.py` (`test_sys_strobe_patterns`)",
+    }
+
     def _cat_rows(ids):
         lines = ["| Test ID | Scenario Description | Expected Checks | Test Location | Result |", "|---|---|---|---|---|"]
         for sid in ids:
             desc, chk = SPEC_TESTS_DESC[sid]
             r = tmap[sid]
-            lines.append(f"| **{sid}** | {desc} | {chk} | `{r['file']}` (`{r['test_name']}`) | **{r['result']}** |")
+            extra = extra_l2_refs.get(sid, "")
+            lines.append(f"| **{sid}** | {desc} | {chk} | `{r['file']}` (`{r['test_name']}`){extra} | **{r['result']}** |")
         return "\n".join(lines)
 
     vplan_test_catalog = "\n\n".join([
@@ -280,7 +288,7 @@ def render_all_blocks(m):
     )
 
     vplan_mutation_matrix = (
-        f"Evaluated on frozen deterministic 240-mutant list [`mutation/mutant_list_240.json`](../mutation/mutant_list_240.json) (`30` per module × `8` modules, seed `42`; full analysis in [`docs/mutation_report.md`](mutation_report.md)):\n\n"
+        f"Evaluated on frozen deterministic 240-mutant list [`mutation/mutant_list_240.json`](../mutation/mutant_list_240.json) (`30` per module × `8` modules, seed `42`; full analysis in [`docs/mutation_report.md`](mutation_report.md)) plus permanent sanity gate (**{san['killed']}/{san['total']} KILLED**, [`docs/logs/sanity.log`](logs/sanity.log)):\n\n"
         + results_mutation_table
     )
 

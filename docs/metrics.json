@@ -641,6 +641,13 @@
       }
     ]
   },
+  "sanity": {
+    "log": "docs/logs/sanity.log",
+    "killed": 17,
+    "total": 17,
+    "survived": 0,
+    "invalid": 0
+  },
   "mutation": {
     "baseline_log": "docs/logs/mutation_baseline.log",
     "final_log": "docs/logs/mutation.log",

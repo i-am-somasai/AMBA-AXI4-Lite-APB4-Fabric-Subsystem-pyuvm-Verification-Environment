@@ -102,10 +102,11 @@ formal:
 		echo "Formal verification scripts will be populated in Phase 1, 2, 5."; \
 	fi
 
-# Sanity mutants gate (16 permanent killed mutants)
+# Sanity mutants gate (count driven by mutation/sanity/run_sanity.py -> docs/metrics.json)
 sanity:
-	@$(ENV_CMD) && echo "=== Running 16-Mutant Sanity Gate ===" && \
-	python3 $(PROJ_DIR)/mutation/sanity/run_sanity.py
+	@$(ENV_CMD) && echo "=== Running Sanity Gate ===" && \
+	mkdir -p $(PROJ_DIR)/docs/logs && \
+	python3 $(PROJ_DIR)/mutation/sanity/run_sanity.py | tee $(PROJ_DIR)/docs/logs/sanity.log
 
 # Mutation testing (full run)
 mutation:

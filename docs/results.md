@@ -19,7 +19,7 @@ This document records **real, measured results** generated strictly from [`docs/
 | Code Coverage (Verilator) | **Line 92.0% \| Branch 91.2% \| Expr 93.8% \| Toggle 74.8% \| FSM State 100.0%** | Section 10 | [`docs/logs/code_cov_summary.txt`](logs/code_cov_summary.txt) |
 | Formal Verification (SymbiYosys) | **10/10 suites PASS** (3 `prove`, 1 `prv+bmc`, 6 `bmc`; 84 covers) | Section 11 | [`docs/logs/formal_suite.log`](logs/formal_suite.log) |
 | CDC Sweeps | **3 periods (25.0 ns, 10.3 ns, 6.0 ns) × 3 phases**; formal depth 25 / 30 | Section 9.1 (CD-01) | [`docs/logs/func_cov.log`](logs/func_cov.log) |
-| Mutation Testing (240 Frozen Mutants) | **Baseline 165/240 (68.75%) → Final 205/240 (85.42% raw / 93.61% adj)** | Section 12 | [`docs/mutation_report.md`](mutation_report.md) |
+| Mutation Testing (240 Frozen Mutants) | **Baseline 165/240 (68.75%) → Final 205/240 (85.42% raw / 93.61% adj)**; Sanity Gate: **17/17 KILLED** | Section 12 | [`docs/mutation_report.md`](mutation_report.md), [`docs/logs/sanity.log`](logs/sanity.log) |
 | Bugs Logged & Reference-Verified | **24 (`BUG-001`–`BUG-024`)** | Section 6 | [`docs/bugs.md`](bugs.md) |
 | Synthesis (SKY130, `RAM_DEPTH=64`) | **9,237 cells / 3,630 flops (2,048 RAM) / 138,086.19 µm²** | Section 13 | [`docs/logs/synth.log`](logs/synth.log) |
 | STA (100 MHz Target, OpenSTA) | **VIOLATED: WNS -18.60 ns / TNS -54046.39 ns / 34.97 MHz** (`62.89 MHz` datapath+I/O ref; `clk_slow` & hold MET) | Section 13 | [`docs/logs/sta.log`](logs/sta.log), [`docs/logs/fmax_sweep.log`](logs/fmax_sweep.log) |

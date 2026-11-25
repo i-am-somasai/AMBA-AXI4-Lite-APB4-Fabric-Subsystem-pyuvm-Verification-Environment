@@ -65,32 +65,50 @@ async def test_tm01_oneshot_countdown(dut):
 
 @cocotb.test()
 async def test_tm02_periodic_countdown(dut):
-    """TM-02: Periodic mode: reloads and fires repeatedly with exact period."""
+    """TM-02: Periodic mode: reloads and fires repeatedly with exact LOAD+1 period every iteration."""
     tb = TimerTestbench(dut)
     await tb.reset()
 
-    load_val = 5
-    await tb.apb.write(addr=0x04, data=load_val) # LOAD = 5
+    cycle_state = {"count": 0}
+
+    async def _count_cycles():
+        while True:
+            await RisingEdge(dut.clk)
+            cycle_state["count"] += 1
+
+    ctr_task = cocotb.start_soon(_count_cycles())
+
+    load_val = 8
+    expected_period = load_val + 1
+    await tb.apb.write(addr=0x04, data=load_val)  # LOAD = 8 -> period = 9 cycles
 
     # CTRL = EN(1) | PERIODIC(2) | IRQ_EN(4) = 0x07
     await tb.apb.write(addr=0x00, data=0x07)
+    last_edge_cycle = cycle_state["count"]
 
-    # Monitor 3 consecutive periods
-    for period in range(3):
-        # Wait for IRQ assertion
-        cycles = 0
-        while not dut.timer_irq.value and cycles < 20:
+    # Monitor 4 consecutive periodic intervals and assert exact LOAD+1 cycles per iteration
+    for period in range(4):
+        while cycle_state["count"] - last_edge_cycle < expected_period + 10:
             await RisingEdge(dut.clk)
-            cycles += 1
+            await ReadOnly()
+            if int(dut.timer_irq.value) == 1:
+                break
 
-        assert dut.timer_irq.value == 1, f"Period {period}: IRQ did not assert"
-        dut._log.info(f"Periodic interval {period}: fired after {cycles} cycles")
+        assert int(dut.timer_irq.value) == 1, f"Period {period}: IRQ did not assert"
+        fire_cycle = cycle_state["count"]
+        delta = fire_cycle - last_edge_cycle
+        assert delta == expected_period, (
+            f"TM-02 Period {period}: expected exact LOAD+1={expected_period} cycles, got {delta}"
+        )
+        dut._log.info(f"Periodic interval {period}: exact period {delta} cycles (LOAD={load_val})")
+        last_edge_cycle = fire_cycle
 
-        # Clear TIMEOUT via W1C
+        # Clear TIMEOUT via W1C well before next timeout (LOAD=8 gives plenty of margin)
         await tb.apb.write(addr=0x0C, data=0x01)
-        await RisingEdge(dut.clk)
-        assert dut.timer_irq.value == 0, f"Period {period}: IRQ did not clear after W1C"
+        await ReadOnly()
+        assert int(dut.timer_irq.value) == 0, f"Period {period}: IRQ did not clear after W1C"
 
+    ctr_task.cancel()
     # Stop timer
     await tb.apb.write(addr=0x00, data=0x00)
     await RisingEdge(dut.clk)

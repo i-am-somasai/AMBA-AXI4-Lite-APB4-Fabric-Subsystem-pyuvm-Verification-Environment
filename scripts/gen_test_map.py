@@ -126,10 +126,13 @@ def find_test_definitions():
 
 
 def parse_results_xmls():
-    """Find and parse all results*.xml files to get {test_name: (passed_bool, seed, file)}."""
+    """Find and parse results*.xml files under build/results/ to get {test_name: (passed_bool, seed, file)}."""
     results = {}
-    for xml_file in PROJ_DIR.rglob("results*.xml"):
-        if ".venv" in str(xml_file) or ".git" in str(xml_file):
+    search_root = PROJ_DIR / "build" / "results"
+    if not search_root.exists():
+        search_root = PROJ_DIR
+    for xml_file in sorted(search_root.rglob("results*.xml")):
+        if any(p in xml_file.parts for p in (".venv", ".git", "sanity", "mutants")):
             continue
         try:
             tree = ET.parse(xml_file)

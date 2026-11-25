@@ -249,6 +249,21 @@ def parse_formal():
     }
 
 
+def parse_sanity():
+    p = PROJ_DIR / "docs" / "logs" / "sanity.log"
+    txt = p.read_text(encoding="utf-8")
+    m = re.search(r"Sanity Summary:\s+(\d+)/(\d+)\s+KILLED,\s+(\d+)\s+SURVIVED,\s+(\d+)\s+INVALID", txt)
+    if not m:
+        raise RuntimeError(f"Sanity summary not found in {p}")
+    return {
+        "log": p.relative_to(PROJ_DIR).as_posix(),
+        "killed": int(m.group(1)),
+        "total": int(m.group(2)),
+        "survived": int(m.group(3)),
+        "invalid": int(m.group(4)),
+    }
+
+
 def parse_mutation():
     base_log = PROJ_DIR / "docs" / "logs" / "mutation_baseline.log"
     final_log = PROJ_DIR / "docs" / "logs" / "mutation.log"
@@ -474,6 +489,7 @@ def main():
     func_cov = parse_functional_coverage()
     code_cov = parse_code_coverage()
     formal = parse_formal()
+    sanity = parse_sanity()
     mutation = parse_mutation()
     bugs = parse_bugs()
     synth = parse_synthesis()
@@ -512,6 +528,7 @@ def main():
         "functional_coverage": func_cov,
         "code_coverage": code_cov,
         "formal": formal,
+        "sanity": sanity,
         "mutation": mutation,
         "bugs": bugs,
         "synthesis": synth,

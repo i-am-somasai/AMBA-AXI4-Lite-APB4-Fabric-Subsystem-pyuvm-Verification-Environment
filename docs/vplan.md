@@ -71,8 +71,8 @@ The AMBA-Fabric subsystem is verified using a rigorous, three-tier verification 
 | Test ID | Scenario Description | Expected Checks | Test Location | Result |
 |---|---|---|---|---|
 | **XB-01** | Single write and read, each master to each mapped slave | OKAY response, payload verified against reference model | `tb/block/test_axil_xbar.py` (`test_xb01_single_rw_each_master_to_each_slave`) | **PASS** |
-| **XB-02** | Write-then-read memory data integrity on RAM | Word and byte matches reference memory | `tb/block/test_axil_xbar.py` (`test_xb02_ram_data_integrity`) | **PASS** |
-| **XB-03** | All 16 WSTRB patterns on RAM and CSR scratch | Only strobed bytes change; non-strobed preserved | `tb/block/test_axil_xbar.py` (`test_xb03_wstrb_patterns`) | **PASS** |
+| **XB-02** | Write-then-read memory data integrity on RAM | Word and byte matches reference memory | `tb/block/test_axil_xbar.py` (`test_xb02_ram_data_integrity`); L0 `tb/unit/test_axil_ram.py` (`test_axil_ram_operations`); L2 `tb/block/test_amba_fabric_top.py` (`test_top01_register_map_connectivity`) | **PASS** |
+| **XB-03** | All 16 WSTRB patterns on RAM and CSR scratch | Only strobed bytes change; non-strobed preserved | `tb/block/test_axil_xbar.py` (`test_xb03_wstrb_patterns`); L0 `tb/unit/test_axil_ram.py` (`test_axil_ram_operations`), `tb/unit/test_axil_csr.py` (`test_cs02_access_types_w1c`); L2 `tb/pyuvm/tests/test_directed.py` (`test_sys_strobe_patterns`) | **PASS** |
 | **XB-04** | Unmapped address read and write access | DECERR, no bus stall, write data consumed | `tb/block/test_axil_xbar.py` (`test_xb04_unmapped_decerr`) | **PASS** |
 | **XB-05** | Both masters to the same slave simultaneously | Clean serialization, no data corruption, transaction lock honored | `tb/block/test_axil_xbar.py` (`test_xb05_contention_same_slave`) | **PASS** |
 | **XB-06** | Both masters to different slaves simultaneously | Parallel completion without serialization penalty | `tb/block/test_axil_xbar.py` (`test_xb06_parallel_different_slaves`) | **PASS** |
@@ -175,7 +175,7 @@ Executed with `scripts/run_all_formal.sh` (SymbiYosys + Yosys + Boolector, [`doc
 ## 6. Mutation Testing & Testbench Quality Matrix
 
 <!-- BEGIN:metrics:vplan_mutation_matrix -->
-Evaluated on frozen deterministic 240-mutant list [`mutation/mutant_list_240.json`](../mutation/mutant_list_240.json) (`30` per module × `8` modules, seed `42`; full analysis in [`docs/mutation_report.md`](mutation_report.md)):
+Evaluated on frozen deterministic 240-mutant list [`mutation/mutant_list_240.json`](../mutation/mutant_list_240.json) (`30` per module × `8` modules, seed `42`; full analysis in [`docs/mutation_report.md`](mutation_report.md)) plus permanent sanity gate (**17/17 KILLED**, [`docs/logs/sanity.log`](logs/sanity.log)):
 
 | Module | Gen | Baseline Kill / Score | Final Kill | Final Surv | Tmo | BldErr | Raw Score | Equiv | Adj. Score |
 |---|---:|---|---:|---:|---:|---:|---:|---:|---:|

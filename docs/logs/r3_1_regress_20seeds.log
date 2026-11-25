@@ -1,0 +1,820 @@
+make: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+--- Running pyuvm directed tests (XB-09..XB-15, BR-04..BR-06) ---
+make -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_directed \
+	SIM_BUILD=/home/somasai/amba-fabric/build/sim_build/pyuvm_directed \
+	COCOTB_RESULTS_FILE=/home/somasai/amba-fabric/build/results/pyuvm/results_test_directed.xml \
+	VERILOG_SOURCES="/home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v" \
+	SIM=icarus
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_directed.xml
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_directed.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_directed.xml
+COCOTB_TEST_MODULES=test_directed COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_directed/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620388
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_directed.test_xb11_slverr_propagation (1/8)
+                                                            XB-11: SLVERR propagation from all subsystems.
+   920.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=8 Writes=4 Reads=4 Mismatches=0 ---
+   920.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_directed_seed_0.yaml
+   920.00ns INFO     cocotb.regression                  test_directed.test_xb11_slverr_propagation passed
+   920.00ns INFO     cocotb.regression                  running test_directed.test_xb14_prot_passthrough (2/8)
+                                                            XB-14: AWPROT and ARPROT pass-through.
+  2020.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=16 Writes=8 Reads=8 Mismatches=0 ---
+  2020.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_directed_seed_0.yaml
+  2020.00ns INFO     cocotb.regression                  test_directed.test_xb14_prot_passthrough passed
+  2020.00ns INFO     cocotb.regression                  running test_directed.test_xb15_unaligned_address (3/8)
+                                                            XB-15: Unaligned address LSBs.
+  4370.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=25 Writes=5 Reads=20 Mismatches=0 ---
+  4370.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_directed_seed_0.yaml
+  4370.00ns INFO     cocotb.regression                  test_directed.test_xb15_unaligned_address passed
+  4370.00ns INFO     cocotb.regression                  running test_directed.test_sys_write_ordering (4/8)
+                                                            System-level write channel ordering test (AW first, W first, simultaneous).
+  4820.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=6 Writes=3 Reads=3 Mismatches=0 ---
+  4820.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_directed_seed_0.yaml
+  4820.00ns INFO     cocotb.regression                  test_directed.test_sys_write_ordering passed
+  4820.00ns INFO     cocotb.regression                  running test_directed.test_sys_strobe_patterns (5/8)
+                                                            System-level WSTRB patterns on RAM and CSR.
+  7040.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=96 Writes=64 Reads=32 Mismatches=0 ---
+  7040.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_directed_seed_0.yaml
+  7040.00ns INFO     cocotb.regression                  test_directed.test_sys_strobe_patterns passed
+  7040.00ns INFO     cocotb.regression                  running test_directed.test_xb12_reset_recovery (6/8)
+                                                            XB-12: Reset injected mid-flight across AW, W, B, AR, R phases, agent/scoreboard flush, and recovery.
+  8480.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=8 Writes=4 Reads=4 Mismatches=0 ---
+  8480.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_directed_seed_0.yaml
+  8480.00ns INFO     cocotb.regression                  test_directed.test_xb12_reset_recovery passed
+  8480.00ns INFO     cocotb.regression                  running test_directed.test_sys_contention (7/8)
+                                                            System-level dual-master contention on RAM.
+  8890.01ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=4 Writes=2 Reads=2 Mismatches=0 ---
+  8890.01ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_directed_seed_0.yaml
+  8890.01ns INFO     cocotb.regression                  test_directed.test_sys_contention passed
+  8890.01ns INFO     cocotb.regression                  running test_directed.TestCoverageClosure (8/8)
+                                                            Phase 5: Functional coverage closure exercising all Section 10 covergroups.
+135230.01ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=359 Writes=214 Reads=145 Mismatches=0 ---
+135230.01ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_directed_seed_0.yaml
+135230.01ns INFO     cocotb.regression                  test_directed.TestCoverageClosure passed
+135230.01ns INFO     cocotb.regression                  ****************************************************************************************************
+                                                        ** TEST                                        STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ****************************************************************************************************
+                                                        ** test_directed.test_xb11_slverr_propagation   PASS         920.00           0.15       6292.29  **
+                                                        ** test_directed.test_xb14_prot_passthrough     PASS        1100.00           0.13       8229.85  **
+                                                        ** test_directed.test_xb15_unaligned_address    PASS        2350.00           0.15      15447.86  **
+                                                        ** test_directed.test_sys_write_ordering        PASS         450.00           0.09       4747.59  **
+                                                        ** test_directed.test_sys_strobe_patterns       PASS        2220.00           0.17      12863.23  **
+                                                        ** test_directed.test_xb12_reset_recovery       PASS        1440.00           0.12      11893.88  **
+                                                        ** test_directed.test_sys_contention            PASS         410.00           0.09       4392.06  **
+                                                        ** test_directed.TestCoverageClosure            PASS      126340.00           3.55      35569.79  **
+                                                        ****************************************************************************************************
+                                                        ** TESTS=8 PASS=8 FAIL=0 SKIP=0                           135230.01           4.50      30047.96  **
+                                                        ****************************************************************************************************
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+--- Running CDC sweeps across clock ratios and phases ---
+CLK_SLOW_PERIOD_NS=10.3 CLK_SLOW_PHASE_NS=2.5 SEED=103 \
+make -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_directed \
+	TESTCASE=TestCoverageClosure \
+	SIM_BUILD=/home/somasai/amba-fabric/build/sim_build/pyuvm_directed \
+	COCOTB_RESULTS_FILE=/home/somasai/amba-fabric/build/results/pyuvm/results_test_cdc_10_3.xml \
+	VERILOG_SOURCES="/home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v" \
+	SIM=icarus
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_cdc_10_3.xml
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_cdc_10_3.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_cdc_10_3.xml
+COCOTB_TEST_MODULES=test_directed COCOTB_TESTCASE=TestCoverageClosure COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_directed/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620396
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns WARNING  py.warnings                        /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/_init.py:103: DeprecationWarning: COCOTB_TESTCASE is deprecated in favor of COCOTB_TEST_FILTER
+                                                          _setup_regression_manager()
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_directed.TestCoverageClosure (1/1)
+                                                            Phase 5: Functional coverage closure exercising all Section 10 covergroups.
+122300.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=359 Writes=214 Reads=145 Mismatches=0 ---
+122300.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_TestCoverageClosure_seed_103.yaml
+122300.00ns INFO     cocotb.regression                  test_directed.TestCoverageClosure passed
+122300.00ns INFO     cocotb.regression                  *******************************************************************************************
+                                                        ** TEST                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************
+                                                        ** test_directed.TestCoverageClosure   PASS      122300.00           3.89      31406.80  **
+                                                        *******************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                  122300.00           3.94      31044.54  **
+                                                        *******************************************************************************************
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+CLK_SLOW_PERIOD_NS=6.0 CLK_SLOW_PHASE_NS=1.2 SEED=60 \
+make -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single \
+	TOPLEVEL=amba_fabric_top \
+	MODULE=test_directed \
+	TESTCASE=TestCoverageClosure \
+	SIM_BUILD=/home/somasai/amba-fabric/build/sim_build/pyuvm_directed \
+	COCOTB_RESULTS_FILE=/home/somasai/amba-fabric/build/results/pyuvm/results_test_cdc_6_0.xml \
+	VERILOG_SOURCES="/home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v" \
+	SIM=icarus
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_cdc_6_0.xml
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_cdc_6_0.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_cdc_6_0.xml
+COCOTB_TEST_MODULES=test_directed COCOTB_TESTCASE=TestCoverageClosure COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_directed/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620402
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns WARNING  py.warnings                        /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/_init.py:103: DeprecationWarning: COCOTB_TESTCASE is deprecated in favor of COCOTB_TEST_FILTER
+                                                          _setup_regression_manager()
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_directed.TestCoverageClosure (1/1)
+                                                            Phase 5: Functional coverage closure exercising all Section 10 covergroups.
+121360.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=359 Writes=214 Reads=145 Mismatches=0 ---
+121360.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_TestCoverageClosure_seed_60.yaml
+121360.00ns INFO     cocotb.regression                  test_directed.TestCoverageClosure passed
+121360.00ns INFO     cocotb.regression                  *******************************************************************************************
+                                                        ** TEST                               STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************
+                                                        ** test_directed.TestCoverageClosure   PASS      121360.00           4.30      28231.01  **
+                                                        *******************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                  121360.00           4.34      27938.89  **
+                                                        *******************************************************************************************
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+>>> Running stress seed 721...
+>>> Running stress seed 722...
+>>> Running stress seed 723...
+>>> Running stress seed 724...
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_722.xml
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_721.xml
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_724.xml
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_723.xml
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_722.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_721.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_723.xml
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_724.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_722
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_721
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_722/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_722/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_721/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_721/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_724
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_723
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_724/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_724/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_723/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_723/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_722.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_722/sim.vvp   
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_721.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_721/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_724.xml
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_723.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_724/sim.vvp   
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_723/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620409
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620410
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620410
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620410
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=722 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=721 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=724 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=723 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+461940.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+461940.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4940 Reads=5060 Mismatches=0 ---
+461940.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_723.yaml
+461940.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+461940.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      461940.00          20.62      22397.92  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             461940.00          20.63      22392.43  **
+                                                        **************************************************************************************
+459100.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+459100.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4945 Reads=5055 Mismatches=0 ---
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+>>> Running stress seed 725...
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+459100.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_721.yaml
+459100.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+459100.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      459100.00          20.86      22012.92  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             459100.00          20.86      22007.60  **
+                                                        **************************************************************************************
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+>>> Running stress seed 726...
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+469740.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+469740.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4966 Reads=5034 Mismatches=0 ---
+471680.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+471680.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4978 Reads=5022 Mismatches=0 ---
+469740.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_722.yaml
+471680.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_724.yaml
+471680.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+469740.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+471680.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      471680.00          21.32      22125.28  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             471680.00          21.32      22120.09  **
+                                                        **************************************************************************************
+469740.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      469740.00          21.38      21969.63  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             469740.00          21.39      21964.50  **
+                                                        **************************************************************************************
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+>>> Running stress seed 727...
+>>> Running stress seed 728...
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_725.xml
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_726.xml
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_725.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_726.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_728.xml
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_727.xml
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_725
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_725/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_725/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_728.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_727.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_726
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_726/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_726/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_725.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_725/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_726.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_726/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620433
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=725 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620433
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_728
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_727
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_728/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_728/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_727/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_727/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=726 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_728.xml
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_727.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_727/sim.vvp   
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_728/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620434
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620434
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=727 ===
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=728 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+445770.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+445770.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4992 Reads=5008 Mismatches=0 ---
+451910.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+451910.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5099 Reads=4901 Mismatches=0 ---
+452400.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+452400.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4952 Reads=5048 Mismatches=0 ---
+445770.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_726.yaml
+445770.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+445770.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      445770.00          21.31      20918.00  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             445770.00          21.32      20912.82  **
+                                                        **************************************************************************************
+451910.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_728.yaml
+451910.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+451910.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      451910.00          20.84      21685.85  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             451910.00          20.84      21680.33  **
+                                                        **************************************************************************************
+452400.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_725.yaml
+452400.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+452400.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      452400.00          21.58      20959.84  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             452400.00          21.59      20954.87  **
+                                                        **************************************************************************************
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+>>> Running stress seed 729...
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+454450.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+454450.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5050 Reads=4950 Mismatches=0 ---
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+>>> Running stress seed 730...
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+>>> Running stress seed 731...
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+454450.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_727.yaml
+454450.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+454450.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      454450.00          21.09      21551.02  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             454450.00          21.09      21545.36  **
+                                                        **************************************************************************************
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+>>> Running stress seed 732...
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_729.xml
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_730.xml
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_731.xml
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_729.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_730.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_731.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_732.xml
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_732.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_729
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_729/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_729/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_730
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_730/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_730/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_731
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_731/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_731/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_729.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_729/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_730.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_730/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_732
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_732/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_732/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_731.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_731/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620458
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620458
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=729 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_732.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_732/sim.vvp   
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620458
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=730 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=731 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620458
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=732 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+459630.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+459630.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4980 Reads=5020 Mismatches=0 ---
+460510.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+460510.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4975 Reads=5025 Mismatches=0 ---
+459630.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_729.yaml
+459630.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+459630.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      459630.00          20.66      22252.43  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             459630.00          20.66      22246.87  **
+                                                        **************************************************************************************
+460510.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_730.yaml
+460510.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+460510.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      460510.00          20.68      22271.59  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             460510.00          20.68      22265.82  **
+                                                        **************************************************************************************
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+>>> Running stress seed 733...
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+>>> Running stress seed 734...
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+447060.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+447060.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5013 Reads=4987 Mismatches=0 ---
+447060.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_731.yaml
+447060.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+447060.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      447060.00          21.31      20982.04  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             447060.00          21.31      20976.29  **
+                                                        **************************************************************************************
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+>>> Running stress seed 735...
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+450860.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+450860.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5029 Reads=4971 Mismatches=0 ---
+450860.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_732.yaml
+450860.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+450860.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      450860.00          21.50      20969.93  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             450860.00          21.51      20962.57  **
+                                                        **************************************************************************************
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+>>> Running stress seed 736...
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_733.xml
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_734.xml
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_733.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_734.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_733
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_735.xml
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_733/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_733/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_734
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_734/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_734/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_735.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_733.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_733/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_734.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_734/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_736.xml
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620482
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620482
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_736.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=733 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=734 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_735
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_735/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_735/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_735.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_735/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_736
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_736/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_736/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620483
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=735 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_736.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_736/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620483
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=736 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+459420.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+459420.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5111 Reads=4889 Mismatches=0 ---
+459420.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_733.yaml
+459420.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+459420.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      459420.00          22.35      20557.24  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             459420.00          22.35      20552.19  **
+                                                        **************************************************************************************
+455400.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+455400.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4956 Reads=5044 Mismatches=0 ---
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+455400.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_734.yaml
+455400.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+>>> Running stress seed 737...
+455400.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      455400.00          22.41      20325.55  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             455400.00          22.41      20320.43  **
+                                                        **************************************************************************************
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+>>> Running stress seed 738...
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_737.xml
+459200.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+459200.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=4998 Reads=5002 Mismatches=0 ---
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_738.xml
+459200.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_735.yaml
+459200.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+459200.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      459200.00          23.33      19684.56  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             459200.00          23.33      19680.01  **
+                                                        **************************************************************************************
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_737.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+460070.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+460070.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5089 Reads=4911 Mismatches=0 ---
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_738.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+>>> Running stress seed 739...
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+460070.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_736.yaml
+460070.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+460070.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      460070.00          23.09      19924.10  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             460070.00          23.10      19919.06  **
+                                                        **************************************************************************************
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+>>> Running stress seed 740...
+make[1]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_737
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_737/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_737/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_738
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_738/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_738/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_737.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_737/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_738.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_738/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620507
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620507
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=737 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=738 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_739.xml
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_739.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_740.xml
+"make" -f /home/somasai/amba-fabric/tb/pyuvm/Makefile.single /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_740.xml
+make[2]: Entering directory '/home/somasai/amba-fabric/tb/pyuvm'
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_739
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_739/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_739/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+mkdir -p /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_740
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_739.xml
+/home/somasai/oss-cad-suite/bin/iverilog -o /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_740/sim.vvp -s amba_fabric_top -g2012 -g2012 -DCOCOTB_SIM -f /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_740/cmds.f  /home/somasai/amba-fabric/rtl/common/rst_sync.v /home/somasai/amba-fabric/rtl/common/sync_fifo.v /home/somasai/amba-fabric/rtl/common/async_fifo.v /home/somasai/amba-fabric/rtl/common/rr_arbiter.v /home/somasai/amba-fabric/rtl/axil/axil_default_slave.v /home/somasai/amba-fabric/rtl/axil/axil_decoder.v /home/somasai/amba-fabric/rtl/axil/axil_xbar.v /home/somasai/amba-fabric/rtl/axil/axil_ram.v /home/somasai/amba-fabric/rtl/axil/axil_csr.v /home/somasai/amba-fabric/rtl/apb/axil2apb_bridge.v /home/somasai/amba-fabric/rtl/apb/apb_decoder.v /home/somasai/amba-fabric/rtl/apb/apb_uart.v /home/somasai/amba-fabric/rtl/apb/apb_timer.v /home/somasai/amba-fabric/rtl/apb/apb_gpio.v /home/somasai/amba-fabric/rtl/cdc/slow_regs.v /home/somasai/amba-fabric/rtl/cdc/axil_cdc_bridge.v /home/somasai/amba-fabric/rtl/amba_fabric_top.v
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_739/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620509
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+rm -f /home/somasai/amba-fabric/build/results/pyuvm/results_test_stress_740.xml
+COCOTB_TEST_MODULES=test_stress COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=amba_fabric_top TOPLEVEL_LANG=verilog \
+         /home/somasai/oss-cad-suite/bin/vvp -M /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs -m libcocotbvpi_icarus   /home/somasai/amba-fabric/build/sim_build/pyuvm_stress_740/sim.vvp   
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:216  in gpi_load_users                  Running entry func 'initialize' from loaded library '/home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb/libs/libcocotb.so'
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:96   in initialize                      Using Python 3.11.6 interpreter at /home/somasai/oss-cad-suite/bin/tabbypy3
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=739 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 14.0 (devel)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1795620510
+     0.00ns INFO     cocotb                             Initialized cocotb v2.1.0.dev0+41564633 from /home/somasai/oss-cad-suite/lib/python3.11/site-packages/cocotb-2.1.0.dev0+41564633-py3.11-linux-x64.egg/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_stress.test_xb13_stress (1/1)
+                                                            XB-13: 10,000-transaction concurrent random stress test across Master 0 and Master 1.
+     0.00ns INFO     ..b/pyuvm/tests/test_stress.py(25) [uvm_test_top]: === Starting XB-13 Stress Test with SEED=740 ===
+   190.00ns INFO     ..b/pyuvm/tests/test_stress.py(56) [uvm_test_top]: Launching FabricStressSeq with 5000 transactions per master (10000 total)...
+462440.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+462440.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5006 Reads=4994 Mismatches=0 ---
+462440.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_737.yaml
+462440.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+462440.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      462440.00          22.45      20600.31  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             462440.00          22.45      20595.06  **
+                                                        **************************************************************************************
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+460720.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+460720.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5005 Reads=4995 Mismatches=0 ---
+460720.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_738.yaml
+460720.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+460720.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      460720.00          23.18      19877.51  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             460720.00          23.18      19872.98  **
+                                                        **************************************************************************************
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+458560.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+458560.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5021 Reads=4979 Mismatches=0 ---
+458560.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_739.yaml
+458560.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+458560.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      458560.00          21.89      20943.77  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             458560.00          21.90      20939.05  **
+                                                        **************************************************************************************
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+459470.00ns INFO     ..b/pyuvm/tests/test_stress.py(71) [uvm_test_top]: === Stress sequence completed successfully ===
+459470.00ns INFO     ..uvm/env/fabric_scoreboard.py(87) [uvm_test_top.env.scoreboard]: --- Scoreboard Summary: Total=10000 Writes=5069 Reads=4931 Mismatches=0 ---
+459470.00ns INFO     ..vm/env/fabric_scoreboard.py(100) [uvm_test_top.env.scoreboard]: Functional coverage exported to: /home/somasai/amba-fabric/docs/logs/cov_test_stress_seed_740.yaml
+459470.00ns INFO     cocotb.regression                  test_stress.test_xb13_stress passed
+459470.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                        ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        **************************************************************************************
+                                                        ** test_stress.test_xb13_stress   PASS      459470.00          23.05      19929.57  **
+                                                        **************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0             459470.00          23.06      19925.21  **
+                                                        **************************************************************************************
+make[2]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+make[1]: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
+=== All 20 stress seeds passed with zero mismatches ===
+=====================================================
+All pyuvm directed and stress tests passed successfully.
+=====================================================
+make: Leaving directory '/home/somasai/amba-fabric/tb/pyuvm'
