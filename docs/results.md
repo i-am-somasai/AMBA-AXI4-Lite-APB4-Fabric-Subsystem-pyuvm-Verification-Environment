@@ -13,13 +13,13 @@ This document records **real, measured results** generated strictly from [`docs/
 | Metric | Measured Value | Spec Reference | Log / Source |
 |---|---|---|---|
 | RTL Modules / Non-Blank Non-Comment Lines | **17 modules / 3,200 lines** | Section 17 | [`docs/metrics.json`](metrics.json) |
-| Test Definitions / XML Runs / Spec Map | **61 defs / 77 XML runs (77 PASS, 0 FAIL) / 40/40 PASS** | Section 9 | [`docs/test_map.csv`](test_map.csv), [`docs/vplan.md`](vplan.md) |
+| Test Definitions / XML Runs / Spec Map | **61 defs / 98 XML runs (98 PASS, 0 FAIL) / 40/40 PASS** | Section 9 | [`docs/test_map.csv`](test_map.csv), [`docs/vplan.md`](vplan.md) |
 | Random Transactions Executed | **200,000** (Verilator seeds `1..20`, 0 mismatches) + **200,000** (Icarus seeds `601..620`, 0 mismatches) | Section 9.1 (XB-13) | [`docs/logs/phase_c_cov_report.log`](logs/phase_c_cov_report.log), [`docs/logs/regression_20seeds.log`](logs/regression_20seeds.log) |
 | Functional Coverage | **100.00% (267/267 reachable)**, 36 waived, 24 merged YAMLs | Section 10 | [`docs/logs/func_cov.log`](logs/func_cov.log), [`docs/coverage_waivers.md`](coverage_waivers.md) |
 | Code Coverage (Verilator) | **Line 92.0% \| Branch 91.2% \| Expr 93.8% \| Toggle 74.8% \| FSM State 100.0%** | Section 10 | [`docs/logs/code_cov_summary.txt`](logs/code_cov_summary.txt) |
 | Formal Verification (SymbiYosys) | **10/10 suites PASS** (3 `prove`, 1 `prv+bmc`, 6 `bmc`; 84 covers) | Section 11 | [`docs/logs/formal_suite.log`](logs/formal_suite.log) |
 | CDC Sweeps | **3 periods (25.0 ns, 10.3 ns, 6.0 ns) × 3 phases**; formal depth 25 / 30 | Section 9.1 (CD-01) | [`docs/logs/func_cov.log`](logs/func_cov.log) |
-| Mutation Testing (240 Frozen Mutants) | **Baseline 165/240 (68.75%) → Final 205/240 (85.42% raw / 93.61% adj)**; Sanity Gate: **17/17 KILLED** | Section 12 | [`docs/mutation_report.md`](mutation_report.md), [`docs/logs/sanity.log`](logs/sanity.log) |
+| Mutation Testing (240 Frozen Mutants) | **Baseline 165/240 (68.75%) → Final 219/240 (91.25% raw / 98.21% conservative adj, 98.21% bounded-incl)**; Sanity Gate: **17/17 KILLED** | Section 12 | [`docs/mutation_report.md`](mutation_report.md), [`docs/logs/sanity.log`](logs/sanity.log) |
 | Bugs Logged & Reference-Verified | **24 (`BUG-001`–`BUG-024`)** | Section 6 | [`docs/bugs.md`](bugs.md) |
 | Synthesis (SKY130, `RAM_DEPTH=64`) | **9,237 cells / 3,630 flops (2,048 RAM) / 138,086.19 µm²** | Section 13 | [`docs/logs/synth.log`](logs/synth.log) |
 | STA (100 MHz Target, OpenSTA) | **VIOLATED: WNS -18.60 ns / TNS -54046.39 ns / 34.97 MHz** (`62.89 MHz` datapath+I/O ref; `clk_slow` & hold MET) | Section 13 | [`docs/logs/sta.log`](logs/sta.log), [`docs/logs/fmax_sweep.log`](logs/fmax_sweep.log) |
@@ -114,15 +114,15 @@ This document records **real, measured results** generated strictly from [`docs/
 <!-- BEGIN:metrics:results_mutation_table -->
 | Module | Gen | Baseline Kill / Score | Final Kill | Final Surv | Tmo | BldErr | Raw Score | Equiv | Adj. Score |
 |---|---:|---|---:|---:|---:|---:|---:|---:|---:|
-| `rr_arbiter` | 30 | 19/30 (63.33%) | 22 | 8 | 0 | 0 | 73.33% | 6 | **91.67% (22/24)** |
-| `sync_fifo` | 30 | 25/30 (83.33%) | 28 | 2 | 0 | 0 | 93.33% | 2 | **100.00% (28/28)** |
+| `rr_arbiter` | 30 | 19/30 (63.33%) | 24 | 6 | 0 | 0 | 80.00% | 6 | **100.00% (24/24)** |
+| `sync_fifo` | 30 | 25/30 (83.33%) | 29 | 1 | 0 | 0 | 96.67% | 1 | **100.00% (29/29)** |
 | `async_fifo` | 30 | 18/30 (60.00%) | 30 | 0 | 0 | 0 | 100.00% | 0 | **100.00% (30/30)** |
 | `axil_decoder` | 30 | 26/30 (86.67%) | 27 | 3 | 0 | 0 | 90.00% | 3 | **100.00% (27/27)** |
-| `axil_ram` | 30 | 17/30 (56.67%) | 24 | 6 | 0 | 0 | 80.00% | 0 | **80.00% (24/30)** |
-| `axil_csr` | 30 | 15/30 (50.00%) | 25 | 5 | 0 | 0 | 83.33% | 4 | **96.15% (25/26)** |
-| `axil2apb_bridge` | 30 | 23/30 (76.67%) | 26 | 4 | 0 | 0 | 86.67% | 3 | **96.30% (26/27)** |
+| `axil_ram` | 30 | 17/30 (56.67%) | 30 | 0 | 0 | 0 | 100.00% | 0 | **100.00% (30/30)** |
+| `axil_csr` | 30 | 15/30 (50.00%) | 28 | 2 | 0 | 0 | 93.33% | 2 | **100.00% (28/28)** |
+| `axil2apb_bridge` | 30 | 23/30 (76.67%) | 28 | 2 | 0 | 0 | 93.33% | 2 | **100.00% (28/28)** |
 | `axil_xbar` | 30 | 22/30 (73.33%) | 23 | 7 | 0 | 0 | 76.67% | 3 | **85.19% (23/27)** |
-| **TOTAL** | **240** | **165/240 (68.75%)** | **205** | **35** | **0** | **0** | **85.42%** | **21** | **93.61% (205/219)** |
+| **TOTAL** | **240** | **165/240 (68.75%)** | **219** | **21** | **0** | **0** | **91.25%** | **17** | **98.21% (219/223)** |
 <!-- END:metrics:results_mutation_table -->
 
 ---

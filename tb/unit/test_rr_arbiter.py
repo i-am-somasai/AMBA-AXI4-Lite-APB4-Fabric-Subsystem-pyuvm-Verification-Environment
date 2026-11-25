@@ -154,4 +154,24 @@ async def test_rr_arbiter_fairness_and_lock(dut):
         await Timer(1, unit="ns")
         assert int(dut.grant.value) == exp_g, f"Expected rotation {exp_g:02b}, got {int(dut.grant.value):02b}"
 
+    # 9f. Single-requester repeat with lock=0 (kills rr_arbiter #22/#23 wraparound check when other requester idle)
+    dut.lock.value = 0
+    dut.req.value = 0b01
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert int(dut.grant.value) == 0b01
+    dut.req.value = 0b01
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert int(dut.grant.value) == 0b01, f"Single req=0b01 after grant_q=0b01 failed: {int(dut.grant.value):02b}"
+
+    dut.req.value = 0b10
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert int(dut.grant.value) == 0b10
+    dut.req.value = 0b10
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="ns")
+    assert int(dut.grant.value) == 0b10, f"Single req=0b10 after grant_q=0b10 failed: {int(dut.grant.value):02b}"
+
     dut._log.info("test_rr_arbiter_fairness_and_lock PASSED")

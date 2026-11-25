@@ -267,9 +267,79 @@ async def test_cs04_ooo_w1c32_ro_wo_and_backpressure(dut):
             rv2, _ = await driver.read(0x6000_000C)
             assert rv2 == exp, f"CSR SCRATCH2 {ord_m} strb={strb:#x} mismatch: {rv2:#x} != {exp:#x}"
 
-    # 5. Backpressure BREADY=0 and RREADY=0 stability on CSR
+    # 5. Backpressure BREADY=0 stability hold, BVALID clear, unrelated write retention (axil_csr #04),
+    #    and odd-cycle w_first WSTRB latch retention (axil_csr #25)
     bresp_slv = await driver.write(0x6000_0030, 0x1, order="w_first", bready_delay=3)
     assert bresp_slv == RESP_SLVERR
     rdata_slv, rresp_slv = await driver.read(0x6000_0030, rready_delay=3)
     assert rresp_slv == RESP_SLVERR and rdata_slv == 0
+
+    # 5a. Hold W1C_TEST = 0xFFFFFFFF across an unrelated write to SCRATCH, then clear all bits except bit 7
+    assert await driver.write(0x6000_0020, 0xFFFFFFFF) == RESP_OKAY
+    assert await driver.write(0x6000_0008, 0xCAFEBABE) == RESP_OKAY
+    w1c_hold, _ = await driver.read(0x6000_001C)
+    assert w1c_hold == 0xFFFFFFFF, f"W1C_TEST mutated during unrelated write: {w1c_hold:#x}"
+    assert await driver.write(0x6000_001C, 0xFFFFFF7F) == RESP_OKAY
+    w1c_rem, _ = await driver.read(0x6000_001C)
+    assert w1c_rem == 0x00000080, f"W1C_TEST bit 7 corrupted on multi-bit clear: {w1c_rem:#x}"
+    assert await driver.write(0x6000_001C, 0xFFFFFFFF) == RESP_OKAY
+
+    # 5b. 1-cycle (odd stagger) w_first WSTRB latch test on SCRATCH2 (kills axil_csr #25 double-inversion escape)
+    for strb in range(16):
+        assert await driver.write(0x6000_000C, 0xA55A3CC3, strb=0xF) == RESP_OKAY
+        wval = 0x13579BDF ^ (strb * 0x01010101)
+        dut.s_axil_awvalid.value = 0
+        dut.s_axil_wdata.value = wval
+        dut.s_axil_wstrb.value = strb
+        dut.s_axil_wvalid.value = 1
+        dut.s_axil_bready.value = 1
+        for _ in range(10):
+            await RisingEdge(dut.clk)
+            if int(dut.s_axil_wready.value) == 1:
+                dut.s_axil_wvalid.value = 0
+                break
+        # Exactly 1 cycle later (odd stagger): drive AW
+        dut.s_axil_awaddr.value = 0x6000_000C
+        dut.s_axil_awvalid.value = 1
+        for _ in range(10):
+            await RisingEdge(dut.clk)
+            if int(dut.s_axil_awready.value) == 1:
+                dut.s_axil_awvalid.value = 0
+            if int(dut.s_axil_bvalid.value) == 1:
+                break
+        await RisingEdge(dut.clk)
+        dut.s_axil_bready.value = 0
+        exp = 0
+        for b in range(4):
+            m = 0xFF << (8 * b)
+            exp |= (wval & m) if ((strb >> b) & 1) else (0xA55A3CC3 & m)
+        rv3, _ = await driver.read(0x6000_000C)
+        assert rv3 == exp, f"Odd-stagger w_first strb={strb:#x} mismatch: {rv3:#x} != {exp:#x}"
+
+    # 5c. Verify BVALID holds while BREADY=0 and clears on next cycle after BREADY=1 (kills axil_csr #19)
+    dut.s_axil_awaddr.value = 0x6000_0008
+    dut.s_axil_wdata.value = 0xDEADBEEF
+    dut.s_axil_wstrb.value = 0xF
+    dut.s_axil_awvalid.value = 1
+    dut.s_axil_wvalid.value = 1
+    dut.s_axil_bready.value = 0
+    for _ in range(10):
+        await RisingEdge(dut.clk)
+        if int(dut.s_axil_awready.value) == 1:
+            dut.s_axil_awvalid.value = 0
+        if int(dut.s_axil_wready.value) == 1:
+            dut.s_axil_wvalid.value = 0
+        if int(dut.s_axil_bvalid.value) == 1:
+            break
+    assert int(dut.s_axil_bvalid.value) == 1, "BVALID did not assert"
+    for hold_cyc in range(3):
+        await RisingEdge(dut.clk)
+        await Timer(1, unit="ns")
+        assert int(dut.s_axil_bvalid.value) == 1, f"BVALID dropped while BREADY=0 at cycle {hold_cyc}"
+    dut.s_axil_bready.value = 1
+    await RisingEdge(dut.clk)
+    dut.s_axil_bready.value = 0
+    await Timer(1, unit="ns")
+    assert int(dut.s_axil_bvalid.value) == 0, "BVALID did not clear after BVALID && BREADY handshake"
+
     await Timer(10, unit="ns")

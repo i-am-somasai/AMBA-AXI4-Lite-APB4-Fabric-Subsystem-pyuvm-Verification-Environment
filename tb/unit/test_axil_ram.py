@@ -64,12 +64,23 @@ async def test_axil_ram_operations(dut):
     assert rdata == 0xBBCCAA55, f"Expected 0xBBCCAA55, got {rdata:#x}"
 
     # 3. Comprehensive full-depth memory sweep across all 256 words
-    # Pass A: Write distinct non-zero walking pattern to every single word, wait odd cycle, read back
+    # Pass A: Write distinct non-zero walking pattern, read immediately, then test partial WSTRB=0 retention
     for idx in range(256):
         w_addr = 0x5000_0000 + (idx * 4)
         val = ((idx * 0x01010101) ^ 0xA55A3CC3) & 0xFFFFFFFF
         resp = await driver.write(w_addr, val, strb=0xF)
         assert resp == RESP_OKAY, f"Write failed at word {idx}"
+        rdata_imm, rresp_imm = await driver.read(w_addr)
+        assert rresp_imm == RESP_OKAY and rdata_imm == val, (
+            f"Immediate write/read mismatch at word {idx}: expected {val:#x}, got {rdata_imm:#x}"
+        )
+        # No-op WSTRB=0 write followed by immediate read checks single-write byte retention
+        resp_nop = await driver.write(w_addr, (~val) & 0xFFFFFFFF, strb=0x0)
+        assert resp_nop == RESP_OKAY
+        rdata_hold, rresp_hold = await driver.read(w_addr)
+        assert rresp_hold == RESP_OKAY and rdata_hold == val, (
+            f"Immediate WSTRB=0 retention mismatch at word {idx}: expected {val:#x}, got {rdata_hold:#x}"
+        )
     await RisingEdge(dut.clk)  # Break even-cycle write-to-read parity against DFF Q oscillating mutants
     for idx in range(256):
         w_addr = 0x5000_0000 + (idx * 4)
@@ -85,12 +96,18 @@ async def test_axil_ram_operations(dut):
                 f"RAM 1-cycle retention parity fail at word {idx}: expected {expected:#x}, got {rdata2:#x}"
             )
 
-    # Pass B: Write inverted bitwise complement to every word, wait odd cycle, read back
+    # Pass B: Write inverted bitwise complement to every word, read immediately, and check WSTRB=0 retention
     for idx in range(256):
         w_addr = 0x5000_0000 + (idx * 4)
         val = (~((idx * 0x01010101) ^ 0xA55A3CC3)) & 0xFFFFFFFF
         resp = await driver.write(w_addr, val, strb=0xF)
         assert resp == RESP_OKAY
+        rdata_imm, rresp_imm = await driver.read(w_addr)
+        assert rresp_imm == RESP_OKAY and rdata_imm == val
+        resp_nop = await driver.write(w_addr, (~val) & 0xFFFFFFFF, strb=0x0)
+        assert resp_nop == RESP_OKAY
+        rdata_hold, rresp_hold = await driver.read(w_addr)
+        assert rresp_hold == RESP_OKAY and rdata_hold == val
     await RisingEdge(dut.clk)
     for idx in range(256):
         w_addr = 0x5000_0000 + (idx * 4)

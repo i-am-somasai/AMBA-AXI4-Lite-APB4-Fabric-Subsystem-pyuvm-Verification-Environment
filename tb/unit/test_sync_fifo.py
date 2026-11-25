@@ -99,6 +99,25 @@ async def test_sync_fifo_all(dut):
         assert int(dut.rdata.value) == exp, f"Walking 0s pop {i}: expected {exp:#x}, got {int(dut.rdata.value):#x}"
     dut.pop.value = 0
 
+    # Bit-pair independence across all 8 FIFO slots with 0-cycle and 1-cycle idle hold
+    slot_vals = [(0x08 | i) for i in range(depth)]
+    for hold_cycles in (0, 1):
+        for val in slot_vals:
+            dut.push.value = 1
+            dut.wdata.value = val
+            await RisingEdge(dut.clk)
+        dut.push.value = 0
+        for _ in range(hold_cycles):
+            await RisingEdge(dut.clk)
+        for i, exp in enumerate(slot_vals):
+            dut.pop.value = 1
+            await RisingEdge(dut.clk)
+            await Timer(1, unit="ns")
+            assert int(dut.rdata.value) == exp, (
+                f"Slot independence (hold={hold_cycles}) pop {i}: expected {exp:#x}, got {int(dut.rdata.value):#x}"
+            )
+        dut.pop.value = 0
+
     # Simultaneous push and pop when partially full
     # Push 2 items first
     dut.push.value = 1

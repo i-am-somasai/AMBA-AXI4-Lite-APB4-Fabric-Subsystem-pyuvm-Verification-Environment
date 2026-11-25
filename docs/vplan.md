@@ -2,7 +2,7 @@
 
 <!-- BEGIN:metrics:vplan_header_status -->
 **Version:** 2.2 (Generated from `docs/metrics.json`)  
-**Status:** **COMPLETE (40/40 Spec Tests PASS | 267/267 Reachable Coverage 100.00% | 10/10 Formal Suites PASS | 85.42% Raw / 93.61% Adj Mutation)**  
+**Status:** **COMPLETE (40/40 Spec Tests PASS | 267/267 Reachable Coverage 100.00% | 10/10 Formal Suites PASS | 91.25% Raw / 98.21% Adj Mutation)**  
 **Author:** AMBA-Fabric DV & Orchestrator Team  
 **Scope:** AXI4-Lite 2×4 Crossbar Interconnect, APB4 Subsystem, Peripherals (UART, Timer, GPIO), CDC Asynchronous Bridge, and pyuvm Verification Environment.
 <!-- END:metrics:vplan_header_status -->
@@ -179,13 +179,13 @@ Evaluated on frozen deterministic 240-mutant list [`mutation/mutant_list_240.jso
 
 | Module | Gen | Baseline Kill / Score | Final Kill | Final Surv | Tmo | BldErr | Raw Score | Equiv | Adj. Score |
 |---|---:|---|---:|---:|---:|---:|---:|---:|---:|
-| `rr_arbiter` | 30 | 19/30 (63.33%) | 22 | 8 | 0 | 0 | 73.33% | 6 | **91.67% (22/24)** |
-| `sync_fifo` | 30 | 25/30 (83.33%) | 28 | 2 | 0 | 0 | 93.33% | 2 | **100.00% (28/28)** |
+| `rr_arbiter` | 30 | 19/30 (63.33%) | 24 | 6 | 0 | 0 | 80.00% | 6 | **100.00% (24/24)** |
+| `sync_fifo` | 30 | 25/30 (83.33%) | 29 | 1 | 0 | 0 | 96.67% | 1 | **100.00% (29/29)** |
 | `async_fifo` | 30 | 18/30 (60.00%) | 30 | 0 | 0 | 0 | 100.00% | 0 | **100.00% (30/30)** |
 | `axil_decoder` | 30 | 26/30 (86.67%) | 27 | 3 | 0 | 0 | 90.00% | 3 | **100.00% (27/27)** |
-| `axil_ram` | 30 | 17/30 (56.67%) | 24 | 6 | 0 | 0 | 80.00% | 0 | **80.00% (24/30)** |
-| `axil_csr` | 30 | 15/30 (50.00%) | 25 | 5 | 0 | 0 | 83.33% | 4 | **96.15% (25/26)** |
-| `axil2apb_bridge` | 30 | 23/30 (76.67%) | 26 | 4 | 0 | 0 | 86.67% | 3 | **96.30% (26/27)** |
+| `axil_ram` | 30 | 17/30 (56.67%) | 30 | 0 | 0 | 0 | 100.00% | 0 | **100.00% (30/30)** |
+| `axil_csr` | 30 | 15/30 (50.00%) | 28 | 2 | 0 | 0 | 93.33% | 2 | **100.00% (28/28)** |
+| `axil2apb_bridge` | 30 | 23/30 (76.67%) | 28 | 2 | 0 | 0 | 93.33% | 2 | **100.00% (28/28)** |
 | `axil_xbar` | 30 | 22/30 (73.33%) | 23 | 7 | 0 | 0 | 76.67% | 3 | **85.19% (23/27)** |
-| **TOTAL** | **240** | **165/240 (68.75%)** | **205** | **35** | **0** | **0** | **85.42%** | **21** | **93.61% (205/219)** |
+| **TOTAL** | **240** | **165/240 (68.75%)** | **219** | **21** | **0** | **0** | **91.25%** | **17** | **98.21% (219/223)** |
 <!-- END:metrics:vplan_mutation_matrix -->

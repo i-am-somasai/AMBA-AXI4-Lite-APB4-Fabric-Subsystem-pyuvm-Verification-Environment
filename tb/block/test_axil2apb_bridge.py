@@ -513,20 +513,27 @@ async def test_br08_addr_walk_and_ooo_backpressure(dut):
     apb_captures = []
 
     async def monitor_apb_pins():
+        setup_snap = None
         while True:
             await RisingEdge(dut.clk)
-            if int(dut.m_apb_psel.value) == 1 and int(dut.m_apb_penable.value) == 0:
-                pwrite = int(dut.m_apb_pwrite.value)
-                pstrb = int(dut.m_apb_pstrb.value)
-                if pwrite == 0:
-                    assert pstrb == 0, f"APB4 read transfer had non-zero PSTRB={pstrb:#x}"
-                apb_captures.append((
+            if int(dut.m_apb_psel.value) == 1:
+                cur_snap = (
                     int(dut.m_apb_paddr.value),
-                    pwrite,
+                    int(dut.m_apb_pwrite.value),
                     int(dut.m_apb_pprot.value),
                     int(dut.m_apb_pwdata.value),
-                    pstrb,
-                ))
+                    int(dut.m_apb_pstrb.value),
+                )
+                if int(dut.m_apb_penable.value) == 0:
+                    if cur_snap[1] == 0:
+                        assert cur_snap[4] == 0, f"APB4 read transfer had non-zero PSTRB={cur_snap[4]:#x}"
+                    setup_snap = cur_snap
+                    apb_captures.append(cur_snap)
+                else:
+                    assert setup_snap is not None, "APB ACCESS seen without preceding SETUP"
+                    assert cur_snap == setup_snap, (
+                        f"APB signals mutated during ACCESS phase: setup={setup_snap}, access={cur_snap}"
+                    )
 
     mon_task = cocotb.start_soon(monitor_apb_pins())
 
@@ -553,19 +560,21 @@ async def test_br08_addr_walk_and_ooo_backpressure(dut):
     dut.m_apb_pslverr.value = 0
     resp_task = cocotb.start_soon(full_addr_apb_responder())
 
-    # 1. Full 32-bit walking-1 address check on both write (w_first/aw_first) and read
+    # 1. Full 32-bit walking-1 address check on BOTH w_first and aw_first (plus read)
     for bit in range(32):
         addr = 1 << bit
         val = (0xA5000001 ^ (bit << 8)) & 0xFFFFFFFF
-        ord_m = "w_first" if (bit % 2 == 0) else "aw_first"
-        bresp = await driver.write(addr=addr, data=val, strb=0xF, prot=(bit & 7), order=ord_m, bready_delay=(bit % 3))
-        assert bresp == 0
-        assert apb_captures[-1][0] == addr and apb_captures[-1][2] == (bit & 7) and apb_captures[-1][3] == val
-        rdata, rresp = await driver.read(addr=addr, prot=((7 - bit) & 7), rready_delay=(bit % 3))
-        assert rresp == 0 and rdata == val
-        assert apb_captures[-1][0] == addr and apb_captures[-1][2] == ((7 - bit) & 7) and apb_captures[-1][4] == 0
+        for ord_m in ("w_first", "aw_first"):
+            bresp = await driver.write(addr=addr, data=val, strb=0xF, prot=(bit & 7), order=ord_m, bready_delay=(bit % 3))
+            assert bresp == 0
+            assert apb_captures[-1][0] == addr and apb_captures[-1][2] == (bit & 7) and apb_captures[-1][3] == val, (
+                f"BR-08 {ord_m} bit={bit}: expected paddr={addr:#x}, got {apb_captures[-1][0]:#x}"
+            )
+            rdata, rresp = await driver.read(addr=addr, prot=((7 - bit) & 7), rready_delay=(bit % 3))
+            assert rresp == 0 and rdata == val
+            assert apb_captures[-1][0] == addr and apb_captures[-1][2] == ((7 - bit) & 7) and apb_captures[-1][4] == 0
 
-    # 2. Manual W-before-AW long stagger verifying PSEL stays 0 until AW arrives (kills ST_WAIT_AW gaps)
+    # 2. Manual W-before-AW long stagger with bit 27 set verifying PSEL stays 0 until AW arrives
     dut.s_axil_wdata.value = 0x13572468
     dut.s_axil_wstrb.value = 0b0101
     dut.s_axil_wvalid.value = 1
@@ -576,7 +585,7 @@ async def test_br08_addr_walk_and_ooo_backpressure(dut):
         assert int(dut.m_apb_psel.value) == 0, "PSEL asserted before AW arrived in w_first"
         if int(dut.s_axil_wready.value) == 1:
             dut.s_axil_wvalid.value = 0
-    dut.s_axil_awaddr.value = 0x40000100
+    dut.s_axil_awaddr.value = 0x48000100  # Sets bit 27 during ST_WAIT_AW
     dut.s_axil_awprot.value = 0b101
     dut.s_axil_awvalid.value = 1
     b_seen = False
@@ -594,7 +603,7 @@ async def test_br08_addr_walk_and_ooo_backpressure(dut):
     dut.s_axil_bready.value = 1
     await RisingEdge(dut.clk)
     dut.s_axil_bready.value = 0
-    assert apb_captures[-1] == (0x40000100, 1, 0b101, 0x13572468, 0b0101)
+    assert apb_captures[-1] == (0x48000100, 1, 0b101, 0x13572468, 0b0101)
 
     mon_task.cancel()
     resp_task.cancel()

@@ -306,29 +306,38 @@ def parse_mutation():
     base = _parse_table(base_log)
     final = _parse_table(final_log)
 
-    # Parse equivalent & residual counts per module from generated docs/mutation_report.md
-    rep_txt = report_md.read_text(encoding="utf-8")
-    mod_equiv = {}
-    for line in rep_txt.splitlines():
-        rm = re.match(
-            r"^\|\s*`([^`]+)`\s*\|\s*\d+\s*\|[^|]+\|\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*\|\s*[0-9.]+%\s*\|\s*(\d+)\s*\|\s*([0-9.]+)%\s*\((\d+)/(\d+)\)",
-            line.strip(),
-        )
-        if rm:
-            mod_equiv[rm.group(1)] = {
-                "equiv": int(rm.group(2)),
-                "adj_pct": float(rm.group(3)),
-                "adj_kill": int(rm.group(4)),
-                "adj_den": int(rm.group(5)),
-            }
-
+    # Parse per-module counts from docs/logs/mutation_equiv.log + mutation_report.md
     eq_txt = equiv_log.read_text(encoding="utf-8")
-    formal_equiv = sum(1 for l in eq_txt.splitlines() if "EQUIV_YOSYS" in l or "EQUIV_BMC10" in l)
-    total_equiv = sum(v["equiv"] for v in mod_equiv.values())
-    signal_equiv = total_equiv - formal_equiv
+    mod_unb = {m: 0 for m in final["modules"]}
+    mod_bnd = {m: 0 for m in final["modules"]}
+    unbounded_formal = 0
+    signal_equiv = 0
+    bounded_equiv = 0
+
+    for line in eq_txt.splitlines():
+        em = re.match(r"^(\S+)\s+#(\d+):\s*(\S+(?:\s+\([^)]+\))?)\s*\|", line.strip())
+        if not em:
+            continue
+        mod_n, st_s = em.group(1), em.group(3)
+        if st_s.startswith(("EQUIV_YOSYS", "EQUIV_PROVE")):
+            unbounded_formal += 1
+            if mod_n in mod_unb:
+                mod_unb[mod_n] += 1
+        elif st_s.startswith("SIGNAL_PROOF"):
+            signal_equiv += 1
+            if mod_n in mod_unb:
+                mod_unb[mod_n] += 1
+        elif st_s.startswith("BOUNDED_EQUIV_BMC10"):
+            bounded_equiv += 1
+            if mod_n in mod_bnd:
+                mod_bnd[mod_n] += 1
+
+    total_equiv = unbounded_formal + signal_equiv
     adj_den = final["total"]["valid"] - total_equiv
     adj_pct = round(100.0 * final["total"]["kill"] / adj_den, 2)
-    residual = final["total"]["surv"] - total_equiv
+    adj_bnd_den = final["total"]["valid"] - total_equiv - bounded_equiv
+    adj_bnd_pct = round(100.0 * final["total"]["kill"] / adj_bnd_den, 2)
+    residual = final["total"]["surv"] - total_equiv - bounded_equiv
 
     return {
         "baseline_log": base_log.relative_to(PROJ_DIR).as_posix(),
@@ -339,18 +348,24 @@ def parse_mutation():
         "baseline": base["total"],
         "final": final["total"],
         "equivalent_total": total_equiv,
-        "equivalent_formal": formal_equiv,
+        "equivalent_formal": unbounded_formal,
         "equivalent_signal": signal_equiv,
+        "equivalent_bounded_d10": bounded_equiv,
         "residual_non_equiv": residual,
         "adjusted_denominator": adj_den,
         "adjusted_score_pct": adj_pct,
+        "adjusted_bounded_denominator": adj_bnd_den,
+        "adjusted_bounded_score_pct": adj_bnd_pct,
         "modules": {
             m: {
                 "baseline": base["modules"][m],
                 "final": final["modules"][m],
-                "equiv": mod_equiv[m]["equiv"],
-                "adj_score_pct": mod_equiv[m]["adj_pct"],
-                "adj_den": mod_equiv[m]["adj_den"],
+                "equiv": mod_unb[m],
+                "equiv_bounded_d10": mod_bnd[m],
+                "adj_den": final["modules"][m]["valid"] - mod_unb[m],
+                "adj_score_pct": round(
+                    100.0 * final["modules"][m]["kill"] / (final["modules"][m]["valid"] - mod_unb[m]), 2
+                ),
             }
             for m in final["modules"]
         },

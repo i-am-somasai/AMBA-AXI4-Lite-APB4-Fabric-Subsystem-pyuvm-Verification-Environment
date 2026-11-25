@@ -35,3 +35,38 @@ Tracks closure of the **16 MAJOR** findings (and targeted fidelity / documentati
 - **Unit, Block, Lint & 20-Seed Regression:**
   - `make unit SIM=icarus && make block SIM=icarus && make lint`: all PASS (`EXIT=0`), `40/40` spec tests PASS in `docs/test_map.csv`.
   - `make -C tb/pyuvm -j4 SIM=icarus SEEDS="$(seq 721 740)" regress | tee docs/logs/r3_1_regress_20seeds.log`: `20/20` fresh seeds (`721..740`) PASS, `10,000` txns/seed (`200,000` total), `0` mismatches (`docs/logs/r3_1_regress_20seeds.log`).
+
+---
+
+### Task R3-2 — Honest "Equivalent" Mutant Wording & Real Gap Tests (`MUT-EQUIV-CLAIM`, `FORMAL-WORDING`, `METRIC-09`)
+
+#### Pre-Task Acceptance Checks (Written Before Execution)
+1. **Formal equivalence upgrade on the 15 `EQUIV_BMC10` survivors:**
+   - Command: `python3 mutation/check_equiv.py | tee docs/logs/mutation_equiv.log` (runs Yosys `equiv_induct` / SBY `prove` miter first, falling back to `BOUNDED_EQUIV_BMC10` (`bounded-equivalent (depth 10)`) only when unbounded proof fails/times out).
+   - Expected: Reproducible deterministic log `docs/logs/mutation_equiv.log` distinguishing unbounded `EQUIV_YOSYS` / `EQUIV_PROVE` / `SIGNAL_PROOF` from `BOUNDED_EQUIV_BMC10` (`bounded-equivalent (depth 10)`). Never uses `"proven"` for bounded miters.
+2. **Real test gaps (`axil2apb_bridge #13`, `axil_csr #19`, `rr_arbiter #22`, `axil_ram #0`):**
+   - Inspect each survivor; construct a formal CEX / unit or block test where a counterexample is reachable (`tb/block/test_axil2apb_bridge.py`, `tb/unit/test_axil_csr.py`, `tb/unit/test_rr_arbiter.py`, `tb/unit/test_axil_ram.py`).
+   - Run affected tests: `make unit SIM=icarus`, `make block SIM=icarus`, `make sanity`.
+   - Rerun the **frozen 240-mutant list** (`python3 mutation/run_mutants.py --mutant-list mutation/mutant_list_240.json --seed 42 -j4 --output docs/logs/mutation.log`) and record before (`165/240 = 68.75%` D3 baseline, `205/240 = 85.42%` R2) and after kill counts.
+3. **Report regeneration & wording check:**
+   - Commands: `python3 mutation/gen_mutation_report.py`, `python3 scripts/gen_metrics.py`, `python3 scripts/gen_docs.py`, `make lint`
+   - Expected: `docs/mutation_report.md`, `docs/results.md`, and `README.md` (Section 5.3 & Resume Bullets) report: (a) raw score first (`baseline -> final`), (b) conservative adjusted score (unbounded-proven + structurally dead survivors only), and (c) separate bounded-adjusted score labeled `"bounded-equivalent (depth 10)"`.
+   - Command: `grep -rn "proven equivalent" README.md docs/`
+   - Expected: Matches **only** unbounded-proven cases (zero hits describing depth-10 bounded miters as `"proven"`).
+
+#### Measured Results & Evidence
+- **Status:** `DONE`
+- **Equivalence Upgrades (`mutation/check_equiv.py` -> `docs/logs/mutation_equiv.log`):**
+  - Replaced unscripted bounded `EQUIV_BMC10` calls with reproducible [`mutation/check_equiv.py`](../mutation/check_equiv.py), attempting Yosys `equiv_induct` and SymbiYosys `mode prove` (`abc pdr`) on sequential miters before falling back to `BOUNDED_EQUIV_BMC10` (`bounded-equivalent (depth 10)`).
+  - Auditing the `15` formerly `EQUIV_BMC10` survivors exposed `3` that actually had reachable counterexamples (`axil_csr #04` step 6, `axil_csr #25` step 6, `sync_fifo #28` step 10), while `12` (`rr_arbiter #01/#05/#08/#16/#24/#28`, `sync_fifo #24`, `axil_csr #18/#24`, `axil2apb_bridge #03/#23/#29`) closed unboundedly via SymbiYosys `prove` (`abc pdr`).
+- **Gap Tests Added & Frozen 240-Mutant Re-Run (`docs/logs/mutation.log`):**
+  - `axil2apb_bridge #13`: Updated `test_br08_addr_walk_and_ooo_backpressure` (`tb/block/test_axil2apb_bridge.py:515-589`) to walk all `32` address bits on both `w_first` and `aw_first`, set bit 27 (`0x4800_0100`) in manual `w_first`, and assert APB pin stability during `ST_ACCESS`.
+  - `axil_csr #19`, `#04`, `#25`: Added explicit `BVALID` hold (`BREADY=0`) and clear checks, multi-bit `W1C_TEST` isolation across unrelated writes, and odd 1-cycle `w_first` stagger checks in `tb/unit/test_axil_csr.py:270-346`.
+  - `rr_arbiter #22`, `#23`: Added single-requester repeat checks with `lock=0` in `tb/unit/test_rr_arbiter.py:157-174`.
+  - `axil_ram #0`, `#02`, `#08`, `#18`, `#22`, `#23`: Added immediate per-word readback + `WSTRB=0` retention checks across all `256` words in `tb/unit/test_axil_ram.py:67-113` (`30/30` = `100.00%` on `axil_ram`).
+  - `sync_fifo #28`: Added `0x08|i` bit-pair independence sweeps with `0`-cycle and `1`-cycle idle holds in `tb/unit/test_sync_fifo.py:102-119`.
+  - **Before / After on Frozen `mutation/mutant_list_240.json`:** D3 baseline `165/240 (68.75%)` -> R2 `205/240 (85.42%)` -> **R3-2 Final `219/240 KILLED (91.25% raw)`**, `0` timeouts, `0` build errors, `21` total survivors (`14` unbounded-proven `equiv_induct`/SBY `prove` `abc pdr` + `3` structurally dead `SIGNAL_PROOF` on `axil_default_slave._unused_inputs` = **`17` unbounded/dead equivalent**, **`0` `bounded-equivalent (depth 10)`**, `4` residual `SIGNAL_TRIAGE` on `axil_xbar`).
+  - **Adjusted Scores:** Conservative adjusted score (unbounded-proven + structurally dead only) = **`98.21% (219/223)`**; adjusted score including bounded-equivalent (depth 10) = **`98.21% (219/223)`**.
+- **Regenerated Reports & Gates:**
+  - `python3 mutation/gen_mutation_report.py && python3 scripts/gen_metrics.py && python3 scripts/gen_docs.py && make lint`: EXIT `0`; `grep -rn -i "proven equivalent" README.md docs/` matches `README.md:173` (unbounded-proven/structurally dead only, `0` bounded) and historical `docs/FIX_REPORT.md:144`.
+  - `make unit SIM=icarus && make block SIM=icarus && make -C tb/pyuvm -j2 SIM=icarus SEEDS=1 regress && make sanity`: all PASS (`EXIT=0`, `40/40` spec tests PASS, `17/17` sanity mutants KILLED).

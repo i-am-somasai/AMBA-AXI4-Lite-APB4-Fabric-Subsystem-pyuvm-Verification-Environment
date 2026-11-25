@@ -120,10 +120,10 @@
       "tb/unit/test_rst_sync.py": 1,
       "tb/unit/test_sync_fifo.py": 1
     },
-    "xml_testcases_executed": 77,
-    "xml_testcases_passed": 77,
+    "xml_testcases_executed": 98,
+    "xml_testcases_passed": 98,
     "xml_testcases_failed": 0,
-    "xml_file_count": 20,
+    "xml_file_count": 41,
     "spec_tests_total": 40,
     "spec_tests_passed": 40,
     "spec_tests_failed": 0,
@@ -666,18 +666,21 @@
     "final": {
       "gen": 240,
       "valid": 240,
-      "kill": 205,
-      "surv": 35,
+      "kill": 219,
+      "surv": 21,
       "tmo": 0,
       "bld_err": 0,
-      "score_pct": 85.42
+      "score_pct": 91.25
     },
-    "equivalent_total": 21,
-    "equivalent_formal": 18,
+    "equivalent_total": 17,
+    "equivalent_formal": 14,
     "equivalent_signal": 3,
-    "residual_non_equiv": 14,
-    "adjusted_denominator": 219,
-    "adjusted_score_pct": 93.61,
+    "equivalent_bounded_d10": 0,
+    "residual_non_equiv": 4,
+    "adjusted_denominator": 223,
+    "adjusted_score_pct": 98.21,
+    "adjusted_bounded_denominator": 223,
+    "adjusted_bounded_score_pct": 98.21,
     "modules": {
       "rr_arbiter": {
         "baseline": {
@@ -692,15 +695,16 @@
         "final": {
           "gen": 30,
           "valid": 30,
-          "kill": 22,
-          "surv": 8,
+          "kill": 24,
+          "surv": 6,
           "tmo": 0,
           "bld_err": 0,
-          "score_pct": 73.33
+          "score_pct": 80.0
         },
         "equiv": 6,
-        "adj_score_pct": 91.67,
-        "adj_den": 24
+        "equiv_bounded_d10": 0,
+        "adj_den": 24,
+        "adj_score_pct": 100.0
       },
       "sync_fifo": {
         "baseline": {
@@ -715,15 +719,16 @@
         "final": {
           "gen": 30,
           "valid": 30,
-          "kill": 28,
-          "surv": 2,
+          "kill": 29,
+          "surv": 1,
           "tmo": 0,
           "bld_err": 0,
-          "score_pct": 93.33
+          "score_pct": 96.67
         },
-        "equiv": 2,
-        "adj_score_pct": 100.0,
-        "adj_den": 28
+        "equiv": 1,
+        "equiv_bounded_d10": 0,
+        "adj_den": 29,
+        "adj_score_pct": 100.0
       },
       "async_fifo": {
         "baseline": {
@@ -745,8 +750,9 @@
           "score_pct": 100.0
         },
         "equiv": 0,
-        "adj_score_pct": 100.0,
-        "adj_den": 30
+        "equiv_bounded_d10": 0,
+        "adj_den": 30,
+        "adj_score_pct": 100.0
       },
       "axil_decoder": {
         "baseline": {
@@ -768,8 +774,9 @@
           "score_pct": 90.0
         },
         "equiv": 3,
-        "adj_score_pct": 100.0,
-        "adj_den": 27
+        "equiv_bounded_d10": 0,
+        "adj_den": 27,
+        "adj_score_pct": 100.0
       },
       "axil_ram": {
         "baseline": {
@@ -784,15 +791,16 @@
         "final": {
           "gen": 30,
           "valid": 30,
-          "kill": 24,
-          "surv": 6,
+          "kill": 30,
+          "surv": 0,
           "tmo": 0,
           "bld_err": 0,
-          "score_pct": 80.0
+          "score_pct": 100.0
         },
         "equiv": 0,
-        "adj_score_pct": 80.0,
-        "adj_den": 30
+        "equiv_bounded_d10": 0,
+        "adj_den": 30,
+        "adj_score_pct": 100.0
       },
       "axil_csr": {
         "baseline": {
@@ -807,15 +815,16 @@
         "final": {
           "gen": 30,
           "valid": 30,
-          "kill": 25,
-          "surv": 5,
+          "kill": 28,
+          "surv": 2,
           "tmo": 0,
           "bld_err": 0,
-          "score_pct": 83.33
+          "score_pct": 93.33
         },
-        "equiv": 4,
-        "adj_score_pct": 96.15,
-        "adj_den": 26
+        "equiv": 2,
+        "equiv_bounded_d10": 0,
+        "adj_den": 28,
+        "adj_score_pct": 100.0
       },
       "axil2apb_bridge": {
         "baseline": {
@@ -830,15 +839,16 @@
         "final": {
           "gen": 30,
           "valid": 30,
-          "kill": 26,
-          "surv": 4,
+          "kill": 28,
+          "surv": 2,
           "tmo": 0,
           "bld_err": 0,
-          "score_pct": 86.67
+          "score_pct": 93.33
         },
-        "equiv": 3,
-        "adj_score_pct": 96.3,
-        "adj_den": 27
+        "equiv": 2,
+        "equiv_bounded_d10": 0,
+        "adj_den": 28,
+        "adj_score_pct": 100.0
       },
       "axil_xbar": {
         "baseline": {
@@ -860,8 +870,9 @@
           "score_pct": 76.67
         },
         "equiv": 3,
-        "adj_score_pct": 85.19,
-        "adj_den": 27
+        "equiv_bounded_d10": 0,
+        "adj_den": 27,
+        "adj_score_pct": 85.19
       }
     }
   },

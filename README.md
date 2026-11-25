@@ -126,13 +126,13 @@ Every number reported below is derived from an actual execution of open-source E
 | Metric | Measured Value | Spec Reference | Log Reference / Tool |
 |---|---|---|---|
 | **RTL Modules / Lines of RTL** | **17 modules / 3,200 lines** (non-blank, non-comment) | Section 17 | [`docs/metrics.json`](docs/metrics.json) |
-| **Test Definitions / XML Runs / Spec Map** | **61 Python tests / 77 XML runs (77 PASS, 0 FAIL) / 40/40 Spec IDs** | Section 9 | [`docs/test_map.csv`](docs/test_map.csv), [`docs/vplan.md`](docs/vplan.md) |
+| **Test Definitions / XML Runs / Spec Map** | **61 Python tests / 98 XML runs (98 PASS, 0 FAIL) / 40/40 Spec IDs** | Section 9 | [`docs/test_map.csv`](docs/test_map.csv), [`docs/vplan.md`](docs/vplan.md) |
 | **Random Transactions Executed** | **200,000 transactions** (20 Verilator seeds `1..20` × 10,000 txns, 0 mismatches; plus 20 Icarus seeds `601..620` = 200,000 txns) | Section 9.1 (XB-13) | [`docs/logs/phase_c_cov_report.log`](docs/logs/phase_c_cov_report.log), [`docs/logs/regression_20seeds.log`](docs/logs/regression_20seeds.log) |
 | **Functional Coverage (cocotb-coverage)** | **100.00% (267/267 reachable bins)** across 24 merged YAMLs; 36 waived illegal/contradictory bins | Section 10 | [`docs/logs/func_cov.log`](docs/logs/func_cov.log), [`docs/coverage_waivers.md`](docs/coverage_waivers.md) |
 | **Code Coverage (Verilator)** | **Line 92.0% (494/537) \| Branch 91.2% (499/547) \| Expr 93.8% (1036/1105) \| Toggle 74.8% (10616/14202) \| FSM State 100.0% (5/5)** | Section 10 | [`docs/logs/code_cov_summary.txt`](docs/logs/code_cov_summary.txt) |
 | **Formal Verification (SymbiYosys + Boolector)** | **10/10 suites PASS** (3 k-induction `prove`, 1 `prv+bmc`, 6 bounded `bmc`; 84 cover traces reached in 150s) | Section 11 | [`docs/logs/formal_suite.log`](docs/logs/formal_suite.log) |
 | **CDC Clock Ratios & Phases Swept** | **3 slow periods (25.0 ns, 10.3 ns, 6.0 ns) × 3 phases**; formal `async_fifo` BMC depth 25 & `axil_cdc_bridge` BMC depth 30 | Section 9.1 (CD-01) | [`formal/async_fifo.sby`](formal/async_fifo.sby), [`docs/logs/func_cov.log`](docs/logs/func_cov.log) |
-| **Mutation Testing (Yosys `mutate`)** | **Baseline 165/240 (68.75%) → Final 205/240 (85.42% raw)**, 0 timeouts, 0 build errors; **21 equivalent** (18 miter + 3 signal), **14 residual**, **93.61% (205/219) adjusted** | Section 12 | [`docs/logs/mutation.log`](docs/logs/mutation.log), [`docs/mutation_report.md`](docs/mutation_report.md) |
+| **Mutation Testing (Yosys `mutate`)** | **Baseline 165/240 (68.75%) → Final 219/240 (91.25% raw)**, 0 timeouts, 0 build errors; **17 unbounded-proven/dead equivalent** (14 `equiv_induct`/SBY `prove` + 3 dead-signal), **0 bounded-equivalent (depth 10)**, **4 residual**; **Conservative Adj. 98.21% (219/223)**; Bounded-Incl. Adj. 98.21% (219/223) | Section 12 | [`docs/logs/mutation.log`](docs/logs/mutation.log), [`docs/mutation_report.md`](docs/mutation_report.md) |
 | **Bugs Found & Resolved** | **24 bugs (BUG-001–BUG-024)**: 15 RTL + 9 TB/formal/tooling | Section 6 | [`docs/bugs.md`](docs/bugs.md) |
 | **Crossbar Added Latency (Cycles)** | **0 cycles added latency** (verified via XB-06 parallel transfer check) | Section 7.2 | [`docs/img/contention.png`](docs/img/contention.png), [`tb/block/test_axil_xbar.py`](tb/block/test_axil_xbar.py) |
 | **Synthesis (SKY130 HD, `RAM_DEPTH=64`)** | **9,237 cells / 3,630 flops** (2,048 RAM flops) / **138,086.19 µm²** (74.78% sequential) | Section 13 | [`synth/synth.ys`](synth/synth.ys), [`docs/logs/synth.log`](docs/logs/synth.log) |
@@ -168,9 +168,9 @@ All **10 SymbiYosys formal suites PASS** (`0` failures, **84 cover traces** reac
 ### 5.3 Mutation Testing & Survivor Triage (Yosys Native)
 <!-- BEGIN:metrics:readme_mutation_summary -->
 Evaluated on a frozen deterministic 240-mutant suite (`30` mutants per module across `8` RTL modules, seed `42`, [`mutation/mutant_list_240.json`](mutation/mutant_list_240.json)) using isolated process-group execution (`mutation/run_mutants.py`) and strict `$paramod*axil_xbar` module scoping ([`docs/mutation_report.md`](docs/mutation_report.md)):
-- **D3 Baseline (before gap tests):** `165/240` killed (**`68.75%` raw**), `64` survived, `11` timeouts, `0` build errors.
-- **D5 Final (same 240-mutant list):** **`205/240` killed (`85.42%` raw)**, **`0` timeouts**, **`0` build errors**.
-- **Formal Equivalence & Adjusted Score:** Of `35` survivors, **`21` are proven equivalent** (`18` by Yosys `equiv_induct` / Boolector depth-10 miters in [`docs/logs/mutation_equiv.log`](docs/logs/mutation_equiv.log) + `3` signal-level proofs on `axil_default_slave._unused_inputs`), leaving **`14` residual non-equivalent survivors** and **`93.61%` (`205/219`) adjusted mutation score**.
+- **Baseline (before gap tests):** `165/240` killed (**`68.75%` raw**), `64` survived, `11` timeouts, `0` build errors.
+- **Final (same 240-mutant list):** **`219/240` killed (`91.25%` raw)**, **`0` timeouts**, **`0` build errors**.
+- **Unbounded Equivalence & Adjusted Scores:** Of `21` survivors, **`17` are unbounded-proven equivalent or structurally dead** (`14` by Yosys `equiv_induct` / SymbiYosys `prove` `abc pdr` in [`docs/logs/mutation_equiv.log`](docs/logs/mutation_equiv.log) + `3` signal-level dead-wire proofs on `axil_default_slave._unused_inputs`), `0` remain `bounded-equivalent (depth 10)`, and **`4` are residual non-equivalent survivors**. **Conservative adjusted score (unbounded/dead only):** **`98.21%` (`219/223`)**; **Adjusted score including bounded-equivalent (depth 10):** **`98.21%` (`219/223`)**.
 - **Sanity Gate:** **`17/17` KILLED** (`0` survived, `0` invalid; [`docs/logs/sanity.log`](docs/logs/sanity.log)).
 <!-- END:metrics:readme_mutation_summary -->
 
@@ -271,9 +271,9 @@ make sta
 **Title line:** *AMBA AXI4-Lite/APB Fabric with pyuvm Verification Environment | Verilog-2005 (SystemVerilog-compatible RTL), Python, cocotb, pyuvm, SymbiYosys, Yosys, OpenSTA*
 
 - Designed and verified a **17-module (3,200 non-blank/non-comment lines)** AXI4-Lite `2×4` crossbar + APB4 peripheral subsystem (`UART`, `Timer`, `GPIO`), `RAM`, `CSR`, and Gray-pointer CDC bridge targeting dual clock domains (`100 MHz` / `41.67 MHz`).
-- Built a **pyuvm/cocotb** verification environment (**61 tests**, **40/40** Spec 9.1 tests passing, **77** XML testcases passing) running **200,000** Verilator stress transactions (20 seeds) plus **200,000** Icarus transactions (20 seeds) with **0 scoreboard mismatches**.
+- Built a **pyuvm/cocotb** verification environment (**61 tests**, **40/40** Spec 9.1 tests passing, **98** XML testcases passing) running **200,000** Verilator stress transactions (20 seeds) plus **200,000** Icarus transactions (20 seeds) with **0 scoreboard mismatches**.
 - Closed honest functional coverage to **100.00% (267/267 reachable bins)** across 24 merged YAMLs (`36` waived bins documented) and measured Verilator code coverage of **92.0% line**, **91.2% branch**, and **93.8% expression**.
-- Proved **10/10** SymbiYosys formal suites (`3` unbounded k-induction `prove` + `1` `prv+bmc` + `6` bounded `bmc`, **84 cover traces**); improved frozen 240-mutant testing from **68.75% (165/240)** baseline to **85.42% raw (205/240)** and **93.61% adjusted (205/219)** after Yosys/Boolector equivalence checking.
+- Proved **10/10** SymbiYosys formal suites (`3` unbounded k-induction `prove` + `1` `prv+bmc` + `6` bounded `bmc`, **84 cover traces**); improved frozen 240-mutant testing from **68.75% (165/240)** baseline to **91.25% raw (219/240)** and **98.21% conservative adjusted (219/223)** after unbounded `equiv_induct` / SBY `prove` equivalence checking (`0` bounded-equivalent depth 10).
 - Synthesized for SKY130 HD via Yosys (`RAM_DEPTH=64`: **9,237 cells**, **3,630 flops**, **138,086.19 µm²**) and ran reproducible OpenSTA sweeps (**WNS -18.60 ns** / **34.97 MHz** full netlist limited by unbuffered `rst_sys_n`; **62.89 MHz** core+I/O reference; `clk_slow` and hold met), logging **24 bugs** across RTL and verification.
 <!-- END:metrics:readme_resume_bullets -->
 
