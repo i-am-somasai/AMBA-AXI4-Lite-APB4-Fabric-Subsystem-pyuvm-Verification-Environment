@@ -12,8 +12,8 @@ OSS_CAD_SUITE ?= $(HOME)/oss-cad-suite
 STA_BIN       ?= /nix/store/q5ycjmn0d9awbcq05c75z2rmgwjgbc9g-opensta/bin/sta
 SKY130_LIB    ?= $(HOME)/.volare/volare/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 
-# Environment setup wrapper
-ENV_CMD := source $(PROJ_DIR)/scripts/env.sh
+# Environment setup wrapper (safe even if scripts/env.sh is absent in CI)
+ENV_CMD := mkdir -p $(BUILD_DIR)/tmp $(BUILD_DIR)/results $(BUILD_DIR)/sim_build && if [ -f "$(PROJ_DIR)/scripts/env.sh" ]; then source "$(PROJ_DIR)/scripts/env.sh"; else export TMPDIR="$(BUILD_DIR)/tmp" PYTHONPATH="$(PROJ_DIR):$(PROJ_DIR)/tb:$(PROJ_DIR)/tb/unit:$(PROJ_DIR)/tb/pyuvm:$(PROJ_DIR)/tb/models$${PYTHONPATH:+:$$PYTHONPATH}"; fi
 
 # Simulation parameters (G2: max 2 parallel Verilator compiles, 4 for Icarus)
 SIM ?= icarus
@@ -28,7 +28,7 @@ RTL_SRCS := $(wildcard $(PROJ_DIR)/rtl/common/*.v) \
             $(wildcard $(PROJ_DIR)/rtl/cdc/*.v) \
             $(wildcard $(PROJ_DIR)/rtl/*.v)
 
-.PHONY: all env-check lint unit regress regress-verilator cov-report formal mutation mutation-sample synth sta clean
+.PHONY: all env-check lint unit block regress regress-verilator cov-report formal sanity mutation mutation-sample synth sta clean
 
 all: lint unit
 
@@ -102,11 +102,16 @@ formal:
 		echo "Formal verification scripts will be populated in Phase 1, 2, 5."; \
 	fi
 
+# Sanity mutants gate (16 permanent killed mutants)
+sanity:
+	@$(ENV_CMD) && echo "=== Running 16-Mutant Sanity Gate ===" && \
+	python3 $(PROJ_DIR)/mutation/sanity/run_sanity.py
+
 # Mutation testing (full run)
 mutation:
 	@$(ENV_CMD) && echo "=== Running Full Mutation Testing ===" && \
 	if [ -f "$(PROJ_DIR)/mutation/run_mutants.py" ]; then \
-		python3 $(PROJ_DIR)/mutation/run_mutants.py --max-mutants 300; \
+		python3 $(PROJ_DIR)/mutation/run_mutants.py --max-mutants 240; \
 	else \
 		echo "Mutation testing runner will be populated in Phase 6."; \
 	fi
@@ -114,11 +119,8 @@ mutation:
 # Mutation testing (sample for CI)
 mutation-sample:
 	@$(ENV_CMD) && echo "=== Running Sampled Mutation Testing (CI) ===" && \
-	if [ -f "$(PROJ_DIR)/mutation/run_mutants.py" ]; then \
-		python3 $(PROJ_DIR)/mutation/run_mutants.py --max-mutants 20; \
-	else \
-		echo "Mutation testing runner will be populated in Phase 6."; \
-	fi
+	mkdir -p $(BUILD_DIR)/results && \
+	python3 $(PROJ_DIR)/mutation/run_mutants.py --sample --output $(BUILD_DIR)/results/mutation_sample.log
 
 # Yosys Synthesis for SKY130 (Spec Section 13.1 via synth/synth.ys)
 synth:

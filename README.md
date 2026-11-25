@@ -255,10 +255,10 @@ make formal
 # Run full mutation testing across 240 mutants
 make mutation
 
-# Run full Yosys synthesis for SKY130 HD
+# Run full Yosys synthesis for SKY130 HD (runs locally; not executed in GitHub Actions CI)
 make synth
 
-# Run OpenSTA static timing analysis and Fmax sweep
+# Run OpenSTA static timing analysis and Fmax sweep (runs locally; not executed in GitHub Actions CI)
 make sta
 ```
 

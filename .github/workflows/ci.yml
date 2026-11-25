@@ -2,7 +2,7 @@ name: AMBA Fabric CI
 
 on:
   push:
-    branches: [ main, 'phase-*' ]
+    branches: [ main, 'phase-*', 'remediation-*' ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -33,13 +33,18 @@ jobs:
 
       - name: Environment Sanity Check
         run: |
-          which iverilog verilator yosys sby
+          which iverilog verilator yosys sby boolector
           python -c "import cocotb, pyuvm, cocotb_coverage; print('Python EDA packages OK')"
 
       - name: Check for Synthetic Coverage Calls
         run: ./scripts/check_no_synthetic_cov.sh
 
-      - name: RTL Lint (Verilator)
+      - name: Check Bug References and Docs Consistency
+        run: |
+          python3 scripts/check_bug_refs.py
+          python3 scripts/check_docs_consistency.py
+
+      - name: RTL Lint (Verilator + Policy Gates)
         run: make lint
 
       - name: L0 Unit Tests
@@ -48,22 +53,23 @@ jobs:
       - name: L1 Block Tests
         run: make block SIM=icarus
 
-      - name: L1/L2 Subsystem Regression
+      - name: L1/L2 Subsystem Regression (3 seeds)
         run: make regress SIM=icarus SEEDS=3
 
-      - name: SymbiYosys Formal Verification
+      - name: 16-Mutant Sanity Gate
+        run: python3 mutation/sanity/run_sanity.py
+
+      - name: SymbiYosys Formal Verification (10/10 Suites)
         run: make formal
 
-      - name: Sampled Mutation Testing (Sanity Check)
+      - name: Sampled Mutation Testing (CI Smoke)
         run: make mutation-sample
 
-      - name: Upload Logs and Reports
+      - name: Upload Built CI Verification Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: verification-logs-and-reports
           path: |
-            docs/logs/
-            synth/results/
-            *.log
-            *.xml
+            build/results/
+            docs/logs/formal_suite.log

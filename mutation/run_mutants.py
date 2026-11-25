@@ -464,9 +464,10 @@ def main():
         f.write(summary_str + "\n")
     print(f"\nReport written to {strip_proj_path(args.output)}")
 
-    summary_log_path = os.path.join(PROJ_DIR, "docs/logs/mutation_summary.log")
-    with open(summary_log_path, "w") as f:
-        f.write(summary_str + "\n")
+    if os.path.abspath(args.output) == os.path.abspath(os.path.join(PROJ_DIR, "docs/logs/mutation.log")):
+        summary_log_path = os.path.join(PROJ_DIR, "docs/logs/mutation_summary.log")
+        with open(summary_log_path, "w") as f:
+            f.write(summary_str + "\n")
 
 
 if __name__ == "__main__":
