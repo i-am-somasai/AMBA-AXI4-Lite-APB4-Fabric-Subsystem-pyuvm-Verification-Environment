@@ -360,6 +360,8 @@ def apply_blocks_to_text(text, blocks_dict):
             flags=re.S,
         )
         if not pat.search(text):
+            if name == "readme_resume_bullets":
+                continue
             raise KeyError(f"Missing marker block <!-- BEGIN:metrics:{name} -->")
         replacement = f"<!-- BEGIN:metrics:{name} -->\n{body}\n<!-- END:metrics:{name} -->"
         text = pat.sub(lambda _m, rep=replacement: rep, text, count=1)
