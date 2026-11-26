@@ -1,0 +1,340 @@
+================================================================================
+AMBA-Fabric HOW_TO_RUN.md Command Verification Log
+Timestamp: 2026-11-26 10:07:23
+================================================================================
+
+[01_env_check] EXIT=0 TIME=0.53s CMD: source scripts/env.sh && make env-check
+  --- stdout (tail) ---
+  === Toolchain Environment Check ===
+  Icarus:    <HOME_DIR>/oss-cad-suite/bin/iverilog
+  Verilator: <HOME_DIR>/oss-cad-suite/bin/verilator
+  Yosys:     <HOME_DIR>/oss-cad-suite/bin/yosys
+  SBY:       <HOME_DIR>/oss-cad-suite/bin/sby
+  OpenSTA:   /nix/store/q5ycjmn0d9awbcq05c75z2rmgwjgbc9g-opensta/bin/sta
+  SKY130:    FOUND
+  Python packages: cocotb, pyuvm, cocotb-coverage OK
+
+[02_no_synth_cov] EXIT=0 TIME=0.12s CMD: source scripts/env.sh && ./scripts/check_no_synthetic_cov.sh
+  --- stdout (tail) ---
+  === Checking for illegal/synthetic coverage sampling calls ===
+  PASS: Zero synthetic coverage sampling calls found outside monitor/collector files.
+
+[03_check_bug_refs] EXIT=0 TIME=0.24s CMD: source scripts/env.sh && python3 scripts/check_bug_refs.py
+  --- stdout (tail) ---
+  PASS: Verified 24 sequential bug entries (BUG-001..BUG-024) and all regression test references.
+
+[03b_lint_dry] EXIT=0 TIME=0.02s CMD: source scripts/env.sh && make -n lint
+  --- stdout (tail) ---
+  python3 scripts/check_docs_consistency.py
+  mkdir -p build/tmp build/results build/sim_build && if [ -f "scripts/env.sh" ]; then source "scripts/env.sh"; else export TMPDIR="build/tmp" PYTHONPATH="<REPO_DIR>:tb:tb/unit:tb/pyuvm:tb/models${PYTHONPATH:+:$PYTHONPATH}"; fi && echo "=== Running RTL Lint (Verilator) ===" && \
+  if [ -n "$(echo rtl/common/async_fifo.v rtl/common/rr_arbiter.v rtl/common/rst_sync.v rtl/common/sync_fifo.v rtl/axil/axil_csr.v rtl/axil/axil_decoder.v rtl/axil/axil_default_slave.v rtl/axil/axil_ram.v rtl/axil/axil_xbar.v rtl/apb/apb_decoder.v rtl/apb/apb_gpio.v rtl/apb/apb_timer.v rtl/apb/apb_uart.v rtl/apb/axil2apb_bridge.v rtl/cdc/axil_cdc_bridge.v rtl/cdc/slow_regs.v rtl/amba_fabric_top.v)" ]; then \
+  	verilator --lint-only -Wall -Wno-DECLFILENAME -Wno-MULTITOP -Irtl/common -Irtl/axil -Irtl/apb -Irtl/cdc rtl/common/async_fifo.v rtl/common/rr_arbiter.v rtl/common/rst_sync.v rtl/common/sync_fifo.v rtl/axil/axil_csr.v rtl/axil/axil_decoder.v rtl/axil/axil_default_slave.v rtl/axil/axil_ram.v rtl/axil/axil_xbar.v rtl/apb/apb_decoder.v rtl/apb/apb_gpio.v rtl/apb/apb_timer.v rtl/apb/apb_uart.v rtl/apb/axil2apb_bridge.v rtl/cdc/axil_cdc_bridge.v rtl/cdc/slow_regs.v rtl/amba_fabric_top.v; \
+  else \
+  	verilator --lint-only -Wall tb/unit/hello_world.v; \
+  fi
+  echo "Lint CLEAN."
+
+[03c_check_docs_consistency] EXIT=0 TIME=0.19s CMD: source scripts/env.sh && python3 scripts/check_docs_consistency.py
+  --- stdout (tail) ---
+  PASS: README.md, docs/results.md, and docs/vplan.md match docs/metrics.json with 0 diffs, 0 stale strings, and 0 broken links.
+
+[03d_make_lint] EXIT=0 TIME=1.00s CMD: source scripts/env.sh && make lint
+  --- stdout (tail) ---
+  PASS: Verified 24 sequential bug entries (BUG-001..BUG-024) and all regression test references.
+  === Checking Documentation Consistency against metrics.json ===
+  PASS: README.md, docs/results.md, and docs/vplan.md match docs/metrics.json with 0 diffs, 0 stale strings, and 0 broken links.
+  === Running RTL Lint (Verilator) ===
+  - V e r i l a t i o n   R e p o r t: Verilator 5.055 devel rev v5.054-354-g005ee501b (mod)
+  - Verilator: Built from 1.307 MB sources in 19 modules, into 0.527 MB in 3 C++ files needing 0.000 MB
+  - Verilator: Walltime 0.233 s (elab=0.043, cvt=0.138, bld=0.000); cpu 0.233 s on 1 threads; allocated 27.867 MB
+  Lint CLEAN.
+
+[04_unit_all] EXIT=0 TIME=28.53s CMD: source scripts/env.sh && make unit SIM=icarus
+  --- stdout (tail) ---
+                                                          ** TESTS=4 PASS=4 FAIL=0 SKIP=0                                          13181.00           0.12     108364.83  **
+                                                          ******************************************************************************************************************
+  make[3]: Leaving directory 'tb/unit'
+  make[2]: Leaving directory 'tb/unit'
+  =====================================================
+  All L0 unit tests executed successfully (SIM=icarus).
+  =====================================================
+  make[1]: Leaving directory 'tb/unit'
+
+[05_unit_single] EXIT=0 TIME=2.70s CMD: source scripts/env.sh && make -C tb/unit test_axil_csr SIM=icarus
+  --- stdout (tail) ---
+                                                          ** test_axil_csr.test_cs03_irq_aggregation                    PASS         330.00           0.00     109929.34  **
+                                                          ** test_axil_csr.test_cs04_ooo_w1c32_ro_wo_and_backpressure   PASS        9051.00           0.07     123624.21  **
+                                                          ******************************************************************************************************************
+                                                          ** TESTS=4 PASS=4 FAIL=0 SKIP=0                                          13181.00           0.12     105697.20  **
+                                                          ******************************************************************************************************************
+  make[2]: Leaving directory 'tb/unit'
+  make[1]: Leaving directory 'tb/unit'
+  make: Leaving directory 'tb/unit'
+
+[06_block_all] EXIT=0 TIME=28.53s CMD: source scripts/env.sh && make block SIM=icarus
+  --- stdout (tail) ---
+                                                          ** TESTS=4 PASS=4 FAIL=0 SKIP=0                                           34410.00           0.39      87967.78  **
+                                                          *******************************************************************************************************************
+  make[3]: Leaving directory 'tb/block'
+  make[2]: Leaving directory 'tb/block'
+  =====================================================
+  All Phase 3 block and top tests executed successfully (SIM=icarus).
+  =====================================================
+  make[1]: Leaving directory 'tb/block'
+
+[07_block_single] EXIT=0 TIME=2.66s CMD: source scripts/env.sh && make -C tb/block test_apb_gpio SIM=icarus
+  --- stdout (tail) ---
+                                                          ** test_apb_gpio.test_gp02_input_sync_latency        PASS         570.00           0.00     136653.52  **
+                                                          ** test_apb_gpio.test_gp03_rising_edge_irq_and_w1c   PASS         270.00           0.00     134977.60  **
+                                                          *********************************************************************************************************
+                                                          ** TESTS=3 PASS=3 FAIL=0 SKIP=0                                   990.00           0.02      61544.85  **
+                                                          *********************************************************************************************************
+  make[2]: Leaving directory 'tb/block'
+  make[1]: Leaving directory 'tb/block'
+  make: Leaving directory 'tb/block'
+
+[07b_merge_cov] EXIT=0 TIME=1.85s CMD: source scripts/env.sh && python3 scripts/merge_cov.py docs/logs
+  --- stdout (tail) ---
+  cg_wstrb.target                     | 4        | 4        |   100.00%
+  ================================================================================
+  OVERALL AGGREGATE COVERAGE          | 267      | 267      |   100.00%
+  ================================================================================
+  
+  *** ZERO HOLES DETECTED: 100% COVERAGE ACHIEVED ***
+  
+  Report saved to: docs/logs/func_cov.log
+
+[08_block_filter] EXIT=0 TIME=2.54s CMD: source scripts/env.sh && make -C tb/block -f Makefile.single TOPLEVEL=apb_gpio MODULE=test_apb_gpio COCOTB_TEST_FILTER=test_gp02_input_sync_latency SIM=icarus
+  --- stdout (tail) ---
+                                                          ** TEST                                        STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                          ****************************************************************************************************
+                                                          ** test_apb_gpio.test_gp02_input_sync_latency   PASS         560.00           0.00     112983.32  **
+                                                          ****************************************************************************************************
+                                                          ** TESTS=1 PASS=1 FAIL=0 SKIP=0                              560.00           0.01      44362.37  **
+                                                          ****************************************************************************************************
+  make[1]: Leaving directory 'tb/block'
+  make: Leaving directory 'tb/block'
+
+[09_pyuvm_directed] EXIT=0 TIME=21.64s CMD: source scripts/env.sh && make -C tb/pyuvm test_directed SIM=icarus
+  --- stdout (tail) ---
+                                                          *******************************************************************************************
+                                                          ** test_directed.TestCoverageClosure   PASS      121360.00           4.56      26631.59  **
+                                                          *******************************************************************************************
+                                                          ** TESTS=1 PASS=1 FAIL=0 SKIP=0                  121360.00           4.60      26366.63  **
+                                                          *******************************************************************************************
+  make[2]: Leaving directory 'tb/pyuvm'
+  make[1]: Leaving directory 'tb/pyuvm'
+  make: Leaving directory 'tb/pyuvm'
+
+[10_pyuvm_stress_smoke] EXIT=0 TIME=3.66s CMD: source scripts/env.sh && make -C tb/pyuvm test_stress SIM=icarus SEED=42 NUM_TRANS_PER_MASTER=200
+  --- stdout (tail) ---
+                                                          **************************************************************************************
+                                                          ** test_stress.test_xb13_stress   PASS       18590.00           0.83      22269.56  **
+                                                          **************************************************************************************
+                                                          ** TESTS=1 PASS=1 FAIL=0 SKIP=0              18590.00           0.84      22153.77  **
+                                                          **************************************************************************************
+  make[2]: Leaving directory 'tb/pyuvm'
+  make[1]: Leaving directory 'tb/pyuvm'
+  make: Leaving directory 'tb/pyuvm'
+
+[11_regress_seed1] EXIT=0 TIME=41.73s CMD: source scripts/env.sh && make regress SIM=icarus SEEDS=1
+  --- stdout (tail) ---
+                                                          **************************************************************************************
+  make[3]: Leaving directory 'tb/pyuvm'
+  make[2]: Leaving directory 'tb/pyuvm'
+  === All 1 stress seeds passed with zero mismatches ===
+  =====================================================
+  All pyuvm directed and stress tests passed successfully.
+  =====================================================
+  make[1]: Leaving directory 'tb/pyuvm'
+
+[12_regress_20_dry] EXIT=0 TIME=20.79s CMD: source scripts/env.sh && make -n regress SIM=icarus SEEDS=20
+  --- stdout (tail) ---
+  <HOME_DIR>/oss-cad-suite/bin/tabbypy3 -m cocotb_tools.check_results build/results/pyuvm/results_test_stress_20.xml
+  make[3]: Leaving directory 'tb/pyuvm'
+  make[2]: Leaving directory 'tb/pyuvm'
+  echo "=== All 20 stress seeds passed with zero mismatches ==="
+  echo "====================================================="
+  echo "All pyuvm directed and stress tests passed successfully."
+  echo "====================================================="
+  make[1]: Leaving directory 'tb/pyuvm'
+
+[12b_check_xml_failures] EXIT=0 TIME=0.04s CMD: source scripts/env.sh && mkdir -p build/results && (grep -rn "failure" build/results/ || echo "ZERO FAILURES")
+  --- stdout (tail) ---
+  ZERO FAILURES
+
+[12c_syntax_gen_scripts] EXIT=0 TIME=0.14s CMD: source scripts/env.sh && python3 -m py_compile scripts/gen_metrics.py scripts/gen_test_map.py mutation/gen_mutation_report.py
+
+[13_regress_verilator_seed1] EXIT=0 TIME=81.94s CMD: source scripts/env.sh && make regress-verilator SEEDS=1
+  --- stdout (tail) ---
+  make[4]: Leaving directory 'tb/pyuvm'
+  make[3]: Leaving directory 'tb/pyuvm'
+  === All 1 stress seeds passed with zero mismatches ===
+  =====================================================
+  All pyuvm directed and stress tests passed successfully.
+  =====================================================
+  make[2]: Leaving directory 'tb/pyuvm'
+  make[1]: Leaving directory '<REPO_DIR>'
+
+[13b_regress_quoted_seeds_dry] EXIT=0 TIME=9.10s CMD: source scripts/env.sh && make -n regress SIM=icarus SEEDS="601 602 603"
+  --- stdout (tail) ---
+  <HOME_DIR>/oss-cad-suite/bin/tabbypy3 -m cocotb_tools.check_results build/results/pyuvm/results_test_stress_603.xml
+  make[3]: Leaving directory 'tb/pyuvm'
+  make[2]: Leaving directory 'tb/pyuvm'
+  echo "=== All 3 stress seeds passed with zero mismatches ==="
+  echo "====================================================="
+  echo "All pyuvm directed and stress tests passed successfully."
+  echo "====================================================="
+  make[1]: Leaving directory 'tb/pyuvm'
+
+[14_cov_report_dry] EXIT=0 TIME=0.02s CMD: source scripts/env.sh && make -n cov-report
+  --- stdout (tail) ---
+  mkdir -p build/tmp build/results build/sim_build && if [ -f "scripts/env.sh" ]; then source "scripts/env.sh"; else export TMPDIR="build/tmp" PYTHONPATH="<REPO_DIR>:tb:tb/unit:tb/pyuvm:tb/models${PYTHONPATH:+:$PYTHONPATH}"; fi && echo "=== Generating Coverage Report ===" && \
+  if [ -f "scripts/run_regression.sh" ]; then \
+  	bash scripts/run_regression.sh; \
+  elif [ -f "scripts/merge_cov.py" ]; then \
+  	python3 scripts/merge_cov.py; \
+  fi
+
+[15_formal_single] EXIT=0 TIME=1.42s CMD: source scripts/env.sh && (cd formal && sby -f apb_timer.sby) && rm -rf formal/apb_timer_prove formal/apb_timer_cover
+  --- stdout (tail) ---
+  SBY  9:58:33 [apb_timer_prove] engine_0.basecase: Status returned by engine for basecase: pass
+  SBY  9:58:33 [apb_timer_prove] summary: Elapsed clock time [H:MM:SS (secs)]: 0:00:01 (1)
+  SBY  9:58:33 [apb_timer_prove] summary: Elapsed process time [H:MM:SS (secs)]: 0:00:01 (1)
+  SBY  9:58:33 [apb_timer_prove] summary: engine_0 (smtbmc boolector) returned pass for basecase
+  SBY  9:58:33 [apb_timer_prove] summary: engine_0 (smtbmc boolector) returned pass for induction
+  SBY  9:58:33 [apb_timer_prove] summary: engine_0 did not produce any traces
+  SBY  9:58:33 [apb_timer_prove] summary: successful proof by k-induction.
+  SBY  9:58:33 [apb_timer_prove] DONE (PASS, rc=0)
+
+[16_formal_all] EXIT=0 TIME=125.66s CMD: source scripts/env.sh && make formal && git checkout -- docs/logs/formal_suite.log && rm -rf formal/*/
+  --- stdout (tail) ---
+  | axil_ram           | bmc     | 20    | PASS   | 5        | 3s      |
+  | axil_xbar          | bmc     | 20    | PASS   | 31       | 43s     |
+  | rr_arbiter         | prove   | 20    | PASS   | 3        | 1s      |
+  | sync_fifo          | prove   | 20    | PASS   | 8        | 3s      |
+  |--------------------|---------|-------|--------|----------|---------|
+   Total: 10 | Passed: 10 | Failed: 0
+  ==========================================================================================
+  Formal suite PASSED (10/10 modules clean).
+
+[17_sanity_gate] EXIT=0 TIME=48.62s CMD: source scripts/env.sh && make sanity && git checkout -- docs/logs/sanity.log
+  --- stdout (tail) ---
+  [SMUT-12] KILLED   | Inject RX_OVF never set in apb_uart.v | test_apb_uart.test_ua02_fifo_full_and_overflow_flags (tb/block/test_apb_uart.py:123 in test_ua02_fifo_full_and_overflow_flags): assertion failed
+  [SMUT-13] KILLED   | Inject SCRATCH2 ignores WSTRB in axil_csr.v | test_directed.test_sys_strobe_patterns (tb/pyuvm/sequences/directed_seqs.py:167 in body): AssertionError: CSR_SCRATCH2 WSTRB 0x0 mismatch: expected 0xa5a55a5a, got 0x13572468
+  [SMUT-14] KILLED   | Inject xbar lock/pending not cleared by reset in axil_xbar.v | test_directed.test_xb12_reset_recovery (tb/models/axil_driver.py:97 in write): assertion failed
+  [SMUT-15] KILLED   | Inject CDC bridge pending state not aborted/reset on rst_slow_n in axil_cdc_bridge.v | test_axil_cdc_bridge.test_cd03_reset_recovery (tb/block/test_axil_cdc_bridge.py:171 in test_cd03_reset_recovery): assertion failed
+  [SMUT-16] KILLED   | Inject bridge read/write arbitration stuck on write in axil2apb_bridge.v | test_axil2apb_bridge.test_br05_back_to_back_mixed_rw (tb/block/test_axil2apb_bridge.py:358 in test_br05_back_to_back_mixed_rw): assertion failed
+  [SMUT-17] KILLED   | Reduce GPIO 2-FF input synchronizer to 1-FF in apb_gpio.v | test_apb_gpio.test_gp02_input_sync_latency (tb/block/test_apb_gpio.py:97 in test_gp02_input_sync_latency): assertion failed
+  
+  Sanity Summary: 17/17 KILLED, 0 SURVIVED, 0 INVALID
+
+[18_mutation_sample] EXIT=0 TIME=38.98s CMD: source scripts/env.sh && make mutation-sample
+  --- stdout (tail) ---
+    - [axil_decoder #1]: mutate -mode cnot1 -module axil_decoder -cell $rtl/axil/axil_decoder.v:30$eq$9 -port A -portbit 22 -ctrlbit 19 -src rtl/axil/axil_decoder.v:30.22-30.49
+      Saved RTL: mutation/results/survivors/axil_decoder_mut_1.v
+    - [axil_xbar #0]: mutate -mode const1 -module $paramod$3cec153e1ff2f3e7a227b49b5627139027cc0be9\axil_xbar -cell $rtl/axil/axil_xbar.v:299$eq$1633 -port Y -portbit 0 -src rtl/axil/axil_xbar.v:299.75-299.94
+      Saved RTL: mutation/results/survivors/axil_xbar_mut_0.v
+    - [rr_arbiter #1]: mutate -mode const1 -module rr_arbiter -cell $rtl/common/rr_arbiter.v:27$reduce_or$6 -port Y -portbit 0 -src rtl/common/rr_arbiter.v:27.22-27.30
+      Saved RTL: mutation/results/survivors/rr_arbiter_mut_1.v
+  
+  Report written to build/results/mutation_sample.log
+
+[19_mutation_full_dry] EXIT=0 TIME=0.02s CMD: source scripts/env.sh && make -n mutation
+  --- stdout (tail) ---
+  mkdir -p build/tmp build/results build/sim_build && if [ -f "scripts/env.sh" ]; then source "scripts/env.sh"; else export TMPDIR="build/tmp" PYTHONPATH="<REPO_DIR>:tb:tb/unit:tb/pyuvm:tb/models${PYTHONPATH:+:$PYTHONPATH}"; fi && echo "=== Running Full Mutation Testing ===" && \
+  if [ -f "mutation/run_mutants.py" ]; then \
+  	python3 mutation/run_mutants.py --max-mutants 240; \
+  else \
+  	echo "Mutation testing runner will be populated in Phase 6."; \
+  fi
+
+[19b_mutation_help] EXIT=0 TIME=0.09s CMD: source scripts/env.sh && python3 mutation/run_mutants.py --help
+  --- stdout (tail) ---
+    --jobs JOBS, -j JOBS  Parallel worker jobs (max 4)
+    --output OUTPUT       Summary log output
+    --survivor-dir SURVIVOR_DIR
+                          Survivor save dir
+    --generate-list GENERATE_LIST
+                          Generate frozen mutant list JSON and exit
+    --mutant-list MUTANT_LIST
+                          Evaluate pre-generated frozen mutant list JSON
+
+[20_mutation_equiv] EXIT=0 TIME=40.42s CMD: source scripts/env.sh && python3 mutation/check_equiv.py --output build/results/mutation_equiv_check.log
+  --- stdout (tail) ---
+  rr_arbiter       #01: EQUIV_PROVE (sby abc pdr) | mutate -mode const1 -module rr_arbiter -cell $rtl/common/rr_arbiter.v:27$reduce_or$6 -port Y -portbit 0 -src rtl/common/rr_arbiter.v:27.22-27.30
+  rr_arbiter       #05: EQUIV_PROVE (sby abc pdr) | mutate -mode const0 -module rr_arbiter -cell $procmux$146 -port A -portbit 0 -src rtl/common/rr_arbiter.v:30.22-30.26 -src rtl/common/rr_arbiter.v:30.18-52.12
+  rr_arbiter       #08: EQUIV_PROVE (sby abc pdr) | mutate -mode const0 -module rr_arbiter -cell $procmux$52 -port S -portbit 0 -src rtl/common/rr_arbiter.v:44.17-44.23 -src rtl/common/rr_arbiter.v:44.13-51.16
+  rr_arbiter       #16: EQUIV_PROVE (sby abc pdr) | mutate -mode const1 -module rr_arbiter -cell $procmux$38 -port B -portbit 0 -src rtl/common/rr_arbiter.v:46.25-46.41 -src rtl/common/rr_arbiter.v:46.21-49.24
+  rr_arbiter       #24: EQUIV_PROVE (sby abc pdr) | mutate -mode inv -module rr_arbiter -cell $rtl/common/rr_arbiter.v:35$logic_not$14 -port A -portbit 0 -src rtl/common/rr_arbiter.v:35.29-35.35
+  rr_arbiter       #28: EQUIV_PROVE (sby abc pdr) | mutate -mode cnot1 -module rr_arbiter -cell $rtl/common/rr_arbiter.v:27$reduce_or$9 -port A -portbit 0 -ctrlbit 1 -src rtl/common/rr_arbiter.v:27.36-27.52
+  sync_fifo        #24: EQUIV_PROVE (sby abc pdr) | mutate -mode const0 -module sync_fifo -cell $procmux$684 -port A -portbit 3 -src rtl/common/sync_fifo.v:55.25-55.31 -src rtl/common/sync_fifo.v:55.21-61.24
+  Wrote build/results/mutation_equiv_check.log (21 survivors analyzed).
+
+[21_synth] EXIT=0 TIME=6.29s CMD: source scripts/env.sh && make synth
+  --- stdout (tail) ---
+  
+  25.2. Executing DEMUXMAP pass.
+  Dumping module `\amba_fabric_top'.
+  
+  Warnings: 5 unique messages, 11 total
+  End of script. Logfile hash: f4ebc6beb6, time: 6.20s, user: 4.61s, system: 0.60s, MEM: 72.93 MB peak
+  Yosys 0.71+77 (git sha1 11d972c20, Release, Clang /usr/bin/clang++ 21.1.8)
+  Time spent: 65% 2x abc (7 sec), 8% 27x opt_clean (1 sec), ...
+
+[22_sta] EXIT=0 TIME=19.18s CMD: source scripts/env.sh && make sta
+  --- stdout (tail) ---
+  
+     [Pure Register-to-Register Critical Path (clk_sys, excluding I/O and rst_sync)]
+     - Startpoint: _11153_ (rising edge-triggered flip-flop clocked by clk_sys)
+     - Endpoint:   _12228_ (rising edge-triggered flip-flop clocked by clk_sys)
+     - Arrival / Required / Slack: 13.68 ns / 9.53 ns / -4.15 ns (VIOLATED)
+     - Peak Net:   _02100_ (fanout=75, cap=0.17 pF, slew=1.93 ns)
+  
+  Sweep log written to synth/results/fmax_sweep.log
+
+[23_gen_docs] EXIT=0 TIME=0.06s CMD: source scripts/env.sh && python3 scripts/gen_docs.py
+  --- stdout (tail) ---
+  Updated README.md (8 generated blocks).
+  Updated docs/results.md (8 generated blocks).
+  Updated docs/vplan.md (6 generated blocks).
+
+[24_waveform_vcd] EXIT=0 TIME=4.34s CMD: source scripts/env.sh && make -C tb/block test_axil_xbar COCOTB_TEST_FILTER=test_xb05_contention_same_slave SIM=icarus && ls -lh tb/block/dump.vcd && rm -f tb/block/dump.vcd
+  --- stdout (tail) ---
+                                                          ********************************************************************************************************
+                                                          ** TESTS=1 PASS=1 FAIL=0 SKIP=0                                  160.00           0.05       2970.40  **
+                                                          ********************************************************************************************************
+  VCD info: dumpfile dump.vcd opened for output.
+  make[2]: Leaving directory 'tb/block'
+  make[1]: Leaving directory 'tb/block'
+  make: Leaving directory 'tb/block'
+  -rw-r--r-- 1 somasai somasai 19K Nov 26 10:07 tb/block/dump.vcd
+
+[24b_gtkwave_check] EXIT=0 TIME=6.24s CMD: source scripts/env.sh && gtkwave --version
+  --- stdout (tail) ---
+  GTKWave Analyzer v4.0.0-prealpha (e40ba79) (w)1999-2022 BSI
+  
+  This is free software; see the source for copying conditions.  There is NO
+  warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+[24c_render_waveform_png] EXIT=0 TIME=4.09s CMD: source scripts/env.sh && make -C tb/block test_axil_xbar COCOTB_TEST_FILTER=test_xb05_contention_same_slave SIM=icarus && .venv/bin/python3 scripts/render_waveform.py tb/block/dump.vcd build/results/contention_preview.png && ls -lh build/results/contention_preview.png && rm -f tb/block/dump.vcd
+  --- stdout (tail) ---
+  make[1]: Leaving directory 'tb/block'
+  make: Leaving directory 'tb/block'
+  Saved contention waveform to: build/results/contention_preview.png
+  -rw-r--r-- 1 somasai somasai 190K Nov 26 10:53 build/results/contention_preview.png
+
+[25_clean_targets] EXIT=0 TIME=0.26s CMD: source scripts/env.sh && make clean && make -C tb/unit clean && make -C tb/block clean && make -C tb/pyuvm clean
+  --- stdout (tail) ---
+  rm -rf sim_build* build/sim_build/unit_* build/results/unit results*.xml results.xml dump.vcd *.vcd __pycache__
+  make: Leaving directory 'tb/unit'
+  make: Entering directory 'tb/block'
+  rm -rf sim_build* build/sim_build/block_* build/results/block results*.xml results.xml dump.vcd *.vcd __pycache__
+  make: Leaving directory 'tb/block'
+  make: Entering directory 'tb/pyuvm'
+  rm -rf sim_build* build/sim_build/pyuvm_* build/results/pyuvm results*.xml dump.vcd *.vcd __pycache__
+  make: Leaving directory 'tb/pyuvm'
+
+================================================================================
+Summary: 35/35 verified commands exited 0 (failed=0)
+================================================================================
