@@ -994,15 +994,15 @@
   },
   "ci": {
     "status": "PASS",
-    "run_id": 45665895644,
+    "run_id": 45761725094,
     "branch": "release-prep",
     "event": "push",
     "workflow": "ci.yml",
-    "head_sha": "4bd08534f3a7ebb5f99c3322843b2703eab7ac96",
-    "run_url": "https://github.com/i-am-somasai/AMBA-AXI4-Lite-APB4-Fabric-Subsystem-pyuvm-Verification-Environment/actions/runs/45665895644",
+    "head_sha": "292e06555af2307be4811ef4d1b61a9629cb6816",
+    "run_url": "https://github.com/i-am-somasai/AMBA-AXI4-Lite-APB4-Fabric-Subsystem-pyuvm-Verification-Environment/actions/runs/45761725094",
     "job": "Lint, Unit, Regression, Formal & Mutation",
-    "duration": "4m 37s",
-    "artifact": "verification-logs-and-reports (29664 bytes)",
+    "duration": "3m 50s",
+    "artifact": "verification-logs-and-reports (29455 bytes, sha256:55cb5aa6a94c5a69e2a971ac3c362cc698f477e48667b8222ab2e8ca1b0d8a20)",
     "annotations": [
       "Non-blocking Node.js 20 deprecation warning for actions/checkout@v4, actions/upload-artifact@v4, and YosysHQ/setup-oss-cad-suite@v3"
     ],
